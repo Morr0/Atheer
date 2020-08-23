@@ -1,4 +1,6 @@
-﻿using AtheerCore.Models;
+﻿using AtheerBackend.DTO;
+using AtheerCore.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -8,11 +10,18 @@ namespace AtheerBackend.Controllers
     [ApiController]
     public class BlogController : ControllerBase
     {
+        private IMapper _mapper;
+
+        public BlogController(IMapper mapper)
+        {
+            _mapper = mapper;
+        }
+
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             BlogPost post = new BlogPost { Title = "Hi" };
-            return Ok(post);
+            return Ok(_mapper.Map<BlogPostReadDTO>(post));
         }
     }
 }
