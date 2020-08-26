@@ -11,12 +11,12 @@ namespace AtheerBackend.Extensions
     {
         // Static primary key for later use
         // Reason for it is to not initialize a new primary each time needed
-        public static Dictionary<string, AttributeValue> LastEvalKey(int lastEvaluatedKeyYear, string lastEvaluatedKeyTitle)
+        public static Dictionary<string, AttributeValue> LastEvalKey(PostsPaginationHeader paginationHeader)
         {
             return new Dictionary<string, AttributeValue>
             {
-                {nameof(BlogPost.CreatedYear).ToString(), new AttributeValue{ N = lastEvaluatedKeyYear.ToString() } },
-                {nameof(BlogPost.TitleShrinked), new AttributeValue{ S = lastEvaluatedKeyTitle } }
+                {nameof(BlogPost.CreatedYear).ToString(), new AttributeValue{ N = paginationHeader.X_AthBlog_Last_Year.ToString() } },
+                {nameof(BlogPost.TitleShrinked), new AttributeValue{ S = paginationHeader.X_AthBlog_Last_Title } }
             };
         }
 

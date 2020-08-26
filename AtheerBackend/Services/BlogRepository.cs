@@ -1,5 +1,6 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
+using AtheerBackend.Controllers.Headers;
 using AtheerBackend.Extensions;
 using AtheerCore.Models;
 using System.Collections.Generic;
@@ -18,8 +19,7 @@ namespace AtheerBackend.Services
             _client = new AmazonDynamoDBClient();
         }
 
-        public async Task<BlogRepositoryBlogResponse> Get(int amount, int lastEvaluatedKeyYear = 0, 
-            string lastEvaluatedKeyTitle = null)
+        public async Task<BlogRepositoryBlogResponse> Get(int amount, PostsPaginationHeader paginationHeader = null)
         {
             var scanRequest = new ScanRequest
             {
@@ -27,9 +27,9 @@ namespace AtheerBackend.Services
                 Limit = amount,
             };
             // Query the last evaluated key if not null
-            if (lastEvaluatedKeyYear != 0 && !string.IsNullOrEmpty(lastEvaluatedKeyTitle))
+            if (paginationHeader != null)
             {
-                scanRequest.ExclusiveStartKey = BlogPostExtensions.LastEvalKey(lastEvaluatedKeyYear, lastEvaluatedKeyTitle);
+                scanRequest.ExclusiveStartKey = BlogPostExtensions.LastEvalKey(paginationHeader);
             }
 
             var scanResponse = await _client.ScanAsync(scanRequest);

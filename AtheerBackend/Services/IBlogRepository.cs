@@ -1,11 +1,10 @@
-﻿using AtheerCore.Models;
-using System.Collections.Generic;
+﻿using AtheerBackend.Controllers.Headers;
 using System.Threading.Tasks;
 
 namespace AtheerBackend.Services
 {
     public interface IBlogRepository
     {
-        Task<BlogRepositoryBlogResponse> Get(int amount, int lastEvaluatedKeyYear = 0, string lastEvaluatedKeyTitle = null);
+        Task<BlogRepositoryBlogResponse> Get(int amount, PostsPaginationHeader paginationHeader = null);
     }
 }
