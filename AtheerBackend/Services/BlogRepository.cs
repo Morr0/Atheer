@@ -1,9 +1,7 @@
 ﻿using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using AtheerBackend.Extensions;
 using AtheerCore.Models;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

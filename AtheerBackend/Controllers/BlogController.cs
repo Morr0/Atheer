@@ -1,4 +1,5 @@
-﻿using AtheerBackend.DTO;
+﻿using AtheerBackend.Controllers.Queries;
+using AtheerBackend.DTO;
 using AtheerBackend.Services;
 using AtheerCore.Models;
 using AutoMapper;
@@ -22,9 +23,9 @@ namespace AtheerBackend.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] BlogsQuery query)
         {
-            List<BlogPost> posts = await _blogRepo.Get(10);
+            List<BlogPost> posts = await _blogRepo.Get(query.Size);
             return Ok(_mapper.Map<List<BlogPostReadDTO>>(posts));
         }
     }
