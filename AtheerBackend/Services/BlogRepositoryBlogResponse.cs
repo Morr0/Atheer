@@ -11,7 +11,6 @@ namespace AtheerBackend.Services
         public BlogRepositoryBlogResponse(int size)
         {
             Posts = new List<BlogPost>(size);
-            PaginationHeader = new PostsPaginationHeader();
         }
 
         public List<BlogPost> Posts { get; set; }

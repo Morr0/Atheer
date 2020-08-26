@@ -10,5 +10,7 @@ namespace AtheerBackend.Controllers.Headers
         // The range key
         [NotNull]
         public string X_AthBlog_Last_Title { get; set; }
+
+        public bool Empty() => string.IsNullOrEmpty(X_AthBlog_Last_Year) || string.IsNullOrEmpty(X_AthBlog_Last_Year);
     }
 }

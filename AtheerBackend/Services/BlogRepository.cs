@@ -27,7 +27,7 @@ namespace AtheerBackend.Services
                 Limit = amount,
             };
             // Query the last evaluated key if not null
-            if (paginationHeader != null)
+            if (paginationHeader != null && !paginationHeader.Empty())
             {
                 scanRequest.ExclusiveStartKey = BlogPostExtensions.LastEvalKey(paginationHeader);
             }
