@@ -1,4 +1,5 @@
 ﻿using Amazon.DynamoDBv2.Model;
+using AtheerBackend.Controllers.Headers;
 using AtheerCore.Models;
 using System;
 using System.Collections.Generic;
@@ -13,11 +14,20 @@ namespace AtheerBackend.Extensions
         public static Dictionary<string, AttributeValue> LastEvalKey(int lastEvaluatedKeyYear, string lastEvaluatedKeyTitle)
         {
             return new Dictionary<string, AttributeValue>
+            {
+                {nameof(BlogPost.CreatedYear).ToString(), new AttributeValue{ N = lastEvaluatedKeyYear.ToString() } },
+                {nameof(BlogPost.TitleShrinked), new AttributeValue{ S = lastEvaluatedKeyTitle } }
+            };
+        }
+
+        public static PostsPaginationHeader PostsPaginationHeaderFromLastEvalKey(Dictionary<string, AttributeValue> dict)
         {
-            {nameof(BlogPost.CreatedYear).ToString(), new AttributeValue{ N = lastEvaluatedKeyYear.ToString() } },
-            {nameof(BlogPost.TitleShrinked), new AttributeValue{ S = lastEvaluatedKeyTitle } }
-        };
-    }
+            return new PostsPaginationHeader
+            {
+                X_AthBlog_Last_Year = dict[nameof(BlogPost.CreatedYear)].N,
+                X_AthBlog_Last_Title = dict[nameof(BlogPost.TitleShrinked)].S
+            };
+        }
 
         public static BlogPost Map(Dictionary<string, AttributeValue> dict)
         {

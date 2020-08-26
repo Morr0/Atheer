@@ -25,7 +25,7 @@ namespace AtheerBackend.Controllers
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] BlogsQuery query)
         {
-            List<BlogPost> posts = await _blogRepo.Get(query.Size);
+            List<BlogPost> posts = (await _blogRepo.Get(query.Size)).Posts;
             return Ok(_mapper.Map<List<BlogPostReadDTO>>(posts));
         }
     }

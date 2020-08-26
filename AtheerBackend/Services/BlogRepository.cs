@@ -18,7 +18,8 @@ namespace AtheerBackend.Services
             _client = new AmazonDynamoDBClient();
         }
 
-        public async Task<List<BlogPost>> Get(int amount, int lastEvaluatedKeyYear = 0, string lastEvaluatedKeyTitle = null)
+        public async Task<BlogRepositoryBlogResponse> Get(int amount, int lastEvaluatedKeyYear = 0, 
+            string lastEvaluatedKeyTitle = null)
         {
             var scanRequest = new ScanRequest
             {
@@ -33,14 +34,14 @@ namespace AtheerBackend.Services
 
             var scanResponse = await _client.ScanAsync(scanRequest);
 
-
-            List<BlogPost> posts = new List<BlogPost>(scanResponse.Items.Count);
+            var response = new BlogRepositoryBlogResponse(scanResponse.Count);
             foreach (var item in scanResponse.Items)
             {
-                posts.Add(BlogPostExtensions.Map(item));
+                response.Posts.Add(BlogPostExtensions.Map(item));
             }
+            response.PaginationHeader = BlogPostExtensions.PostsPaginationHeaderFromLastEvalKey(scanResponse.LastEvaluatedKey);
 
-            return posts;
+            return response;
         }
     }
 }
