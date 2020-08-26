@@ -18,15 +18,21 @@ namespace AtheerBackend.Services
             _client = new AmazonDynamoDBClient();
         }
 
-        public async Task<List<BlogPost>> Get(int amount)
+        public async Task<List<BlogPost>> Get(int amount, int lastEvaluatedKeyYear = 0, string lastEvaluatedKeyTitle = null)
         {
             var scanRequest = new ScanRequest
             {
                 TableName = TABLE_NAME,
                 Limit = amount,
             };
+            // Query the last evaluated key if not null
+            if (lastEvaluatedKeyYear != 0 && !string.IsNullOrEmpty(lastEvaluatedKeyTitle))
+            {
+                scanRequest.ExclusiveStartKey = BlogPostExtensions.LastEvalKey(lastEvaluatedKeyYear, lastEvaluatedKeyTitle);
+            }
 
             var scanResponse = await _client.ScanAsync(scanRequest);
+
 
             List<BlogPost> posts = new List<BlogPost>(scanResponse.Items.Count);
             foreach (var item in scanResponse.Items)

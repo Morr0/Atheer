@@ -8,6 +8,17 @@ namespace AtheerBackend.Extensions
 {
     public class BlogPostExtensions
     {
+        // Static primary key for later use
+        // Reason for it is to not initialize a new primary each time needed
+        public static Dictionary<string, AttributeValue> LastEvalKey(int lastEvaluatedKeyYear, string lastEvaluatedKeyTitle)
+        {
+            return new Dictionary<string, AttributeValue>
+        {
+            {nameof(BlogPost.CreatedYear).ToString(), new AttributeValue{ N = lastEvaluatedKeyYear.ToString() } },
+            {nameof(BlogPost.TitleShrinked), new AttributeValue{ S = lastEvaluatedKeyTitle } }
+        };
+    }
+
         public static BlogPost Map(Dictionary<string, AttributeValue> dict)
         {
             BlogPost post = new BlogPost();

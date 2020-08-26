@@ -6,6 +6,6 @@ namespace AtheerBackend.Services
 {
     public interface IBlogRepository
     {
-        Task<List<BlogPost>> Get(int amount);
+        Task<List<BlogPost>> Get(int amount, int lastEvaluatedKeyYear = 0, string lastEvaluatedKeyTitle = null);
     }
 }
