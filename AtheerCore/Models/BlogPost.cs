@@ -2,6 +2,7 @@
 
 namespace AtheerCore.Models
 {
+    // WHENEVER YOU UPDATE HERE, UPDATE THE MAPPER AS WELL AS THE MAPPING METHODS
     public class BlogPost
     {
         // Partition key
