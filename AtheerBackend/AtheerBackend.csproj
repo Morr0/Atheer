@@ -5,6 +5,9 @@
     <AWSProjectType>Lambda</AWSProjectType>
   </PropertyGroup>
   <ItemGroup>
+    <Content Remove="aws-lambda-tools-defaults.json" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.0.1" />
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.5.0" />
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.101" />
