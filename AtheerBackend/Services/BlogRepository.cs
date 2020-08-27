@@ -3,7 +3,9 @@ using Amazon.DynamoDBv2.Model;
 using AtheerBackend.Controllers.Headers;
 using AtheerBackend.Extensions;
 using AtheerCore.Models;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AtheerBackend.Services
@@ -27,7 +29,7 @@ namespace AtheerBackend.Services
                 Limit = amount,
             };
             // Query the last evaluated key if not null
-            if (paginationHeader != null && !paginationHeader.Empty())
+            if (!paginationHeader.Empty())
             {
                 scanRequest.ExclusiveStartKey = BlogPostExtensions.LastEvalKey(paginationHeader);
             }
@@ -39,7 +41,12 @@ namespace AtheerBackend.Services
             {
                 response.Posts.Add(BlogPostExtensions.Map(item));
             }
-            response.PaginationHeader = BlogPostExtensions.PostsPaginationHeaderFromLastEvalKey(scanResponse.LastEvaluatedKey);
+            if (scanResponse.LastEvaluatedKey.Count > 0) 
+            {
+                Console.WriteLine("Not empty");
+                response.PaginationHeader = BlogPostExtensions
+                .PostsPaginationHeaderFromLastEvalKey(scanResponse.LastEvaluatedKey); 
+            }
 
             return response;
         }
