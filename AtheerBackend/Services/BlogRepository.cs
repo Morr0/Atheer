@@ -21,7 +21,7 @@ namespace AtheerBackend.Services
             _client = new AmazonDynamoDBClient();
         }
 
-        public async Task<BlogRepositoryBlogResponse> Get(int amount, PostsPaginationHeader paginationHeader = null)
+        public async Task<BlogRepositoryBlogResponse> Get(int amount, PostsPaginationPrimaryKey paginationHeader = null)
         {
             var scanRequest = new ScanRequest
             {

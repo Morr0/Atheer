@@ -5,6 +5,6 @@ namespace AtheerBackend.Services
 {
     public interface IBlogRepository
     {
-        Task<BlogRepositoryBlogResponse> Get(int amount, PostsPaginationHeader paginationHeader = null);
+        Task<BlogRepositoryBlogResponse> Get(int amount, PostsPaginationPrimaryKey paginationHeader = null);
     }
 }

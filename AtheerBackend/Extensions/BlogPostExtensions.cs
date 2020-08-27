@@ -11,7 +11,7 @@ namespace AtheerBackend.Extensions
     {
         // Static primary key for later use
         // Reason for it is to not initialize a new primary each time needed
-        public static Dictionary<string, AttributeValue> LastEvalKey(PostsPaginationHeader paginationHeader)
+        public static Dictionary<string, AttributeValue> LastEvalKey(PostsPaginationPrimaryKey paginationHeader)
         {
             return new Dictionary<string, AttributeValue>
             {
@@ -20,9 +20,9 @@ namespace AtheerBackend.Extensions
             };
         }
 
-        public static PostsPaginationHeader PostsPaginationHeaderFromLastEvalKey(Dictionary<string, AttributeValue> dict)
+        public static PostsPaginationPrimaryKey PostsPaginationHeaderFromLastEvalKey(Dictionary<string, AttributeValue> dict)
         {
-            return new PostsPaginationHeader
+            return new PostsPaginationPrimaryKey
             {
                 X_AthBlog_Last_Year = dict[nameof(BlogPost.CreatedYear)].N,
                 X_AthBlog_Last_Title = dict[nameof(BlogPost.TitleShrinked)].S

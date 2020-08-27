@@ -9,10 +9,10 @@ namespace AtheerBackend.Extensions
 {
     public static class PostsPaginationHeaderExtension
     {
-        public static void AddHeaders(this PostsPaginationHeader header, IHeaderDictionary headerDict)
+        public static void AddHeaders(this PostsPaginationPrimaryKey header, IHeaderDictionary headerDict)
         {
-            headerDict.Add(nameof(PostsPaginationHeader.X_AthBlog_Last_Year), header.X_AthBlog_Last_Year);
-            headerDict.Add(nameof(PostsPaginationHeader.X_AthBlog_Last_Title), header.X_AthBlog_Last_Title);
+            headerDict.Add(nameof(PostsPaginationPrimaryKey.X_AthBlog_Last_Year), header.X_AthBlog_Last_Year);
+            headerDict.Add(nameof(PostsPaginationPrimaryKey.X_AthBlog_Last_Title), header.X_AthBlog_Last_Title);
         }
     }
 }

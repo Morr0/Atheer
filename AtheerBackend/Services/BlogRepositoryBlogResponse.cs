@@ -15,6 +15,6 @@ namespace AtheerBackend.Services
 
         public List<BlogPost> Posts { get; set; }
 
-        public PostsPaginationHeader PaginationHeader { get; set; }
+        public PostsPaginationPrimaryKey PaginationHeader { get; set; }
     }
 }

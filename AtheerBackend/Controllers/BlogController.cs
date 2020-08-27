@@ -27,15 +27,15 @@ namespace AtheerBackend.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] BlogsQuery query, 
-            [FromHeader(Name = nameof(PostsPaginationHeader.X_AthBlog_Last_Year))] string? hyear,
-            [FromHeader(Name = nameof(PostsPaginationHeader.X_AthBlog_Last_Title))] string? htitle)
+            [FromHeader(Name = nameof(PostsPaginationPrimaryKey.X_AthBlog_Last_Year))] string? hyear,
+            [FromHeader(Name = nameof(PostsPaginationPrimaryKey.X_AthBlog_Last_Title))] string? htitle)
         {
-            PostsPaginationHeader paginationHeader = new PostsPaginationHeader
+            // Gets created from headers
+            PostsPaginationPrimaryKey paginationHeader = new PostsPaginationPrimaryKey
             {
                 X_AthBlog_Last_Year = hyear,
                 X_AthBlog_Last_Title = htitle
             };
-
             var repoResponse = await _blogRepo.Get(query.Size, paginationHeader);
             
             // Insert into headers the pagination stuff
