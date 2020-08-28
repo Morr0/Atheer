@@ -31,6 +31,9 @@ namespace AtheerBackend.Extensions
 
         public static BlogPost Map(Dictionary<string, AttributeValue> dict)
         {
+            if (dict.Count == 0)
+                return null;
+
             BlogPost post = new BlogPost();
             Type type = post.GetType();
             PropertyInfo[] properties = type.GetProperties();
