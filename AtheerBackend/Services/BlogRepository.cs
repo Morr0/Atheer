@@ -66,5 +66,32 @@ namespace AtheerBackend.Services
             var getItemResponse = await _client.GetItemAsync(getItemRequest);
             return BlogPostExtensions.Map(getItemResponse.Item);
         }
+
+        public async Task<BlogRepositoryBlogResponse> GetByYear(int year, int amount, 
+            PostsPaginationPrimaryKey paginationHeader = null)
+        {
+            string hashKey = nameof(BlogPost.CreatedYear);
+            string vHashKey = $":{hashKey}";
+
+            var queryRequest = new QueryRequest
+            {
+                TableName = TABLE_NAME,
+                KeyConditionExpression = $"{hashKey} = {vHashKey}",
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                {
+                    {vHashKey, new AttributeValue{N = year.ToString()} }
+                },
+                Limit = amount,
+            };
+
+            var queryResponse = await _client.QueryAsync(queryRequest);
+            BlogRepositoryBlogResponse response = new BlogRepositoryBlogResponse(queryResponse.Count);
+            foreach (var item in queryResponse.Items)
+            {
+                response.Posts.Add(BlogPostExtensions.Map(item));
+            }
+
+            return response;
+        }
     }
 }

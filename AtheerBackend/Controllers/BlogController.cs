@@ -48,14 +48,25 @@ namespace AtheerBackend.Controllers
             return Ok(_mapper.Map<List<BlogPostReadDTO>>(repoResponse.Posts));
         }
 
+        [HttpGet("{year}")]
+        public async Task<IActionResult> GetManyByYear([FromRoute] int year)
+        {
+            BlogRepositoryBlogResponse response = await _blogRepo.GetByYear(year, 10, null);
+            if (response.Posts.Count == 0)
+                return NotFound();
+
+            IEnumerable<BlogPostReadDTO> postsReadDTO = _mapper.Map<List<BlogPostReadDTO>>(response.Posts);
+            return Ok(postsReadDTO);
+        }
+
         [HttpGet("{year}/{title}")]
-        public async Task<IActionResult> Get([FromRoute] int year, [FromRoute] string title)
+        public async Task<IActionResult> GetOne([FromRoute] int year, [FromRoute] string title)
         {
             BlogPost post = await _blogRepo.Get(year, title);
             if (post == null)
                 return NotFound();
 
             return Ok(_mapper.Map<BlogPostReadDTO>(post));
-    }
+        }
     }
 } 
