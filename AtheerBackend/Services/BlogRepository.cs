@@ -50,5 +50,21 @@ namespace AtheerBackend.Services
 
             return response;
         }
+
+        public async Task<BlogPost> Get(int year, string title)
+        {
+            var getItemRequest = new GetItemRequest
+            {
+                TableName = TABLE_NAME,
+                Key = new Dictionary<string, AttributeValue>
+                {
+                    {nameof(BlogPost.CreatedYear), new AttributeValue{N = year.ToString()} },
+                    {nameof(BlogPost.TitleShrinked), new AttributeValue{S = title} }
+                },
+            };
+
+            var getItemResponse = await _client.GetItemAsync(getItemRequest);
+            return BlogPostExtensions.Map(getItemResponse.Item);
+        }
     }
 }
