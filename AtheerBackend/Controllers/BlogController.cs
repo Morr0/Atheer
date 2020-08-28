@@ -41,7 +41,6 @@ namespace AtheerBackend.Controllers
             // Insert into headers the pagination stuff
             if (repoResponse.PaginationHeader != null && !repoResponse.PaginationHeader.Empty())
             {
-                Console.WriteLine("Not null");
                 repoResponse.PaginationHeader.AddHeaders(Response.Headers);
             }
 
@@ -49,11 +48,26 @@ namespace AtheerBackend.Controllers
         }
 
         [HttpGet("{year}")]
-        public async Task<IActionResult> GetManyByYear([FromRoute] int year)
+        public async Task<IActionResult> GetManyByYear([FromRoute] int year,
+            [FromQuery] BlogsQuery query,
+            [FromHeader(Name = nameof(PostsPaginationPrimaryKey.X_AthBlog_Last_Year))] string? hyear,
+            [FromHeader(Name = nameof(PostsPaginationPrimaryKey.X_AthBlog_Last_Title))] string? htitle)
         {
-            BlogRepositoryBlogResponse response = await _blogRepo.GetByYear(year, 10, null);
+            // Gets created from headers
+            PostsPaginationPrimaryKey paginationHeader = new PostsPaginationPrimaryKey
+            {
+                X_AthBlog_Last_Year = hyear,
+                X_AthBlog_Last_Title = htitle
+            };
+            BlogRepositoryBlogResponse response = await _blogRepo.GetByYear(year, query.Size, paginationHeader);
             if (response.Posts.Count == 0)
                 return NotFound();
+
+            // Insert into headers the pagination stuff
+            if (response.PaginationHeader != null && !response.PaginationHeader.Empty())
+            {
+                response.PaginationHeader.AddHeaders(Response.Headers);
+            }
 
             IEnumerable<BlogPostReadDTO> postsReadDTO = _mapper.Map<List<BlogPostReadDTO>>(response.Posts);
             return Ok(postsReadDTO);
