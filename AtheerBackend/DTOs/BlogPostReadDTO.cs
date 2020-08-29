@@ -16,5 +16,6 @@ namespace AtheerBackend.DTO
         public string CreationDate { get; set; }
         public string LastUpdatedDate { get; set; }
         public string Topic { get; set; }
+        public int Likes { get; set; }
     }
 }

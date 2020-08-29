@@ -12,5 +12,7 @@ namespace AtheerBackend.Services
             PostsPaginationPrimaryKey paginationHeader = null);
 
         Task<BlogPost> Get(int year, string title);
+
+        Task Like(int year, string title);
     }
 }

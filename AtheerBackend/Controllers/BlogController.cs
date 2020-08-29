@@ -25,6 +25,7 @@ namespace AtheerBackend.Controllers
             _blogRepo = blogRepo;
         }
 
+    #region Reading
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] BlogsQuery query, 
             [FromHeader(Name = nameof(PostsPaginationPrimaryKey.X_AthBlog_Last_Year))] string? hyear,
@@ -82,5 +83,24 @@ namespace AtheerBackend.Controllers
 
             return Ok(_mapper.Map<BlogPostReadDTO>(post));
         }
+        #endregion
+
+        #region Liking
+        
+        [HttpPost("like/{year}/{title}")]
+        public async Task<IActionResult> Like(int year, string title)
+        {
+            try
+            {
+                await _blogRepo.Like(year, title);
+                return Ok();
+            } catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return BadRequest();
+            }  
+        }
+
+        #endregion
     }
 } 

@@ -1,4 +1,5 @@
 ﻿using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using AtheerBackend.Controllers.Headers;
 using AtheerBackend.Extensions;
@@ -101,6 +102,50 @@ namespace AtheerBackend.Services
 
             var getItemResponse = await _client.GetItemAsync(getItemRequest);
             return BlogPostExtensions.Map(getItemResponse.Item);
+        }
+
+        public async Task Like(int year, string title)
+        {
+            // This is used by DynamoDB to refer to the attribute
+            string dLikesName = nameof(BlogPost.Likes);
+            // DynamoDB convention for use in update expression, refer to docs of updating items
+            //string ddLikesName = "#L";
+            // DynamoDB convention for use in updating
+            string dNewLikes = ":newLikes";
+
+
+            UpdateItemRequest updateItemRequest = new UpdateItemRequest
+            {
+                // Locating part
+                TableName = TABLE_NAME,
+                Key = new Dictionary<string, AttributeValue>
+                {
+                    {nameof(BlogPost.CreatedYear), new AttributeValue{N = year.ToString()} },
+                    {nameof(BlogPost.TitleShrinked), new AttributeValue{S = title} }
+                },
+                // Updating part BEGIN
+                //ExpressionAttributeNames = new Dictionary<string, string>
+                //{
+                //    { ddLikesName, dLikesName }
+                //},
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                {
+                    { dNewLikes, new AttributeValue { N = 1.ToString() } }
+                },
+                // Add syntax
+                UpdateExpression = $"ADD {dLikesName} {dNewLikes}",
+                // END
+                
+                ReturnValues = ReturnValue.ALL_NEW
+            };
+
+            // Update 
+            var updateResponse = await _client.UpdateItemAsync(updateItemRequest);
+
+            if (updateResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                throw new Exception("Error updating likes");
+
+            return;
         }
     }
 }
