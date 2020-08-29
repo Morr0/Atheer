@@ -57,5 +57,18 @@ namespace AtheerBackend.Extensions
 
             return post;
         }
+
+        // HELPERS
+
+        // Get key
+        // To reduce code duplication
+        public static Dictionary<string, AttributeValue> GetKey(int year, string titleShrinked)
+        {
+            return new Dictionary<string, AttributeValue>
+            {
+                {nameof(BlogPost.CreatedYear), new AttributeValue{N = year.ToString()} },
+                {nameof(BlogPost.TitleShrinked), new AttributeValue{S = titleShrinked} }
+            };
+        }
     }
 }

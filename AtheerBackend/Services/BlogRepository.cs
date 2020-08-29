@@ -6,7 +6,6 @@ using AtheerBackend.Extensions;
 using AtheerCore.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace AtheerBackend.Services
@@ -93,11 +92,7 @@ namespace AtheerBackend.Services
             var getItemRequest = new GetItemRequest
             {
                 TableName = TABLE_NAME,
-                Key = new Dictionary<string, AttributeValue>
-                {
-                    {nameof(BlogPost.CreatedYear), new AttributeValue{N = year.ToString()} },
-                    {nameof(BlogPost.TitleShrinked), new AttributeValue{S = title} }
-                },
+                Key = BlogPostExtensions.GetKey(year, title),
             };
 
             var getItemResponse = await _client.GetItemAsync(getItemRequest);
@@ -106,35 +101,21 @@ namespace AtheerBackend.Services
 
         public async Task Like(int year, string title)
         {
-            // This is used by DynamoDB to refer to the attribute
-            string dLikesName = nameof(BlogPost.Likes);
-            // DynamoDB convention for use in update expression, refer to docs of updating items
-            //string ddLikesName = "#L";
-            // DynamoDB convention for use in updating
+            string likesAtt = nameof(BlogPost.Likes);
+            // DynamoDB value name for use in updating
             string dNewLikes = ":newLikes";
-
 
             UpdateItemRequest updateItemRequest = new UpdateItemRequest
             {
                 // Locating part
                 TableName = TABLE_NAME,
-                Key = new Dictionary<string, AttributeValue>
-                {
-                    {nameof(BlogPost.CreatedYear), new AttributeValue{N = year.ToString()} },
-                    {nameof(BlogPost.TitleShrinked), new AttributeValue{S = title} }
-                },
-                // Updating part BEGIN
-                //ExpressionAttributeNames = new Dictionary<string, string>
-                //{
-                //    { ddLikesName, dLikesName }
-                //},
+                Key = BlogPostExtensions.GetKey(year, title),
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
                     { dNewLikes, new AttributeValue { N = 1.ToString() } }
                 },
                 // Add syntax
-                UpdateExpression = $"ADD {dLikesName} {dNewLikes}",
-                // END
+                UpdateExpression = $"ADD {likesAtt} {dNewLikes}",
                 
                 ReturnValues = ReturnValue.ALL_NEW
             };
