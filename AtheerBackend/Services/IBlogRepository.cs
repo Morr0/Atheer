@@ -13,6 +13,12 @@ namespace AtheerBackend.Services
 
         Task<BlogPost> Get(int year, string title);
 
-        Task Like(int year, string title);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="title"></param>
+        /// <returns>Null -> could not like for whatever reason</returns>
+        Task<BlogPost> Like(int year, string title);
     }
 }

@@ -90,15 +90,11 @@ namespace AtheerBackend.Controllers
         [HttpPost("like/{year}/{title}")]
         public async Task<IActionResult> Like(int year, string title)
         {
-            try
-            {
-                await _blogRepo.Like(year, title);
-                return Ok();
-            } catch (Exception e)
-            {
-                Console.WriteLine(e);
+            BlogPost post = await _blogRepo.Like(year, title);
+            if (post == null)
                 return BadRequest();
-            }  
+
+            return Ok(_mapper.Map<BlogPostReadDTO>(post));
         }
 
         #endregion

@@ -99,7 +99,7 @@ namespace AtheerBackend.Services
             return BlogPostExtensions.Map(getItemResponse.Item);
         }
 
-        public async Task Like(int year, string title)
+        public async Task<BlogPost> Like(int year, string title)
         {
             string likesAtt = nameof(BlogPost.Likes);
             // DynamoDB value name for use in updating
@@ -122,11 +122,10 @@ namespace AtheerBackend.Services
 
             // Update 
             var updateResponse = await _client.UpdateItemAsync(updateItemRequest);
-
             if (updateResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
-                throw new Exception("Error updating likes");
+                return null;
 
-            return;
+            return BlogPostExtensions.Map(updateResponse.Attributes);
         }
     }
 }
