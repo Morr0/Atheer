@@ -1,6 +1,5 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
-using AtheerBlogWriterBackend.DTOs;
 using AtheerCore.Models;
 using AutoMapper;
 using System;

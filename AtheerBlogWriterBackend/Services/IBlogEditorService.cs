@@ -1,5 +1,4 @@
-﻿using AtheerBlogWriterBackend.DTOs;
-using AtheerCore.Models;
+﻿using AtheerCore.Models;
 using System.Threading.Tasks;
 
 namespace AtheerBlogWriterBackend.Services

@@ -1,21 +1,32 @@
 ﻿using System;
 
-namespace AtheerBackend.DTO
+namespace AtheerCore.Models
 {
-    /// <summary>
-    /// The blog post to read part
-    /// </summary>
-    public class BlogPostReadDTO
+    // WHENEVER YOU UPDATE HERE, UPDATE THE MAPPER AS WELL AS THE MAPPING METHODS
+    public class BlogPost
     {
+        // Partition key
         public int CreatedYear { get; set; } = DateTime.UtcNow.Year;
+
+        // Range key, e.g. this-is-a-title <- replace spaces with - and lower case everything
         public string TitleShrinked { get; set; }
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+
+        // Although is not a key, use it for internal stuff
+        public string Id { get; set; }
+
         public string Title { get; set; }
+
         public string Description { get; set; }
+
         public string Content { get; set; }
+
+        // This and update date, are seperate from the key above. These are for info only.
         public string CreationDate { get; set; }
+
         public string LastUpdatedDate { get; set; }
+
         public string Topic { get; set; }
+
         public int Likes { get; set; }
     }
 }

@@ -1,12 +1,10 @@
 ﻿using AtheerBackend.Controllers.Headers;
 using AtheerBackend.Controllers.Queries;
-using AtheerBackend.DTO;
 using AtheerBackend.Extensions;
 using AtheerBackend.Services;
 using AtheerCore.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
