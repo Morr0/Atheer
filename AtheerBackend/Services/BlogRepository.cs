@@ -3,6 +3,7 @@ using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using AtheerBackend.Controllers.Headers;
 using AtheerBackend.Extensions;
+using AtheerCore;
 using AtheerCore.Extensions;
 using AtheerCore.Models;
 using System.Collections.Generic;
@@ -12,8 +13,6 @@ namespace AtheerBackend.Services
 {
     public class BlogRepository : IBlogRepository
     {
-        public static string TABLE_NAME = "Atheer-Blog";
-
         private AmazonDynamoDBClient _client;
 
         public BlogRepository()
@@ -25,7 +24,7 @@ namespace AtheerBackend.Services
         {
             var scanRequest = new ScanRequest
             {
-                TableName = TABLE_NAME,
+                TableName = CommonConstants.TABLE_NAME,
                 Limit = amount,
             };
             // Query the last evaluated key if not null
@@ -58,7 +57,7 @@ namespace AtheerBackend.Services
 
             var queryRequest = new QueryRequest
             {
-                TableName = TABLE_NAME,
+                TableName = CommonConstants.TABLE_NAME,
                 KeyConditionExpression = $"{hashKey} = {vHashKey}",
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
@@ -91,7 +90,7 @@ namespace AtheerBackend.Services
         {
             var getItemRequest = new GetItemRequest
             {
-                TableName = TABLE_NAME,
+                TableName = CommonConstants.TABLE_NAME,
                 Key = BlogPostExtensions.GetKey(year, title),
             };
 
@@ -108,7 +107,7 @@ namespace AtheerBackend.Services
             UpdateItemRequest updateItemRequest = new UpdateItemRequest
             {
                 // Locating part
-                TableName = TABLE_NAME,
+                TableName = CommonConstants.TABLE_NAME,
                 Key = BlogPostExtensions.GetKey(year, title),
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {

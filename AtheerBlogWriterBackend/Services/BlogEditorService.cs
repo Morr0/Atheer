@@ -1,5 +1,6 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
+using AtheerCore;
 using AtheerCore.Models;
 using AutoMapper;
 using System;
@@ -9,8 +10,6 @@ namespace AtheerBlogWriterBackend.Services
 {
     public class BlogEditorService : IBlogEditorService
     {
-        public static string TABLE_NAME = "Atheer-Blog";
-
         private IMapper _mapper;
         private AmazonDynamoDBClient _client;
 
@@ -27,7 +26,7 @@ namespace AtheerBlogWriterBackend.Services
             // DynamoDB
             PutItemRequest putItemRequest = new PutItemRequest
             {
-                TableName = TABLE_NAME,
+                TableName = CommonConstants.TABLE_NAME,
                 Item = BlogPostExtensions.Map(post)
             };
 

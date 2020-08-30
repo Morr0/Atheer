@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace AtheerBackend.Controllers
 {
     [Route("api/blog")]
