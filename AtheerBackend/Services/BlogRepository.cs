@@ -3,8 +3,8 @@ using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using AtheerBackend.Controllers.Headers;
 using AtheerBackend.Extensions;
+using AtheerCore.Extensions;
 using AtheerCore.Models;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -31,7 +31,7 @@ namespace AtheerBackend.Services
             // Query the last evaluated key if not null
             if (!paginationHeader.Empty())
             {
-                scanRequest.ExclusiveStartKey = BlogPostExtensions.LastEvalKey(paginationHeader);
+                scanRequest.ExclusiveStartKey = PostsPaginationHeaderExtension.LastEvalKey(paginationHeader);
             }
 
             var scanResponse = await _client.ScanAsync(scanRequest);
@@ -43,7 +43,7 @@ namespace AtheerBackend.Services
             }
             if (scanResponse.LastEvaluatedKey.Count > 0) 
             {
-                response.PaginationHeader = BlogPostExtensions
+                response.PaginationHeader = PostsPaginationHeaderExtension
                 .PostsPaginationHeaderFromLastEvalKey(scanResponse.LastEvaluatedKey); 
             }
 
@@ -69,7 +69,7 @@ namespace AtheerBackend.Services
             // Query the last evaluated key if not null
             if (!paginationHeader.Empty())
             {
-                queryRequest.ExclusiveStartKey = BlogPostExtensions.LastEvalKey(paginationHeader);
+                queryRequest.ExclusiveStartKey = PostsPaginationHeaderExtension.LastEvalKey(paginationHeader);
             }
 
             var queryResponse = await _client.QueryAsync(queryRequest);
@@ -80,7 +80,7 @@ namespace AtheerBackend.Services
             }
             if (queryResponse.LastEvaluatedKey.Count > 0)
             {
-                response.PaginationHeader = BlogPostExtensions
+                response.PaginationHeader = PostsPaginationHeaderExtension
                 .PostsPaginationHeaderFromLastEvalKey(queryResponse.LastEvaluatedKey);
             }
 
