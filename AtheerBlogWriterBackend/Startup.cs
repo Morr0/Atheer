@@ -1,3 +1,4 @@
+using AtheerBlogWriterBackend.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,6 +28,8 @@ namespace AtheerBlogWriterBackend
 
             // Automapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.AddTransient<IBlogEditorService, BlogEditorService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

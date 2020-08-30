@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace AtheerBlogWriterBackend.Services
 {
-    internal interface IBlogEditorService
+    public interface IBlogEditorService
     {
         Task<BlogPost> AddPost(BlogPostWriteDTO writeDTO);
     }

@@ -29,8 +29,7 @@ namespace AtheerBlogWriterBackend.Services
             PutItemRequest putItemRequest = new PutItemRequest
             {
                 TableName = TABLE_NAME,
-                Item = BlogPostExtensions.Map(post),
-                ReturnValues = ReturnValue.ALL_NEW
+                Item = BlogPostExtensions.Map(post)
             };
 
             var putItemResponse = await _client.PutItemAsync(putItemRequest);

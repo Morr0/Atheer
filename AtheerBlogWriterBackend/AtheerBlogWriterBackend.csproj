@@ -11,9 +11,6 @@
     <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="5.1.3" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\AtheerCore\AtheerCore.csproj" />
   </ItemGroup>
 </Project>
