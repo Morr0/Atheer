@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace AtheerBlogWriterBackend.DTOs
 {
-    internal class BlogPostWriteDTO
+    public class BlogPostWriteDTO
     {
         [Required]
         [NotNull]
