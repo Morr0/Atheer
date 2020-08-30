@@ -10,6 +10,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtheerBackend", "AtheerBack
 		{DAB1D91E-259D-4EDE-8E20-00205D5FACA9} = {DAB1D91E-259D-4EDE-8E20-00205D5FACA9}
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtheerBlogWriterBackend", "AtheerBlogWriterBackend\AtheerBlogWriterBackend.csproj", "{B7281D65-DFDB-4661-8903-F37CF55E6CF6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DAB1D91E-259D-4EDE-8E20-00205D5FACA9} = {DAB1D91E-259D-4EDE-8E20-00205D5FACA9}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +29,10 @@ Global
 		{30F3D641-505A-4428-87F4-9490E0B5ABA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30F3D641-505A-4428-87F4-9490E0B5ABA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30F3D641-505A-4428-87F4-9490E0B5ABA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7281D65-DFDB-4661-8903-F37CF55E6CF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7281D65-DFDB-4661-8903-F37CF55E6CF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7281D65-DFDB-4661-8903-F37CF55E6CF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7281D65-DFDB-4661-8903-F37CF55E6CF6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
