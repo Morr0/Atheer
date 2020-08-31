@@ -7,6 +7,7 @@ using AtheerCore.Models;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -148,9 +149,15 @@ namespace AtheerBlogWriterBackend.Services
             {
                 TableName = CommonConstants.TABLE_NAME,
                 Key = BlogPostExtensions.GetKey(year, title),
+                // To request the old item to be checked below if was there
+                ReturnValues = ReturnValue.ALL_OLD
             };
 
             var deleteItemResponse = await _client.DeleteItemAsync(deleteItemRequest);
+            // 0 -> the item was not in the table before attempt to delete
+            if (deleteItemResponse.Attributes.Count == 0)
+                return false;
+
             return true;
         }
     }
