@@ -7,6 +7,8 @@ using AtheerCore.Models;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace AtheerBlogWriterBackend.Services
@@ -58,7 +60,9 @@ namespace AtheerBlogWriterBackend.Services
             if (post == null)
                 throw new BlogPostNotFoundException();
 
-            BlogPost newPost = _mapper.Map<BlogPostUpdateDTO, BlogPost>(updateDTO, post);
+            //BlogPost newPost = _mapper.Map<BlogPostUpdateDTO, BlogPost>(updateDTO, post);
+            //newPost.Description = "8888";
+            BlogPost newPost = MapChanges(post, updateDTO);
 
             var forUpdating = GetUpdateValuesAndUpdateExpression(post, newPost);
             var updateItemRequest = new UpdateItemRequest
@@ -89,7 +93,53 @@ namespace AtheerBlogWriterBackend.Services
         private (Dictionary<string, AttributeValue> attributesValues, string updateExpression) 
             GetUpdateValuesAndUpdateExpression(BlogPost oldPost, BlogPost newPost)
         {
+            var newDict = BlogPostExtensions.Map(newPost);
 
+            // Construct a dictionary of changed attributes as well as an update expression
+            StringBuilder sb = new StringBuilder();
+            var diffDict = new Dictionary<string, AttributeValue>();
+            foreach (var newAtt in newDict)
+            {
+                string dAttValName = $":{newAtt.Key}";
+                Console.WriteLine($"diff val");
+
+                diffDict.Add(dAttValName, newAtt.Value);
+                sb.Append($"SET {newAtt.Key} = {dAttValName} ");
+            }
+
+            string updateExpression = sb.ToString().TrimEnd();
+            return (diffDict, updateExpression);
+        }
+
+        private bool HasDifferentValues(AttributeValue val1, AttributeValue val2)
+        {
+            // Checking only main values used in the model to not worry about other types
+            if (val1.S != val2.S)
+                return true;
+            else if (val1.N != val2.N)
+                return true;
+            else if (val1.BOOL != val2.BOOL)
+                return true;
+
+            return false;
+        }
+
+        private BlogPost MapChanges(BlogPost oldPost, BlogPostUpdateDTO updateDTO)
+        {
+            BlogPost newPost = oldPost;
+            Type oldPostType = oldPost.GetType();
+            PropertyInfo[] updateProps = updateDTO.GetType().GetProperties();
+
+            foreach (var prop in updateProps)
+            {
+                PropertyInfo oldProp = oldPostType.GetProperty(prop.Name);
+                if (oldProp.GetValue(oldPost) != prop.GetValue(updateDTO))
+                {
+                    oldProp.SetValue(newPost, prop.GetValue(updateDTO));
+                }
+            }
+
+            return newPost;
         }
     }
 }
