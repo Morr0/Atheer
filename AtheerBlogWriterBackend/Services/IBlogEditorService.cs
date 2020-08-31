@@ -6,5 +6,6 @@ namespace AtheerBlogWriterBackend.Services
     public interface IBlogEditorService
     {
         Task<BlogPost> AddPost(BlogPostWriteDTO writeDTO);
+        Task<BlogPost> UpdateExistingPost(BlogPostUpdateDTO updateDTO);
     }
 }

@@ -1,6 +1,7 @@
-﻿using AutoMapper;
+﻿using AtheerCore.Models;
+using AutoMapper;
 
-namespace AtheerCore.Models
+namespace AtheerBlogWriteBackend.Models
 {
     public class BlogPostModelDTOMappingsProfile : Profile
     {
@@ -8,6 +9,8 @@ namespace AtheerCore.Models
         {
             CreateMap<BlogPostWriteDTO, BlogPost>();
             CreateMap<BlogPost, BlogPostReadDTO>();
+
+            CreateMap<BlogPostUpdateDTO, BlogPost>();
         }
     }
 }
