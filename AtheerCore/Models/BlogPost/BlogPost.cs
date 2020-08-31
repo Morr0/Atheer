@@ -11,8 +11,6 @@ namespace AtheerCore.Models
         // Range key, e.g. this-is-a-title <- replace spaces with - and lower case everything
         public string TitleShrinked { get; set; }
 
-        // Although is not a key, use it for internal stuff
-        public string Id { get; set; }
 
         public string Title { get; set; }
 

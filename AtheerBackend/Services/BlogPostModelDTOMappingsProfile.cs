@@ -7,7 +7,6 @@ namespace AtheerCore.Models
     {
         public BlogPostModelDTOMappingsProfile()
         {
-            CreateMap<BlogPostWriteDTO, BlogPost>();
             CreateMap<BlogPost, BlogPostReadDTO>();
         }
     }

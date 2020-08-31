@@ -51,7 +51,6 @@ namespace AtheerBlogWriterBackend.Services
             post.TitleShrinked = post.Title.TrimStart().TrimEnd()
                 .ToLower().Replace(" ", "-");
 
-            post.Id = Guid.NewGuid().ToString();
             post.CreationDate = post.LastUpdatedDate = 
                 DateTime.UtcNow.ToString();
 
