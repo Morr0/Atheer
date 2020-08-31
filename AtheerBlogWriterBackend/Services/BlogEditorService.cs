@@ -28,8 +28,11 @@ namespace AtheerBlogWriterBackend.Services
         public async Task<BlogPost> AddPost(BlogPostWriteDTO writeDTO)
         {
             BlogPost post = ConstructNewPost(writeDTO);
+            return await AddPost(post);
+        }
 
-            // DynamoDB
+        private async Task<BlogPost> AddPost(BlogPost post)
+        {
             PutItemRequest putItemRequest = new PutItemRequest
             {
                 TableName = CommonConstants.TABLE_NAME,
@@ -55,46 +58,17 @@ namespace AtheerBlogWriterBackend.Services
             return post;
         }
 
-        public async Task UpdateExistingPost(BlogPostUpdateDTO updateDTO)
+        public async Task<BlogPost> UpdateExistingPost(BlogPostUpdateDTO updateDTO)
         {
-            BlogPost oldPost = await GetPost(updateDTO.CreatedYear, updateDTO.TitleShrinked);
-            if (oldPost == null)
+            BlogPost post = await GetPost(updateDTO.CreatedYear, updateDTO.TitleShrinked);
+            if (post == null)
                 throw new BlogPostNotFoundException();
 
-            BlogPost newPost = _mapper.Map<BlogPostUpdateDTO, BlogPost>(updateDTO, oldPost);
-            newPost.LastUpdatedDate = DateTime.UtcNow.ToString();
+            post = _mapper.Map<BlogPostUpdateDTO, BlogPost>(updateDTO, post);
+            post.LastUpdatedDate = DateTime.UtcNow.ToString();
 
-            // Will start a DynamoDB transaction to remove old and add the new because:
-            // 1- Can only update a single attribute in a record in a single class ( I want multiple attributes to be updated once)
-            // 2- Cheaper to update multiple attributes at the same time
-            var transactDeleteItem = new TransactWriteItem
-            {
-                Delete = new Delete
-                {
-                    TableName = CommonConstants.TABLE_NAME,
-                    Key = BlogPostExtensions.GetKey(newPost.CreatedYear, newPost.TitleShrinked)
-                },
-            };
-
-            var transactPutItem = new TransactWriteItem
-            {
-                Put = new Put
-                {
-                    TableName = CommonConstants.TABLE_NAME,
-                    Item = BlogPostExtensions.Map(newPost)
-                }
-            };
-
-            var transactWriteItemsRequest = new TransactWriteItemsRequest
-            {
-                TransactItems = new List<TransactWriteItem>
-                {
-                    transactDeleteItem,
-                    transactPutItem
-                }
-            };
-            // Transact
-            var transactWriteItemsResponse = await _client.TransactWriteItemsAsync(transactWriteItemsRequest);
+            await DeleteExistingPost(post.CreatedYear, post.TitleShrinked);
+            return await AddPost(post);
         }
 
         private async Task<BlogPost> GetPost(int year, string title)
@@ -109,6 +83,7 @@ namespace AtheerBlogWriterBackend.Services
             return BlogPostExtensions.Map(getItemResponse.Item);
         }
 
+        // false -> there was not such item in the first place
         public async Task<bool> DeleteExistingPost(int year, string title)
         {
             var deleteItemRequest = new DeleteItemRequest

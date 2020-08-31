@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Amazon.DynamoDBv2;
 using AtheerBlogWriterBackend.Exceptions;
 using AtheerBlogWriterBackend.Services;
 using AtheerCore.Models;
@@ -35,8 +36,8 @@ namespace AtheerBlogWriterBackend.Controllers
         {
             try
             {
-                await _editorService.UpdateExistingPost(updateDTO);
-                return Ok();
+                BlogPost post = await _editorService.UpdateExistingPost(updateDTO);
+                return Ok(_mapper.Map<BlogPostReadDTO>(post));
             } catch (BlogPostNotFoundException e)
             {
                 Console.WriteLine(e);

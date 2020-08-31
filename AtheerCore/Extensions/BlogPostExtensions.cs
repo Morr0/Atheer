@@ -27,7 +27,15 @@ namespace AtheerCore.Extensions
                     if (prop.PropertyType == typeof(string))
                         prop.SetValue(post, val.S);
                     else if (prop.PropertyType == typeof(int))
-                        prop.SetValue(post, int.Parse(val.N));
+                    {
+                        try
+                        {
+                            prop.SetValue(post, int.Parse(val.N));
+                        } catch (ArgumentNullException)
+                        {
+                            prop.SetValue(post, 0);
+                        }
+                    }
                     else if (prop.PropertyType == typeof(bool))
                         prop.SetValue(post, val.BOOL);
                     else
