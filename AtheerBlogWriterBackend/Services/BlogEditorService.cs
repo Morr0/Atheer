@@ -61,18 +61,17 @@ namespace AtheerBlogWriterBackend.Services
             if (post == null)
                 throw new BlogPostNotFoundException();
 
-            //BlogPost newPost = _mapper.Map<BlogPostUpdateDTO, BlogPost>(updateDTO, post);
-            //newPost.Description = "8888";
-            BlogPost newPost = MapChanges(post, updateDTO);
+            BlogPost newPost = _mapper.Map<BlogPostUpdateDTO, BlogPost>(updateDTO, post);
+            newPost.LastUpdatedDate = DateTime.UtcNow.ToString();
 
-            var forUpdating = GetUpdateValuesAndUpdateExpression(post, newPost);
+            var forUpdating = GetUpdateValuesAndUpdateExpression(updateDTO);
             var updateItemRequest = new UpdateItemRequest
             {
                 TableName = CommonConstants.TABLE_NAME,
                 Key = BlogPostExtensions.GetKey(newPost.CreatedYear, newPost.TitleShrinked),
                 ExpressionAttributeValues = forUpdating.attributesValues,
                 UpdateExpression = forUpdating.updateExpression,
-                ReturnValues = ReturnValue.ALL_NEW
+                //ReturnValues = ReturnValue.ALL_NEW
             };
 
             var updateItemResponse = await _client.UpdateItemAsync(updateItemRequest);
@@ -91,56 +90,28 @@ namespace AtheerBlogWriterBackend.Services
             return BlogPostExtensions.Map(getItemResponse.Item);
         }
 
-        private (Dictionary<string, AttributeValue> attributesValues, string updateExpression) 
-            GetUpdateValuesAndUpdateExpression(BlogPost oldPost, BlogPost newPost)
+        private (Dictionary<string, AttributeValue> attributesValues, string updateExpression)
+            GetUpdateValuesAndUpdateExpression(BlogPostUpdateDTO updateDTO)
         {
-            var newDict = BlogPostExtensions.Map(newPost);
-
-            // Construct a dictionary of changed attributes as well as an update expression
+            var updateAtts = new Dictionary<string, AttributeValue>();
             StringBuilder sb = new StringBuilder();
-            var diffDict = new Dictionary<string, AttributeValue>();
-            foreach (var newAtt in newDict)
+            var props = updateDTO.GetType().GetProperties();
+            foreach (var prop in props)
             {
-                string dAttValName = $":{newAtt.Key}";
-                Console.WriteLine($"diff val");
+                if (prop.Name == nameof(BlogPost.CreatedYear) ||
+                    prop.Name == nameof(BlogPost.TitleShrinked))
+                    continue;
 
-                diffDict.Add(dAttValName, newAtt.Value);
-                sb.Append($"SET {newAtt.Key} = {dAttValName} ");
-            }
-
-            string updateExpression = sb.ToString().TrimEnd();
-            return (diffDict, updateExpression);
-        }
-
-        private bool HasDifferentValues(AttributeValue val1, AttributeValue val2)
-        {
-            // Checking only main values used in the model to not worry about other types
-            if (val1.S != val2.S)
-                return true;
-            else if (val1.N != val2.N)
-                return true;
-            else if (val1.BOOL != val2.BOOL)
-                return true;
-
-            return false;
-        }
-
-        private BlogPost MapChanges(BlogPost oldPost, BlogPostUpdateDTO updateDTO)
-        {
-            BlogPost newPost = oldPost;
-            Type oldPostType = oldPost.GetType();
-            PropertyInfo[] updateProps = updateDTO.GetType().GetProperties();
-
-            foreach (var prop in updateProps)
-            {
-                PropertyInfo oldProp = oldPostType.GetProperty(prop.Name);
-                if (oldProp.GetValue(oldPost) != prop.GetValue(updateDTO))
+                if (prop.GetValue(updateDTO) != default)
                 {
-                    oldProp.SetValue(newPost, prop.GetValue(updateDTO));
+                    string dAttValName = $":{prop.Name}";
+                    updateAtts.Add(dAttValName, BlogPostExtensions.AttributeVal(prop, updateDTO));
+                    sb.Append($"SET {prop.Name} = {dAttValName} ");
                 }
             }
 
-            return newPost;
+            string updateExpression = sb.ToString().TrimEnd();
+            return (updateAtts, updateExpression);
         }
 
         public async Task<bool> DeleteExistingPost(int year, string title)

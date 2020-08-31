@@ -74,5 +74,19 @@ namespace AtheerCore.Extensions
                 {nameof(BlogPost.TitleShrinked), new AttributeValue{S = titleShrinked} }
             };
         }
+
+        public static AttributeValue AttributeVal(PropertyInfo prop, object post)
+        {
+            AttributeValue val = new AttributeValue();
+            if (prop.PropertyType == typeof(int))
+                val.N = ((int)prop.GetValue(post)).ToString();
+            else if (prop.PropertyType == typeof(string))
+                val.S = prop.GetValue(post) as string;
+            else if (prop.PropertyType == typeof(bool))
+                val.BOOL = (bool)prop.GetValue(post);
+            else
+                throw new Exception("The type to DynamoDB was not mapped.");
+            return val;
+        }
     }
 }
