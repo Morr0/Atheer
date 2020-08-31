@@ -48,9 +48,9 @@ namespace AtheerCore.Extensions
             {
                 AttributeValue val = new AttributeValue();
                 if (prop.PropertyType == typeof(int))
-                    val.N = ((int)prop.GetValue(post)).ToString();
+                    val.N = (((int)prop.GetValue(post)).ToString()) ?? "0";
                 else if (prop.PropertyType == typeof(string))
-                    val.S = prop.GetValue(post) as string;
+                    val.S = (prop.GetValue(post) as string) ?? "";
                 else if (prop.PropertyType == typeof(bool))
                     val.BOOL = (bool)prop.GetValue(post);
                 else
