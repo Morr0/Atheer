@@ -141,5 +141,17 @@ namespace AtheerBlogWriterBackend.Services
 
             return newPost;
         }
+
+        public async Task<bool> DeleteExistingPost(int year, string title)
+        {
+            var deleteItemRequest = new DeleteItemRequest
+            {
+                TableName = CommonConstants.TABLE_NAME,
+                Key = BlogPostExtensions.GetKey(year, title),
+            };
+
+            var deleteItemResponse = await _client.DeleteItemAsync(deleteItemRequest);
+            return true;
+        }
     }
 }

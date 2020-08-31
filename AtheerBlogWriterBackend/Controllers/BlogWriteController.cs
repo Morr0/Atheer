@@ -43,5 +43,15 @@ namespace AtheerBlogWriterBackend.Controllers
                 return NotFound();
             }
         }
+
+        [HttpDelete("{year}/{titleShrinked}")]
+        public async Task<IActionResult> DeleteExistingPost([FromRoute] int year, [FromRoute] string titleShrinked)
+        {
+            bool result = await _editorService.DeleteExistingPost(year, titleShrinked);
+            if (!result)
+                return NotFound();
+
+            return Ok();
+        }
     }
 }

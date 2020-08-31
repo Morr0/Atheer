@@ -7,5 +7,6 @@ namespace AtheerBlogWriterBackend.Services
     {
         Task<BlogPost> AddPost(BlogPostWriteDTO writeDTO);
         Task<BlogPost> UpdateExistingPost(BlogPostUpdateDTO updateDTO);
+        Task<bool> DeleteExistingPost(int year, string title);
     }
 }
