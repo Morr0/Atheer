@@ -35,8 +35,8 @@ namespace AtheerBlogWriterBackend.Controllers
         {
             try
             {
-                BlogPost post = await _editorService.UpdateExistingPost(updateDTO);
-                return Ok(_mapper.Map<BlogPostReadDTO>(post));
+                await _editorService.UpdateExistingPost(updateDTO);
+                return Ok();
             } catch (BlogPostNotFoundException e)
             {
                 Console.WriteLine(e);

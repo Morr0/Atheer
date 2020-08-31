@@ -55,27 +55,46 @@ namespace AtheerBlogWriterBackend.Services
             return post;
         }
 
-        public async Task<BlogPost> UpdateExistingPost(BlogPostUpdateDTO updateDTO)
+        public async Task UpdateExistingPost(BlogPostUpdateDTO updateDTO)
         {
-            BlogPost post = await GetPost(updateDTO.CreatedYear, updateDTO.TitleShrinked);
-            if (post == null)
+            BlogPost oldPost = await GetPost(updateDTO.CreatedYear, updateDTO.TitleShrinked);
+            if (oldPost == null)
                 throw new BlogPostNotFoundException();
 
-            BlogPost newPost = _mapper.Map<BlogPostUpdateDTO, BlogPost>(updateDTO, post);
+            BlogPost newPost = _mapper.Map<BlogPostUpdateDTO, BlogPost>(updateDTO, oldPost);
             newPost.LastUpdatedDate = DateTime.UtcNow.ToString();
 
-            var forUpdating = GetUpdateValuesAndUpdateExpression(updateDTO);
-            var updateItemRequest = new UpdateItemRequest
+            // Will start a DynamoDB transaction to remove old and add the new because:
+            // 1- Can only update a single attribute in a record in a single class ( I want multiple attributes to be updated once)
+            // 2- Cheaper to update multiple attributes at the same time
+            var transactDeleteItem = new TransactWriteItem
             {
-                TableName = CommonConstants.TABLE_NAME,
-                Key = BlogPostExtensions.GetKey(newPost.CreatedYear, newPost.TitleShrinked),
-                ExpressionAttributeValues = forUpdating.attributesValues,
-                UpdateExpression = forUpdating.updateExpression,
-                //ReturnValues = ReturnValue.ALL_NEW
+                Delete = new Delete
+                {
+                    TableName = CommonConstants.TABLE_NAME,
+                    Key = BlogPostExtensions.GetKey(newPost.CreatedYear, newPost.TitleShrinked)
+                },
             };
 
-            var updateItemResponse = await _client.UpdateItemAsync(updateItemRequest);
-            return BlogPostExtensions.Map(updateItemResponse.Attributes);
+            var transactPutItem = new TransactWriteItem
+            {
+                Put = new Put
+                {
+                    TableName = CommonConstants.TABLE_NAME,
+                    Item = BlogPostExtensions.Map(newPost)
+                }
+            };
+
+            var transactWriteItemsRequest = new TransactWriteItemsRequest
+            {
+                TransactItems = new List<TransactWriteItem>
+                {
+                    transactDeleteItem,
+                    transactPutItem
+                }
+            };
+            // Transact
+            var transactWriteItemsResponse = await _client.TransactWriteItemsAsync(transactWriteItemsRequest);
         }
 
         private async Task<BlogPost> GetPost(int year, string title)
@@ -88,30 +107,6 @@ namespace AtheerBlogWriterBackend.Services
 
             var getItemResponse = await _client.GetItemAsync(getItemRequest);
             return BlogPostExtensions.Map(getItemResponse.Item);
-        }
-
-        private (Dictionary<string, AttributeValue> attributesValues, string updateExpression)
-            GetUpdateValuesAndUpdateExpression(BlogPostUpdateDTO updateDTO)
-        {
-            var updateAtts = new Dictionary<string, AttributeValue>();
-            StringBuilder sb = new StringBuilder();
-            var props = updateDTO.GetType().GetProperties();
-            foreach (var prop in props)
-            {
-                if (prop.Name == nameof(BlogPost.CreatedYear) ||
-                    prop.Name == nameof(BlogPost.TitleShrinked))
-                    continue;
-
-                if (prop.GetValue(updateDTO) != default)
-                {
-                    string dAttValName = $":{prop.Name}";
-                    updateAtts.Add(dAttValName, BlogPostExtensions.AttributeVal(prop, updateDTO));
-                    sb.Append($"SET {prop.Name} = {dAttValName} ");
-                }
-            }
-
-            string updateExpression = sb.ToString().TrimEnd();
-            return (updateAtts, updateExpression);
         }
 
         public async Task<bool> DeleteExistingPost(int year, string title)
