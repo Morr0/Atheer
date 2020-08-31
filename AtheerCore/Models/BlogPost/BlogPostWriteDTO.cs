@@ -12,5 +12,8 @@ namespace AtheerCore.Models
         public string Content { get; set; }
         [Required]
         public string Topic { get; set; }
+
+        public bool Draft { get; set; }
+        public bool Unlisted { get; set; }
     }
 }

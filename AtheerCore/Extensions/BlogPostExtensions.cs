@@ -8,7 +8,6 @@ namespace AtheerCore.Extensions
 {
     public class BlogPostExtensions
     {
-
         public static BlogPost Map(Dictionary<string, AttributeValue> dict)
         {
             if (dict.Count == 0)
@@ -29,8 +28,10 @@ namespace AtheerCore.Extensions
                         prop.SetValue(post, val.S);
                     else if (prop.PropertyType == typeof(int))
                         prop.SetValue(post, int.Parse(val.N));
+                    else if (prop.PropertyType == typeof(bool))
+                        prop.SetValue(post, val.BOOL);
                     else
-                        throw new Exception("The type in DynamoDB was not mapped.");
+                        throw new Exception("The type from DynamoDB was not mapped.");
                         
                 }
             }
@@ -50,6 +51,10 @@ namespace AtheerCore.Extensions
                     val.N = ((int)prop.GetValue(post)).ToString();
                 else if (prop.PropertyType == typeof(string))
                     val.S = prop.GetValue(post) as string;
+                else if (prop.PropertyType == typeof(bool))
+                    val.BOOL = (bool)prop.GetValue(post);
+                else
+                    throw new Exception("The type to DynamoDB was not mapped.");
 
                 dict.Add(prop.Name, val);
             }

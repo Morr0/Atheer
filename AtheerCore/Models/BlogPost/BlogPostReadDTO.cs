@@ -17,5 +17,7 @@ namespace AtheerCore.Models
         public string LastUpdatedDate { get; set; }
         public string Topic { get; set; }
         public int Likes { get; set; }
+        public bool Draft { get; set; }
+        public bool Unlisted { get; set; }
     }
 }

@@ -28,5 +28,11 @@ namespace AtheerCore.Models
         public string Topic { get; set; }
 
         public int Likes { get; set; }
+
+        // The post is not done
+        public bool Draft { get; set; }
+
+        // Not to be listed however can be accessed
+        public bool Unlisted { get; set; }
     }
 }
