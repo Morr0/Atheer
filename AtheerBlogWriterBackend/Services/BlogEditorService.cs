@@ -35,7 +35,7 @@ namespace AtheerBlogWriterBackend.Services
         {
             PutItemRequest putItemRequest = new PutItemRequest
             {
-                TableName = CommonConstants.TABLE_NAME,
+                TableName = CommonConstants.BLOG_POSTS_TABLE_NAME,
                 Item = BlogPostExtensions.Map(post)
             };
 
@@ -74,7 +74,7 @@ namespace AtheerBlogWriterBackend.Services
         {
             var getItemRequest = new GetItemRequest
             {
-                TableName = CommonConstants.TABLE_NAME,
+                TableName = CommonConstants.BLOG_POSTS_TABLE_NAME,
                 Key = BlogPostExtensions.GetKey(year, title),
             };
 
@@ -87,7 +87,7 @@ namespace AtheerBlogWriterBackend.Services
         {
             var deleteItemRequest = new DeleteItemRequest
             {
-                TableName = CommonConstants.TABLE_NAME,
+                TableName = CommonConstants.BLOG_POSTS_TABLE_NAME,
                 Key = BlogPostExtensions.GetKey(year, title),
                 // To request the old item to be checked below if was there
                 ReturnValues = ReturnValue.ALL_OLD

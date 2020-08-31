@@ -24,7 +24,7 @@ namespace AtheerBackend.Services
         {
             var scanRequest = new ScanRequest
             {
-                TableName = CommonConstants.TABLE_NAME,
+                TableName = CommonConstants.BLOG_POSTS_TABLE_NAME,
                 Limit = amount,
             };
             // Query the last evaluated key if not null
@@ -57,7 +57,7 @@ namespace AtheerBackend.Services
 
             var queryRequest = new QueryRequest
             {
-                TableName = CommonConstants.TABLE_NAME,
+                TableName = CommonConstants.BLOG_POSTS_TABLE_NAME,
                 KeyConditionExpression = $"{hashKey} = {vHashKey}",
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
@@ -90,7 +90,7 @@ namespace AtheerBackend.Services
         {
             var getItemRequest = new GetItemRequest
             {
-                TableName = CommonConstants.TABLE_NAME,
+                TableName = CommonConstants.BLOG_POSTS_TABLE_NAME,
                 Key = BlogPostExtensions.GetKey(year, title),
             };
 
@@ -107,7 +107,7 @@ namespace AtheerBackend.Services
             UpdateItemRequest updateItemRequest = new UpdateItemRequest
             {
                 // Locating part
-                TableName = CommonConstants.TABLE_NAME,
+                TableName = CommonConstants.BLOG_POSTS_TABLE_NAME,
                 Key = BlogPostExtensions.GetKey(year, title),
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
