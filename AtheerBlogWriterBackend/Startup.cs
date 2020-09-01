@@ -1,3 +1,4 @@
+using AtheerBlogWriterBackend.Middlewares;
 using AtheerBlogWriterBackend.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
@@ -46,6 +47,8 @@ namespace AtheerBlogWriterBackend
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseMiddleware<HasCredentialsMiddleware>();
 
             // To allow to reread the request streams again
             app.Use((context, next) =>
