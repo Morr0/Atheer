@@ -2,6 +2,7 @@ using AtheerBlogWriterBackend.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -45,6 +46,13 @@ namespace AtheerBlogWriterBackend
             app.UseRouting();
 
             app.UseAuthorization();
+
+            // To allow to reread the request streams again
+            app.Use((context, next) =>
+            {
+                context.Request.EnableBuffering();
+                return next();
+            });
 
             app.UseEndpoints(endpoints =>
             {
