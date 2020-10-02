@@ -19,5 +19,17 @@ module.exports.posts = async function (year = undefined, titleShrinked = undefin
     }
 
     const res = await fetch(endpoint);
-    return await res.json();
+    const result = await res.json();
+    let returnable = result;
+
+    // If empty array and looking for one item, return {}
+    // If empty array and looking for one item, return the first
+    if (result.constructor === Array)
+        if (year && titleShrinked)
+            if (result.length == 0)
+                return {};
+            else if (result.length === 1)
+                returnable = result[0];
+
+    return returnable;
 }
