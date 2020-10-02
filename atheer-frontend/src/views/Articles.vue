@@ -1,7 +1,6 @@
 <template>
 	<v-main>
-		<!-- <Article :v-for="article in articles" :v-key="article.titleShrinked || Math.random()" :article="article" /> -->
-		<Article :article="{title: `This is a title`}" />
+		<Article v-for="article in articles" :key="article.titleShrinked || Math.random()" :article="article" />
 	</v-main>
 </template>
 
@@ -14,16 +13,15 @@ export default {
 	},
 	data: function (){
 		return {
-			articles: [
-				{
-					titleShrinked: "Brr"
-				},
-				{
-					titleShrinked: "Brr2"
-				}
-			]
+			articles: [{
+				titleShrinked: "br",
+				title: "Br"
+			}]
 		};
 	},
+	mounted(){
+		console.log(this.articles);
+	}
 }
 </script>
 

@@ -5,13 +5,13 @@
                 {{article.title || "This is a sample title"}}
             </v-card-title>
             <v-card-text>
-                <v-content>
+                <v-main>
                     {{article.description || "This is a sample description"}}
-                </v-content>
-
-                <v-content>
+                </v-main>
+                
+                <v-main>
                     {{article.content || "This is a sample content"}}
-                </v-content>
+                </v-main>
             </v-card-text>
         </v-card>
     </v-main>
