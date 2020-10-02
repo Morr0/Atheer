@@ -10,14 +10,19 @@ export default {
     components: {
         Article
     },
-    data: function (){
-        console.log(this.$route);
-        this.$store.state.postsUtil.posts(this.$route.params.year, this.$route.params.titleShrinked)
-            .then((data) => this.article = data);
+    // data: function (){
+    //     console.log(this.$route);
+    //     this.$store.state.postsUtil.posts(this.$route.params.year, this.$route.params.titleShrinked)
+    //         .then((data) => this.article = data);
 
-        return {
-            article: {}
-        };
+    //     return {
+    //         article: {}
+    //     };
+    // },
+    computed: {
+        article: async function (){
+            return await this.$store.state.postsUtil.posts(this.$route.params.year, this.$route.params.titleShrinked);
+        }
     }
 }
 </script>

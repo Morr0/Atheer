@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <v-app>
     <!-- <v-app-bar
       app
@@ -58,3 +59,12 @@ export default {
   }),
 };
 </script>
+=======
+  <div id="app">
+    <div id="nav">
+      <router-link to="/">Home</router-link>
+    </div>
+    <router-view/>
+  </div>
+</template>
+>>>>>>> 460499ccc276f20fbae07362b8f0c711e84db0b7
