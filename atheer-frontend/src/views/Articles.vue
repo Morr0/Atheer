@@ -11,12 +11,14 @@ export default {
 	components: {
 		Article
 	},
-	data: function (){
+	data: async function (){
+		let articles = [];
+		this.$store.state.postsUtil.posts().then(async (res) => {
+			this.articles = await res.json();
+		});
+
 		return {
-			articles: [{
-				titleShrinked: "br",
-				title: "Br"
-			}]
+			articles: articles
 		};
 	},
 	mounted(){
