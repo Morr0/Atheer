@@ -31,6 +31,9 @@ namespace AtheerBackend
         {
             services.AddControllers();
 
+            services.AddCors(options =>
+                options.AddDefaultPolicy(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()));
+
             // Automapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -47,6 +50,8 @@ namespace AtheerBackend
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors();
 
             app.UseRouting();
 
