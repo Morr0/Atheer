@@ -9,7 +9,7 @@
                     {{article.description || "This is a sample description"}}
                 </v-main>
                 
-                <v-main>
+                <v-main v-if="showContent">
                     {{article.content || "This is a sample content"}}
                 </v-main>
             </v-card-text>
@@ -20,7 +20,8 @@
 <script>
 export default {
     props: {
-        article: {}
+        article: {},
+        showContent: Boolean
     }
 }
 </script>
