@@ -11,11 +11,10 @@ export default {
 	components: {
 		Article
 	},
-	data: async function (){
+	data: function (){
 		let articles = [];
-		this.$store.state.postsUtil.posts().then(async (res) => {
-			this.articles = await res.json();
-		});
+		this.$store.state.postsUtil.posts()
+			.then((data) => this.articles = data);
 
 		return {
 			articles: articles
