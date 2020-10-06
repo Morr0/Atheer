@@ -10,19 +10,17 @@ export default {
     components: {
         Article
     },
-    // data: function (){
-    //     console.log(this.$route);
-    //     this.$store.state.postsUtil.posts(this.$route.params.year, this.$route.params.titleShrinked)
-    //         .then((data) => this.article = data);
-
-    //     return {
-    //         article: {}
-    //     };
-    // },
+    props: {
+        year: String,
+        titleShrinked: String
+    },
     computed: {
         article: async function (){
-            return await this.$store.state.postsUtil.posts(this.$route.params.year, this.$route.params.titleShrinked);
+            return await this.$store.state.postsUtil.posts(this.year, this.titleShrinked);
         }
+    },
+    mounted(){
+        
     }
 }
 </script>

@@ -6,7 +6,7 @@
                     {{article.title || "This is a sample title"}}
                 </div>
                 <div v-else>
-                    <router-link :to="{name: `Article`, params: getParams}">
+                    <router-link :to="{name: `ArticleView`, params: getParams}">
                         {{article.title || "This is a sample title"}}
                     </router-link>
                 </div>
@@ -33,7 +33,7 @@ export default {
     computed: {
         getParams: function (){
             return {
-                year: this.article.createdYear, 
+                year: String(this.article.createdYear), 
                 titleShrinked: this.article.titleShrinked
             };
         }
