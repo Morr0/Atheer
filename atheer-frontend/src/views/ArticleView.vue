@@ -1,5 +1,5 @@
 <template>
-    <Article :article="article" :showContent="true" />
+    <Article v-if="article" :article="article" :showContent="true" />
 </template>
 
 <script>
@@ -14,13 +14,15 @@ export default {
         year: String,
         titleShrinked: String
     },
-    computed: {
-        article: async function (){
-            return await this.$store.state.postsUtil.posts(this.year, this.titleShrinked);
-        }
+    data(){
+        return {
+            article: {}
+        };
     },
     mounted(){
-        
+        const that = this;
+        this.$store.state.postsUtil.posts(this.year, this.titleShrinked)
+            .then((data) => that.article = data);
     }
 }
 </script>
