@@ -1,10 +1,7 @@
 # atheer-frontend
 
-<<<<<<< HEAD
 The frontend of the Atheer blog management system.
 
-=======
->>>>>>> 460499ccc276f20fbae07362b8f0c711e84db0b7
 ## Project setup
 ```
 npm install
@@ -20,13 +17,10 @@ npm run serve
 npm run build
 ```
 
-<<<<<<< HEAD
 ### Run your unit tests
 ```
 npm run test:unit
 ```
 
-=======
->>>>>>> 460499ccc276f20fbae07362b8f0c711e84db0b7
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
