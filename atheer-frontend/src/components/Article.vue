@@ -12,12 +12,10 @@
                 </div>
             </v-card-title>
             <v-card-text>
-                <v-main>
-                    {{article.description || "This is a sample description"}}
+                <v-main v-html="description || `This is a sample description`">
                 </v-main>
                 
-                <v-main v-if="showContent">
-                    {{article.content || "This is a sample content"}}
+                <v-main v-if="showContent" v-html="content || `This is a sample content`">
                 </v-main>
             </v-card-text>
         </v-card>
@@ -25,6 +23,9 @@
 </template>
 
 <script>
+const Converter = require("showdown").Converter;
+const mdToHTMLConverter = new Converter();
+
 export default {
     props: {
         article: {},
@@ -36,6 +37,12 @@ export default {
                 year: String(this.article.createdYear), 
                 titleShrinked: this.article.titleShrinked
             };
+        },
+        description: function (){
+            return mdToHTMLConverter.makeHtml(this.article.description);
+        },
+        content: function (){
+            return mdToHTMLConverter.makeHtml(this.article.content);
         }
     }
 }
