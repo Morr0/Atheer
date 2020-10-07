@@ -19,11 +19,19 @@ export default {
             article: {}
         };
     },
-    mounted(){
-        const that = this;
-        this.$store.state.postsUtil.posts(this.year, this.titleShrinked)
-            .then((data) => that.article = data);
+    watch: {
+        // Watching the URL path changes to render the new post once it happens
+        '$route.params': {
+            handler: function(params) {
+                const that = this;
+                this.$store.state.postsUtil.posts(this.year, this.titleShrinked)
+                    .then((data) => that.article = data);
+            },
+            deep: true,
+            immediate: true
+      }
     }
+
 }
 </script>
 
