@@ -22,10 +22,23 @@ namespace AtheerBackend.Services
 
         public async Task<BlogRepositoryBlogResponse> Get(int amount, PostsPaginationPrimaryKey paginationHeader = null)
         {
+
             var scanRequest = new ScanRequest
             {
                 TableName = CommonConstants.BLOG_POSTS_TABLE_NAME,
                 Limit = amount,
+                
+                // Fetch only non-draft and listed posts
+                // Define the values looking for
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                {
+                    {":false", new AttributeValue
+                    {
+                        BOOL = false
+                    }}
+                },
+                // filter, refer to AWS docs
+                FilterExpression = "Unlisted = :false AND Draft = :false "
             };
             // Query the last evaluated key if not null
             if (!paginationHeader.Empty())
