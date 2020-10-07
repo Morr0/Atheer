@@ -13,14 +13,14 @@
         <Label Content="Title" HorizontalAlignment="Left" Margin="40,79,0,0" VerticalAlignment="Top" Width="83"/>
         <Label Content="Description (MD)" HorizontalAlignment="Left" Margin="20,125,0,0" VerticalAlignment="Top" Width="103"/>
         <Label Content="Content (MD)" HorizontalAlignment="Left" Margin="37,172,0,0" VerticalAlignment="Top" Width="83"/>
-        <TextBox HorizontalAlignment="Left" Margin="128,79,0,0" Text="" BorderThickness="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="308" Height="26"/>
-        <TextBox HorizontalAlignment="Left" Margin="128,133,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="615" Height="34"/>
-        <TextBox HorizontalAlignment="Left" Margin="128,185,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Height="149" Width="615"/>
+        <TextBox HorizontalAlignment="Left" Margin="128,79,0,0" Name="_title" Text="" BorderThickness="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="308" Height="26"/>
+        <TextBox HorizontalAlignment="Left" Margin="128,133,0,0" Text="" Name="_description" TextWrapping="Wrap" VerticalAlignment="Top" Width="615" Height="34"/>
+        <TextBox HorizontalAlignment="Left" Margin="128,185,0,0" Text="" Name="_content" TextWrapping="Wrap" VerticalAlignment="Top" Height="149" Width="615"/>
         <Label Content="Topic" HorizontalAlignment="Left" Margin="456,79,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Margin="499,79,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="244" Height="26"/>
-        <CheckBox Content="Draft" HorizontalAlignment="Left" Margin="128,368,0,0" VerticalAlignment="Top" Height="18" Width="94" IsChecked="True"/>
-        <CheckBox Content="Unlisted" HorizontalAlignment="Left" Margin="227,368,0,0" VerticalAlignment="Top"/>
-        <Button Content="Checkout" HorizontalAlignment="Left" Margin="682,368,0,0" VerticalAlignment="Top" Width="61" Height="28"/>
+        <TextBox HorizontalAlignment="Left" Margin="499,79,0,0" Name="_topic" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="244" Height="26"/>
+        <CheckBox Name="_draft" Content="Draft" HorizontalAlignment="Left" Margin="128,368,0,0" VerticalAlignment="Top" Height="18" Width="94" IsChecked="True"/>
+        <CheckBox Name="_unlisted" Content="Unlisted" HorizontalAlignment="Left" Margin="227,368,0,0" VerticalAlignment="Top"/>
+        <Button Content="Checkout" HorizontalAlignment="Left" Margin="682,368,0,0" VerticalAlignment="Top" Width="61" Height="28" Click="Button_Click_1"/>
         <Label Content="Secret" HorizontalAlignment="Left" Margin="327,369,0,0" VerticalAlignment="Top"/>
         <PasswordBox HorizontalAlignment="Left" Margin="400,369,0,0" VerticalAlignment="Top" Width="265" Height="27"/>
         <ComboBox HorizontalAlignment="Left" Margin="88,17,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged">

@@ -46,10 +46,12 @@ namespace AtheerEditorApp
 
         public BlogPost Post()
         {
+            // TODO do not change some things if editing a post
+            DateTime currDate = DateTime.UtcNow;
+
             BlogPost post = new BlogPost
             {
-                CreatedYear = int.Parse(_yearBox.Text),
-                TitleShrinked = _shrinkedTitleBox.Text,
+                CreatedYear = currDate.Year,
                 Content = _contentBox.Text,
                 Description = _descriptionBox.Text,
                 Title = _titleBox.Text,

@@ -1,4 +1,6 @@
 ﻿using AtheerEditorApp.Constants;
+using AtheerEditorApp.Services;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -15,11 +17,15 @@ namespace AtheerEditorApp
 
         private UIDataMapper _uiDataMapper;
 
+        private CheckoutRepository _checkoutRepo;
+
         public MainWindow()
         {
             InitializeComponent();
 
             InitUIDatamapper();
+
+            _checkoutRepo = new CheckoutRepository();
         }
 
         private void InitUIDatamapper()
@@ -63,6 +69,13 @@ namespace AtheerEditorApp
                     _currentSelectedOp = OperationType.New;
                     break;
             }
+        }
+        
+        // Checkout button
+        private async void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            await _checkoutRepo.Checkout(_currentSelectedOp, _uiDataMapper);
+            // TODO tell user that everything is ok once post is correctly posted
         }
     }
 }
