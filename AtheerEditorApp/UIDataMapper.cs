@@ -59,6 +59,7 @@ namespace AtheerEditorApp
             _contentBox.Text = "";
             _draftCheckbox.IsChecked = true;
             _unlistedCheckbox.IsChecked = false;
+            _secretBox.Clear();
         }
 
         public BlogPost Post()
