@@ -80,6 +80,7 @@ namespace AtheerEditorApp
         {
             try
             {
+                // Validations
                 string invalidField = UIValidationRepository.IsValid(_currentSelectedOp, _uiDataMapper);
                 if (invalidField != null)
                 {
@@ -87,8 +88,12 @@ namespace AtheerEditorApp
                     return;
                 }
                 
+                // 
                 await _checkoutRepo.Checkout();
+
+                // Success
                 MessageBox.Show("Successful checkout");
+                _uiDataMapper.Clear();
             }
             catch (IncorrectSecretException)
             {

@@ -49,6 +49,18 @@ namespace AtheerEditorApp
             _unlistedCheckbox.IsChecked = post.Unlisted;
         }
 
+        public void Clear()
+        {
+            _yearBox.Text = "";
+            _shrinkedTitleBox.Text = "";
+            _titleBox.Text = "";
+            _topicBox.Text = "";
+            _descriptionBox.Text = "";
+            _contentBox.Text = "";
+            _draftCheckbox.IsChecked = true;
+            _unlistedCheckbox.IsChecked = false;
+        }
+
         public BlogPost Post()
         {
             // TODO do not change some things if editing a post
