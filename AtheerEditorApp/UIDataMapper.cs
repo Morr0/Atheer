@@ -37,7 +37,7 @@ namespace AtheerEditorApp
         
         public string Secret => _secretBox.Password;
 
-        public void Fill(ref BlogPost post)
+        public void Fill(BlogPost post)
         {
             _yearBox.Text = post.CreatedYear.ToString();
             _shrinkedTitleBox.Text = post.TitleShrinked;

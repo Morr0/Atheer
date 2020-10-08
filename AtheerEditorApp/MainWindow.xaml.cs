@@ -1,4 +1,5 @@
-﻿using AtheerEditorApp.Constants;
+﻿using System.Threading.Tasks;
+using AtheerEditorApp.Constants;
 using AtheerEditorApp.Services;
 using System.Windows;
 using System.Windows.Controls;
@@ -117,6 +118,20 @@ namespace AtheerEditorApp
             {
                 MessageBox.Show("Another post exists with the same title in this year, please change it");
             }
+        }
+
+        // Get post button, visible only when not posting a new post
+        private async void _get_Click(object sender, RoutedEventArgs e)
+        {
+            if (!UIValidationRepository.IsValidForFetchingAPost(_uiDataMapper))
+            {
+                MessageBox.Show("Please provide a key (combination of year and titleShrinked) to fetch");
+                return;
+            }
+                
+            // Get the post
+            _uiDataMapper.Fill(await _checkoutRepo.Get(int.Parse(_uiDataMapper._yearBox.Text)
+                , _uiDataMapper._shrinkedTitleBox.Text));
         }
     }
 }

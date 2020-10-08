@@ -35,6 +35,11 @@ namespace AtheerEditorApp.Services.UIDataValidationService
             return null;
         }
 
+        public static bool IsValidForFetchingAPost(UIDataMapper uiDataMapper)
+        {
+            return Valid(uiDataMapper._shrinkedTitleBox.Text) && Valid(uiDataMapper._yearBox.Text);
+        }
+
         private static bool Valid(string text)
         {
             // ADD ANY CHECKING HERE
