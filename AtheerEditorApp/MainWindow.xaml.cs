@@ -86,7 +86,7 @@ namespace AtheerEditorApp
                     MessageBox.Show($"Please provide the {invalidField} field");
                     return;
                 }
-                
+
                 // 
                 await _checkoutRepo.Checkout();
 
@@ -98,7 +98,10 @@ namespace AtheerEditorApp
             {
                 MessageBox.Show("Please provide the correct secret");
             }
-            // TODO check that primary key does not exist before editing
+            catch (APostExistsWithSamePrimaryKeyException)
+            {
+                MessageBox.Show("Another post exists with the same title in this year, please change it");
+            }
         }
     }
 }
