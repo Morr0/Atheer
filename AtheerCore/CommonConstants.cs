@@ -7,5 +7,7 @@
         // To edit post you must provide a key with the name:
         public static string BLOG_POSTS_EDIT_KEY_NAME = "PostEditKeyName";
 
+        public static string ATHEER_BLOG_EDIT_SECRET = "AtheerBlogEditKey";
+
     }
 }

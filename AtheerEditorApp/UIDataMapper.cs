@@ -18,9 +18,11 @@ namespace AtheerEditorApp
         private CheckBox _draftCheckbox;
         private CheckBox _unlistedCheckbox;
 
+        private PasswordBox _secretBox;
+
         public UIDataMapper(TextBox yearBox, TextBox shrinkedTitleBox, TextBox titleBox,
             TextBox topicBox, TextBox descriptionBox, TextBox contentBox, 
-            CheckBox draftCheckbox, CheckBox unlistedCheckbox)
+            CheckBox draftCheckbox, CheckBox unlistedCheckbox, PasswordBox secretBox)
         {
             _yearBox = yearBox;
             _shrinkedTitleBox = shrinkedTitleBox;
@@ -30,7 +32,10 @@ namespace AtheerEditorApp
             _contentBox = contentBox;
             _draftCheckbox = draftCheckbox;
             _unlistedCheckbox = unlistedCheckbox;
+            _secretBox = secretBox;
         }
+        
+        public string Secret => _secretBox.Password;
 
         public void Fill(ref BlogPost post)
         {

@@ -10,4 +10,8 @@
     <ProjectReference Include="..\AtheerCore\AtheerCore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.5.1.24" />
+  </ItemGroup>
+
 </Project>

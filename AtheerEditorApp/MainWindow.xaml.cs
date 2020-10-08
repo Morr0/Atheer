@@ -1,8 +1,8 @@
 ﻿using AtheerEditorApp.Constants;
 using AtheerEditorApp.Services;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using AtheerEditorApp.Exceptions;
 
 namespace AtheerEditorApp
 {
@@ -38,7 +38,9 @@ namespace AtheerEditorApp
                 FindName("_description") as TextBox,
                 FindName("_content") as TextBox,
                 FindName("_draft") as CheckBox,
-                FindName("_unlisted") as CheckBox
+                FindName("_unlisted") as CheckBox,
+                
+                FindName("_secret") as PasswordBox
                 );
         }
 
@@ -75,8 +77,16 @@ namespace AtheerEditorApp
         // Checkout button
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            await _checkoutRepo.Checkout();
-            // TODO tell user that everything is ok once post is correctly posted
+            try
+            {
+                await _checkoutRepo.Checkout();
+                MessageBox.Show("Successful checkout");
+            }
+            catch (IncorrectSecretException)
+            {
+                MessageBox.Show("Please provide the correct secret");
+            }
+            // TODO handle double sends
         }
     }
 }
