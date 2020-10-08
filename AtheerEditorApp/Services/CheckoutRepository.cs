@@ -1,6 +1,7 @@
 ﻿using AtheerEditorApp.Constants;
 using AtheerEditorApp.Services.Strategies;
 using System.Threading.Tasks;
+using AtheerCore.Models;
 using AtheerEditorApp.Exceptions;
 using AtheerEditorApp.Services.AuthorizationService;
 
@@ -33,6 +34,12 @@ namespace AtheerEditorApp.Services
                 throw new IncorrectSecretException();
                 
             await _currentStrategy.Checkout(_uiDataMapper.Post());
+        }
+
+        public async Task<BlogPost> Get(int year, string titleShrinked)
+        {
+            // The strategy used does not matter
+            return await _currentStrategy.GetPostElseNull(year, titleShrinked);
         }
     }
 }

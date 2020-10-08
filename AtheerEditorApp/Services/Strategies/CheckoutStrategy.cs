@@ -1,4 +1,5 @@
-﻿using Amazon.DynamoDBv2;
+﻿using System.Collections.Generic;
+using Amazon.DynamoDBv2;
 using AtheerCore.Models;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2.Model;
@@ -22,15 +23,26 @@ namespace AtheerEditorApp.Services.Strategies
         // Checks that no post with the same primary key already exists
         protected async Task<bool> DoesPostAlreadyExist(BlogPost post)
         {
+            return await GetPostElseNull(post.CreatedYear, post.TitleShrinked) != null;
+        }
+
+        public async Task<BlogPost> GetPostElseNull(int year, string titleShrinked)
+        {
             var getItemRequest = new GetItemRequest
             {
                 TableName = CommonConstants.BLOG_POSTS_TABLE_NAME,
-                Key = BlogPostExtensions.GetKey(post.CreatedYear, post.TitleShrinked),
+                Key = new Dictionary<string, AttributeValue>
+                {
+                    {nameof(BlogPost.CreatedYear), new AttributeValue{N = year.ToString()}},
+                    {nameof(BlogPost.TitleShrinked), new AttributeValue{S = titleShrinked}}
+                }
             };
 
             var getItemResponse = await _client.GetItemAsync(getItemRequest);
+            if (getItemResponse.Item.Count == 0)
+                return null;
 
-            return getItemResponse.Item.Count > 0;
+            return BlogPostExtensions.Map(getItemResponse.Item);
         }
     }
 }
