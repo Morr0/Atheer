@@ -3,6 +3,7 @@ using AtheerEditorApp.Services;
 using System.Windows;
 using System.Windows.Controls;
 using AtheerEditorApp.Exceptions;
+using AtheerEditorApp.Services.UIDataValidationService;
 
 namespace AtheerEditorApp
 {
@@ -79,6 +80,13 @@ namespace AtheerEditorApp
         {
             try
             {
+                string invalidField = UIValidationRepository.IsValid(_currentSelectedOp, _uiDataMapper);
+                if (invalidField != null)
+                {
+                    MessageBox.Show($"Please provide the {invalidField} field");
+                    return;
+                }
+                
                 await _checkoutRepo.Checkout();
                 MessageBox.Show("Successful checkout");
             }

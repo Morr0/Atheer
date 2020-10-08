@@ -7,18 +7,18 @@ namespace AtheerEditorApp
     /// <summary>
     /// Maps UI data into a blog post object
     /// </summary>
-    internal class UIDataMapper
+    public class UIDataMapper
     {
-        private TextBox _yearBox;
-        private TextBox _shrinkedTitleBox;
-        private TextBox _titleBox;
-        private TextBox _topicBox;
-        private TextBox _descriptionBox;
-        private TextBox _contentBox;
-        private CheckBox _draftCheckbox;
-        private CheckBox _unlistedCheckbox;
+        internal TextBox _yearBox;
+        internal TextBox _shrinkedTitleBox;
+        internal TextBox _titleBox;
+        internal TextBox _topicBox;
+        internal TextBox _descriptionBox;
+        internal TextBox _contentBox;
+        internal CheckBox _draftCheckbox;
+        internal CheckBox _unlistedCheckbox;
 
-        private PasswordBox _secretBox;
+        internal PasswordBox _secretBox;
 
         public UIDataMapper(TextBox yearBox, TextBox shrinkedTitleBox, TextBox titleBox,
             TextBox topicBox, TextBox descriptionBox, TextBox contentBox, 

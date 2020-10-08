@@ -1,6 +1,6 @@
 ﻿namespace AtheerEditorApp.Constants
 {
-    internal enum OperationType : byte
+    public enum OperationType : byte
     {
         New,
         Edit,
