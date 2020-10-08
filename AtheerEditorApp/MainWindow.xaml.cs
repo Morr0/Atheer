@@ -69,7 +69,6 @@ namespace AtheerEditorApp
                     _currentSelectedOp = OperationType.Remove;
                     break;
                 default:
-                case "new":
                     _currentSelectedOp = OperationType.New;
                     break;
             }
@@ -99,7 +98,7 @@ namespace AtheerEditorApp
             {
                 MessageBox.Show("Please provide the correct secret");
             }
-            // TODO handle double sends
+            // TODO check that primary key does not exist before editing
         }
     }
 }

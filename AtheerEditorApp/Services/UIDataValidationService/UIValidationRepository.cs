@@ -27,6 +27,8 @@ namespace AtheerEditorApp.Services.UIDataValidationService
                 return nameof(uiDataMapper._descriptionBox);
             if (!Valid(uiDataMapper._topicBox.Text))
                 return nameof(uiDataMapper._topicBox);
+            if (!Valid(uiDataMapper._secretBox.Password))
+                return nameof(uiDataMapper._secretBox);
             
             // Ignore boolean checkboxes as they are choices
 

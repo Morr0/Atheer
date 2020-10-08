@@ -15,8 +15,8 @@ namespace AtheerEditorApp
         internal TextBox _topicBox;
         internal TextBox _descriptionBox;
         internal TextBox _contentBox;
-        internal CheckBox _draftCheckbox;
-        internal CheckBox _unlistedCheckbox;
+        private CheckBox _draftCheckbox;
+        private CheckBox _unlistedCheckbox;
 
         internal PasswordBox _secretBox;
 
