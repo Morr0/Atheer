@@ -25,7 +25,7 @@ namespace AtheerEditorApp
 
             InitUIDatamapper();
 
-            _checkoutRepo = new CheckoutRepository();
+            _checkoutRepo = new CheckoutRepository(_uiDataMapper);
         }
 
         private void InitUIDatamapper()
@@ -52,6 +52,7 @@ namespace AtheerEditorApp
         {
             var item = e.AddedItems[0] as ComboBoxItem;
             SetNewSelection(ref item);
+            _checkoutRepo?.ChangeStrategy(_currentSelectedOp);
         }
 
         private void SetNewSelection(ref ComboBoxItem item)
@@ -74,7 +75,7 @@ namespace AtheerEditorApp
         // Checkout button
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            await _checkoutRepo.Checkout(_currentSelectedOp, _uiDataMapper);
+            await _checkoutRepo.Checkout();
             // TODO tell user that everything is ok once post is correctly posted
         }
     }

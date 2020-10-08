@@ -6,10 +6,24 @@ namespace AtheerEditorApp.Services
 {
     internal class CheckoutRepository
     {
-        public async Task Checkout(OperationType operationType, UIDataMapper uiDataMapper)
+        private UIDataMapper _uiDataMapper;
+        private CheckoutStrategy _currentStrategy;
+        
+        public CheckoutRepository(UIDataMapper uiDataMapper)
+        {
+            _uiDataMapper = uiDataMapper;
+            _currentStrategy = new NewPostCheckoutStrategy();
+        }
+
+        public void ChangeStrategy(OperationType operationType)
         {
             if (operationType == OperationType.New)
-                await new NewPostCheckoutStrategy().Checkout(uiDataMapper.Post());
+                _currentStrategy = new NewPostCheckoutStrategy();
+        }
+        
+        public async Task Checkout()
+        {
+            await _currentStrategy.Checkout(_uiDataMapper.Post());
         }
     }
 }
