@@ -29,10 +29,11 @@
             <ComboBoxItem Content="Remove Post" Name="remove" />
         </ComboBox>
         <Label Content="Year" HorizontalAlignment="Left" Margin="327,17,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Margin="364,19,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="130" Height="24" Name="_year"/>
-        <Label Content="Shrinked Title" HorizontalAlignment="Left" Margin="514,19,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Margin="601,21,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="168" Height="25" Name="_titleShrinked"/>
+        <TextBox HorizontalAlignment="Center" Margin="0,19,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="71" Height="24" Name="_year"/>
+        <Label Content="Shrinked Title" HorizontalAlignment="Left" Margin="448,19,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Margin="537,21,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="168" Height="25" Name="_titleShrinked"/>
         <Rectangle HorizontalAlignment="Left" Height="68" Margin="282,-8,0,0" Stroke="Black" VerticalAlignment="Top" Width="538"/>
+        <Button Content="Get post" Visibility="Hidden" Name="_get" HorizontalAlignment="Left" Margin="728,23,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

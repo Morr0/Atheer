@@ -18,8 +18,10 @@ namespace AtheerEditorApp
 
         private UIDataMapper _uiDataMapper;
 
-        private CheckoutRepository _checkoutRepo;
+        private readonly CheckoutRepository _checkoutRepo;
 
+        private Button _getPostButton;
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -27,6 +29,8 @@ namespace AtheerEditorApp
             InitUIDatamapper();
 
             _checkoutRepo = new CheckoutRepository(_uiDataMapper);
+
+            _getPostButton = FindName("_get") as Button;
         }
 
         private void InitUIDatamapper()
@@ -56,6 +60,7 @@ namespace AtheerEditorApp
             var item = e.AddedItems[0] as ComboBoxItem;
             SetNewSelection(ref item);
             _checkoutRepo?.ChangeStrategy(_currentSelectedOp);
+            SetGetPostButtonVisibility();
         }
 
         private void SetNewSelection(ref ComboBoxItem item)
@@ -72,6 +77,16 @@ namespace AtheerEditorApp
                     _currentSelectedOp = OperationType.New;
                     break;
             }
+        }
+
+        private void SetGetPostButtonVisibility()
+        {
+            // FOR FIRST TIME ONLY DUE TO WPF
+            if (_getPostButton == null)
+                return;
+            
+            _getPostButton.Visibility = _currentSelectedOp == OperationType.New 
+                ? Visibility.Hidden : Visibility.Visible;
         }
         
         // Checkout button
