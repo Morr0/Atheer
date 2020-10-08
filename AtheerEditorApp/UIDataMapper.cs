@@ -62,14 +62,10 @@ namespace AtheerEditorApp
             _secretBox.Clear();
         }
 
-        public BlogPost Post()
+        public BlogPost Post(bool @new = true)
         {
-            // TODO do not change some things if editing a post
-            DateTime currDate = DateTime.UtcNow;
-
             BlogPost post = new BlogPost
             {
-                CreatedYear = currDate.Year,
                 Content = _contentBox.Text,
                 Description = _descriptionBox.Text,
                 Title = _titleBox.Text,
@@ -78,14 +74,20 @@ namespace AtheerEditorApp
                 Draft = _draftCheckbox.IsChecked ?? true
             };
 
-            // TODO take care of editing, check dates
-
             // Create first time metadata
-            post.TitleShrinked = post.Title.TrimStart().TrimEnd()
-                .ToLower().Replace(" ", "-");
+            if (@new)
+            {
+                post.TitleShrinked = post.Title.TrimStart().TrimEnd()
+                    .ToLower().Replace(" ", "-");
+            }
 
-            post.CreationDate = post.LastUpdatedDate =
-                DateTime.UtcNow.ToString();
+            DateTime currDate = DateTime.UtcNow;
+            // Update dates
+            if (@new)
+                post.CreationDate = post.LastUpdatedDate = currDate.ToString();
+            else
+                post.LastUpdatedDate = currDate.ToString();
+
 
             return post;
         }
