@@ -10,6 +10,7 @@ namespace AtheerEditorApp.Services
     internal sealed class CheckoutRepository
     {
         private UIDataMapper _uiDataMapper;
+        private OperationType _operationType;
         private CheckoutStrategy _currentStrategy;
 
         private AuthorizationRepository _authorizationService;
@@ -17,6 +18,7 @@ namespace AtheerEditorApp.Services
         public CheckoutRepository(UIDataMapper uiDataMapper)
         {
             _uiDataMapper = uiDataMapper;
+            _operationType = OperationType.New;
             _currentStrategy = new NewPostCheckoutStrategy();
             
             _authorizationService = new AuthorizationRepository();
@@ -24,6 +26,8 @@ namespace AtheerEditorApp.Services
 
         public void ChangeStrategy(OperationType operationType)
         {
+            _operationType = operationType;
+            
             switch (operationType)
             {
                 default:
@@ -44,7 +48,7 @@ namespace AtheerEditorApp.Services
             if (!await _authorizationService.Allowed(_uiDataMapper.Secret))
                 throw new IncorrectSecretException();
                 
-            await _currentStrategy.Checkout(_uiDataMapper.Post());
+            await _currentStrategy.Checkout(_uiDataMapper.Post(_operationType == OperationType.New));
         }
 
         public async Task<BlogPost> Get(int year, string titleShrinked)
