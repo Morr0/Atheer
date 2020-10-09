@@ -8,7 +8,7 @@ using AtheerCore.Extensions;
 
 namespace AtheerEditorApp.Services.Strategies
 {
-    internal abstract class CheckoutStrategy
+    public abstract class CheckoutStrategy
     {
         protected AmazonDynamoDBClient _client;
 

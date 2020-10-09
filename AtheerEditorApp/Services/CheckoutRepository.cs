@@ -7,7 +7,7 @@ using AtheerEditorApp.Services.AuthorizationService;
 
 namespace AtheerEditorApp.Services
 {
-    internal class CheckoutRepository
+    internal sealed class CheckoutRepository
     {
         private UIDataMapper _uiDataMapper;
         private CheckoutStrategy _currentStrategy;
@@ -24,8 +24,19 @@ namespace AtheerEditorApp.Services
 
         public void ChangeStrategy(OperationType operationType)
         {
-            if (operationType == OperationType.New)
-                _currentStrategy = new NewPostCheckoutStrategy();
+            switch (operationType)
+            {
+                default:
+                case OperationType.New:
+                    _currentStrategy = new NewPostCheckoutStrategy();
+                    break;
+                case OperationType.Edit:
+                    _currentStrategy = new EditPostCheckoutStrategy();
+                    break;
+                case OperationType.Remove:
+                    _currentStrategy = new RemovePostCheckoutStrategy();
+                    break;
+            }
         }
         
         public async Task Checkout()
