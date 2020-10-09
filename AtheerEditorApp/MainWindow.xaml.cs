@@ -21,17 +21,24 @@ namespace AtheerEditorApp
 
         private readonly CheckoutRepository _checkoutRepo;
 
-        private Button _getPostButton;
-        
+        private ComboBox _operationCombobox;
+        private readonly Button _getPostButton;
+
+        // To not let some methods get called at startup due to WPF
+        // ALSO USED with changing the selection of combobox programatically so it does not double
+        // fire the event
+        private static bool _firstTimeComboboxSelect = true;
+
         public MainWindow()
         {
             InitializeComponent();
 
+            _operationCombobox = FindName("_combobox") as ComboBox;
+            _getPostButton = FindName("_get") as Button;
+
             InitUIDatamapper();
 
             _checkoutRepo = new CheckoutRepository(_uiDataMapper);
-
-            _getPostButton = FindName("_get") as Button;
         }
 
         private void InitUIDatamapper()
@@ -58,10 +65,35 @@ namespace AtheerEditorApp
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // SO IT IS NOT CALLED ON INITIALIZATION
+            if (_firstTimeComboboxSelect)
+            {
+                _firstTimeComboboxSelect = false;
+                return;
+            }
+            
+            // Before changing, check the user is alright with it since will clear fields
+            MessageBoxResult result = MessageBox.Show
+                ("Changing this selection will result in clearing all fields, are you sure to proceed"
+                , "CHECK", MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.No || result == MessageBoxResult.None
+                                              || result == MessageBoxResult.Cancel)
+            {
+                ResetComboBox();
+                return;
+            }
+            
             var item = e.AddedItems[0] as ComboBoxItem;
             SetNewSelection(ref item);
             _checkoutRepo?.ChangeStrategy(_currentSelectedOp);
             SetGetPostButtonVisibility();
+            _uiDataMapper.Clear();
+        }
+
+        // To reverse the effect of uncompleted event in case of user not wanting to change the operation
+        private void ResetComboBox()
+        {
+            _combobox.SelectedIndex = (int) _currentSelectedOp;
         }
 
         private void SetNewSelection(ref ComboBoxItem item)

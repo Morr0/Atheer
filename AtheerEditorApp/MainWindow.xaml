@@ -23,7 +23,7 @@
         <Button Content="Checkout" HorizontalAlignment="Left" Margin="682,368,0,0" VerticalAlignment="Top" Width="61" Height="28" Click="Button_Click_1"/>
         <Label Content="Secret" HorizontalAlignment="Left" Margin="327,369,0,0" VerticalAlignment="Top"/>
         <PasswordBox Name="_secret" HorizontalAlignment="Left" Margin="400,369,0,0" VerticalAlignment="Top" Width="265" Height="27"/>
-        <ComboBox HorizontalAlignment="Left" Margin="88,17,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged">
+        <ComboBox HorizontalAlignment="Left" Margin="88,17,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged" Name="_combobox">
             <ComboBoxItem Content="New Post" Name="new" Tag="" />
             <ComboBoxItem Content="Edit Post" Name="edit" />
             <ComboBoxItem Content="Remove Post" Name="remove" />
