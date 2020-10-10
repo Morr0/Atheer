@@ -33,3 +33,12 @@ module.exports.posts = async function (year = undefined, titleShrinked = undefin
 
     return returnable;
 }
+
+module.exports.like = async function (year, titleShrinked){
+    const endpoint = `${_endpoint}api/blog/like/${year}/${titleShrinked}`;
+    const res = await fetch(endpoint, {
+        method: "POST"
+    });
+
+    return res.status === 400? undefined : await res.json();
+}
