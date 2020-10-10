@@ -113,6 +113,10 @@ namespace AtheerBackend.Services
 
         public async Task<BlogPost> Like(int year, string title)
         {
+            // Check if likeable
+            string likeable = nameof(BlogPost.Likeable);
+            string likeableAttVal = $":{likeable}";
+            
             string likesAtt = nameof(BlogPost.Likes);
             // DynamoDB value name for use in updating
             string dNewLikes = ":newLikes";
@@ -124,20 +128,28 @@ namespace AtheerBackend.Services
                 Key = BlogPostExtensions.GetKey(year, title),
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
-                    { dNewLikes, new AttributeValue { N = 1.ToString() } }
+                    { dNewLikes, new AttributeValue { N = 1.ToString() } },
+                    { likeableAttVal, new AttributeValue{ BOOL = true}}
                 },
                 // Add syntax
                 UpdateExpression = $"ADD {likesAtt} {dNewLikes}",
+                // Must pass in order to update
+                ConditionExpression = $"{likeable} = {likeableAttVal}",
                 
                 ReturnValues = ReturnValue.ALL_NEW
             };
 
             // Update 
-            var updateResponse = await _client.UpdateItemAsync(updateItemRequest);
-            if (updateResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
-                return null;
+            try
+            {
+                var updateResponse = await _client.UpdateItemAsync(updateItemRequest);
 
-            return BlogPostExtensions.Map(updateResponse.Attributes);
+                return BlogPostExtensions.Map(updateResponse.Attributes);
+            }
+            catch (ConditionalCheckFailedException)
+            {
+                return null;
+            }
         }
     }
 }

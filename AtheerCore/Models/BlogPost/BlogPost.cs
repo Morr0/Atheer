@@ -25,7 +25,13 @@ namespace AtheerCore.Models
 
         public string Topic { get; set; }
 
+        public bool Likeable { get; set; } = true;
+
         public int Likes { get; set; }
+
+        public bool Shareable { get; set; } = true;
+        
+        public int Shares { get; set; }
 
         // The post is not done
         public bool Draft { get; set; }
