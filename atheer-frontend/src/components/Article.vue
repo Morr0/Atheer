@@ -19,8 +19,10 @@
                 </v-main>
             </v-card-text>
 
-            <v-card-text>
+            <v-card-text v-if="article.likeable">
                 <v-btn text @click="like">Like</v-btn>
+                | 
+                {{article.likes}} Likes
             </v-card-text>
         </v-card>
     </v-main>
