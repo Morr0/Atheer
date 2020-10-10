@@ -4,9 +4,13 @@ ADD *.json ./
 
 RUN npm install
 RUN npm -g install serve
+RUN apk add bash
 
 ADD . .
 
-RUN npm run build
+ADD start.sh ./
+RUN chmod +x ./start.sh
 
-CMD [ "serve", "./dist", "-l", "8080" ]
+ENV VUE_APP_API="https://localhost:5001/"
+
+CMD [ "./start.sh" ]
