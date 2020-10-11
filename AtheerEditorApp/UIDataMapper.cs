@@ -20,6 +20,11 @@ namespace AtheerEditorApp
 
         internal PasswordBox _secretBox;
 
+        /// <summary>
+        /// Only to be used when not adding a new article
+        /// </summary>
+        private BlogPost _post;
+
         public UIDataMapper(TextBox yearBox, TextBox shrinkedTitleBox, TextBox titleBox,
             TextBox topicBox, TextBox descriptionBox, TextBox contentBox, 
             CheckBox draftCheckbox, CheckBox unlistedCheckbox, PasswordBox secretBox)
@@ -39,6 +44,8 @@ namespace AtheerEditorApp
 
         public void Fill(BlogPost post)
         {
+            _post = post;
+            
             _yearBox.Text = post.CreatedYear.ToString();
             _shrinkedTitleBox.Text = post.TitleShrinked;
             _titleBox.Text = post.Title;
@@ -51,6 +58,8 @@ namespace AtheerEditorApp
 
         public void Clear()
         {
+            _post = null;
+            
             _yearBox.Text = "";
             _shrinkedTitleBox.Text = "";
             _titleBox.Text = "";
@@ -64,17 +73,15 @@ namespace AtheerEditorApp
 
         public BlogPost Post(bool @new = true)
         {
-            BlogPost post = new BlogPost
-            {
-                Content = _contentBox.Text,
-                Description = _descriptionBox.Text,
-                Title = _titleBox.Text,
-                Topic = _topicBox.Text,
-                Unlisted = _unlistedCheckbox.IsChecked ?? true,
-                Draft = _draftCheckbox.IsChecked ?? true
-            };
+            BlogPost post = @new ? new BlogPost() : (_post ?? new BlogPost());
+            post.Content = _contentBox.Text;
+            post.Description = _descriptionBox.Text;
+            post.Title = _titleBox.Text;
+            post.Topic = _topicBox.Text;
+            post.Unlisted = _unlistedCheckbox.IsChecked ?? true;
+            post.Draft = _draftCheckbox.IsChecked ?? true;
 
-            // Create first time metadata
+                // Create first time metadata
             if (@new)
             {
                 post.TitleShrinked = post.Title.TrimStart().TrimEnd()
@@ -87,8 +94,7 @@ namespace AtheerEditorApp
                 post.CreationDate = post.LastUpdatedDate = currDate.ToString();
             else
                 post.LastUpdatedDate = currDate.ToString();
-
-
+            
             return post;
         }
     }
