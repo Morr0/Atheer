@@ -82,6 +82,7 @@ export default {
         share: async function (){
             console.log("Share button");
             // Share only if native feature supported
+            // Enabled on Android maybe IOS
             if (navigator.share){
                 try {
                     const shareData = {
@@ -90,19 +91,19 @@ export default {
                         text: this.article.description
                     };
                     await navigator.share(shareData);
-
-                    const article = await this.$store.state.postsUtil.share(String(this.article.createdYear), this.article.titleShrinked);
-                    // Update likes only if the article is likeable
-                    if (this.article.likeable){
-                        this.$emit("update:article", article);
                 }
                 // Did not share
-                } catch (e){
+                 catch (e){
                     console.log("Did not share");
                 }
-            } else {
-                // TODO implement a different way
-            }
+            } // Just link sharing right now
+            else 
+                await navigator.clipboard.writeText(window.document.location.href);
+
+            const article = await this.$store.state.postsUtil.share(String(this.article.createdYear), this.article.titleShrinked);
+            // Update likes only if the article is likeable
+            if (this.article.likeable)
+                this.$emit("update:article", article);
         }
     }
 }
