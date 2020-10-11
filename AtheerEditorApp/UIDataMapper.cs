@@ -97,7 +97,25 @@ namespace AtheerEditorApp
             // Create first time metadata
             if (@new)
             {
-                post.TitleShrinked = post.Title.TrimStart().TrimEnd()
+                // Customizablity of the created year if applicable i.e. modified the year text box
+                if (!string.IsNullOrEmpty(_yearBox.Text))
+                {
+                    // If can parse to number then can customise
+                    try
+                    {
+                        int year = int.Parse(_yearBox.Text);
+                        post.CreatedYear = year;
+                    }
+                    catch (Exception)
+                    {
+                        // Ignore
+                    }
+                }
+                
+                // Customizablity of the shrinked title if applicable i.e. modified the shrinked title
+                // Else fallback to shrinking the original
+                string titleShrinkedCandidate = string.IsNullOrEmpty(_shrinkedTitleBox.Text) ? post.Title : _shrinkedTitleBox.Text;
+                post.TitleShrinked = titleShrinkedCandidate.TrimStart().TrimEnd()
                     .ToLower().Replace(" ", "-");
             }
 
