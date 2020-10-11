@@ -1,29 +1,28 @@
 <template>
     <v-main>
-        <v-card>
-            <v-card-title primary-title>
-                <div v-if="showContent">
-                    {{article.title || "This is a sample title"}}
-                </div>
-                <div v-else>
+        <v-card style="padding:16px;">
+            <div>
+                <h1 v-if="showContent">
+                {{article.title || "This is a sample title"}}
+                </h1>
+                <h1 v-else>
                     <router-link :to="{name: `ArticleView`, params: getParams}">
                         {{article.title || "This is a sample title"}}
                     </router-link>
-                </div>
-            </v-card-title>
+                </h1>
+            </div>
+            
 
-            <v-card-text v-if="dates">
+            <v-card-subtitle v-if="dates">
                 {{dates}}
-            </v-card-text>
+            </v-card-subtitle>
 
-            <!-- <v-card-text> -->
             <v-card-text>
                 {{description}}
             </v-card-text>
-            
-            <v-main v-if="showContent" v-html="content || `This is a sample content`">
-            </v-main>
-            <!-- </v-card-text> -->
+
+            <div v-if="showContent" v-html="content || `This is a sample content`">
+            </div>
 
             <v-card-text v-if="article.likeable">
                 <v-btn text @click="like">Like</v-btn> | {{article.likes}} Likes
