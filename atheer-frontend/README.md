@@ -24,3 +24,7 @@ npm run test:unit
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### Docker image
+- To build use ``` docker build -t atheer-frontend:latest . ```. 
+- To run use ``` docker run -p <HOST PORT>:8080 -e VUE_APP_API=<BACKEND API URL> atheer-frontend ```. 
