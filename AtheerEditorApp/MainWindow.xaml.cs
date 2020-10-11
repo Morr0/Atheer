@@ -52,8 +52,9 @@ namespace AtheerEditorApp
                 FindName("_content") as TextBox,
                 FindName("_draft") as CheckBox,
                 FindName("_unlisted") as CheckBox,
-                
-                FindName("_secret") as PasswordBox
+                FindName("_secret") as PasswordBox,
+                FindName("_likeable") as CheckBox,
+                FindName("_shareable") as CheckBox
                 );
         }
 

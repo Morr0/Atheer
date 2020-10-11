@@ -34,6 +34,8 @@
         <TextBox HorizontalAlignment="Left" Margin="537,21,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="168" Height="25" Name="_titleShrinked"/>
         <Rectangle HorizontalAlignment="Left" Height="68" Margin="282,-8,0,0" Stroke="Black" VerticalAlignment="Top" Width="538"/>
         <Button Content="Get post" Visibility="Hidden" Name="_get" HorizontalAlignment="Left" Margin="728,23,0,0" VerticalAlignment="Top" Click="_get_Click"/>
+        <CheckBox x:Name="_likeable" Content="Likeable" HorizontalAlignment="Left" Margin="128,391,0,0" VerticalAlignment="Top" Height="18" Width="94" IsChecked="True"/>
+        <CheckBox x:Name="_shareable" Content="Shareable" HorizontalAlignment="Left" Margin="227,391,0,0" VerticalAlignment="Top" IsChecked="True"/>
 
     </Grid>
 </Window>

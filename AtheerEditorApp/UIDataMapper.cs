@@ -17,6 +17,8 @@ namespace AtheerEditorApp
         internal TextBox _contentBox;
         private CheckBox _draftCheckbox;
         private CheckBox _unlistedCheckbox;
+        private CheckBox _likeableCheckbox;
+        private CheckBox _shareableCheckbox;
 
         internal PasswordBox _secretBox;
 
@@ -27,7 +29,8 @@ namespace AtheerEditorApp
 
         public UIDataMapper(TextBox yearBox, TextBox shrinkedTitleBox, TextBox titleBox,
             TextBox topicBox, TextBox descriptionBox, TextBox contentBox, 
-            CheckBox draftCheckbox, CheckBox unlistedCheckbox, PasswordBox secretBox)
+            CheckBox draftCheckbox, CheckBox unlistedCheckbox, PasswordBox secretBox, 
+            CheckBox likeableCheckbox, CheckBox shareableCheckbox)
         {
             _yearBox = yearBox;
             _shrinkedTitleBox = shrinkedTitleBox;
@@ -37,6 +40,9 @@ namespace AtheerEditorApp
             _contentBox = contentBox;
             _draftCheckbox = draftCheckbox;
             _unlistedCheckbox = unlistedCheckbox;
+            _likeableCheckbox = likeableCheckbox;
+            _shareableCheckbox = shareableCheckbox;
+            
             _secretBox = secretBox;
         }
         
@@ -54,6 +60,8 @@ namespace AtheerEditorApp
             _contentBox.Text = post.Content;
             _draftCheckbox.IsChecked = post.Draft;
             _unlistedCheckbox.IsChecked = post.Unlisted;
+            _likeableCheckbox.IsChecked = post.Likeable;
+            _shareableCheckbox.IsChecked = post.Shareable;
         }
 
         public void Clear()
@@ -68,6 +76,9 @@ namespace AtheerEditorApp
             _contentBox.Text = "";
             _draftCheckbox.IsChecked = true;
             _unlistedCheckbox.IsChecked = false;
+            _shareableCheckbox.IsChecked = true;
+            _likeableCheckbox.IsChecked = true;
+            
             _secretBox.Clear();
         }
 
@@ -80,8 +91,10 @@ namespace AtheerEditorApp
             post.Topic = _topicBox.Text;
             post.Unlisted = _unlistedCheckbox.IsChecked ?? true;
             post.Draft = _draftCheckbox.IsChecked ?? true;
+            post.Likeable = _likeableCheckbox.IsChecked ?? true;
+            post.Shareable = _shareableCheckbox.IsChecked ?? true;
 
-                // Create first time metadata
+            // Create first time metadata
             if (@new)
             {
                 post.TitleShrinked = post.Title.TrimStart().TrimEnd()
