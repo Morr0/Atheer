@@ -11,6 +11,11 @@
                     </router-link>
                 </div>
             </v-card-title>
+
+            <v-card-text v-if="dates">
+                {{dates}}
+            </v-card-text>
+
             <v-card-text>
                 <v-main v-html="description || `This is a sample description`">
                 </v-main>
@@ -53,6 +58,20 @@ export default {
         },
         content: function (){
             return mdToHTMLConverter.makeHtml(this.article.content);
+        },
+        dates: function (){
+            const creationDate = this.creationDate ? Date(this.creationDate) : undefined;
+
+            if (this.article.lastUpdatedDate){
+                const date = Date(this.article.lastUpdatedDate);
+                let returnable = `Last updated: ${this.article.lastUpdatedDate}`;
+                if (creationDate)
+                    returnable = `${returnable} since creation in ${creationDate}`;
+
+                return returnable;
+            } 
+
+            return creationDate;
         }
     },
     methods: {
