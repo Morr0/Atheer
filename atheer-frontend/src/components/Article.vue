@@ -61,13 +61,29 @@ export default {
             this.$emit("update:article", article);
         },
         share: async function (){
-            const article = await this.$store.state.postsUtil.share(String(this.article.createdYear), this.article.titleShrinked);
-            // Update likes only if the article is likeable
-            if (this.article.likeable){
-                this.$emit("update:article", article);
-            }
+            console.log("Share button");
+            // Share only if native feature supported
+            if (navigator.share){
+                try {
+                    const shareData = {
+                        title: window.document.title,
+                        url: window.document.location.href,
+                        text: this.article.description
+                    };
+                    await navigator.share(shareData);
 
-            // TODO put sharing platforms
+                    const article = await this.$store.state.postsUtil.share(String(this.article.createdYear), this.article.titleShrinked);
+                    // Update likes only if the article is likeable
+                    if (this.article.likeable){
+                        this.$emit("update:article", article);
+                }
+                // Did not share
+                } catch (e){
+                    console.log("Did not share");
+                }
+            } else {
+                // TODO implement a different way
+            }
         }
     }
 }
