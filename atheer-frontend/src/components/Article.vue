@@ -16,18 +16,17 @@
                 {{dates}}
             </v-card-text>
 
+            <!-- <v-card-text> -->
             <v-card-text>
-                <v-main v-html="description || `This is a sample description`">
-                </v-main>
-                
-                <v-main v-if="showContent" v-html="content || `This is a sample content`">
-                </v-main>
+                {{description}}
             </v-card-text>
+            
+            <v-main v-if="showContent" v-html="content || `This is a sample content`">
+            </v-main>
+            <!-- </v-card-text> -->
 
             <v-card-text v-if="article.likeable">
-                <v-btn text @click="like">Like</v-btn>
-                | 
-                {{article.likes}} Likes
+                <v-btn text @click="like">Like</v-btn> | {{article.likes}} Likes
             </v-card-text>
 
             <v-card-text v-if="article.shareable">
@@ -54,7 +53,7 @@ export default {
             };
         },
         description: function (){
-            return mdToHTMLConverter.makeHtml(this.article.description);
+            return this.article.description || "This is a sample description";
         },
         content: function (){
             return mdToHTMLConverter.makeHtml(this.article.content);
