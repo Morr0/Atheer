@@ -17,15 +17,14 @@
 
 
     <!-- To make the title have a link if was not in main view -->
-        <v-card-title v-if="$route.path.length === 1" primary-title>
+        <v-card-title v-if="$route.path.length === 1" primary-title style="color:#010000;">
             Atheer Blog
         </v-card-title>
         <v-card-title v-else primary-title>
-            <router-link :to="{name: `Articles`}">
+            <router-link class="no_underline" style="color:#010000;" :to="{name: `Articles`}">
                 Atheer Blog
             </router-link>
         </v-card-title>
-
 
 
       <v-spacer></v-spacer>
@@ -90,3 +89,9 @@ export default {
     }
 };
 </script>
+
+<style>
+.no_underline {
+    text-decoration: none;
+}
+</style>

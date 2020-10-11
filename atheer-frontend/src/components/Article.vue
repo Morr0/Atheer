@@ -2,11 +2,11 @@
     <v-main>
         <v-card style="padding:16px;">
             <div>
-                <h1 v-if="showContent">
+                <h1 v-if="showContent" style="color:#010000;">
                 {{article.title || "This is a sample title"}}
                 </h1>
                 <h1 v-else>
-                    <router-link :to="{name: `ArticleView`, params: getParams}">
+                    <router-link class="no_underline" style="color:#010000;" :to="{name: `ArticleView`, params: getParams}">
                         {{article.title || "This is a sample title"}}
                     </router-link>
                 </h1>
@@ -105,7 +105,3 @@ export default {
     }
 }
 </script>
-
-<style>
-
-</style>
