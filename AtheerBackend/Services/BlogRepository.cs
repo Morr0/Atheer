@@ -1,5 +1,4 @@
 ﻿using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using AtheerBackend.Controllers.Headers;
 using AtheerBackend.Extensions;
@@ -111,39 +110,62 @@ namespace AtheerBackend.Services
             return BlogPostExtensions.Map(getItemResponse.Item);
         }
 
-        public async Task<BlogPost> Like(int year, string title)
+        public async Task<BlogPost> Like(int year, string titleShrinked)
         {
-            // Check if likeable
-            string likeable = nameof(BlogPost.Likeable);
-            string likeableAttVal = $":{likeable}";
-            
-            string likesAtt = nameof(BlogPost.Likes);
-            // DynamoDB value name for use in updating
-            string dNewLikes = ":newLikes";
+            return await UpdateRecord(year, titleShrinked, UpdateBlogPostOperation.UpdateLikes);
+        }
 
-            UpdateItemRequest updateItemRequest = new UpdateItemRequest
+        public async Task<BlogPost> Share(int year, string titleShrinked)
+        {
+            return await UpdateRecord(year, titleShrinked, UpdateBlogPostOperation.UpdateShares);
+        }
+
+        private async Task<BlogPost> UpdateRecord(int year, string titleShrinked, UpdateBlogPostOperation operation
+            , bool updateIfIsNotAllowed = false)
+        {
+            string toUpdatePropName = null;
+            string updateConditonPropName = null;
+            switch (operation)
+            {
+                default:
+                case UpdateBlogPostOperation.UpdateLikes:
+                    toUpdatePropName = nameof(BlogPost.Likes);
+                    updateConditonPropName = nameof(BlogPost.Likeable);
+                    break; 
+                case UpdateBlogPostOperation.UpdateShares:
+                    toUpdatePropName = nameof(BlogPost.Shares);
+                    updateConditonPropName = nameof(BlogPost.Shareable);
+                    break;
+            }
+
+            string toUpdatePropValue = $":{toUpdatePropName}";
+            string updateConditonPropValue = $":{updateConditonPropName}";
+
+            var updateItemRequest = new UpdateItemRequest
             {
                 // Locating part
                 TableName = CommonConstants.BLOG_POSTS_TABLE_NAME,
-                Key = BlogPostExtensions.GetKey(year, title),
+                Key = BlogPostExtensions.GetKey(year, titleShrinked),
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
-                    { dNewLikes, new AttributeValue { N = 1.ToString() } },
-                    { likeableAttVal, new AttributeValue{ BOOL = true}}
+                    {toUpdatePropValue, new AttributeValue {N = 1.ToString()}},
+                    {updateConditonPropValue, new AttributeValue {BOOL = true}}
                 },
                 // Add syntax
-                UpdateExpression = $"ADD {likesAtt} {dNewLikes}",
-                // Must pass in order to update
-                ConditionExpression = $"{likeable} = {likeableAttVal}",
-                
+                UpdateExpression = $"ADD {toUpdatePropName} {toUpdatePropValue}",
+
                 ReturnValues = ReturnValue.ALL_NEW
             };
 
+            if (!updateIfIsNotAllowed)
+            {
+                updateItemRequest.ConditionExpression = $"{updateConditonPropName} = {updateConditonPropValue}";
+            }
+            
             // Update 
             try
             {
                 var updateResponse = await _client.UpdateItemAsync(updateItemRequest);
-
                 return BlogPostExtensions.Map(updateResponse.Attributes);
             }
             catch (ConditionalCheckFailedException)

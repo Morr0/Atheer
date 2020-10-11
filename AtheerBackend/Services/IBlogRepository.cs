@@ -17,8 +17,10 @@ namespace AtheerBackend.Services
         /// 
         /// </summary>
         /// <param name="year"></param>
-        /// <param name="title"></param>
+        /// <param name="titleShrinked"></param>
         /// <returns>Null -> could not like for whatever reason</returns>
-        Task<BlogPost> Like(int year, string title);
+        Task<BlogPost> Like(int year, string titleShrinked);
+
+        Task<BlogPost> Share(int year, string titleShrinked);
     }
 }

@@ -85,12 +85,22 @@ namespace AtheerBackend.Controllers
         }
         #endregion
 
-        #region Liking
+        #region Liking and Sharing
         
         [HttpPost("like/{year}/{title}")]
         public async Task<IActionResult> Like(int year, string title)
         {
             BlogPost post = await _blogRepo.Like(year, title);
+            if (post == null)
+                return BadRequest();
+
+            return Ok(_mapper.Map<BlogPostReadDTO>(post));
+        }
+        
+        [HttpPost("share/{year}/{title}")]
+        public async Task<IActionResult> Share(int year, string title)
+        {
+            BlogPost post = await _blogRepo.Share(year, title);
             if (post == null)
                 return BadRequest();
 
