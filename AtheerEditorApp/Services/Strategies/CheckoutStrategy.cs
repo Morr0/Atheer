@@ -30,7 +30,7 @@ namespace AtheerEditorApp.Services.Strategies
         {
             var getItemRequest = new GetItemRequest
             {
-                TableName = CommonConstants.BLOG_POSTS_TABLE_NAME,
+                TableName = CommonConstants.BLOGPOST_TABLE,
                 Key = new Dictionary<string, AttributeValue>
                 {
                     {nameof(BlogPost.CreatedYear), new AttributeValue{N = year.ToString()}},

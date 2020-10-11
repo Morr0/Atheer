@@ -76,7 +76,7 @@ namespace AtheerEditorApp.Services.Strategies
         {
             var deleteRequest = new DeleteItemRequest
             {
-                TableName = CommonConstants.BLOG_POSTS_TABLE_NAME,
+                TableName = CommonConstants.BLOGPOST_TABLE,
                 Key = BlogPostExtensions.GetKey(post.CreatedYear, post.TitleShrinked),
                 ReturnValues = ReturnValue.ALL_OLD
             };
@@ -91,7 +91,7 @@ namespace AtheerEditorApp.Services.Strategies
             
             var putItemRequest = new PutItemRequest
             {
-                TableName = CommonConstants.BLOG_POSTS_TABLE_NAME,
+                TableName = CommonConstants.BLOGPOST_TABLE,
                 Item = BlogPostExtensions.Map(post)
             };
             var putItemResponse = await _client.PutItemAsync(putItemRequest);

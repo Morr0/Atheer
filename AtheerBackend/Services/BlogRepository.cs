@@ -24,7 +24,7 @@ namespace AtheerBackend.Services
 
             var scanRequest = new ScanRequest
             {
-                TableName = CommonConstants.BLOG_POSTS_TABLE_NAME,
+                TableName = CommonConstants.BLOGPOST_TABLE,
                 Limit = amount,
                 
                 // Fetch only non-draft and listed posts
@@ -69,7 +69,7 @@ namespace AtheerBackend.Services
 
             var queryRequest = new QueryRequest
             {
-                TableName = CommonConstants.BLOG_POSTS_TABLE_NAME,
+                TableName = CommonConstants.BLOGPOST_TABLE,
                 KeyConditionExpression = $"{hashKey} = {vHashKey}",
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
@@ -102,7 +102,7 @@ namespace AtheerBackend.Services
         {
             var getItemRequest = new GetItemRequest
             {
-                TableName = CommonConstants.BLOG_POSTS_TABLE_NAME,
+                TableName = CommonConstants.BLOGPOST_TABLE,
                 Key = BlogPostExtensions.GetKey(year, title),
             };
 
@@ -144,7 +144,7 @@ namespace AtheerBackend.Services
             var updateItemRequest = new UpdateItemRequest
             {
                 // Locating part
-                TableName = CommonConstants.BLOG_POSTS_TABLE_NAME,
+                TableName = CommonConstants.BLOGPOST_TABLE,
                 Key = BlogPostExtensions.GetKey(year, titleShrinked),
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {

@@ -17,12 +17,12 @@ namespace AtheerBlogWriterBackend.Middlewares
 
         public async Task InvokeAsync(HttpContext context)
         {
-            context.Request.Headers.TryGetValue(CommonConstants.BLOG_POSTS_EDIT_KEY_NAME, out var __value);
+            context.Request.Headers.TryGetValue(CommonConstants.ATHEER_BLOG_EDIT_SECRET, out var __value);
             string requestSecret = __value.ToString();
 
             var getParameterRequest = new GetParameterRequest
             {
-                Name = CommonConstants.BLOG_POSTS_EDIT_KEY_NAME
+                Name = CommonConstants.ATHEER_BLOG_EDIT_SECRET
             };
 
             var client = new AmazonSimpleSystemsManagementClient();

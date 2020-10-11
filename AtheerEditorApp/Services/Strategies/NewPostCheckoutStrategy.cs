@@ -20,7 +20,7 @@ namespace AtheerEditorApp.Services.Strategies
             
             PutItemRequest putItemRequest = new PutItemRequest
             {
-                TableName = CommonConstants.BLOG_POSTS_TABLE_NAME,
+                TableName = CommonConstants.BLOGPOST_TABLE,
                 Item = BlogPostExtensions.Map(post)
             };
 

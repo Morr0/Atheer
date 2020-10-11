@@ -12,7 +12,7 @@ namespace AtheerEditorApp.Services.Strategies
         {
             var deleteItemRequest = new DeleteItemRequest
             {
-                TableName = CommonConstants.BLOG_POSTS_TABLE_NAME,
+                TableName = CommonConstants.BLOGPOST_TABLE,
                 Key = BlogPostExtensions.GetKey(post.CreatedYear, post.TitleShrinked),
             };
 
