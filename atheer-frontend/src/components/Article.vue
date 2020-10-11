@@ -24,8 +24,10 @@
             <div v-if="showContent" v-html="content || `This is a sample content`">
             </div>
 
-            <v-card-text v-if="article.likeable">
-                <v-btn text @click="like">Like</v-btn> | {{article.likes}} Likes
+            <v-card-text>
+                <span v-if="article.likeable">
+                    <v-btn text @click="like">Like</v-btn> | {{article.likes}} Likes
+                </span>
                 <v-btn v-if="article.shareable" text @click="share">Share</v-btn>
             </v-card-text>
         </v-card>
