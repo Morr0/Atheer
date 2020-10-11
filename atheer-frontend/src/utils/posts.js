@@ -42,3 +42,12 @@ module.exports.like = async function (year, titleShrinked){
 
     return res.status === 400? undefined : await res.json();
 }
+
+module.exports.share = async function (year, titleShrinked){
+    const endpoint = `${_endpoint}api/blog/share/${year}/${titleShrinked}`;
+    const res = await fetch(endpoint, {
+        method: "POST"
+    });
+
+    return res.status === 400? undefined : await res.json();
+}

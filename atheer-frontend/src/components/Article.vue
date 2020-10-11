@@ -24,6 +24,10 @@
                 | 
                 {{article.likes}} Likes
             </v-card-text>
+
+            <v-card-text v-if="article.shareable">
+                <v-btn text @click="share">Share</v-btn>
+            </v-card-text>
         </v-card>
     </v-main>
 </template>
@@ -55,6 +59,15 @@ export default {
         like: async function (){
             const article = await this.$store.state.postsUtil.like(String(this.article.createdYear), this.article.titleShrinked);
             this.$emit("update:article", article);
+        },
+        share: async function (){
+            const article = await this.$store.state.postsUtil.share(String(this.article.createdYear), this.article.titleShrinked);
+            // Update likes only if the article is likeable
+            if (this.article.likeable){
+                this.$emit("update:article", article);
+            }
+
+            // TODO put sharing platforms
         }
     }
 }
