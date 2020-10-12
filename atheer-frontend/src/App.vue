@@ -18,11 +18,11 @@
 
     <!-- To make the title have a link if was not in main view -->
         <v-card-title v-if="$route.path.length === 1" primary-title style="color:#010000;">
-            Atheer Blog
+            {{$store.state.title}}
         </v-card-title>
         <v-card-title v-else primary-title>
             <router-link class="no_underline" style="color:#010000;" :to="{name: `Articles`}">
-                Atheer Blog
+                {{$store.state.title}}
             </router-link>
         </v-card-title>
 
@@ -67,11 +67,13 @@ export default {
         Articles
     },
     metaInfo: {
-        title: "Atheer",
+        title: process.env.VUE_APP_TITLE || "Atheer",
+        titleTemplate: `%s | ${process.env.VUE_APP_TITLE || "Atheer"}`,
         htmlAttrs: {
             lang: "en",
             amp: true
-        }
+        },
+        charset: "utf-8"
     },
     computed: {
         toApps: function (){

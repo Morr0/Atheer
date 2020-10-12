@@ -11,6 +11,9 @@ export default {
 	components: {
 		Article
 	},
+	metaInfo: {
+		title: "Home"
+	},
 	data: function (){
 		let articles = [];
 		this.$store.state.postsUtil.posts()
