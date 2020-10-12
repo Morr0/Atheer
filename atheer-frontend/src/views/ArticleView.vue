@@ -10,6 +10,12 @@ export default {
     components: {
         Article
     },
+    metaInfo(){
+        return {
+            title: this.article.title || "Untitled",
+            description: this.article.description
+        }
+    },
     props: {
         year: String,
         titleShrinked: String
