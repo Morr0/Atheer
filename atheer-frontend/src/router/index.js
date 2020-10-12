@@ -16,6 +16,12 @@ const routes = [
         component: ArticleView
     },
     {
+        path: "/article/:year",
+        name: "ArticlesByYear",
+        component: Articles,
+        props: true
+    },
+    {
         path: "/",
         name: "Articles",
         component: Articles

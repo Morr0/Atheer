@@ -11,12 +11,15 @@ export default {
 	components: {
 		Article
 	},
+	props: {
+		year: String
+	},
 	metaInfo: {
 		title: "Home"
 	},
 	data: function (){
 		let articles = [];
-		this.$store.state.postsUtil.posts()
+		this.$store.state.postsUtil.posts(this.year)
 			.then((data) => this.articles = data);
 
 		return {
