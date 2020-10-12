@@ -1,10 +1,12 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import Meta from "vue-meta";
 
 import Articles from '../views/Articles.vue';
 import ArticleView from "../views/ArticleView.vue";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
+Vue.use(Meta);
 
 const routes = [
     {

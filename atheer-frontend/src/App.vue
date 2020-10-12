@@ -63,9 +63,15 @@ import Articles from "@/views/Articles.vue";
 
 export default {
     name: 'App',
-
     components: {
         Articles
+    },
+    metaInfo: {
+        title: "Atheer",
+        htmlAttrs: {
+            lang: "en",
+            amp: true
+        }
     },
     computed: {
         toApps: function (){
