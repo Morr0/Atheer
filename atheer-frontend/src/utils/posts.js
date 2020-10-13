@@ -10,8 +10,8 @@ module.exports.init = async function (endpoint){
 
 // PAGINATION trackers
 // Constants
-const x_athblog_last_year = "x_athblog_last_year";
-const x_athblog_last_title = "x_athblog_last_title";
+const x_athblog_last_year = "x_AthBlog_Last_Year";
+const x_athblog_last_title = "x_AthBlog_Last_Title";
 // For when loading multiple posts only
 let _pageYear = undefined;
 let _pagePostsThusFar = [];
@@ -35,18 +35,19 @@ module.exports.posts = async function (year = undefined, titleShrinked = undefin
         return undefined;
 
     const data = await res.json();
-    let returnable = data;
+    const posts = data.posts;
+    let returnable = posts;
 
-    if (data.constructor === Array)
+    if (posts.constructor === Array)
         takeCareOfPaginationStuffIfNeeded(year, res, data);
 
     // If empty array and looking for one item, return {}
     // If empty array and looking for one item, return the first
-    if (data.constructor === Array)
+    if (posts.constructor === Array)
         if (year && titleShrinked)
-            if (data.length == 0)
+            if (posts.length == 0)
                 return {};
-            else if (data.length === 1)
+            else if (posts.length === 1)
                 returnable = data[0];
 
     return returnable;
@@ -54,13 +55,10 @@ module.exports.posts = async function (year = undefined, titleShrinked = undefin
 
 function takeCareOfPaginationStuffIfNeeded(year, res, data){
     console.log("X1");
-    const pageLastYear = res.headers.get(x_athblog_last_year);
-    const pageLastTitle = res.headers.get(x_athblog_last_title);
+    const pageLastYear = data.x_AthBlog_Last_Year;
+    const pageLastTitle = data.x_AthBlog_Last_Title;
     console.log(pageLastYear);
     console.log(pageLastTitle);
-    res.headers.forEach(element => {
-        console.log(element);
-    });
     window.res = res.headers;
 
     if (pageLastYear && pageLastTitle){
@@ -86,6 +84,7 @@ module.exports.morePosts = async function (){
         let endpoint = _endpointArticles;
         if (_pageYear)
             endpoint = `${endpoint}${_pageYear}`;
+        
 
         const res = await fetch(endpoint, {
             headers: {
@@ -96,7 +95,7 @@ module.exports.morePosts = async function (){
         const data = await res.json();
 
         takeCareOfPaginationStuffIfNeeded(_pageYear, res, data);
-        return data;
+        return data.posts;
     }
 
     return undefined;
