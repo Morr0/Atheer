@@ -21,11 +21,10 @@ export default {
 		let articles = [];
 		const that = this;
 		this.$store.state.postsUtil.posts(this.year)
-			.then((data) => articles = data)
+			.then((data) => that.articles = data)
 			.then((data) => {
 				if (data === undefined){
-					// return that.$router.replace();
-					return that.$router.push({name: "Home"});
+					return that.$router.push({name: "Placeholder"});
 				}
 			});
 

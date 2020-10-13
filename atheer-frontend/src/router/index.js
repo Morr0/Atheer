@@ -4,6 +4,7 @@ import Meta from "vue-meta";
 
 import Articles from '../views/Articles.vue';
 import ArticleView from "../views/ArticleView.vue";
+import Placeholder from "../views/Placeholder.vue";
 
 Vue.use(VueRouter);
 Vue.use(Meta);
@@ -25,6 +26,11 @@ const routes = [
         path: "/",
         name: "Articles",
         component: Articles
+    },
+    {
+        path: "/redirector",
+        name: "Placeholder",
+        component: Placeholder
     },
     {
         path: "*",

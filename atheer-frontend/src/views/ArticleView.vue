@@ -37,7 +37,7 @@ export default {
                     .then((data) => that.article = data)
                     .then((data) => {
                         if (data === undefined){
-                            return that.$router.push({name: "Home"});
+                            return that.$router.push({name: "Placeholder"});
                         }
                     });
             },
