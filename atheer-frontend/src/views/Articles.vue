@@ -1,6 +1,8 @@
 <template>
 	<v-main>
 		<Article v-for="article in articles" :key="article.titleShrinked || Math.random()" :article="article" />
+		 <v-btn v-if="loadMoreMaybe" 
+		 text type="button" @click="maybeLoadMore">Load more ???</v-btn>
 	</v-main>
 </template>
 
@@ -29,8 +31,21 @@ export default {
 			});
 
 		return {
-			articles: articles
+			articles: articles,
+			loadMoreMaybe: true
 		};
 	},
+	methods: {
+		maybeLoadMore: function (){
+			const that = this;
+			this.$store.state.postsUtil.morePosts()
+				.then((data) => {
+					if (data === undefined)
+						that.loadMoreMaybe = false;
+					else 
+						that.articles = that.articles.concat(data); 
+				});
+		}
+	}
 }
 </script>
