@@ -19,6 +19,9 @@ module.exports.posts = async function (year = undefined, titleShrinked = undefin
     }
 
     const res = await fetch(endpoint);
+    if (res.status === 404)
+        return undefined;
+
     const result = await res.json();
     let returnable = result;
 

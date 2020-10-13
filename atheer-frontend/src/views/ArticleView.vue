@@ -11,6 +11,9 @@ export default {
         Article
     },
     metaInfo(){
+        if (!this.article)
+            return;
+
         return {
             title: this.article.title || "Untitled",
             description: this.article.description
@@ -31,7 +34,12 @@ export default {
             handler: function(params) {
                 const that = this;
                 this.$store.state.postsUtil.posts(this.year, this.titleShrinked)
-                    .then((data) => that.article = data);
+                    .then((data) => that.article = data)
+                    .then((data) => {
+                        if (data === undefined){
+                            return that.$router.push({name: "Home"});
+                        }
+                    });
             },
             deep: true,
             immediate: true
@@ -40,7 +48,3 @@ export default {
 
 }
 </script>
-
-<style>
-
-</style>
