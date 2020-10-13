@@ -3,13 +3,20 @@ import Vuex from "vuex";
 
 Vue.use(Vuex)
 
-const {
+let {
     VUE_APP_TITLE = "Atheer",
     VUE_APP_API = "http://localhost:5000/"
 } = process.env;
 
+// Validations
+{
+    // Add slash at the end of api string if it doesn't have
+    if (!VUE_APP_API.endsWith('/'))
+        VUE_APP_API = `${VUE_APP_API}/`;
+}
+
 console.log(VUE_APP_TITLE);
-console.log(process.env.VUE_APP_API);
+console.log(VUE_APP_API);
 
 // Load post utility
 const postsUtil = require("../utils/posts.js");
