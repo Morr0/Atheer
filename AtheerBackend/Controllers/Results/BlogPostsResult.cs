@@ -3,6 +3,9 @@ using AtheerCore.Models;
 
 namespace AtheerBackend.Controllers.Results
 {
+    /// <summary>
+    /// The result sent back to client
+    /// </summary>
     public class BlogPostsResult
     {
         public IEnumerable<BlogPostReadDTO> Posts { get; set; }

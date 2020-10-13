@@ -39,13 +39,7 @@ namespace AtheerBackend.Controllers
                 X_AthBlog_Last_Title = htitle
             };
             var repoResponse = await _blogRepo.Get(query.Size, paginationHeader);
-            
-            // Insert into headers the pagination stuff
-            // if (repoResponse.PaginationHeader != null && !repoResponse.PaginationHeader.Empty())
-            // {
-            //     repoResponse.PaginationHeader.AddHeaders(Response.Headers);
-            // }
-            
+
             return Ok(new BlogPostsResult
             {
                 Posts = _mapper.Map<List<BlogPostReadDTO>>(repoResponse.Posts),
@@ -69,12 +63,6 @@ namespace AtheerBackend.Controllers
             BlogRepositoryBlogResponse response = await _blogRepo.GetByYear(year, query.Size, paginationHeader);
             if (response.Posts.Count == 0)
                 return NotFound();
-
-            // // Insert into headers the pagination stuff
-            // if (response.PaginationHeader != null && !response.PaginationHeader.Empty())
-            // {
-            //     response.PaginationHeader.AddHeaders(Response.Headers);
-            // }
 
             IEnumerable<BlogPostReadDTO> postsReadDTO = _mapper.Map<List<BlogPostReadDTO>>(response.Posts);
             return Ok(new BlogPostsResult
