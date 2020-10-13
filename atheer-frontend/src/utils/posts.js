@@ -8,6 +8,16 @@ module.exports.init = async function (endpoint){
     _endpointArticles = `${endpoint}api/blog/`;
 }
 
+// PAGINATION trackers
+// Constants
+const X_AthBlog_Last_Year = "x_AthBlog_Last_Year";
+const X_AthBlog_Last_Title = "x_AthBlog_Last_Title";
+// For when loading multiple posts only
+let _pageYear = undefined;
+let _pagePostsThusFar = [];
+let _pageApiLastYear = null;
+let _pageApiLastTitle = null;
+
 module.exports.posts = async function (year = undefined, titleShrinked = undefined){
     let endpoint = _endpointArticles;
 
@@ -22,19 +32,61 @@ module.exports.posts = async function (year = undefined, titleShrinked = undefin
     if (res.status === 404)
         return undefined;
 
-    const result = await res.json();
-    let returnable = result;
+    const data = await res.json();
+    let returnable = data;
+
+    if (data.constructor === Array)
+        takeCareOfPaginationStuffIfNeeded(year, res, data);
 
     // If empty array and looking for one item, return {}
     // If empty array and looking for one item, return the first
-    if (result.constructor === Array)
+    if (data.constructor === Array)
         if (year && titleShrinked)
-            if (result.length == 0)
+            if (data.length == 0)
                 return {};
-            else if (result.length === 1)
-                returnable = result[0];
+            else if (data.length === 1)
+                returnable = data[0];
 
     return returnable;
+}
+
+function takeCareOfPaginationStuffIfNeeded(year, res, data){
+    const pageLastYear = res.headers.get(X_AthBlog_Last_Year);
+    const pageLastTitle = res.headers.get(X_AthBlog_Last_Title);
+
+    if (pageLastYear && pageLastTitle){
+        _pageYear = year;
+        _pagePostsThusFar = _pagePostsThusFar.concat(data);
+        _pageApiLastYear = pageLastYear;
+        _pageApiLastTitle = pageLastTitle;
+    } else {
+        _pageYear = undefined;
+        _pagePostsThusFar = [];
+        _pageApiLastYear = null;
+        _pageApiLastTitle = null;
+    }
+}
+
+// Won't do anything unless there is more posts to be loaded
+module.exports.morePosts = async function (){
+    if (_pageApiLastYear && _pageApiLastTitle){
+        let endpoint = _endpointArticles;
+        if (_pageYear)
+            endpoint = `${endpoint}${_pageYear}`;
+
+        const res = await fetch(endpoint, {
+            headers: {
+                X_AthBlog_Last_Year: _pageApiLastYear,
+                X_AthBlog_Last_Title: _pageApiLastTitle
+            }
+        });
+        const data = await res.json();
+
+        takeCareOfPaginationStuffIfNeeded(_pageYear, res, data);
+        return data;
+    }
+
+    return undefined;
 }
 
 module.exports.like = async function (year, titleShrinked){
