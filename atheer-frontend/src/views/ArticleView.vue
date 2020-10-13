@@ -33,7 +33,7 @@ export default {
         '$route.params': {
             handler: function(params) {
                 const that = this;
-                this.$store.state.postsUtil.posts(this.year, this.titleShrinked)
+                this.$store.state.postsUtil.post(this.year, this.titleShrinked)
                     .then((data) => that.article = data)
                     .then((data) => {
                         if (data === undefined){

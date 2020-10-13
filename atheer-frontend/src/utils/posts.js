@@ -17,15 +17,17 @@ let _pageApiLastYear = null;
 let _pageApiLastTitle = null;
 // PAGINATION END
 
+module.exports.post = async function (year, titleShrinked){
+    const endpoint = `${_endpointArticles}${year}/${titleShrinked}`;
+    const res = await fetch(endpoint);
+    return res.status === 404 ? undefined : await res.json();
+}
+
 module.exports.posts = async function (year = undefined, titleShrinked = undefined){
     let endpoint = _endpointArticles;
 
-    if (year){
+    if (year)
         endpoint = `${endpoint}${year}`;
-    
-        if (titleShrinked)
-            endpoint = `${endpoint}/${titleShrinked}`;
-    }
     endpoint = `${endpoint}?size=${_pageSize}`;
 
     const res = await fetch(endpoint);
@@ -33,22 +35,8 @@ module.exports.posts = async function (year = undefined, titleShrinked = undefin
         return undefined;
 
     const data = await res.json();
-    const posts = data.posts;
-    let returnable = posts;
-
-    if (posts.constructor === Array)
-        takeCareOfPaginationStuffIfNeeded(year, data);
-
-    // If empty array and looking for one item, return {}
-    // If empty array and looking for one item, return the first
-    if (posts.constructor === Array)
-        if (year && titleShrinked)
-            if (posts.length == 0)
-                return {};
-            else if (posts.length === 1)
-                returnable = data[0];
-
-    return returnable;
+    takeCareOfPaginationStuffIfNeeded(year, data);
+    return data.posts;
 }
 
 function takeCareOfPaginationStuffIfNeeded(year, data){
