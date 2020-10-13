@@ -68,8 +68,8 @@ namespace AtheerBackend.Controllers
             return Ok(new BlogPostsResult
             {
                 Posts = postsReadDTO,
-                X_AthBlog_Last_Year = response.PaginationHeader.X_AthBlog_Last_Year,
-                X_AthBlog_Last_Title = response.PaginationHeader.X_AthBlog_Last_Title
+                X_AthBlog_Last_Year = response?.PaginationHeader?.X_AthBlog_Last_Year,
+                X_AthBlog_Last_Title = response?.PaginationHeader?.X_AthBlog_Last_Title
             });
         }
 

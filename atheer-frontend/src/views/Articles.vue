@@ -1,5 +1,9 @@
 <template>
 	<v-main>
+		<v-card-title>
+			{{year ? `${year} posts` : "Latest posts"}}
+		</v-card-title>
+
 		<Article v-for="article in articles" :key="article.titleShrinked || Math.random()" :article="article" />
 		 <v-btn v-if="loadMoreMaybe" 
 		 text type="button" @click="maybeLoadMore">Load more ???</v-btn>
