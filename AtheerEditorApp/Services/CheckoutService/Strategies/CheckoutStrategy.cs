@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using Amazon.DynamoDBv2;
-using AtheerCore.Models;
 using System.Threading.Tasks;
+using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using AtheerCore;
 using AtheerCore.Extensions;
+using AtheerCore.Models;
 
-namespace AtheerEditorApp.Services.Strategies
+namespace AtheerEditorApp.Services.CheckoutService.Strategies
 {
     public abstract class CheckoutStrategy
     {

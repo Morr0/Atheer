@@ -4,6 +4,7 @@ using AtheerEditorApp.Services;
 using System.Windows;
 using System.Windows.Controls;
 using AtheerEditorApp.Exceptions;
+using AtheerEditorApp.Services.CheckoutService;
 using AtheerEditorApp.Services.UIDataValidationService;
 
 namespace AtheerEditorApp

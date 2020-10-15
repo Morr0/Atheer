@@ -6,7 +6,7 @@ using AtheerCore;
 using AtheerCore.Extensions;
 using AtheerCore.Models;
 
-namespace AtheerEditorApp.Services.Strategies
+namespace AtheerEditorApp.Services.CheckoutService.Strategies
 {
     public sealed class EditPostCheckoutStrategy : CheckoutStrategy
     {

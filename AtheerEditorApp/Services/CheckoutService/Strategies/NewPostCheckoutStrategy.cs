@@ -1,15 +1,11 @@
-﻿using Amazon.DynamoDBv2;
+﻿using System.Threading.Tasks;
 using Amazon.DynamoDBv2.Model;
 using AtheerCore;
 using AtheerCore.Extensions;
 using AtheerCore.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 using AtheerEditorApp.Exceptions;
 
-namespace AtheerEditorApp.Services.Strategies
+namespace AtheerEditorApp.Services.CheckoutService.Strategies
 {
     internal class NewPostCheckoutStrategy : CheckoutStrategy
     {

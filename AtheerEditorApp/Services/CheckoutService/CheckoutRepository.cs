@@ -1,11 +1,11 @@
-﻿using AtheerEditorApp.Constants;
-using AtheerEditorApp.Services.Strategies;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AtheerCore.Models;
+using AtheerEditorApp.Constants;
 using AtheerEditorApp.Exceptions;
 using AtheerEditorApp.Services.AuthorizationService;
+using AtheerEditorApp.Services.CheckoutService.Strategies;
 
-namespace AtheerEditorApp.Services
+namespace AtheerEditorApp.Services.CheckoutService
 {
     internal sealed class CheckoutRepository
     {
