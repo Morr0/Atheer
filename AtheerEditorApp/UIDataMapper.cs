@@ -19,6 +19,9 @@ namespace AtheerEditorApp
         private CheckBox _unlistedCheckbox;
         private CheckBox _likeableCheckbox;
         private CheckBox _shareableCheckbox;
+        
+        private CheckBox _useScheduledDateCheckBox;
+        private DatePicker _scheduledDatePicker;
 
         internal PasswordBox _secretBox;
 
@@ -30,7 +33,8 @@ namespace AtheerEditorApp
         public UIDataMapper(TextBox yearBox, TextBox shrinkedTitleBox, TextBox titleBox,
             TextBox topicBox, TextBox descriptionBox, TextBox contentBox, 
             CheckBox draftCheckbox, CheckBox unlistedCheckbox, PasswordBox secretBox, 
-            CheckBox likeableCheckbox, CheckBox shareableCheckbox)
+            CheckBox likeableCheckbox, CheckBox shareableCheckbox, 
+            CheckBox useScheduledDateCheckBox, DatePicker scheduledDatePicker)
         {
             _yearBox = yearBox;
             _shrinkedTitleBox = shrinkedTitleBox;
@@ -42,6 +46,9 @@ namespace AtheerEditorApp
             _unlistedCheckbox = unlistedCheckbox;
             _likeableCheckbox = likeableCheckbox;
             _shareableCheckbox = shareableCheckbox;
+
+            _useScheduledDateCheckBox = useScheduledDateCheckBox;
+            _scheduledDatePicker = scheduledDatePicker;
             
             _secretBox = secretBox;
         }

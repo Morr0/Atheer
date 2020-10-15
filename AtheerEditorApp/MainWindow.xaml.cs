@@ -21,9 +21,10 @@ namespace AtheerEditorApp
         private UIDataMapper _uiDataMapper;
 
         private readonly CheckoutRepository _checkoutRepo;
-
-        private ComboBox _operationCombobox;
+        
         private readonly Button _getPostButton;
+        private readonly CheckBox _useScheduledDateCheckBox;
+        private readonly DatePicker _scheduledDatePicker;
 
         // To not let some methods get called at startup due to WPF
         // ALSO USED with changing the selection of combobox programatically so it does not double
@@ -34,8 +35,9 @@ namespace AtheerEditorApp
         {
             InitializeComponent();
 
-            _operationCombobox = FindName("_combobox") as ComboBox;
             _getPostButton = FindName("_get") as Button;
+            _useScheduledDateCheckBox = FindName("_useScheduledDate") as CheckBox;
+            _scheduledDatePicker = FindName("_scheduledDate") as DatePicker;
 
             InitUIDatamapper();
 
@@ -55,7 +57,9 @@ namespace AtheerEditorApp
                 FindName("_unlisted") as CheckBox,
                 FindName("_secret") as PasswordBox,
                 FindName("_likeable") as CheckBox,
-                FindName("_shareable") as CheckBox
+                FindName("_shareable") as CheckBox,
+                _useScheduledDateCheckBox,
+                _scheduledDatePicker
                 );
         }
 
@@ -89,7 +93,16 @@ namespace AtheerEditorApp
             SetNewSelection(ref item);
             _checkoutRepo?.ChangeStrategy(_currentSelectedOp);
             SetGetPostButtonVisibility();
+            SetScheduledControlsVisibility();
             _uiDataMapper.Clear();
+        }
+
+        private void SetScheduledControlsVisibility()
+        {
+            _useScheduledDateCheckBox.Visibility =
+                _currentSelectedOp == OperationType.New ? Visibility.Visible : Visibility.Hidden;
+            _scheduledDatePicker.Visibility =
+                _currentSelectedOp == OperationType.New ? Visibility.Visible : Visibility.Hidden;
         }
 
         // To reverse the effect of uncompleted event in case of user not wanting to change the operation
@@ -109,6 +122,7 @@ namespace AtheerEditorApp
                     _currentSelectedOp = OperationType.Remove;
                     break;
                 default:
+                    
                     _currentSelectedOp = OperationType.New;
                     break;
             }
