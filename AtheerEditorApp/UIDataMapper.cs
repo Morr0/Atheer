@@ -89,6 +89,10 @@ namespace AtheerEditorApp
             _shareableCheckbox.IsChecked = true;
             _likeableCheckbox.IsChecked = true;
             
+            _useScheduledDateCheckBox.IsChecked = false;
+            _scheduledDatePicker.SelectedDate = DateTime.UtcNow;
+            _scheduledTimeBox.Text = "00:00";
+            
             _secretBox.Clear();
         }
 

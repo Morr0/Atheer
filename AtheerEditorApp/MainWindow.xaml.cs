@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
 using AtheerEditorApp.Constants;
-using AtheerEditorApp.Services;
 using System.Windows;
 using System.Windows.Controls;
 using AtheerEditorApp.Exceptions;
@@ -23,11 +21,6 @@ namespace AtheerEditorApp
         private UIDataMapper _uiDataMapper;
 
         private readonly CheckoutRepository _checkoutRepo;
-        
-        private readonly Button _getPostButton;
-        private readonly CheckBox _useScheduledDateCheckBox;
-        private readonly DatePicker _scheduledDatePicker;
-        private readonly TextBox _scheduledTimeBox;
 
         // To not let some methods get called at startup due to WPF
         // ALSO USED with changing the selection of combobox programatically so it does not double
@@ -38,10 +31,6 @@ namespace AtheerEditorApp
         {
             InitializeComponent();
 
-            _getPostButton = FindName("_get") as Button;
-            _useScheduledDateCheckBox = FindName("_useScheduledDate") as CheckBox;
-            _scheduledDatePicker = FindName("_scheduledDate") as DatePicker;
-
             InitUIDatamapper();
 
             _checkoutRepo = new CheckoutRepository(_uiDataMapper);
@@ -50,27 +39,9 @@ namespace AtheerEditorApp
         private void InitUIDatamapper()
         {
             _uiDataMapper = new UIDataMapper(
-                FindName("_year") as TextBox,
-                FindName("_titleShrinked") as TextBox,
-                FindName("_title") as TextBox,
-                FindName("_topic") as TextBox,
-                FindName("_description") as TextBox,
-                FindName("_content") as TextBox,
-                FindName("_draft") as CheckBox,
-                FindName("_unlisted") as CheckBox,
-                FindName("_secret") as PasswordBox,
-                FindName("_likeable") as CheckBox,
-                FindName("_shareable") as CheckBox,
-                _useScheduledDateCheckBox,
-                _scheduledDatePicker,
-                _scheduledTime
-                );
-        }
-
-        // Select button click for operation type
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            
+                _year, _titleShrinked, _title, _topic, _description, _content, _draft,
+                _unlisted, _secret, _likeable, _shareable,
+                _useScheduledDate, _scheduledDate, _scheduledTime);
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -103,9 +74,13 @@ namespace AtheerEditorApp
 
         private void SetScheduledControlsVisibility()
         {
-            _useScheduledDateCheckBox.Visibility =
+            _useScheduledDate.Visibility =
                 _currentSelectedOp == OperationType.New ? Visibility.Visible : Visibility.Hidden;
-            _scheduledDatePicker.Visibility =
+            _scheduledDate.Visibility =
+                _currentSelectedOp == OperationType.New ? Visibility.Visible : Visibility.Hidden;
+            _scheduledTime.Visibility = 
+                _currentSelectedOp == OperationType.New ? Visibility.Visible : Visibility.Hidden;
+            _scheduleLabel.Visibility = 
                 _currentSelectedOp == OperationType.New ? Visibility.Visible : Visibility.Hidden;
         }
 
@@ -135,10 +110,10 @@ namespace AtheerEditorApp
         private void SetGetPostButtonVisibility()
         {
             // FOR FIRST TIME ONLY DUE TO WPF
-            if (_getPostButton == null)
+            if (_get == null)
                 return;
             
-            _getPostButton.Visibility = _currentSelectedOp == OperationType.New 
+            _get.Visibility = _currentSelectedOp == OperationType.New 
                 ? Visibility.Hidden : Visibility.Visible;
         }
         

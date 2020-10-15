@@ -8,8 +8,6 @@
         Title="MainWindow" Height="600" Width="800">
     <Grid Height="Auto" HorizontalAlignment="Right" Width="800">
         <Label Content="Select" HorizontalAlignment="Left" Margin="34,12,0,0" VerticalAlignment="Top" Height="34" Width="49" />
-
-        <Button Content="Select" HorizontalAlignment="Left" Margin="213,12,0,0" VerticalAlignment="Top" Height="32" Width="64" Click="Button_Click"/>
         <Label Content="Title" HorizontalAlignment="Left" Margin="40,79,0,0" VerticalAlignment="Top" Width="83"/>
         <Label Content="Description (MD)" HorizontalAlignment="Left" Margin="20,125,0,0" VerticalAlignment="Top" Width="103"/>
         <Label Content="Content (MD)" HorizontalAlignment="Left" Margin="37,172,0,0" VerticalAlignment="Top" Width="83"/>
@@ -36,7 +34,7 @@
         <Button Content="Get post" Visibility="Hidden" Name="_get" HorizontalAlignment="Left" Margin="728,23,0,0" VerticalAlignment="Top" Click="_get_Click"/>
         <CheckBox x:Name="_likeable" Content="Likeable" HorizontalAlignment="Left" Margin="126,504,0,0" VerticalAlignment="Top" Height="18" Width="94" IsChecked="True"/>
         <CheckBox x:Name="_shareable" Content="Shareable" HorizontalAlignment="Left" Margin="225,505,0,0" VerticalAlignment="Top" IsChecked="True"/>
-        <Label Content="Scheduled date (UTC):" HorizontalAlignment="Left" Margin="126,437,0,0" VerticalAlignment="Top"/>
+        <Label Name="_scheduleLabel" Content="Scheduled date (UTC):" HorizontalAlignment="Left" Margin="126,437,0,0" VerticalAlignment="Top"/>
         <CheckBox Content="Use date" Name="_useScheduledDate" HorizontalAlignment="Left" Margin="277,443,0,0" VerticalAlignment="Top"/>
         <DatePicker HorizontalAlignment="Left" Margin="364,439,0,0" VerticalAlignment="Top" Name="_scheduledDate"/>
         <TextBox HorizontalAlignment="Left" Margin="475,442,0,0" Name="_scheduledTime" Text="00:00" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Height="21"/>
