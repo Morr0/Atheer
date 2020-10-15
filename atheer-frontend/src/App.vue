@@ -4,28 +4,10 @@
       app
       light
     >
-    <div class="d-flex align-center">
-        <!-- <v-img
-            alt="Vuetify Logo"
-            class="shrink mr-2"
-            contain
-            src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-            transition="scale-transition"
-            width="40"
-        /> -->
-    </div>
-
-
     <!-- To make the title have a link if was not in main view -->
-        <v-card-title v-if="$route.path.length === 1" primary-title style="color:#010000;">
+        <v-toolbar-title @click="toHome" primary-title style="color:#010000;" class="cursor">
             Atheer Blog
-        </v-card-title>
-        <v-card-title v-else primary-title>
-            <router-link class="no_underline" style="color:#010000;" :to="{name: `Articles`}">
-                Atheer Blog
-            </router-link>
-        </v-card-title>
-
+        </v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -47,9 +29,7 @@
         </span>
       </v-btn>
     </v-app-bar>
-
     <v-main>
-        <!-- <Articles /> -->
         <v-container grid-list-xs>
             <router-view></router-view>
         </v-container>
@@ -86,6 +66,14 @@ export default {
                 }
             };
         }
+    },
+    methods: {
+        toHome: function (){
+            if (this.$route.path.length === 1)
+                return;
+
+            return this.$router.push({name: "Articles"});
+        }
     }
 };
 </script>
@@ -93,5 +81,9 @@ export default {
 <style>
 .no_underline {
     text-decoration: none;
+}
+
+.cursor {
+    cursor: pointer;
 }
 </style>
