@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using AtheerEditorApp.Exceptions;
 using AtheerEditorApp.Services.CheckoutService;
+using AtheerEditorApp.Services.CheckoutService.Inputs;
 using AtheerEditorApp.Services.UIDataValidationService;
 
 namespace AtheerEditorApp
@@ -152,7 +153,9 @@ namespace AtheerEditorApp
                 }
 
                 // 
-                await _checkoutRepo.Checkout();
+                CheckoutInput input = _currentSelectedOp == OperationType.New ? 
+                    _uiDataMapper.GetNewArticleCheckoutInput() : null;
+                await _checkoutRepo.Checkout(input);
 
                 // Success
                 MessageBox.Show("Successful checkout");

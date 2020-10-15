@@ -1,6 +1,7 @@
 ﻿using AtheerCore.Models;
 using System;
 using System.Windows.Controls;
+using AtheerEditorApp.Services.CheckoutService.Inputs;
 
 namespace AtheerEditorApp
 {
@@ -134,6 +135,17 @@ namespace AtheerEditorApp
                 post.LastUpdatedDate = currDate.ToString();
             
             return post;
+        }
+
+        public CheckoutInput GetNewArticleCheckoutInput()
+        {
+            if (!_useScheduledDateCheckBox.IsChecked.Value)
+                return null;
+
+            if (_scheduledDatePicker.SelectedDate == null)
+                return null;
+            
+            return new NewArticleCheckoutSchedulingInput(_scheduledDatePicker.SelectedDate.Value);
         }
     }
 }
