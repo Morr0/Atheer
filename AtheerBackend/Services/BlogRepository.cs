@@ -6,6 +6,8 @@ using AtheerCore;
 using AtheerCore.Extensions;
 using AtheerCore.Models;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace AtheerBackend.Services
@@ -26,7 +28,8 @@ namespace AtheerBackend.Services
             {
                 TableName = CommonConstants.BLOGPOST_TABLE,
                 Limit = amount,
-                
+                ProjectionExpression = GetAllExceptContentProperty(),
+
                 // Fetch only non-draft and listed posts
                 // Define the values looking for
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
@@ -70,12 +73,14 @@ namespace AtheerBackend.Services
             var queryRequest = new QueryRequest
             {
                 TableName = CommonConstants.BLOGPOST_TABLE,
+                Limit = amount,
+                ProjectionExpression = GetAllExceptContentProperty(),
+                
                 KeyConditionExpression = $"{hashKey} = {vHashKey}",
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
                     {vHashKey, new AttributeValue{N = year.ToString()} }
                 },
-                Limit = amount,
             };
             // Query the last evaluated key if not null
             if (!paginationHeader.Empty())
@@ -96,6 +101,23 @@ namespace AtheerBackend.Services
             }
 
             return response;
+        }
+
+        // Formats this to use projection expression for all properties but the `content` to minimise
+        // bandwidth usage. Although DynamoDB will not discount of the RCUs used.
+        private string GetAllExceptContentProperty()
+        {
+            PropertyInfo[] props = typeof(BlogPost).GetProperties();
+            StringBuilder sb = new StringBuilder(props.Length - 1);
+            
+            foreach (var prop in props)
+            {
+                if (prop.Name != nameof(BlogPost.Content))
+                    sb.Append($"{prop.Name},");
+            }
+
+            string expression = sb.ToString().TrimEnd(',');
+            return expression;
         }
 
         public async Task<BlogPost> Get(int year, string title)
