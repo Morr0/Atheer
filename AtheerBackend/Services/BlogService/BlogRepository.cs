@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
+using AtheerBackend.DTOs;
 using AtheerBackend.Extensions;
 using AtheerCore;
 using AtheerCore.Extensions;
@@ -119,29 +120,29 @@ namespace AtheerBackend.Services.BlogService
             return expression;
         }
 
-        public async Task<BlogPost> Get(int year, string title)
+        public async Task<BlogPost> Get(BlogPostPrimaryKey primaryKey)
         {
             var getItemRequest = new GetItemRequest
             {
                 TableName = CommonConstants.BLOGPOST_TABLE,
-                Key = BlogPostExtensions.GetKey(year, title),
+                Key = BlogPostExtensions.GetKey(primaryKey.CreatedYear, primaryKey.TitleShrinked),
             };
 
             var getItemResponse = await _client.GetItemAsync(getItemRequest);
             return BlogPostExtensions.Map(getItemResponse.Item);
         }
 
-        public async Task<BlogPost> Like(int year, string titleShrinked)
+        public async Task<BlogPost> Like(BlogPostPrimaryKey primaryKey)
         {
-            return await UpdateRecord(year, titleShrinked, UpdateBlogPostOperation.UpdateLikes);
+            return await UpdateRecord(primaryKey, UpdateBlogPostOperation.UpdateLikes);
         }
 
-        public async Task<BlogPost> Share(int year, string titleShrinked)
+        public async Task<BlogPost> Share(BlogPostPrimaryKey primaryKey)
         {
-            return await UpdateRecord(year, titleShrinked, UpdateBlogPostOperation.UpdateShares);
+            return await UpdateRecord(primaryKey, UpdateBlogPostOperation.UpdateShares);
         }
 
-        private async Task<BlogPost> UpdateRecord(int year, string titleShrinked, UpdateBlogPostOperation operation
+        private async Task<BlogPost> UpdateRecord(BlogPostPrimaryKey primaryKey, UpdateBlogPostOperation operation
             , bool updateIfIsNotAllowed = false)
         {
             string toUpdatePropName = null;
@@ -166,7 +167,7 @@ namespace AtheerBackend.Services.BlogService
             {
                 // Locating part
                 TableName = CommonConstants.BLOGPOST_TABLE,
-                Key = BlogPostExtensions.GetKey(year, titleShrinked),
+                Key = BlogPostExtensions.GetKey(primaryKey.CreatedYear, primaryKey.TitleShrinked),
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
                     {toUpdatePropValue, new AttributeValue {N = 1.ToString()}},

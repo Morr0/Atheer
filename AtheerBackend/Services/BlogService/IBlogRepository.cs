@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using AtheerBackend.DTOs;
 using AtheerCore.Models;
 
 namespace AtheerBackend.Services.BlogService
@@ -10,16 +11,9 @@ namespace AtheerBackend.Services.BlogService
         Task<BlogRepositoryBlogResponse> GetByYear(int year, int amount, 
             PostsPaginationPrimaryKey paginationHeader = null);
 
-        Task<BlogPost> Get(int year, string title);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="year"></param>
-        /// <param name="titleShrinked"></param>
-        /// <returns>Null -> could not like for whatever reason</returns>
-        Task<BlogPost> Like(int year, string titleShrinked);
-
-        Task<BlogPost> Share(int year, string titleShrinked);
+        Task<BlogPost> Get(BlogPostPrimaryKey primaryKey);
+        
+        Task<BlogPost> Like(BlogPostPrimaryKey primaryKey);
+        Task<BlogPost> Share(BlogPostPrimaryKey primaryKey);
     }
 }

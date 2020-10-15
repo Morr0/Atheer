@@ -88,7 +88,7 @@ namespace AtheerBackend.Controllers
             if (post == null)
             {
                 Console.WriteLine("Not in cache");
-                post = await _blogRepo.Get(year, title);
+                post = await _blogRepo.Get(key);
                 if (post == null)
                     return NotFound();
             }
@@ -109,7 +109,8 @@ namespace AtheerBackend.Controllers
         [HttpPost("like/{year}/{title}")]
         public async Task<IActionResult> Like(int year, string title)
         {
-            BlogPost post = await _blogRepo.Like(year, title);
+            BlogPostPrimaryKey key = new BlogPostPrimaryKey(year, title);
+            BlogPost post = await _blogRepo.Like(key);
             if (post == null)
                 return BadRequest();
             
@@ -121,7 +122,8 @@ namespace AtheerBackend.Controllers
         [HttpPost("share/{year}/{title}")]
         public async Task<IActionResult> Share(int year, string title)
         {
-            BlogPost post = await _blogRepo.Share(year, title);
+            BlogPostPrimaryKey key = new BlogPostPrimaryKey(year, title);
+            BlogPost post = await _blogRepo.Share(key);
             if (post == null)
                 return BadRequest();
             
