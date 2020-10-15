@@ -2,6 +2,12 @@
 // It publishes the item back to the same table
 
 module.exports = async function (aws, record){
+    // docs = https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/time-to-live-ttl-streams.html
+    // Verify was called by TTL
+    if (!record.userIdentity || !record.userIdentity.type || record.userIdentity.type !== "Service")
+        return;
+
+    // Clear to execute
     console.log(JSON.stringify(record));
     
     const post = reformatPostForPublish(record.dynamodb.OldImage);
@@ -28,7 +34,6 @@ function writeToDynamoDB(aws, post){
     for (const key in post){
         let value = post[key];
         
-        // TODO take care of additional data types
         if (value.N){
             item[key] = Number.parseInt(value.N);
         } else if (value.BOOL){
