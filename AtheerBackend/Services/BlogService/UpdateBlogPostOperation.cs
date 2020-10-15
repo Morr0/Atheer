@@ -1,4 +1,4 @@
-﻿namespace AtheerBackend.Services
+﻿namespace AtheerBackend.Services.BlogService
 {
     internal enum UpdateBlogPostOperation : byte
     {

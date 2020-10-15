@@ -1,6 +1,7 @@
-﻿using AutoMapper;
+﻿using AtheerCore.Models;
+using AutoMapper;
 
-namespace AtheerCore.Models
+namespace AtheerBackend.Services.BlogService
 {
     // TODO deal with duplicates of this
     public class BlogPostModelDTOMappingsProfile : Profile

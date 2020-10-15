@@ -1,9 +1,10 @@
 ﻿using Amazon.DynamoDBv2.Model;
-using AtheerBackend.Controllers.Headers;
 using AtheerCore.Models;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using AtheerBackend.Services.BlogService;
+
 namespace AtheerBackend.Extensions
 {
     public static class PostsPaginationHeaderExtension

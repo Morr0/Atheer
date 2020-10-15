@@ -1,8 +1,7 @@
-﻿using AtheerBackend.Controllers.Headers;
+﻿using System.Threading.Tasks;
 using AtheerCore.Models;
-using System.Threading.Tasks;
 
-namespace AtheerBackend.Services
+namespace AtheerBackend.Services.BlogService
 {
     public interface IBlogRepository
     {

@@ -1,16 +1,15 @@
-﻿using Amazon.DynamoDBv2;
+﻿using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
-using AtheerBackend.Controllers.Headers;
 using AtheerBackend.Extensions;
 using AtheerCore;
 using AtheerCore.Extensions;
 using AtheerCore.Models;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace AtheerBackend.Services
+namespace AtheerBackend.Services.BlogService
 {
     public class BlogRepository : IBlogRepository
     {

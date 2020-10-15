@@ -1,4 +1,4 @@
-﻿namespace AtheerBackend.Controllers.Headers
+﻿namespace AtheerBackend.Services.BlogService
 {
     public class PostsPaginationPrimaryKey
     {

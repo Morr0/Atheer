@@ -1,8 +1,7 @@
-﻿using AtheerBackend.Controllers.Headers;
+﻿using System.Collections.Generic;
 using AtheerCore.Models;
-using System.Collections.Generic;
 
-namespace AtheerBackend.Services
+namespace AtheerBackend.Services.BlogService
 {
     // A wrapper on what will the service return
     // This is a cleaner choice to tuples
