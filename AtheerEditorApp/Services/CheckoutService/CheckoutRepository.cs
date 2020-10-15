@@ -3,6 +3,7 @@ using AtheerCore.Models;
 using AtheerEditorApp.Constants;
 using AtheerEditorApp.Exceptions;
 using AtheerEditorApp.Services.AuthorizationService;
+using AtheerEditorApp.Services.CheckoutService.Inputs;
 using AtheerEditorApp.Services.CheckoutService.Strategies;
 
 namespace AtheerEditorApp.Services.CheckoutService
@@ -43,12 +44,12 @@ namespace AtheerEditorApp.Services.CheckoutService
             }
         }
         
-        public async Task Checkout()
+        public async Task Checkout(CheckoutInput input = null)
         {
             if (!await _authorizationService.Allowed(_uiDataMapper.Secret))
                 throw new IncorrectSecretException();
                 
-            await _currentStrategy.Checkout(_uiDataMapper.Post(_operationType == OperationType.New));
+            await _currentStrategy.Checkout(_uiDataMapper.Post(_operationType == OperationType.New), input);
         }
 
         public async Task<BlogPost> Get(int year, string titleShrinked)

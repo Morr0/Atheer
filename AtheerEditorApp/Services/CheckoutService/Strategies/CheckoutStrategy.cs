@@ -5,6 +5,7 @@ using Amazon.DynamoDBv2.Model;
 using AtheerCore;
 using AtheerCore.Extensions;
 using AtheerCore.Models;
+using AtheerEditorApp.Services.CheckoutService.Inputs;
 
 namespace AtheerEditorApp.Services.CheckoutService.Strategies
 {
@@ -17,7 +18,7 @@ namespace AtheerEditorApp.Services.CheckoutService.Strategies
             _client = new AmazonDynamoDBClient();
         }
 
-        public abstract Task<bool> Checkout(BlogPost post);
+        public abstract Task<bool> Checkout(BlogPost post, CheckoutInput input = null);
 
         
         // Checks that no post with the same primary key already exists

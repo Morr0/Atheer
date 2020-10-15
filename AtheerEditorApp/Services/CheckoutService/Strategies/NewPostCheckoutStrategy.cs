@@ -4,12 +4,13 @@ using AtheerCore;
 using AtheerCore.Extensions;
 using AtheerCore.Models;
 using AtheerEditorApp.Exceptions;
+using AtheerEditorApp.Services.CheckoutService.Inputs;
 
 namespace AtheerEditorApp.Services.CheckoutService.Strategies
 {
     internal class NewPostCheckoutStrategy : CheckoutStrategy
     {
-        public override async Task<bool> Checkout(BlogPost post)
+        public override async Task<bool> Checkout(BlogPost post, CheckoutInput input = null)
         {
             if (await DoesPostAlreadyExist(post))
                 throw new APostExistsWithSamePrimaryKeyException();

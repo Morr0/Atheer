@@ -5,6 +5,7 @@ using Amazon.DynamoDBv2.Model;
 using AtheerCore;
 using AtheerCore.Extensions;
 using AtheerCore.Models;
+using AtheerEditorApp.Services.CheckoutService.Inputs;
 
 namespace AtheerEditorApp.Services.CheckoutService.Strategies
 {
@@ -72,7 +73,7 @@ namespace AtheerEditorApp.Services.CheckoutService.Strategies
 
         #region this works by removing old item then putting new
 
-        public override async Task<bool> Checkout(BlogPost post)
+        public override async Task<bool> Checkout(BlogPost post, CheckoutInput input = null)
         {
             var deleteRequest = new DeleteItemRequest
             {
