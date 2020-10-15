@@ -1,7 +1,7 @@
 <template>
-	<v-main>
+    <div>
 		<Article v-for="article in articles" :key="article.titleShrinked || Math.random()" :article="article" />
-	</v-main>
+    </div>
 </template>
 
 <script>
