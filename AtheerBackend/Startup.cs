@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AtheerBackend.Services;
+using AtheerBackend.Services.CachedResultsService;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -37,6 +38,8 @@ namespace AtheerBackend
             // Automapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            // Caching
+            services.AddSingleton<ICachedResultsService, CachedResultsService>();
             // Repositories
             services.AddTransient<IBlogRepository, BlogRepository>();
 

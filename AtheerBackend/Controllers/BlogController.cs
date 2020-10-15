@@ -1,4 +1,5 @@
-﻿using AtheerBackend.Controllers.Headers;
+﻿using System;
+using AtheerBackend.Controllers.Headers;
 using AtheerBackend.Controllers.Queries;
 using AtheerBackend.Extensions;
 using AtheerBackend.Services;
@@ -7,6 +8,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AtheerBackend.DTOs;
+using AtheerBackend.Services.CachedResultsService;
 
 #nullable enable
 
@@ -17,11 +20,13 @@ namespace AtheerBackend.Controllers
     public class BlogController : ControllerBase
     {
         private IMapper _mapper;
+        private ICachedResultsService _cachedResults;
         private IBlogRepository _blogRepo;
 
-        public BlogController(IMapper mapper, IBlogRepository blogRepo)
+        public BlogController(IMapper mapper, ICachedResultsService cachedResults, IBlogRepository blogRepo)
         {
             _mapper = mapper;
+            _cachedResults = cachedResults;
             _blogRepo = blogRepo;
         }
 
@@ -77,9 +82,23 @@ namespace AtheerBackend.Controllers
         [HttpGet("{year}/{title}")]
         public async Task<IActionResult> GetOne([FromRoute] int year, [FromRoute] string title)
         {
-            BlogPost post = await _blogRepo.Get(year, title);
+            // Check cache first
+            BlogPostPrimaryKey key = new BlogPostPrimaryKey(year, title);
+            BlogPost post = _cachedResults.Get(ref key);
             if (post == null)
-                return NotFound();
+            {
+                Console.WriteLine("Not in cache");
+                post = await _blogRepo.Get(year, title);
+                if (post == null)
+                    return NotFound();
+            }
+            else
+            {
+                Console.WriteLine("In cache");
+            }
+
+            // Set it in cache
+            _cachedResults.Set(ref post);
 
             return Ok(_mapper.Map<BlogPostReadDTO>(post));
         }
