@@ -31,6 +31,10 @@
                 <v-btn v-if="article.shareable" text @click="share">Share</v-btn>
             </v-card-text>
         </v-card>
+
+        <v-snackbar v-model="showShareSnackbar">
+            Link copied.
+        </v-snackbar>
     </v-main>
 </template>
 
@@ -42,6 +46,11 @@ export default {
     props: {
         article: {},
         showContent: Boolean
+    },
+    data(){
+        return {
+            showShareSnackbar: false,
+        };
     },
     computed: {
         getParams: function (){
@@ -94,8 +103,10 @@ export default {
                     console.log("Did not share");
                 }
             } // Just link sharing right now
-            else 
+            else
                 await navigator.clipboard.writeText(window.document.location.href);
+
+            this.showShareSnackbar = true;
 
             const article = await this.$store.state.postsUtil.share(String(this.article.createdYear), this.article.titleShrinked);
             // Update likes only if the article is likeable
