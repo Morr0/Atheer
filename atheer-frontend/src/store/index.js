@@ -3,10 +3,20 @@ import Vuex from "vuex";
 
 Vue.use(Vuex)
 
-const {
+let {
+    VUE_APP_TITLE = "Atheer",
     VUE_APP_API = "http://localhost:5000/"
 } = process.env;
-console.log(process.env.VUE_APP_API);
+
+// Validations
+{
+    // Add slash at the end of api string if it doesn't have
+    if (!VUE_APP_API.endsWith('/'))
+        VUE_APP_API = `${VUE_APP_API}/`;
+}
+
+console.log(VUE_APP_TITLE);
+console.log(VUE_APP_API);
 
 // Load post utility
 const postsUtil = require("../utils/posts.js");
@@ -14,7 +24,8 @@ postsUtil.init(VUE_APP_API);
 
 export default new Vuex.Store({
     state: {
-        postsUtil: postsUtil
+        postsUtil: postsUtil,
+        title: VUE_APP_TITLE
     },
     mutations: {
     },

@@ -10,6 +10,15 @@ export default {
     components: {
         Article
     },
+    metaInfo(){
+        if (!this.article)
+            return;
+
+        return {
+            title: this.article.title || "Untitled",
+            description: this.article.description
+        }
+    },
     props: {
         year: String,
         titleShrinked: String
@@ -24,8 +33,13 @@ export default {
         '$route.params': {
             handler: function(params) {
                 const that = this;
-                this.$store.state.postsUtil.posts(this.year, this.titleShrinked)
-                    .then((data) => that.article = data);
+                this.$store.state.postsUtil.post(this.year, this.titleShrinked)
+                    .then((data) => that.article = data)
+                    .then((data) => {
+                        if (data === undefined){
+                            return that.$router.push({name: "Placeholder"});
+                        }
+                    });
             },
             deep: true,
             immediate: true
@@ -34,7 +48,3 @@ export default {
 
 }
 </script>
-
-<style>
-
-</style>

@@ -1,10 +1,13 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import Meta from "vue-meta";
 
 import Articles from '../views/Articles.vue';
 import ArticleView from "../views/ArticleView.vue";
+import Placeholder from "../views/Placeholder.vue";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
+Vue.use(Meta);
 
 const routes = [
     {
@@ -14,13 +17,25 @@ const routes = [
         component: ArticleView
     },
     {
+        path: "/article/:year",
+        name: "ArticlesByYear",
+        component: Articles,
+        props: true
+    },
+    {
         path: "/",
         name: "Articles",
         component: Articles
     },
     {
+        path: "/redirector",
+        name: "Placeholder",
+        component: Placeholder
+    },
+    {
         path: "*",
-        redirect: "/"
+        redirect: "/",
+        name: "Home"
     }
   ];
 
