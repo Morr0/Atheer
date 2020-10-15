@@ -23,14 +23,19 @@ namespace AtheerBackend.Services.BlogService
 
         public async Task<BlogRepositoryBlogResponse> Get(int amount, PostsPaginationPrimaryKey paginationHeader = null)
         {
-
+            string ttlNameSubstitute = $"#{CommonConstants.BLOGPOST_TABLE_TTL_ATTRIBUTE}";
+            
             var scanRequest = new ScanRequest
             {
                 TableName = CommonConstants.BLOGPOST_TABLE,
                 Limit = amount,
                 ProjectionExpression = GetAllExceptContentProperty(),
-
-                // Fetch only non-draft and listed posts
+                
+                // Conditionals
+                ExpressionAttributeNames = new Dictionary<string, string>
+                {
+                    {ttlNameSubstitute, CommonConstants.BLOGPOST_TABLE_TTL_ATTRIBUTE}
+                },
                 // Define the values looking for
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
@@ -40,7 +45,8 @@ namespace AtheerBackend.Services.BlogService
                     }}
                 },
                 // filter, refer to AWS docs
-                FilterExpression = "Unlisted = :false AND Draft = :false "
+                // Fetch only non-draft and listed posts and where there is no `TTL` attribute
+                FilterExpression = $"Unlisted = :false AND Draft = :false AND attribute_not_exists({ttlNameSubstitute})"
             };
             // Query the last evaluated key if not null
             if (!paginationHeader.Empty())

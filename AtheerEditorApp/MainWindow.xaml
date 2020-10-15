@@ -36,9 +36,9 @@
         <Button Content="Get post" Visibility="Hidden" Name="_get" HorizontalAlignment="Left" Margin="728,23,0,0" VerticalAlignment="Top" Click="_get_Click"/>
         <CheckBox x:Name="_likeable" Content="Likeable" HorizontalAlignment="Left" Margin="126,504,0,0" VerticalAlignment="Top" Height="18" Width="94" IsChecked="True"/>
         <CheckBox x:Name="_shareable" Content="Shareable" HorizontalAlignment="Left" Margin="225,505,0,0" VerticalAlignment="Top" IsChecked="True"/>
-        <Label Content="Scheduled date:" HorizontalAlignment="Left" Margin="126,437,0,0" VerticalAlignment="Top"/>
-        <CheckBox Content="Use date" Name="_useScheduledDate" HorizontalAlignment="Left" Margin="226,442,0,0" VerticalAlignment="Top"/>
-        <DatePicker HorizontalAlignment="Left" Margin="313,439,0,0" VerticalAlignment="Top" Name="_scheduledDate"/>
+        <Label Content="Scheduled date (UTC):" HorizontalAlignment="Left" Margin="126,437,0,0" VerticalAlignment="Top"/>
+        <CheckBox Content="Use date" Name="_useScheduledDate" HorizontalAlignment="Left" Margin="277,443,0,0" VerticalAlignment="Top"/>
+        <DatePicker HorizontalAlignment="Left" Margin="364,439,0,0" VerticalAlignment="Top" Name="_scheduledDate"/>
 
     </Grid>
 </Window>
