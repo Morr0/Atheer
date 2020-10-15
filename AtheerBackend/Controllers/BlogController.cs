@@ -112,6 +112,8 @@ namespace AtheerBackend.Controllers
             BlogPost post = await _blogRepo.Like(year, title);
             if (post == null)
                 return BadRequest();
+            
+            _cachedResults.Set(ref post);
 
             return Ok(_mapper.Map<BlogPostReadDTO>(post));
         }
@@ -122,6 +124,8 @@ namespace AtheerBackend.Controllers
             BlogPost post = await _blogRepo.Share(year, title);
             if (post == null)
                 return BadRequest();
+            
+            _cachedResults.Set(ref post);
 
             return Ok(_mapper.Map<BlogPostReadDTO>(post));
         }

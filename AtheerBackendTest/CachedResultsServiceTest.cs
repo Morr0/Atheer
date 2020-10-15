@@ -52,5 +52,34 @@ namespace AtheerBackendTest
             // Assert
             Assert.Null(cachedResultsService.Get(ref primaryKey));
         }
+
+        [Fact]
+        public void ShouldUpdateCacheSuccessfullyWithoutInvalidation()
+        {
+            // Arrange I
+            BlogPostPrimaryKey primaryKey = new BlogPostPrimaryKey(2000, "hello");
+            BlogPost post = new BlogPost
+            {
+                CreatedYear = primaryKey.CreatedYear,
+                TitleShrinked = primaryKey.TitleShrinked,
+                Title = "Hello"
+            };
+            
+            ICachedResultsService cachedResultsService = new CachedResultsService();
+            BlogPostPrimaryKey p = new BlogPostPrimaryKey(post.CreatedYear, post.TitleShrinked);
+
+            // Act I
+            cachedResultsService.Set(ref post);
+            
+            // Arrange II
+            string newTitle = "jjj";
+            post.Title = newTitle;
+            
+            // Act II
+            cachedResultsService.Set(ref post);
+
+            // Assert
+            Assert.Equal(newTitle, cachedResultsService.Get(ref primaryKey).Title);
+        }
     }
 }
