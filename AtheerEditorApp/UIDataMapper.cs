@@ -23,6 +23,7 @@ namespace AtheerEditorApp
         
         private CheckBox _useScheduledDateCheckBox;
         private DatePicker _scheduledDatePicker;
+        private TextBox _scheduledTimeBox;
 
         internal PasswordBox _secretBox;
 
@@ -30,12 +31,12 @@ namespace AtheerEditorApp
         /// Only to be used when not adding a new article
         /// </summary>
         private BlogPost _post;
-
+        
         public UIDataMapper(TextBox yearBox, TextBox shrinkedTitleBox, TextBox titleBox,
             TextBox topicBox, TextBox descriptionBox, TextBox contentBox, 
             CheckBox draftCheckbox, CheckBox unlistedCheckbox, PasswordBox secretBox, 
             CheckBox likeableCheckbox, CheckBox shareableCheckbox, 
-            CheckBox useScheduledDateCheckBox, DatePicker scheduledDatePicker)
+            CheckBox useScheduledDateCheckBox, DatePicker scheduledDatePicker, TextBox scheduledTimeBox)
         {
             _yearBox = yearBox;
             _shrinkedTitleBox = shrinkedTitleBox;
@@ -50,6 +51,7 @@ namespace AtheerEditorApp
 
             _useScheduledDateCheckBox = useScheduledDateCheckBox;
             _scheduledDatePicker = scheduledDatePicker;
+            _scheduledTimeBox = scheduledTimeBox;
             
             _secretBox = secretBox;
         }
@@ -144,8 +146,15 @@ namespace AtheerEditorApp
 
             if (_scheduledDatePicker.SelectedDate == null)
                 return null;
+
+            DateTime selectedDateTime = _scheduledDatePicker.SelectedDate.Value;
+            if (!string.IsNullOrEmpty(_scheduledTimeBox.Text))
+            {
+                TimeSpan time = TimeSpan.Parse(_scheduledTimeBox.Text);
+                selectedDateTime = selectedDateTime.Add(time);
+            }
             
-            return new NewArticleCheckoutSchedulingInput(_scheduledDatePicker.SelectedDate.Value);
+            return new NewArticleCheckoutSchedulingInput(selectedDateTime);
         }
     }
 }

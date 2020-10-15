@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using AtheerEditorApp.Constants;
 using AtheerEditorApp.Services;
 using System.Windows;
@@ -26,6 +27,7 @@ namespace AtheerEditorApp
         private readonly Button _getPostButton;
         private readonly CheckBox _useScheduledDateCheckBox;
         private readonly DatePicker _scheduledDatePicker;
+        private readonly TextBox _scheduledTimeBox;
 
         // To not let some methods get called at startup due to WPF
         // ALSO USED with changing the selection of combobox programatically so it does not double
@@ -60,7 +62,8 @@ namespace AtheerEditorApp
                 FindName("_likeable") as CheckBox,
                 FindName("_shareable") as CheckBox,
                 _useScheduledDateCheckBox,
-                _scheduledDatePicker
+                _scheduledDatePicker,
+                _scheduledTime
                 );
         }
 
@@ -152,9 +155,26 @@ namespace AtheerEditorApp
                     return;
                 }
 
-                // 
-                CheckoutInput input = _currentSelectedOp == OperationType.New ? 
-                    _uiDataMapper.GetNewArticleCheckoutInput() : null;
+                CheckoutInput input = null;
+                try
+                {
+                    input = _currentSelectedOp == OperationType.New
+                        ? _uiDataMapper.GetNewArticleCheckoutInput()
+                        : null;
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("Please provide the correct time of the day in 24hr format as 00:00 format");
+                    return;
+                }
+                catch (OverflowException)
+                {
+                    MessageBox.Show("Please provide the time of day within the bounds of 24 and 0 hours");
+                    return;
+                }
+
+                // Execution
+                
                 await _checkoutRepo.Checkout(input);
 
                 // Success

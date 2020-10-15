@@ -39,6 +39,7 @@
         <Label Content="Scheduled date (UTC):" HorizontalAlignment="Left" Margin="126,437,0,0" VerticalAlignment="Top"/>
         <CheckBox Content="Use date" Name="_useScheduledDate" HorizontalAlignment="Left" Margin="277,443,0,0" VerticalAlignment="Top"/>
         <DatePicker HorizontalAlignment="Left" Margin="364,439,0,0" VerticalAlignment="Top" Name="_scheduledDate"/>
+        <TextBox HorizontalAlignment="Left" Margin="475,442,0,0" Name="_scheduledTime" Text="00:00" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Height="21"/>
 
     </Grid>
 </Window>
