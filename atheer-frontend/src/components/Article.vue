@@ -21,7 +21,7 @@
                 {{description}}
             </v-card-text>
 
-            <div v-if="showContent" v-html="content || `This is a sample content`">
+            <div v-if="showContent" class="article" v-html="content || `This is a sample content`">
             </div>
 
             <v-card-text>
@@ -116,3 +116,10 @@ export default {
     }
 }
 </script>
+
+<style>
+.article img {
+    max-width: 100%;
+    max-height: 56.2%;
+}
+</style>
