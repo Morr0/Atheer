@@ -4,13 +4,18 @@ const deleteDueToTTL = require("./events/deleteDueToTTL");
 
 exports.handler = async (event) => {
     console.log(JSON.stringify(event));
-    for (const key in event.Records){
-        const record = event.Records[key];
-        
-        switch (record.eventName){
-            case "REMOVE":
-                await deleteDueToTTL(aws, record);
+    // To catch errors so it does not retry
+    try {
+        for (const key in event.Records){
+            const record = event.Records[key];
+            
+            switch (record.eventName){
+                case "REMOVE":
+                    await deleteDueToTTL(aws, record);
+            }
         }
+    } catch (error){
+        console.log(error);
     }
     
     const response = {

@@ -19,8 +19,7 @@ module.exports = async function (aws, record){
 
 function reformatPostForPublish(post){
     post.CreatedYear.N = post.CreatedYear.N.substring(1);
-    if (post.TTL)
-        delete "TTL" in post;
+    delete post.TTL;
     return post;
 }
 
@@ -41,6 +40,11 @@ function writeToDynamoDB(aws, post){
         } else if (value.S){
             item[key] = value.S;
         }
+    }
+
+    // Due to unknown reasons
+    if (!item.CreatedYear){
+        item.CreatedYear = Number.parseInt(new Date().getFullYear());
     }
     
     const params = {
