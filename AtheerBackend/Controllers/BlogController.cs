@@ -1,12 +1,12 @@
-﻿using AtheerBackend.Controllers.Headers;
-using AtheerBackend.Controllers.Queries;
-using AtheerBackend.Extensions;
-using AtheerBackend.Services;
+﻿using AtheerBackend.Controllers.Queries;
 using AtheerCore.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AtheerBackend.Controllers.Results;
+using AtheerBackend.DTOs;
+using AtheerBackend.Services.BlogService;
 
 #nullable enable
 
@@ -38,14 +38,13 @@ namespace AtheerBackend.Controllers
                 X_AthBlog_Last_Title = htitle
             };
             var repoResponse = await _blogRepo.Get(query.Size, paginationHeader);
-            
-            // Insert into headers the pagination stuff
-            if (repoResponse.PaginationHeader != null && !repoResponse.PaginationHeader.Empty())
-            {
-                repoResponse.PaginationHeader.AddHeaders(Response.Headers);
-            }
 
-            return Ok(_mapper.Map<List<BlogPostReadDTO>>(repoResponse.Posts));
+            return Ok(new BlogPostsResult
+            {
+                Posts = _mapper.Map<List<BlogPostReadDTO>>(repoResponse.Posts),
+                X_AthBlog_Last_Year = repoResponse?.PaginationHeader?.X_AthBlog_Last_Year,
+                X_AthBlog_Last_Title = repoResponse?.PaginationHeader?.X_AthBlog_Last_Title
+            });
         }
 
         [HttpGet("{year}")]
@@ -64,20 +63,20 @@ namespace AtheerBackend.Controllers
             if (response.Posts.Count == 0)
                 return NotFound();
 
-            // Insert into headers the pagination stuff
-            if (response.PaginationHeader != null && !response.PaginationHeader.Empty())
-            {
-                response.PaginationHeader.AddHeaders(Response.Headers);
-            }
-
             IEnumerable<BlogPostReadDTO> postsReadDTO = _mapper.Map<List<BlogPostReadDTO>>(response.Posts);
-            return Ok(postsReadDTO);
+            return Ok(new BlogPostsResult
+            {
+                Posts = postsReadDTO,
+                X_AthBlog_Last_Year = response?.PaginationHeader?.X_AthBlog_Last_Year,
+                X_AthBlog_Last_Title = response?.PaginationHeader?.X_AthBlog_Last_Title
+            });
         }
 
         [HttpGet("{year}/{title}")]
         public async Task<IActionResult> GetOne([FromRoute] int year, [FromRoute] string title)
         {
-            BlogPost post = await _blogRepo.Get(year, title);
+            BlogPostPrimaryKey key = new BlogPostPrimaryKey(year, title);
+            BlogPost post = await _blogRepo.Get(key);
             if (post == null)
                 return NotFound();
 
@@ -88,9 +87,9 @@ namespace AtheerBackend.Controllers
         #region Liking and Sharing
         
         [HttpPost("like/{year}/{title}")]
-        public async Task<IActionResult> Like(int year, string title)
+        public async Task<IActionResult> Like(BlogPostPrimaryKey key)
         {
-            BlogPost post = await _blogRepo.Like(year, title);
+            BlogPost post = await _blogRepo.Like(key);
             if (post == null)
                 return BadRequest();
 
@@ -100,7 +99,8 @@ namespace AtheerBackend.Controllers
         [HttpPost("share/{year}/{title}")]
         public async Task<IActionResult> Share(int year, string title)
         {
-            BlogPost post = await _blogRepo.Share(year, title);
+            BlogPostPrimaryKey key = new BlogPostPrimaryKey(year, title);
+            BlogPost post = await _blogRepo.Share(key);
             if (post == null)
                 return BadRequest();
 
