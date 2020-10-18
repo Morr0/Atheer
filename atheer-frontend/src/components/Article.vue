@@ -63,7 +63,9 @@ export default {
             return this.article.description || "This is a sample description";
         },
         content: function (){
-            return mdToHTMLConverter.makeHtml(this.article.content);
+            const co = mdToHTMLConverter.makeHtml(this.article.content);
+            console.log(co);
+            return co;
         },
         dates: function (){
             const creationDate = this.creationDate ? Date(this.creationDate) : undefined;
@@ -121,5 +123,22 @@ export default {
 .article img {
     max-width: 100%;
     max-height: 56.2%;
+}
+
+.article p code {
+    background: black;
+    color: white;
+}
+
+.article pre code {
+    background: rgba(0, 0, 0, 0);
+    color: white;
+}
+
+.article pre {
+    background: black;
+    max-width: 100%;
+    overflow-x: scroll;
+    padding: 8px;
 }
 </style>
