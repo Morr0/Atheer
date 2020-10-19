@@ -11,10 +11,9 @@
                     </router-link>
                 </h1>
             </div>
-            
 
-            <v-card-subtitle v-if="dates">
-                {{dates}}
+            <v-card-subtitle>
+                {{topics ? dates + " | " + topics : dates}}
             </v-card-subtitle>
 
             <v-card-text>
@@ -63,9 +62,7 @@ export default {
             return this.article.description || "This is a sample description";
         },
         content: function (){
-            const co = mdToHTMLConverter.makeHtml(this.article.content);
-            console.log(co);
-            return co;
+            return mdToHTMLConverter.makeHtml(this.article.content);
         },
         dates: function (){
             const creationDate = this.creationDate ? Date(this.creationDate) : undefined;
@@ -80,6 +77,22 @@ export default {
             } 
 
             return creationDate;
+        },
+        topics: function (){
+            if (this.article.topics){
+                const topics = this.article.topics;
+                if (!topics.length)
+                    return;
+
+                const firstTopic = topics[0];
+                // special -> a non-article post
+                if (firstTopic.toLowerCase() === "special")
+                    return; 
+                    
+                let result = "";
+                topics.forEach((topic) => result = result === "" ? firstTopic : result + ", " + topic);
+                return result;
+            }
         }
     },
     methods: {

@@ -2,7 +2,7 @@
 ## Roadmap:
 
 ### 1.2:
-- [] Show topic of post except for marked `Special`
+- [X] Show topics of post except for marked `Special`
 - [] Make a cloudformation template to deploy all of the project
 
 ### 1.3:
