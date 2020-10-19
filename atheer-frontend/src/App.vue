@@ -47,6 +47,33 @@ export default {
     components: {
         Articles
     },
+    metaInfo(){
+        return {
+            title: "Home",
+            titleTemplate: `%s | ${this.$store.state.title || "Atheer home"}`,
+            content: 'width=device-width, initial-scale=1',
+            charset: "utf-8",
+            meta: [
+                {
+                    name: "description",
+                    content: this.$store.state.description || "Atheer Home page"
+                },
+                {
+                    property: "og:title",
+                    content: this.$store.state.title || "Atheer home"
+                },
+                {
+                    property: "og:description",
+                    content: this.$store.state.description || "Atheer Blog"
+                },
+                // TODO add logo of Atheer here
+                // {
+                //     property: "og:image",
+                //     content: this.$page.post.image || ""
+                // }
+            ]
+        };
+    },
     computed: {
         toApps: function (){
             return {

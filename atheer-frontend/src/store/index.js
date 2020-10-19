@@ -5,6 +5,7 @@ Vue.use(Vuex)
 
 let {
     VUE_APP_TITLE = "Atheer",
+    VUE_APP_DESCRIPTION = "Atheer Blog",
     VUE_APP_API = "http://localhost:5000/"
 } = process.env;
 
@@ -25,7 +26,8 @@ postsUtil.init(VUE_APP_API);
 export default new Vuex.Store({
     state: {
         postsUtil: postsUtil,
-        title: VUE_APP_TITLE
+        title: VUE_APP_TITLE,
+        description: VUE_APP_DESCRIPTION
     },
     mutations: {
     },
