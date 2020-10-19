@@ -38,6 +38,8 @@ namespace AtheerCore.Extensions
                     }
                     else if (prop.PropertyType == typeof(bool))
                         prop.SetValue(post, val.BOOL);
+                    else if (prop.PropertyType == typeof(List<string>))
+                        prop.SetValue(post, val.SS);
                     else
                         throw new Exception("The type from DynamoDB was not mapped.");
                         
@@ -61,6 +63,8 @@ namespace AtheerCore.Extensions
                     val.S = (prop.GetValue(post) as string) ?? "";
                 else if (prop.PropertyType == typeof(bool))
                     val.BOOL = (bool)prop.GetValue(post);
+                else if (prop.PropertyType == typeof(List<string>))
+                    val.SS = (List<string>) prop.GetValue(post) ?? new List<string>();
                 else
                     throw new Exception("The type to DynamoDB was not mapped.");
 

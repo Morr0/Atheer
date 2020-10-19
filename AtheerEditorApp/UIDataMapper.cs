@@ -1,6 +1,9 @@
 ﻿using AtheerCore.Models;
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using AtheerEditorApp.Services.CheckoutService.Inputs;
 
 namespace AtheerEditorApp
@@ -65,13 +68,19 @@ namespace AtheerEditorApp
             _yearBox.Text = post.CreatedYear.ToString();
             _shrinkedTitleBox.Text = post.TitleShrinked;
             _titleBox.Text = post.Title;
-            _topicBox.Text = post.Topic;
             _descriptionBox.Text = post.Description;
             _contentBox.Text = post.Content;
             _draftCheckbox.IsChecked = post.Draft;
             _unlistedCheckbox.IsChecked = post.Unlisted;
             _likeableCheckbox.IsChecked = post.Likeable;
             _shareableCheckbox.IsChecked = post.Shareable;
+
+            StringBuilder topicsSB = new StringBuilder();
+            foreach (var topic in post?.Topics)
+            {
+                topicsSB.Append($"{topic},");
+            }
+            _topicBox.Text = (topicsSB.ToString()).TrimEnd(',');
         }
 
         public void Clear()
@@ -102,12 +111,11 @@ namespace AtheerEditorApp
             post.Content = _contentBox.Text;
             post.Description = _descriptionBox.Text;
             post.Title = _titleBox.Text;
-            post.Topic = _topicBox.Text;
+            post.Topics = new List<string>(_topicBox.Text.Split(','));
             post.Unlisted = _unlistedCheckbox.IsChecked ?? true;
             post.Draft = _draftCheckbox.IsChecked ?? true;
             post.Likeable = _likeableCheckbox.IsChecked ?? true;
             post.Shareable = _shareableCheckbox.IsChecked ?? true;
-
             // Create first time metadata
             if (@new)
             {

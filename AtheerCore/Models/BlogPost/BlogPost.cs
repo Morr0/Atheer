@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AtheerCore.Models
 {
@@ -23,7 +24,7 @@ namespace AtheerCore.Models
 
         public string LastUpdatedDate { get; set; }
 
-        public string Topic { get; set; }
+        public List<string> Topics { get; set; }
 
         public bool Likeable { get; set; } = true;
 
