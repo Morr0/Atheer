@@ -1,6 +1,6 @@
 ﻿namespace AtheerCore
 {
-    public class CommonConstants
+    internal class CommonConstants
     {
         // Blog post related
         public static string BLOGPOST_TABLE = "Atheer-Blog";

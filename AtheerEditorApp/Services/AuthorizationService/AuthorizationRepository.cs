@@ -18,7 +18,7 @@ namespace AtheerEditorApp.Services.AuthorizationService
         {
             var getParameterRequest = new GetParameterRequest
             {
-                Name = CommonConstants.ATHEER_BLOG_EDIT_SECRET
+                Name = Singletons.ConstantsLoader.BlogPostEditSecretName
             };
 
             var getParameterResponse = await _systemsClient.GetParameterAsync(getParameterRequest);

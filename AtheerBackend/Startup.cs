@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AtheerBackend.Services;
 using AtheerBackend.Services.BlogService;
+using AtheerCore;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +35,8 @@ namespace AtheerBackend
 
             services.AddCors(options =>
                 options.AddDefaultPolicy(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()));
+
+            services.AddSingleton<ConstantsLoader>(provider => new ConstantsLoader(Configuration));
 
             // Automapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

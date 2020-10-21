@@ -27,7 +27,7 @@ namespace AtheerEditorApp.Services.CheckoutService.Strategies
 
             PutItemRequest putItemRequest = new PutItemRequest
             {
-                TableName = CommonConstants.BLOGPOST_TABLE,
+                TableName = Singletons.ConstantsLoader.BlogPostTableName,
                 Item = attributes
             };
 
@@ -48,7 +48,7 @@ namespace AtheerEditorApp.Services.CheckoutService.Strategies
             ref Dictionary<string, AttributeValue> attributes)
         {
             long ttl = ((DateTimeOffset)schedulingInput.ScheduleDate).ToUnixTimeSeconds();
-            attributes.Add(CommonConstants.BLOGPOST_TABLE_TTL_ATTRIBUTE, new AttributeValue{N = ttl.ToString()});
+            attributes.Add(Singletons.ConstantsLoader.BlogPostTableTTLAttribute, new AttributeValue{N = ttl.ToString()});
         }
         
         

@@ -77,7 +77,7 @@ namespace AtheerEditorApp.Services.CheckoutService.Strategies
         {
             var deleteRequest = new DeleteItemRequest
             {
-                TableName = CommonConstants.BLOGPOST_TABLE,
+                TableName = Singletons.ConstantsLoader.BlogPostTableName,
                 Key = BlogPostExtensions.GetKey(post.CreatedYear, post.TitleShrinked),
                 ReturnValues = ReturnValue.ALL_OLD
             };
@@ -92,7 +92,7 @@ namespace AtheerEditorApp.Services.CheckoutService.Strategies
             
             var putItemRequest = new PutItemRequest
             {
-                TableName = CommonConstants.BLOGPOST_TABLE,
+                TableName = Singletons.ConstantsLoader.BlogPostTableName,
                 Item = BlogPostExtensions.Map(post)
             };
             var putItemResponse = await _client.PutItemAsync(putItemRequest);

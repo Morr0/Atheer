@@ -16,25 +16,28 @@ namespace AtheerBackend.Services.BlogService
     {
         private AmazonDynamoDBClient _client;
 
-        public BlogRepository()
+        private ConstantsLoader _constantsLoader;
+
+        public BlogRepository(ConstantsLoader constantsLoader)
         {
             _client = new AmazonDynamoDBClient();
+            _constantsLoader = constantsLoader;
         }
 
         public async Task<BlogRepositoryBlogResponse> Get(int amount, PostsPaginationPrimaryKey paginationHeader = null)
         {
-            string ttlNameSubstitute = $"#{CommonConstants.BLOGPOST_TABLE_TTL_ATTRIBUTE}";
+            string ttlNameSubstitute = $"#{_constantsLoader.BlogPostTableTTLAttribute}";
             
             var scanRequest = new ScanRequest
             {
-                TableName = CommonConstants.BLOGPOST_TABLE,
+                TableName = _constantsLoader.BlogPostTableName,
                 Limit = amount,
                 ProjectionExpression = GetAllExceptContentProperty(),
                 
                 // Conditionals
                 ExpressionAttributeNames = new Dictionary<string, string>
                 {
-                    {ttlNameSubstitute, CommonConstants.BLOGPOST_TABLE_TTL_ATTRIBUTE}
+                    {ttlNameSubstitute, _constantsLoader.BlogPostTableTTLAttribute}
                 },
                 // Define the values looking for
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
@@ -78,7 +81,7 @@ namespace AtheerBackend.Services.BlogService
 
             var queryRequest = new QueryRequest
             {
-                TableName = CommonConstants.BLOGPOST_TABLE,
+                TableName = _constantsLoader.BlogPostTableName,
                 Limit = amount,
                 ProjectionExpression = GetAllExceptContentProperty(),
                 
@@ -130,7 +133,7 @@ namespace AtheerBackend.Services.BlogService
         {
             var getItemRequest = new GetItemRequest
             {
-                TableName = CommonConstants.BLOGPOST_TABLE,
+                TableName = _constantsLoader.BlogPostTableName,
                 Key = BlogPostExtensions.GetKey(primaryKey.CreatedYear, primaryKey.TitleShrinked),
             };
 
@@ -172,7 +175,7 @@ namespace AtheerBackend.Services.BlogService
             var updateItemRequest = new UpdateItemRequest
             {
                 // Locating part
-                TableName = CommonConstants.BLOGPOST_TABLE,
+                TableName = _constantsLoader.BlogPostTableName,
                 Key = BlogPostExtensions.GetKey(primaryKey.CreatedYear, primaryKey.TitleShrinked),
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {

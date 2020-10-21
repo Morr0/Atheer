@@ -31,7 +31,7 @@ namespace AtheerEditorApp.Services.CheckoutService.Strategies
         {
             var getItemRequest = new GetItemRequest
             {
-                TableName = CommonConstants.BLOGPOST_TABLE,
+                TableName = Singletons.ConstantsLoader.BlogPostTableName,
                 Key = new Dictionary<string, AttributeValue>
                 {
                     {nameof(BlogPost.CreatedYear), new AttributeValue{N = year.ToString()}},
