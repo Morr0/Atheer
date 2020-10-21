@@ -1,0 +1,23 @@
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-alpine AS build-env
+
+WORKDIR /src
+COPY ./AtheerCore/*.csproj ./AtheerCore
+COPY ./AtheerBackend/*.csproj ./AtheerBackend
+
+COPY . .
+
+WORKDIR /src/AtheerCore
+RUN dotnet restore
+RUN dotnet publish -c Release -o /src/bin
+
+WORKDIR /src/AtheerBackend
+RUN dotnet restore
+RUN dotnet add reference /src/AtheerCore
+RUN dotnet publish -c Release -o /src/bin
+
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1.9-alpine3.12
+WORKDIR /app
+EXPOSE 80
+RUN ls
+COPY --from=build-env /src/bin .
+ENTRYPOINT [ "dotnet", "AtheerBackend.dll" ]
