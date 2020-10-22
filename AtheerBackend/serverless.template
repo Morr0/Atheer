@@ -2,24 +2,27 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Transform": "AWS::Serverless-2016-10-31",
   "Description": "An AWS Serverless Application that uses the ASP.NET Core framework running in Amazon Lambda.",
-  "Parameters": {},
-  "Conditions": {},
+  "Parameters": {
+    "NameParameter": {
+        "Type": "String",
+        "Default": "AtheerBackend",
+        "Description": "The name of the function"
+    }
+  },
   "Resources": {
     "AspNetCoreFunction": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
+        "FunctionName": { "Ref": "NameParameter" },
         "Handler": "AtheerBackend::AtheerBackend.LambdaEntryPoint::FunctionHandlerAsync",
         "Runtime": "dotnetcore3.1",
         "CodeUri": "",
         "MemorySize": 256,
-        "Timeout": 30,
+        "Timeout": 29,
         "Role": null,
         "Policies": [
           "AWSLambdaFullAccess"
         ],
-        "Environment": {
-          "Variables": {}
-        },
         "Events": {
           "ProxyResource": {
             "Type": "Api",
