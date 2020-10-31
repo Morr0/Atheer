@@ -3,7 +3,7 @@
 
 ### 1.2:
 - [X] Show topics of post except for marked `Special`
-- [] Make something appear while loading a resource
+- [X] Make something appear while loading a resource
 
 ### 1.3:
 - [] Share newly created posts on Linkedin
