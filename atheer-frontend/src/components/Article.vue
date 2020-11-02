@@ -1,6 +1,6 @@
 <template>
     <v-main>
-        <v-card style="padding:16px;">
+        <v-card v-if="article" style="padding:16px;">
             <div>
                 <h1 v-if="showContent" style="color:#010000;">
                 {{article.title || "This is a sample title"}}
@@ -29,6 +29,9 @@
                 </span>
                 <v-btn v-if="article.shareable" text @click="share">Share</v-btn>
             </v-card-text>
+        </v-card>
+        <v-card v-else>
+            Loading ...
         </v-card>
 
         <v-snackbar v-model="showShareSnackbar">
