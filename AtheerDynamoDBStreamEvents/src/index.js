@@ -1,6 +1,7 @@
 const aws = require("aws-sdk");
 
 const deleteDueToTTL = require("./events/deleteDueToTTL");
+const sharePostToSocialMedia = require("./events/sharePostToSocialMedia");
 
 exports.handler = async (event) => {
     console.log(JSON.stringify(event));
@@ -12,6 +13,8 @@ exports.handler = async (event) => {
             switch (record.eventName){
                 case "REMOVE":
                     await deleteDueToTTL(aws, record);
+                case "INSERT":
+                    await sharePostToSocialMedia(aws, record);
             }
         }
     } catch (error){

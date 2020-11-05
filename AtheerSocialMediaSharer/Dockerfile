@@ -1,0 +1,13 @@
+FROM node:12.19.0-alpine3.10
+
+ARG POST_YEAR
+ARG POST_TITLE
+ENV POST_YEAR ${POST_YEAR}}
+ENV POST_TITLE ${POST_TITLE}}
+
+WORKDIR /app
+COPY . /app
+
+RUN npm install
+
+ENTRYPOINT [ "node", "index.js" ]
