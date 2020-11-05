@@ -13,21 +13,13 @@
 
       <v-btn
         text
-        :to="toApps"
-      >
-        <span class="mr-2">
-            Apps
-        </span>
-      </v-btn>
-
-      <v-btn
-        text
         :to="toContact"
       >
         <span class="mr-2">
             Contact me
         </span>
       </v-btn>
+      
     </v-app-bar>
     <v-main>
         <v-container grid-list-xs>
