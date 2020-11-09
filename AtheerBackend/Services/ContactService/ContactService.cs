@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AtheerBackend.Repositories.Contact;
 using AtheerBackend.Utilities;
 using AtheerCore.Models.Contact;
 
@@ -7,10 +8,17 @@ namespace AtheerBackend.Services.ContactService
 {
     public class ContactService : IContactService
     {
+        private ContactRepository _repository;
+
+        public ContactService(ContactRepository repository)
+        {
+            _repository = repository;
+        }
+        
         public async Task Contact(Contact contact)
         {
             await PopulateCountryPropertyIfPossible(contact).ConfigureAwait(false);
-            // Put to DB
+            await _repository.PutContact(contact).ConfigureAwait(false);
         }
 
         private async Task PopulateCountryPropertyIfPossible(Contact contact)
