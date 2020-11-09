@@ -34,9 +34,10 @@ module.exports.posts = async function (year = undefined, titleShrinked = undefin
     if (res.status === 404)
         return undefined;
 
-    const data = await res.json();
+    let data = await res.json();
     takeCareOfPaginationStuffIfNeeded(year, data);
-    return data.posts;
+    data = addPropertyShowingIfPaginationNeeded(data);
+    return data;
 }
 
 function takeCareOfPaginationStuffIfNeeded(year, data){
@@ -56,6 +57,11 @@ function takeCareOfPaginationStuffIfNeeded(year, data){
     }
 }
 
+function addPropertyShowingIfPaginationNeeded(data){
+    data.canLoadMore = _pageApiLastYear && _pageApiLastTitle ? true : false;    
+    return data;
+}
+
 // Won't do anything unless there is more posts to be loaded
 module.exports.morePosts = async function (){
     if (_pageApiLastYear && _pageApiLastTitle){
@@ -70,10 +76,12 @@ module.exports.morePosts = async function (){
                 X_AthBlog_Last_Title: _pageApiLastTitle,
             }
         });
-        const data = await res.json();
 
+        let data = await res.json();
         takeCareOfPaginationStuffIfNeeded(_pageYear, data);
-        return data.posts;
+        if (data.posts.length > 0)
+            data = addPropertyShowingIfPaginationNeeded(data);
+        return data;
     }
 
     return undefined;

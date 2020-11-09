@@ -5,7 +5,7 @@
 		</v-card-title>
 
 		<Article v-for="article in articles" :key="article.titleShrinked || Math.random()" :article="article" />
-		 <v-btn v-if="loadMoreMaybe" 
+		 <v-btn v-if="loadMore" 
 		 text type="button" @click="maybeLoadMore">Load more ???</v-btn>
 	</v-main>
 </template>
@@ -21,6 +21,7 @@ export default {
 		year: String
 	},
     metaInfo(){
+        document.loadMore = this.loadMore;
         return {
             title: "Home",
             content: 'width=device-width, initial-scale=1',
@@ -50,7 +51,10 @@ export default {
 		let articles = [];
 		const that = this;
 		this.$store.state.postsUtil.posts(this.year)
-			.then((data) => that.articles = data)
+			.then((data) => {
+                that.loadMore = data.canLoadMore;
+                return that.articles = data.posts;
+            })
 			.then((data) => {
 				if (data === undefined){
 					return that.$router.push({name: "Placeholder"});
@@ -59,7 +63,7 @@ export default {
 
 		return {
 			articles: articles,
-			loadMoreMaybe: true
+			loadMore: false
 		};
 	},
 	methods: {
@@ -67,10 +71,8 @@ export default {
 			const that = this;
 			this.$store.state.postsUtil.morePosts()
 				.then((data) => {
-					if (data === undefined)
-						that.loadMoreMaybe = false;
-					else 
-						that.articles = that.articles.concat(data); 
+                    that.loadMore = data.canLoadMore;
+                    that.articles = that.articles.concat(data.posts); 
 				});
 		}
 	}
