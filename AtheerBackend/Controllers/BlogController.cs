@@ -76,7 +76,7 @@ namespace AtheerBackend.Controllers
         public async Task<IActionResult> GetOne([FromRoute] int year, [FromRoute] string title)
         {
             BlogPostPrimaryKey key = new BlogPostPrimaryKey(year, title);
-            BlogPost post = await _blogRepo.Get(key);
+            BlogPost post = await _blogRepo.GetSpecific(key);
             if (post == null)
                 return NotFound();
 

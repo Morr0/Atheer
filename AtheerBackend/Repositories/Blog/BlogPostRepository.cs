@@ -38,7 +38,8 @@ namespace AtheerBackend.Repositories.Blog
             return DynamoToFromModelMapper<BlogPost>.Map(response.Item);
         }
 
-        public async Task<BlogRepositoryBlogResponse> GetMany(int amount, PostsPaginationPrimaryKey paginationHeader)
+        public async Task<BlogRepositoryBlogResponse> GetMany(int amount, PostsPaginationPrimaryKey paginationHeader, 
+            bool loadContentProperty)
         {
             string ttlNameSubstitute = $"#{_constantsLoader.BlogPostTableTTLAttribute}";
             
@@ -46,7 +47,6 @@ namespace AtheerBackend.Repositories.Blog
             {
                 TableName = _constantsLoader.BlogPostTableName,
                 Limit = amount,
-                ProjectionExpression = GetAllExceptContentProperty(),
                 
                 // Conditionals
                 ExpressionAttributeNames = new Dictionary<string, string>
@@ -65,6 +65,12 @@ namespace AtheerBackend.Repositories.Blog
                 // Fetch only non-draft and listed posts and where there is no `TTL` attribute
                 FilterExpression = $"Unlisted = :false AND Draft = :false AND attribute_not_exists({ttlNameSubstitute})"
             };
+            
+            if (!loadContentProperty)
+            {
+                request.ProjectionExpression = GetAllExceptContentProperty();
+            }
+            
             // Query the last evaluated key if not null
             if (!paginationHeader.Empty())
             {
@@ -77,7 +83,7 @@ namespace AtheerBackend.Repositories.Blog
         }
 
         public async Task<BlogRepositoryBlogResponse> GetMany(int year, int amount, 
-        PostsPaginationPrimaryKey paginationHeader)
+        PostsPaginationPrimaryKey paginationHeader, bool loadContentProperty)
         {
             string hashKey = nameof(BlogPost.CreatedYear);
             string vHashKey = $":{hashKey}";
@@ -86,14 +92,19 @@ namespace AtheerBackend.Repositories.Blog
             {
                 TableName = _constantsLoader.BlogPostTableName,
                 Limit = amount,
-                ProjectionExpression = GetAllExceptContentProperty(),
-                
+
                 KeyConditionExpression = $"{hashKey} = {vHashKey}",
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
                     {vHashKey, new AttributeValue{N = year.ToString()} }
                 },
             };
+
+            if (!loadContentProperty)
+            {
+                request.ProjectionExpression = GetAllExceptContentProperty();
+            }
+            
             // Query the last evaluated key if not null
             if (!paginationHeader.Empty())
             {

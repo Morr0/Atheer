@@ -16,16 +16,16 @@ namespace AtheerBackend.Services.BlogService
 
         public Task<BlogRepositoryBlogResponse> Get(int amount, PostsPaginationPrimaryKey paginationHeader = null)
         {
-            return _repository.GetMany(amount, paginationHeader);
+            return _repository.GetMany(amount, paginationHeader, false);
         }
 
         public Task<BlogRepositoryBlogResponse> GetByYear(int year, int amount, 
             PostsPaginationPrimaryKey paginationHeader = null)
         {
-            return _repository.GetMany(year, amount, paginationHeader);
+            return _repository.GetMany(year, amount, paginationHeader, false);
         }
 
-        public Task<BlogPost> Get(BlogPostPrimaryKey primaryKey)
+        public Task<BlogPost> GetSpecific(BlogPostPrimaryKey primaryKey)
         {
             return _repository.Get(primaryKey);
         }
