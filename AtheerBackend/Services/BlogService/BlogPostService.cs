@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using AtheerBackend.DTOs;
-using AtheerBackend.Extensions;
+using AtheerBackend.Repositories.Blog;
 using AtheerCore;
 using AtheerCore.Extensions;
 using AtheerCore.Models;
@@ -17,128 +15,29 @@ namespace AtheerBackend.Services.BlogService
         private AmazonDynamoDBClient _client;
 
         private ConstantsLoader _constantsLoader;
+        private BlogPostRepository _repository;
 
-        public BlogPostService(ConstantsLoader constantsLoader)
+        public BlogPostService(ConstantsLoader constantsLoader, BlogPostRepository repository)
         {
             _client = new AmazonDynamoDBClient();
             _constantsLoader = constantsLoader;
+            _repository = repository;
         }
 
-        public async Task<BlogRepositoryBlogResponse> Get(int amount, PostsPaginationPrimaryKey paginationHeader = null)
+        public Task<BlogRepositoryBlogResponse> Get(int amount, PostsPaginationPrimaryKey paginationHeader = null)
         {
-            string ttlNameSubstitute = $"#{_constantsLoader.BlogPostTableTTLAttribute}";
-            
-            var scanRequest = new ScanRequest
-            {
-                TableName = _constantsLoader.BlogPostTableName,
-                Limit = amount,
-                ProjectionExpression = GetAllExceptContentProperty(),
-                
-                // Conditionals
-                ExpressionAttributeNames = new Dictionary<string, string>
-                {
-                    {ttlNameSubstitute, _constantsLoader.BlogPostTableTTLAttribute}
-                },
-                // Define the values looking for
-                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-                {
-                    {":false", new AttributeValue
-                    {
-                        BOOL = false
-                    }}
-                },
-                // filter, refer to AWS docs
-                // Fetch only non-draft and listed posts and where there is no `TTL` attribute
-                FilterExpression = $"Unlisted = :false AND Draft = :false AND attribute_not_exists({ttlNameSubstitute})"
-            };
-            // Query the last evaluated key if not null
-            if (!paginationHeader.Empty())
-            {
-                scanRequest.ExclusiveStartKey = PostsPaginationHeaderExtension.LastEvalKey(paginationHeader);
-            }
-
-            var scanResponse = await _client.ScanAsync(scanRequest);
-
-            var response = new BlogRepositoryBlogResponse(scanResponse.Count);
-            foreach (var item in scanResponse.Items)
-            {
-                response.Posts.Add(DynamoToFromModelMapper<BlogPost>.Map(item));
-            }
-            if (scanResponse.LastEvaluatedKey.Count > 0) 
-            {
-                response.PaginationHeader = PostsPaginationHeaderExtension
-                .PostsPaginationHeaderFromLastEvalKey(scanResponse.LastEvaluatedKey); 
-            }
-
-            return response;
+            return _repository.GetMany(amount, paginationHeader);
         }
 
-        public async Task<BlogRepositoryBlogResponse> GetByYear(int year, int amount, 
+        public Task<BlogRepositoryBlogResponse> GetByYear(int year, int amount, 
             PostsPaginationPrimaryKey paginationHeader = null)
         {
-            string hashKey = nameof(BlogPost.CreatedYear);
-            string vHashKey = $":{hashKey}";
-
-            var queryRequest = new QueryRequest
-            {
-                TableName = _constantsLoader.BlogPostTableName,
-                Limit = amount,
-                ProjectionExpression = GetAllExceptContentProperty(),
-                
-                KeyConditionExpression = $"{hashKey} = {vHashKey}",
-                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-                {
-                    {vHashKey, new AttributeValue{N = year.ToString()} }
-                },
-            };
-            // Query the last evaluated key if not null
-            if (!paginationHeader.Empty())
-            {
-                queryRequest.ExclusiveStartKey = PostsPaginationHeaderExtension.LastEvalKey(paginationHeader);
-            }
-
-            var queryResponse = await _client.QueryAsync(queryRequest);
-            BlogRepositoryBlogResponse response = new BlogRepositoryBlogResponse(queryResponse.Count);
-            foreach (var item in queryResponse.Items)
-            {
-                response.Posts.Add(DynamoToFromModelMapper<BlogPost>.Map(item));
-            }
-            if (queryResponse.LastEvaluatedKey.Count > 0)
-            {
-                response.PaginationHeader = PostsPaginationHeaderExtension
-                .PostsPaginationHeaderFromLastEvalKey(queryResponse.LastEvaluatedKey);
-            }
-
-            return response;
+            return _repository.GetMany(year, amount, paginationHeader);
         }
 
-        // Formats this to use projection expression for all properties but the `content` to minimise
-        // bandwidth usage. Although DynamoDB will not discount of the RCUs used.
-        private string GetAllExceptContentProperty()
+        public Task<BlogPost> Get(BlogPostPrimaryKey primaryKey)
         {
-            PropertyInfo[] props = typeof(BlogPost).GetProperties();
-            StringBuilder sb = new StringBuilder(props.Length - 1);
-            
-            foreach (var prop in props)
-            {
-                if (prop.Name != nameof(BlogPost.Content))
-                    sb.Append($"{prop.Name},");
-            }
-
-            string expression = sb.ToString().TrimEnd(',');
-            return expression;
-        }
-
-        public async Task<BlogPost> Get(BlogPostPrimaryKey primaryKey)
-        {
-            var getItemRequest = new GetItemRequest
-            {
-                TableName = _constantsLoader.BlogPostTableName,
-                Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(primaryKey.CreatedYear, primaryKey.TitleShrinked),
-            };
-
-            var getItemResponse = await _client.GetItemAsync(getItemRequest);
-            return DynamoToFromModelMapper<BlogPost>.Map(getItemResponse.Item);
+            return _repository.Get(primaryKey);
         }
 
         public async Task<BlogPost> Like(BlogPostPrimaryKey primaryKey)
