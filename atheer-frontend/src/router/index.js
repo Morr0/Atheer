@@ -17,6 +17,14 @@ const routes = [
         component: ArticleView
     },
     {
+        path: "/articles/0",
+        redirect: "/"
+    },
+    {
+        path: "/article/0",
+        redirect: "/"
+    },
+    {
         // BACKWARD COMPATIBILITY
         path: "/article/:year",
         component: Articles,
