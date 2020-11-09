@@ -15,14 +15,16 @@ namespace AtheerBackend.Repositories.Blog
 {
     public class BlogPostRepository
     {
-        private ConstantsLoader _constantsLoader;
-        private AmazonDynamoDBClient _client;
+        private readonly ConstantsLoader _constantsLoader;
+        private readonly AmazonDynamoDBClient _client;
 
         public BlogPostRepository(ConstantsLoader loader)
         {
             _constantsLoader = loader;
             _client = new AmazonDynamoDBClient();
         }
+
+        #region Getting
 
         public async Task<BlogPost> Get(BlogPostPrimaryKey primaryKey)
         {
@@ -137,5 +139,44 @@ namespace AtheerBackend.Repositories.Blog
 
             return response;
         }
+        
+        #endregion
+
+        #region Updating
+
+        public async Task<BlogPost> IncrementSpecificPropertyIf(BlogPostPrimaryKey primaryKey, string toIncrementPropertyName
+            , string conditionPropertyName)
+        {
+            string toUpdatePropValue = $":{toIncrementPropertyName}";
+            string updateConditionPropValue = $":{conditionPropertyName}";
+            
+            var request = new UpdateItemRequest
+            {
+                TableName = _constantsLoader.BlogPostTableName,
+                Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(primaryKey.CreatedYear, primaryKey.TitleShrinked),
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                {
+                    {toUpdatePropValue, new AttributeValue {N = 1.ToString()}},
+                    {updateConditionPropValue, new AttributeValue {BOOL = true}}
+                },
+                UpdateExpression = $"ADD {toIncrementPropertyName} {toUpdatePropValue}",
+                
+                ConditionExpression = $"attribute_exists({conditionPropertyName}) AND {conditionPropertyName} = {updateConditionPropValue}",
+
+                ReturnValues = ReturnValue.ALL_NEW
+            };
+
+            try
+            {
+                var response = await _client.UpdateItemAsync(request);
+                return DynamoToFromModelMapper<BlogPost>.Map(response.Attributes);
+            }
+            catch (ConditionalCheckFailedException)
+            {
+                return null;
+            }
+        }
+
+        #endregion
     }
 }
