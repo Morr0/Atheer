@@ -87,8 +87,9 @@ namespace AtheerBackend.Controllers
         #region Liking and Sharing
         
         [HttpPost("like/{year}/{title}")]
-        public async Task<IActionResult> Like(BlogPostPrimaryKey key)
+        public async Task<IActionResult> Like(int year, string title)
         {
+            var key = new BlogPostPrimaryKey(year, title);
             BlogPost post = await _blogRepo.Like(key);
             if (post == null)
                 return BadRequest();
@@ -99,7 +100,7 @@ namespace AtheerBackend.Controllers
         [HttpPost("share/{year}/{title}")]
         public async Task<IActionResult> Share(int year, string title)
         {
-            BlogPostPrimaryKey key = new BlogPostPrimaryKey(year, title);
+            var key = new BlogPostPrimaryKey(year, title);
             BlogPost post = await _blogRepo.Share(key);
             if (post == null)
                 return BadRequest();
