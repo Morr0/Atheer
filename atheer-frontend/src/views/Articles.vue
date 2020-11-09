@@ -52,14 +52,13 @@ export default {
 		const that = this;
 		this.$store.state.postsUtil.posts(this.year)
 			.then((data) => {
+                if (!data){
+                    return that.$router.push({name: "Placeholder"});
+                }
+
                 that.loadMore = data.canLoadMore;
                 return that.articles = data.posts;
-            })
-			.then((data) => {
-				if (data === undefined){
-					return that.$router.push({name: "Placeholder"});
-				}
-			});
+            });
 
 		return {
 			articles: articles,
