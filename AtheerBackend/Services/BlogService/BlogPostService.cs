@@ -12,13 +12,13 @@ using AtheerCore.Models;
 
 namespace AtheerBackend.Services.BlogService
 {
-    public class BlogRepository : IBlogRepository
+    public class BlogPostService : IBlogPostService
     {
         private AmazonDynamoDBClient _client;
 
         private ConstantsLoader _constantsLoader;
 
-        public BlogRepository(ConstantsLoader constantsLoader)
+        public BlogPostService(ConstantsLoader constantsLoader)
         {
             _client = new AmazonDynamoDBClient();
             _constantsLoader = constantsLoader;

@@ -17,9 +17,9 @@ namespace AtheerBackend.Controllers
     public class BlogController : ControllerBase
     {
         private IMapper _mapper;
-        private IBlogRepository _blogRepo;
+        private IBlogPostService _blogRepo;
 
-        public BlogController(IMapper mapper, IBlogRepository blogRepo)
+        public BlogController(IMapper mapper, IBlogPostService blogRepo)
         {
             _mapper = mapper;
             _blogRepo = blogRepo;

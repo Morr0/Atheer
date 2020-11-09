@@ -1,4 +1,5 @@
 using System;
+using AtheerBackend.Repositories.Blog;
 using AtheerBackend.Repositories.Contact;
 using AtheerBackend.Services.BlogService;
 using AtheerBackend.Services.ContactService;
@@ -40,9 +41,10 @@ namespace AtheerBackend
             
             // Repositories
             services.AddTransient<ContactRepository>();
+            services.AddTransient<BlogPostRepository>();
 
             // Services
-            services.AddTransient<IBlogRepository, BlogRepository>();
+            services.AddTransient<IBlogPostService, BlogPostService>();
             services.AddTransient<IContactService, ContactService>();
 
             services.AddCors((opts) =>

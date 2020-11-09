@@ -4,7 +4,7 @@ using AtheerCore.Models;
 
 namespace AtheerBackend.Services.BlogService
 {
-    public interface IBlogRepository
+    public interface IBlogPostService
     {
         Task<BlogRepositoryBlogResponse> Get(int amount, PostsPaginationPrimaryKey paginationHeader = null);
 
