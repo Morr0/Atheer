@@ -17,7 +17,13 @@ const routes = [
         component: ArticleView
     },
     {
+        // BACKWARD COMPATIBILITY
         path: "/article/:year",
+        component: Articles,
+        props: true
+    },
+    {
+        path: "/articles/:year",
         name: "ArticlesByYear",
         component: Articles,
         props: true

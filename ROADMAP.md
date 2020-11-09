@@ -7,7 +7,7 @@
 
 ### 1.3:
 - [] Share newly created posts on Linkedin
-- [] Contact backend as a seperate service
+- [X] Contact backend as a seperate service
 - [] Enquire about a post
 - [] Contact form
 

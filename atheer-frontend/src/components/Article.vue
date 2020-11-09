@@ -1,13 +1,13 @@
 <template>
     <v-main>
-        <v-card v-if="article" style="padding:16px;">
+        <v-card style="padding:16px;">
             <div>
                 <h1 v-if="showContent" style="color:#010000;">
-                {{article.title || "This is a sample title"}}
+                {{article.title || "Loading"}}
                 </h1>
                 <h1 v-else>
                     <router-link class="no_underline" style="color:#010000;" :to="{name: `ArticleView`, params: getParams}">
-                        {{article.title || "This is a sample title"}}
+                        {{article.title || "Loading"}}
                     </router-link>
                 </h1>
             </div>
@@ -20,7 +20,7 @@
                 {{description}}
             </v-card-text>
 
-            <div v-if="showContent" class="article" v-html="content || `This is a sample content`">
+            <div v-if="showContent" class="article" v-html="content">
             </div>
 
             <v-card-text>
@@ -29,9 +29,6 @@
                 </span>
                 <v-btn v-if="article.shareable" text @click="share">Share</v-btn>
             </v-card-text>
-        </v-card>
-        <v-card v-else>
-            Loading ...
         </v-card>
 
         <v-snackbar v-model="showShareSnackbar">
@@ -62,7 +59,7 @@ export default {
             };
         },
         description: function (){
-            return this.article.description || "This is a sample description";
+            return this.article.description;
         },
         content: function (){
             return mdToHTMLConverter.makeHtml(this.article.content);
