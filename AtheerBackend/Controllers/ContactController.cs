@@ -24,6 +24,7 @@ namespace AtheerBackend.Controllers
         public async Task<IActionResult> PostContact([FromBody] ContactWriteDTO writeDto)
         {
             Contact contact = _mapper.Map<Contact>(writeDto);
+            contact.IPAddressWhenContacted = Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
             await _contactService.Contact(contact);
 
             return Ok();
