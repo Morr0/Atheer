@@ -14,7 +14,7 @@ namespace AtheerEditorApp.Services.CheckoutService.Strategies
             var deleteItemRequest = new DeleteItemRequest
             {
                 TableName = Singletons.ConstantsLoader.BlogPostTableName,
-                Key = BlogPostExtensions.GetKey(post.CreatedYear, post.TitleShrinked),
+                Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(post.CreatedYear, post.TitleShrinked),
             };
 
             var response = await _client.DeleteItemAsync(deleteItemRequest);

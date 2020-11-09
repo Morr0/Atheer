@@ -17,7 +17,7 @@ namespace AtheerEditorApp.Services.CheckoutService.Strategies
             if (await DoesPostAlreadyExist(post))
                 throw new APostExistsWithSamePrimaryKeyException();
 
-            var attributes = BlogPostExtensions.Map(post);
+            var attributes = DynamoToFromModelMapper<BlogPost>.Map(post);
             if (input is NewArticleCheckoutSchedulingInput)
             {
                 var scheduledInput = input as NewArticleCheckoutSchedulingInput;

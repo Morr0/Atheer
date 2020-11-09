@@ -78,13 +78,13 @@ namespace AtheerEditorApp.Services.CheckoutService.Strategies
             var deleteRequest = new DeleteItemRequest
             {
                 TableName = Singletons.ConstantsLoader.BlogPostTableName,
-                Key = BlogPostExtensions.GetKey(post.CreatedYear, post.TitleShrinked),
+                Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(post.CreatedYear, post.TitleShrinked),
                 ReturnValues = ReturnValue.ALL_OLD
             };
             var deleteResponse = await _client.DeleteItemAsync(deleteRequest);
 
             Console.WriteLine(deleteResponse.Attributes.Count);
-            BlogPost oldPost = BlogPostExtensions.Map(deleteResponse.Attributes);
+            BlogPost oldPost = DynamoToFromModelMapper<BlogPost>.Map(deleteResponse.Attributes);
             post.CreationDate = oldPost.CreationDate;
             post.TitleShrinked = oldPost.TitleShrinked;
 
@@ -93,7 +93,7 @@ namespace AtheerEditorApp.Services.CheckoutService.Strategies
             var putItemRequest = new PutItemRequest
             {
                 TableName = Singletons.ConstantsLoader.BlogPostTableName,
-                Item = BlogPostExtensions.Map(post)
+                Item = DynamoToFromModelMapper<BlogPost>.Map(post)
             };
             var putItemResponse = await _client.PutItemAsync(putItemRequest);
             

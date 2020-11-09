@@ -3,18 +3,19 @@ using AtheerCore.Models;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using AtheerCore.Models.Contact;
 
 namespace AtheerCore.Extensions
 {
-    public class BlogPostExtensions
+    public class DynamoToFromModelMapper<T> where T : new()
     {
-        public static BlogPost Map(Dictionary<string, AttributeValue> dict)
+        public static T Map(Dictionary<string, AttributeValue> dict)
         {
             if (dict.Count == 0)
-                return null;
+                return default; // null
 
-            BlogPost post = new BlogPost();
-            Type type = post.GetType();
+            T @object = new T();
+            Type type = typeof(T);
             PropertyInfo[] properties = type.GetProperties();
 
             foreach (var prop in properties)
@@ -25,46 +26,46 @@ namespace AtheerCore.Extensions
                     AttributeValue val = dict[prop.Name];
 
                     if (prop.PropertyType == typeof(string))
-                        prop.SetValue(post, val.S);
+                        prop.SetValue(@object, val.S);
                     else if (prop.PropertyType == typeof(int))
                     {
                         try
                         {
-                            prop.SetValue(post, int.Parse(val.N));
+                            prop.SetValue(@object, int.Parse(val.N));
                         } catch (ArgumentNullException)
                         {
-                            prop.SetValue(post, 0);
+                            prop.SetValue(@object, 0);
                         }
                     }
                     else if (prop.PropertyType == typeof(bool))
-                        prop.SetValue(post, val.BOOL);
+                        prop.SetValue(@object, val.BOOL);
                     else if (prop.PropertyType == typeof(List<string>))
-                        prop.SetValue(post, val.SS);
+                        prop.SetValue(@object, val.SS);
                     else
                         throw new Exception("The type from DynamoDB was not mapped.");
                         
                 }
             }
 
-            return post;
+            return @object;
         }
 
-        public static Dictionary<string, AttributeValue> Map(BlogPost post)
+        public static Dictionary<string, AttributeValue> Map(T @object)
         {
-            PropertyInfo[] props = post.GetType().GetProperties();
+            PropertyInfo[] props = typeof(T).GetProperties();
             var dict = new Dictionary<string, AttributeValue>();
 
             foreach (var prop in props)
             {
                 AttributeValue val = new AttributeValue();
                 if (prop.PropertyType == typeof(int))
-                    val.N = (((int)prop.GetValue(post)).ToString()) ?? "0";
+                    val.N = (((int)prop.GetValue(@object)).ToString()) ?? "0";
                 else if (prop.PropertyType == typeof(string))
-                    val.S = (prop.GetValue(post) as string) ?? "";
+                    val.S = (prop.GetValue(@object) as string) ?? "";
                 else if (prop.PropertyType == typeof(bool))
-                    val.BOOL = (bool)prop.GetValue(post);
+                    val.BOOL = (bool)prop.GetValue(@object);
                 else if (prop.PropertyType == typeof(List<string>))
-                    val.SS = (List<string>) prop.GetValue(post) ?? new List<string>();
+                    val.SS = (List<string>) prop.GetValue(@object) ?? new List<string>();
                 else
                     throw new Exception("The type to DynamoDB was not mapped.");
 
@@ -75,13 +76,20 @@ namespace AtheerCore.Extensions
         }
 
         // Get key
-        // To reduce code duplication
-        public static Dictionary<string, AttributeValue> GetKey(int year, string titleShrinked)
+        public static Dictionary<string, AttributeValue> GetPostKey(int year, string titleShrinked)
         {
             return new Dictionary<string, AttributeValue>
             {
                 {nameof(BlogPost.CreatedYear), new AttributeValue{N = year.ToString()} },
                 {nameof(BlogPost.TitleShrinked), new AttributeValue{S = titleShrinked} }
+            };
+        }
+
+        public static Dictionary<string, AttributeValue> GetContactKey(string id)
+        {
+            return new Dictionary<string, AttributeValue>
+            {
+                {nameof(Contact.Id), new AttributeValue(id)}
             };
         }
     }

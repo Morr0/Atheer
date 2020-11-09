@@ -62,7 +62,7 @@ namespace AtheerBackend.Services.BlogService
             var response = new BlogRepositoryBlogResponse(scanResponse.Count);
             foreach (var item in scanResponse.Items)
             {
-                response.Posts.Add(BlogPostExtensions.Map(item));
+                response.Posts.Add(DynamoToFromModelMapper<BlogPost>.Map(item));
             }
             if (scanResponse.LastEvaluatedKey.Count > 0) 
             {
@@ -101,7 +101,7 @@ namespace AtheerBackend.Services.BlogService
             BlogRepositoryBlogResponse response = new BlogRepositoryBlogResponse(queryResponse.Count);
             foreach (var item in queryResponse.Items)
             {
-                response.Posts.Add(BlogPostExtensions.Map(item));
+                response.Posts.Add(DynamoToFromModelMapper<BlogPost>.Map(item));
             }
             if (queryResponse.LastEvaluatedKey.Count > 0)
             {
@@ -134,11 +134,11 @@ namespace AtheerBackend.Services.BlogService
             var getItemRequest = new GetItemRequest
             {
                 TableName = _constantsLoader.BlogPostTableName,
-                Key = BlogPostExtensions.GetKey(primaryKey.CreatedYear, primaryKey.TitleShrinked),
+                Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(primaryKey.CreatedYear, primaryKey.TitleShrinked),
             };
 
             var getItemResponse = await _client.GetItemAsync(getItemRequest);
-            return BlogPostExtensions.Map(getItemResponse.Item);
+            return DynamoToFromModelMapper<BlogPost>.Map(getItemResponse.Item);
         }
 
         public async Task<BlogPost> Like(BlogPostPrimaryKey primaryKey)
@@ -176,7 +176,7 @@ namespace AtheerBackend.Services.BlogService
             {
                 // Locating part
                 TableName = _constantsLoader.BlogPostTableName,
-                Key = BlogPostExtensions.GetKey(primaryKey.CreatedYear, primaryKey.TitleShrinked),
+                Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(primaryKey.CreatedYear, primaryKey.TitleShrinked),
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
                     {toUpdatePropValue, new AttributeValue {N = 1.ToString()}},
@@ -197,7 +197,7 @@ namespace AtheerBackend.Services.BlogService
             try
             {
                 var updateResponse = await _client.UpdateItemAsync(updateItemRequest);
-                return BlogPostExtensions.Map(updateResponse.Attributes);
+                return DynamoToFromModelMapper<BlogPost>.Map(updateResponse.Attributes);
             }
             catch (ConditionalCheckFailedException)
             {

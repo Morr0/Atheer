@@ -43,7 +43,7 @@ namespace AtheerEditorApp.Services.CheckoutService.Strategies
             if (getItemResponse.Item.Count == 0)
                 return null;
 
-            return BlogPostExtensions.Map(getItemResponse.Item);
+            return DynamoToFromModelMapper<BlogPost>.Map(getItemResponse.Item);
         }
     }
 }
