@@ -1,5 +1,6 @@
 using System;
 using AtheerBackend.Services.BlogService;
+using AtheerBackend.Services.ContactService;
 using AtheerCore;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
@@ -36,8 +37,9 @@ namespace AtheerBackend
             // Automapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            // Repositories
+            // Services
             services.AddTransient<IBlogRepository, BlogRepository>();
+            services.AddTransient<IContactService, ContactService>();
 
             services.AddCors((opts) =>
             {
