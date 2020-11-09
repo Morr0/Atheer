@@ -22,7 +22,7 @@
       
     </v-app-bar>
     <v-main>
-        <v-container grid-list-xs>
+        <v-container style="max-width:70%;">
             <router-view></router-view>
         </v-container>
         

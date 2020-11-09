@@ -1,6 +1,6 @@
 <template>
     <v-main>
-        <v-card style="padding:16px;">
+        <v-card style="padding:16px;"  max-width="100%">
             <div>
                 <h1 v-if="showContent" style="color:#010000;">
                 {{article.title || "Loading"}}
