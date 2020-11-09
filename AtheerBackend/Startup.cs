@@ -12,9 +12,13 @@ namespace AtheerBackend
 {
     public class Startup
     {
+        private ConstantsLoader _constantsLoader;
+        
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            
+            _constantsLoader = new ConstantsLoader(configuration);
         }
 
         public static IConfiguration Configuration { get; private set; }
@@ -27,7 +31,7 @@ namespace AtheerBackend
             services.AddCors(options =>
                 options.AddDefaultPolicy(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()));
 
-            services.AddSingleton<ConstantsLoader>(provider => new ConstantsLoader(Configuration));
+            services.AddSingleton<ConstantsLoader>(_constantsLoader);
 
             // Automapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

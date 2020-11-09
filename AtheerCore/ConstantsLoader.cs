@@ -1,10 +1,14 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using AtheerCore.Models.Contact;
+using Microsoft.Extensions.Configuration;
 
 namespace AtheerCore
 {
     public class ConstantsLoader
     {
-        private static string ATHEER_BLOGPOST_TABLE_NAME = "Atheer-Post-TableName";
+        // Config keys
+        private const string ATHEER_BLOGPOST_TABLE_NAME = "Atheer-Post-TableName";
+        private const string ATHEER_CONTACT_TABLE_NAME = "Atheer-Contact-TableName";
         
         public ConstantsLoader(IConfiguration configuration)
         {
@@ -15,10 +19,10 @@ namespace AtheerCore
             }
             
             string postTableName = configuration[ATHEER_BLOGPOST_TABLE_NAME];
-            if (postTableName == null)
-                postTableName = CommonConstants.BLOGPOST_TABLE;
-            BlogPostTableName = postTableName;
+            BlogPostTableName = postTableName ?? CommonConstants.BLOGPOST_TABLE;
 
+            string contactTableName = configuration[ATHEER_CONTACT_TABLE_NAME];
+            ContactTableName = contactTableName ?? CommonConstants.CONTACT_TABLE;
         }
         
         public string BlogPostTableName { get; }
@@ -26,5 +30,8 @@ namespace AtheerCore
         public string BlogPostTableTTLAttribute => CommonConstants.BLOGPOST_TABLE_TTL_ATTRIBUTE;
 
         public string BlogPostEditSecretName => CommonConstants.ATHEER_BLOG_EDIT_SECRET;
+        
+        public string ContactTableName { get; }
+        public string ContactTablePrimaryKey => nameof(Contact.Id);
     }
 }
