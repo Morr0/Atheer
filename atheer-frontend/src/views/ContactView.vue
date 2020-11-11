@@ -57,7 +57,19 @@ export default {
 
             showMessageBar: false,
             message: "",
+
+            contactForPost: false,
+            contactYear: 0,
+            contactTitle: ""
         };
+    },
+    mounted(){
+        this.contactYear = this.$route.query.year;
+        this.contactTitle = this.$route.query.stitle;
+
+        if (this.contactYear && this.contactTitle){
+            this.contactForPost = true;
+        }
     },
     methods: {
         contact: async function(){
@@ -65,7 +77,11 @@ export default {
                 console.log("Valid");
 
                 try {
-                    await this.$store.state.contactsUtil.contact(this.title, this.content, this.email);
+                    if (this.contactForPost)
+                        await this.$store.state.contactsUtil.contactForPost(this.contactYear, this.contactTitle, this.title, 
+                        this.content, this.email);
+                    else
+                        await this.$store.state.contactsUtil.contact(this.title, this.content, this.email);
 
                     this.message = "You have successfully had a contact✔";
                     this.showMessageBar = true;

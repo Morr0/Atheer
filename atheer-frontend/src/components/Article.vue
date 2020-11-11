@@ -28,6 +28,7 @@
                     <v-btn text @click="like">Like</v-btn> | {{article.likes}} Likes
                 </span>
                 <v-btn v-if="article.shareable" text @click="share">Share</v-btn>
+                <v-btn :to="contactAboutArticleTO">Contact me regarding this article?</v-btn>
             </v-card-text>
         </v-card>
 
@@ -93,6 +94,15 @@ export default {
                 topics.forEach((topic) => result = result === "" ? firstTopic : result + ", " + topic);
                 return result;
             }
+        },
+        contactAboutArticleTO: function (){
+            return {
+                name: "Contact",
+                query: {
+                    year: this.article.createdYear,
+                    stitle: this.article.titleShrinked
+                }
+            };
         }
     },
     methods: {
