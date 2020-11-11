@@ -39,5 +39,7 @@ namespace AtheerCore.Models
 
         // Not to be listed however can be accessed
         public bool Unlisted { get; set; }
+
+        public bool Contactable { get; set; }
     }
 }

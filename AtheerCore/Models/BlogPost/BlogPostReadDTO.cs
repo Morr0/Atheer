@@ -22,5 +22,6 @@ namespace AtheerCore.Models
         public int Shares { get; set; }
         public bool Draft { get; set; }
         public bool Unlisted { get; set; }
+        public bool Contactable { get; set; }
     }
 }

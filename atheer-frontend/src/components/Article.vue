@@ -28,7 +28,7 @@
                     <v-btn text @click="like">Like</v-btn> | {{article.likes}} Likes
                 </span>
                 <v-btn v-if="article.shareable" text @click="share">Share</v-btn>
-                <v-btn :to="contactAboutArticleTO">Contact me regarding this article?</v-btn>
+                <v-btn v-if="showContent && article.contactable" :to="contactAboutArticleTO" text>Contact me regarding this article?</v-btn>
             </v-card-text>
         </v-card>
 

@@ -7,7 +7,7 @@
 
 ### 1.3:
 - [X] Contact backend as a seperate service
-- [] Enquire about a post
+- [X] Enquire about a post
 - [X] Contact form
 
 ### 1.4:
