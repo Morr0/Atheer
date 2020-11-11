@@ -23,9 +23,13 @@ console.log(VUE_APP_API);
 const postsUtil = require("../utils/posts.js");
 postsUtil.init(VUE_APP_API);
 
+const contactsUtil = require("../utils/contacts.js");
+contactsUtil.init(VUE_APP_API);
+
 export default new Vuex.Store({
     state: {
         postsUtil: postsUtil,
+        contactsUtil: contactsUtil,
         title: VUE_APP_TITLE,
         description: VUE_APP_DESCRIPTION
     },
