@@ -30,6 +30,12 @@
                 <v-btn v-if="article.shareable" text @click="share">Share</v-btn>
                 <v-btn v-if="showContent && article.contactable" :to="contactAboutArticleTO" text>Contact me regarding this article?</v-btn>
             </v-card-text>
+
+            <!-- Special case for /0/contact -->
+            <v-btn v-if="isValidForSpecialContactCase" :to="{name: `Contact`}">
+                Click here to contact me
+            </v-btn>
+            
         </v-card>
 
         <v-snackbar v-model="showShareSnackbar">
@@ -103,6 +109,11 @@ export default {
                     stitle: this.article.titleShrinked
                 }
             };
+        },
+        isValidForSpecialContactCase: function (){
+            return this.article.createdYear === 0 && this.article.titleShrinked === "contact" &&
+                this.showContent && 
+                !this.article.contactable;
         }
     },
     methods: {
