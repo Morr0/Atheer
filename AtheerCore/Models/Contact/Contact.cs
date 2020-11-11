@@ -16,5 +16,9 @@ namespace AtheerCore.Models.Contact
         public string CountryWhenContacted { get; set; }
         
         public bool Answered { get; set; }
+        
+        // If `InitiatedFrom` == "Post"
+        public int PostCreatedYear { get; set; }
+        public string PostTitleShrinked { get; set; }
     }
 }

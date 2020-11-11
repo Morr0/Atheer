@@ -6,10 +6,9 @@
 - [X] Make something appear while loading a resource
 
 ### 1.3:
-- [] Share newly created posts on Linkedin
 - [X] Contact backend as a seperate service
 - [] Enquire about a post
-- [] Contact form
+- [X] Contact form
 
 ### 1.4:
 - [] Make automatic narration for each post

@@ -16,5 +16,10 @@ namespace AtheerBackend.DTOs.Contact
         // Was it initiated from a form, article
         [Required]
         public string InitiatedFrom { get; set; }
+
+        [Range(0, 100000)]
+        public int PostCreatedYear { get; set; }
+        [MinLength(1)]
+        public string PostTitleShrinked { get; set; }
     }
 }
