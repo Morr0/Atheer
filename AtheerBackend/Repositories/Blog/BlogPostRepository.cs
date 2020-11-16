@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -148,9 +150,22 @@ namespace AtheerBackend.Repositories.Blog
                     .PostsPaginationHeaderFromLastEvalKey(lastEvalKey);
             }
 
+            SortPostsByDayInMonth(ref response);
+
             return response;
         }
-        
+
+        private void SortPostsByDayInMonth(ref BlogRepositoryBlogResponse response)
+        {
+            response.Posts.Sort((post1, post2) =>
+            {
+                DateTime dt1 = DateTime.Parse(post1.CreationDate);
+                DateTime dt2 = DateTime.Parse(post2.CreationDate);
+
+                return dt2.CompareTo(dt1);
+            });
+        }
+
         #endregion
 
         #region Updating
