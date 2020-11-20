@@ -6,11 +6,17 @@ import Articles from '../views/Articles.vue';
 import ArticleView from "../views/ArticleView.vue";
 import Placeholder from "../views/Placeholder.vue";
 import ContactView from "../views/ContactView.vue";
+import AdminView from "../views/AdminView.vue";
 
 Vue.use(VueRouter);
 Vue.use(Meta);
 
 const routes = [
+    {
+        path: "/admin",
+        name: "Admin",
+        component: AdminView
+    },
     {
         path: "/article/:year/:titleShrinked",
         name: "ArticleView",

@@ -157,12 +157,19 @@ namespace AtheerBackend.Repositories.Blog
 
         private void SortPostsByDayInMonth(ref BlogRepositoryBlogResponse response)
         {
+            int count = 10;
             response.Posts.Sort((post1, post2) =>
             {
-                DateTime dt1 = DateTime.Parse(post1.CreationDate);
-                DateTime dt2 = DateTime.Parse(post2.CreationDate);
-
-                return dt2.CompareTo(dt1);
+                try
+                {
+                    DateTime dt1 = DateTime.Parse(post1.CreationDate);
+                    DateTime dt2 = DateTime.Parse(post2.CreationDate);
+                    return dt2.CompareTo(dt1);
+                }
+                catch (Exception)
+                {
+                    return count--;
+                }
             });
         }
 
