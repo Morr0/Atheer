@@ -22,7 +22,7 @@
                 v-model="article.description"
             ></v-text-field>
             <v-text-field
-                label="Topics (CSV or SPV)"
+                label="Topics (CSV)"
                 v-model="article.topics"
             ></v-text-field>
             <v-textarea
