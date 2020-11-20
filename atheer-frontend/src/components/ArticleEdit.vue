@@ -54,13 +54,19 @@
 </template>
 
 <script>
+const MODE_NEW_ARTICLE = "new";
+const MODE_EDIT_ARTICLE = "edit";
+
 export default {
     name: "ArticleEdit",
     props: {
-        operation: String
+        operation: String,
     },
     data(){
         return {
+            createdYear: this.$route.query.createdYear,
+            titleShrinked: this.$route.query.titleShrinked,
+            mode: MODE_NEW_ARTICLE,
             article: {}
         };
     },
@@ -70,7 +76,41 @@ export default {
         },
         validate: function(){
 
+        },
+
+
+        idChange: function (){
+            // TODO handle changes
         }
     },
+    watch: {
+        // Watching the URL path changes to render the new post once it happens
+        '$route.query': {
+            handler: function(params) {
+                const that = this;
+                this.$store.state.postsUtil.post(this.createdYear, this.titleShrinked)
+                    .then((data) => {
+                        that.article = MODE_EDIT_ARTICLE;
+                        return that.article = data;
+                    })
+                    .then((data) => {
+                        if (data === undefined){
+                            return that.$router.push({name: "Placeholder"});
+                        }
+                    });
+            },
+            deep: true,
+            immediate: true
+        },
+
+        // Id changes
+        // createdYear: function(){
+        //     this.idChange();
+        // },
+        // titleShrinked: function(){
+        //     this.idChange();
+        // }
+
+    }
 }
 </script>

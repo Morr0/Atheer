@@ -23,6 +23,16 @@ module.exports.post = async function (year, titleShrinked){
     return res.status === 404 ? undefined : await res.json();
 }
 
+module.exports.barePosts = async function (){
+    const endpoint = _endpointArticles;
+
+    const res = await fetch(endpoint);
+    if (res.status === 404)
+        return undefined;
+
+    return await res.json();
+}
+
 module.exports.posts = async function (year = undefined, titleShrinked = undefined){
     let endpoint = _endpointArticles;
 

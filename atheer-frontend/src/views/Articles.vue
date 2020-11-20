@@ -1,24 +1,36 @@
 <template>
 	<v-main>
-		<v-card-title>
-			{{year ? `${year} posts` : "Latest posts"}}
-		</v-card-title>
+		<div v-if="admin">
+            <v-list two-line>
+                <BareArticle v-for="article in articles" :key="article.titleShrinked || Math.random()" :article="article" />
+            </v-list>
+        </div>
 
-		<Article v-for="article in articles" :key="article.titleShrinked || Math.random()" :article="article" />
-		 <v-btn v-if="loadMore" 
-		 text type="button" @click="maybeLoadMore">Load more ???</v-btn>
+
+
+        <div v-else>
+            <v-card-title>
+			    {{year ? `${year} posts` : "Latest posts"}}
+            </v-card-title>
+
+            <Article v-for="article in articles" :key="article.titleShrinked || Math.random()" :article="article" />
+            <v-btn v-if="loadMore" text type="button" @click="maybeLoadMore">Load more ???</v-btn>
+        </div>
 	</v-main>
 </template>
 
 <script>
 import Article from "@/components/Article.vue";
+import BareArticle from "@/components/BareArticle.vue";
 
 export default {
 	components: {
-		Article
+        BareArticle,
+        Article
 	},
 	props: {
-		year: String
+        year: String,
+        admin: Boolean
 	},
     metaInfo(){
         document.loadMore = this.loadMore;
@@ -49,9 +61,10 @@ export default {
     },
 	data: function (){
 		let articles = [];
-		const that = this;
-		this.$store.state.postsUtil.posts(this.year)
-			.then((data) => {
+        const that = this;
+
+        const functionToCall = this.admin ? this.$store.state.postsUtil.barePosts() : this.$store.state.postsUtil.posts(this.year)
+		functionToCall.then((data) => {
                 if (!data){
                     return that.$router.push({name: "Placeholder"});
                 }
@@ -64,7 +77,7 @@ export default {
 			articles: articles,
 			loadMore: false
 		};
-	},
+    },
 	methods: {
 		maybeLoadMore: function (){
 			const that = this;
