@@ -150,15 +150,15 @@ namespace AtheerBackend.Repositories.Blog
                     .PostsPaginationHeaderFromLastEvalKey(lastEvalKey);
             }
 
-            SortPostsByDayInMonth(ref response);
+            SortPostsByDayInMonth(response.Posts);
 
             return response;
         }
 
-        private void SortPostsByDayInMonth(ref BlogRepositoryBlogResponse response)
+        private void SortPostsByDayInMonth(List<BlogPost> posts)
         {
             int count = 10;
-            response.Posts.Sort((post1, post2) =>
+            posts.Sort((post1, post2) =>
             {
                 try
                 {
@@ -222,13 +222,14 @@ namespace AtheerBackend.Repositories.Blog
 
             var response = await _client.ScanAsync(request);
             
-            var list = new LinkedList<BareBlogPostReadDTO>();
+            var posts = new List<BareBlogPostReadDTO>();
             foreach (var item in response.Items)
             {
-                list.AddLast(DynamoToFromModelMapper<BareBlogPostReadDTO>.Map(item));
+                posts.Add(DynamoToFromModelMapper<BareBlogPostReadDTO>.Map(item));
             }
-
-            return list;
+            
+            // return SortPostsByDayInMonth(posts);
+            return posts;
         }
 
         private string BareOnlyAttributeNames()

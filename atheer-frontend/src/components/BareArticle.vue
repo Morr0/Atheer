@@ -3,9 +3,8 @@
         <router-link :to="to">
             <v-list-item-title v-text="article.title"></v-list-item-title>
         </router-link>
-        <v-list-item-subtitle>
-            {{`Draft: ${article.draft}, Unlisted: ${article.unlisted}, Scheduled: ${article.scheduled}`}}
-        </v-list-item-subtitle>
+            <br />
+            {{`created: ${Date(this.article.lastUpdatedDate)}, Draft: ${article.draft}, Unlisted: ${article.unlisted}, Scheduled: ${article.scheduled}`}}
     </v-list-item>
 </template>
 

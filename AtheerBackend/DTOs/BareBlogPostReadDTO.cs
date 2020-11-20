@@ -14,5 +14,6 @@ namespace AtheerBackend.DTOs
         public bool Draft { get; set; }
         public bool Unlisted { get; set; }
         public bool Scheduled { get; set; }
+        public string CreationDate { get; set; }
     }
 }
