@@ -260,5 +260,16 @@ namespace AtheerBackend.Repositories.Blog
 
             return response.Item[flag].BOOL;
         }
+
+        public async Task Delete(BlogPostPrimaryKey key)
+        {
+            var request = new DeleteItemRequest
+            {
+                TableName = _constantsLoader.BlogPostTableName,
+                Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(key.CreatedYear, key.TitleShrinked)
+            };
+            
+            var response = await _client.DeleteItemAsync(request).ConfigureAwait(false);
+        }
     }
 }

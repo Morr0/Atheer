@@ -25,7 +25,7 @@ namespace AtheerBackend.Controllers
             _blogRepo = blogRepo;
         }
 
-    #region Reading
+        #region Reading
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] BlogsQuery query, 
             [FromHeader(Name = nameof(PostsPaginationPrimaryKey.X_AthBlog_Last_Year))] string? hyear,
@@ -113,6 +113,18 @@ namespace AtheerBackend.Controllers
                 return BadRequest();
 
             return Ok(_mapper.Map<BlogPostReadDTO>(post));
+        }
+
+        #endregion
+
+        #region Deleting and updating
+
+        [HttpDelete("{year}/{titleShrinked}")]
+        public async Task<IActionResult> Delete([FromRoute] int year, [FromRoute] string titleShrinked)
+        {
+            var key = new BlogPostPrimaryKey(year, titleShrinked);
+            await _blogRepo.Delete(key);
+            return Ok();
         }
 
         #endregion

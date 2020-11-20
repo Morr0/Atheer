@@ -55,5 +55,10 @@ namespace AtheerBackend.Services.BlogService
 
             return _repository.IncrementSpecificPropertyIf(primaryKey, propertyToIncrement, conditionProperty);
         }
+
+        public Task Delete(BlogPostPrimaryKey key)
+        {
+            return _repository.Delete(key);
+        }
     }
 }

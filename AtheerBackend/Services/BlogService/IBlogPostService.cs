@@ -17,5 +17,7 @@ namespace AtheerBackend.Services.BlogService
         
         Task<BlogPost> Like(BlogPostPrimaryKey primaryKey);
         Task<BlogPost> Share(BlogPostPrimaryKey primaryKey);
+
+        Task Delete(BlogPostPrimaryKey key);
     }
 }
