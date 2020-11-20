@@ -1,4 +1,5 @@
-﻿using AtheerCore.Models;
+﻿using AtheerBackend.DTOs;
+using AtheerCore.Models;
 using AutoMapper;
 
 namespace AtheerBackend.Services.BlogService
@@ -9,6 +10,8 @@ namespace AtheerBackend.Services.BlogService
         public BlogPostModelDTOMappingsProfile()
         {
             CreateMap<BlogPost, BlogPostReadDTO>();
+
+            CreateMap<BlogPost, BareBlogPostReadDTO>();
         }
     }
 }

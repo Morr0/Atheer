@@ -41,5 +41,7 @@ namespace AtheerCore.Models
         public bool Unlisted { get; set; }
 
         public bool Contactable { get; set; }
+        
+        public bool Scheduled { get; set; }
     }
 }

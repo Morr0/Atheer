@@ -47,6 +47,12 @@ namespace AtheerBackend.Controllers
             });
         }
 
+        [HttpGet("bare")]
+        public async Task<IActionResult> GetAllBare()
+        {
+            return Ok(await _blogRepo.GetBare());
+        }
+
         [HttpGet("{year}")]
         public async Task<IActionResult> GetManyByYear([FromRoute] int year,
             [FromQuery] BlogsQuery query,
@@ -82,6 +88,7 @@ namespace AtheerBackend.Controllers
 
             return Ok(_mapper.Map<BlogPostReadDTO>(post));
         }
+        
         #endregion
 
         #region Liking and Sharing

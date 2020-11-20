@@ -211,5 +211,38 @@ namespace AtheerBackend.Repositories.Blog
         }
 
         #endregion
+
+        public async Task<IEnumerable<BareBlogPostReadDTO>> GetManyBare()
+        {
+            var request = new ScanRequest
+            {
+                TableName = _constantsLoader.BlogPostTableName,
+                ProjectionExpression = BareOnlyAttributeNames()
+            };
+
+            var response = await _client.ScanAsync(request);
+            
+            var list = new LinkedList<BareBlogPostReadDTO>();
+            foreach (var item in response.Items)
+            {
+                list.AddLast(DynamoToFromModelMapper<BareBlogPostReadDTO>.Map(item));
+            }
+
+            return list;
+        }
+
+        private string BareOnlyAttributeNames()
+        {
+            var props = typeof(BareBlogPostReadDTO).GetProperties();
+            StringBuilder sb = new StringBuilder(props.Length);
+            
+            foreach (var prop in props)
+            {
+                sb.Append($"{prop.Name},");
+            }
+
+            string expression = sb.ToString().TrimEnd(',');
+            return expression;
+        }
     }
 }

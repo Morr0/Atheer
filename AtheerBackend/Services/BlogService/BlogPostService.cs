@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AtheerBackend.DTOs;
 using AtheerBackend.Repositories.Blog;
 using AtheerCore.Models;
@@ -17,6 +18,11 @@ namespace AtheerBackend.Services.BlogService
         public Task<BlogRepositoryBlogResponse> Get(int amount, PostsPaginationPrimaryKey paginationHeader = null)
         {
             return _repository.GetMany(amount, paginationHeader, false);
+        }
+
+        public Task<IEnumerable<BareBlogPostReadDTO>> GetBare()
+        {
+            return _repository.GetManyBare();
         }
 
         public Task<BlogRepositoryBlogResponse> GetByYear(int year, int amount, 
