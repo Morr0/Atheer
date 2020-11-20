@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using AtheerBackend.DTOs.Contact;
 using AtheerBackend.Services.ContactService;
+using AtheerBackend.Services.ContactService.Exceptions;
 using AtheerCore.Models.Contact;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -23,11 +24,18 @@ namespace AtheerBackend.Controllers
         [HttpPost]
         public async Task<IActionResult> PostContact([FromBody] ContactWriteDTO writeDto)
         {
-            Contact contact = _mapper.Map<Contact>(writeDto);
-            contact.IPAddressWhenContacted = Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
-            await _contactService.Contact(contact);
+            try
+            {
+                Contact contact = _mapper.Map<Contact>(writeDto);
+                contact.IPAddressWhenContacted = Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+                await _contactService.Contact(contact);
 
-            return Ok();
+                return Ok();
+            }
+            catch (BlogPostDoesNotPermitContactException)
+            {
+                return BadRequest();
+            }
         }
     }
 }

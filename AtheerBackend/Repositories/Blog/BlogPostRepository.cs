@@ -244,5 +244,21 @@ namespace AtheerBackend.Repositories.Blog
             string expression = sb.ToString().TrimEnd(',');
             return expression;
         }
+
+        public async Task<bool> GetFlag(string flag, BlogPostPrimaryKey key)
+        {
+            var request = new GetItemRequest
+            {
+                TableName = _constantsLoader.BlogPostTableName,
+                Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(key.CreatedYear, key.TitleShrinked),
+                ProjectionExpression = $"{flag}"
+            };
+
+            var response = await _client.GetItemAsync(request).ConfigureAwait(false);
+            if (response.Item.Count == 0)
+                return false;
+
+            return response.Item[flag].BOOL;
+        }
     }
 }

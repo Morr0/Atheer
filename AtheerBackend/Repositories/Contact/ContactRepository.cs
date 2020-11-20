@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
+using AtheerBackend.DTOs;
 using AtheerCore;
 using AtheerCore.Extensions;
 
@@ -22,7 +23,8 @@ namespace AtheerBackend.Repositories.Contact
             var request = new PutItemRequest
             {
                 TableName = _loader.ContactTableName,
-                Item = DynamoToFromModelMapper<AtheerCore.Models.Contact.Contact>.Map(contact)
+                Item = DynamoToFromModelMapper<AtheerCore.Models.Contact.Contact>.Map(contact),
+                
             };
 
             await _client.PutItemAsync(request).ConfigureAwait(false);
