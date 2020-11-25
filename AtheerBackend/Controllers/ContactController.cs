@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using AtheerBackend.DTOs.Contact;
+using AtheerBackend.Models;
 using AtheerBackend.Services.ContactService;
 using AtheerBackend.Services.ContactService.Exceptions;
-using AtheerCore.Models.Contact;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 

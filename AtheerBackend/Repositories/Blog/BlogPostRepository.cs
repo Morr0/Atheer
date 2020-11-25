@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using AtheerBackend.DTOs;
+using AtheerBackend.DTOs.BlogPost;
 using AtheerBackend.Extensions;
+using AtheerBackend.Models;
 using AtheerBackend.Services.BlogService;
-using AtheerCore;
-using AtheerCore.Extensions;
-using AtheerCore.Models;
+using AtheerBackend.Utilities;
 
 namespace AtheerBackend.Repositories.Blog
 {

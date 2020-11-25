@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using AtheerCore.Models.Contact;
+using AtheerBackend.Models;
 
 namespace AtheerBackend.Services.ContactService
 {

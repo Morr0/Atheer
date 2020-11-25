@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using AtheerCore.Models;
+using AtheerBackend.DTOs.BlogPost;
 
 namespace AtheerBackend.Controllers.Results
 {

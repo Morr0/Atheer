@@ -1,12 +1,12 @@
-﻿using AtheerBackend.Controllers.Queries;
-using AtheerCore.Models;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using AtheerBackend.Controllers.Queries;
+using AtheerBackend.Controllers.Results;
+using AtheerBackend.DTOs.BlogPost;
+using AtheerBackend.Models;
+using AtheerBackend.Services.BlogService;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using AtheerBackend.Controllers.Results;
-using AtheerBackend.DTOs;
-using AtheerBackend.Services.BlogService;
 
 #nullable enable
 

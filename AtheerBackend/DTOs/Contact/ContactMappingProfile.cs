@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AtheerBackend.Models;
 
 namespace AtheerBackend.DTOs.Contact
 {
@@ -6,7 +7,7 @@ namespace AtheerBackend.DTOs.Contact
     {
         public ContactMappingProfile()
         {
-            CreateMap<ContactWriteDTO, AtheerCore.Models.Contact.Contact>();
+            CreateMap<ContactWriteDTO, Models.Contact>();
         }
     }
 }

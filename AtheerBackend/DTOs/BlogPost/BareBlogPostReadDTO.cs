@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace AtheerBackend.DTOs
+namespace AtheerBackend.DTOs.BlogPost
 {
     /// <summary>
     /// This is a stripped down version of BlogPost for list admin view

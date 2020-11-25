@@ -1,8 +1,7 @@
 ﻿using Amazon.DynamoDBv2.Model;
-using AtheerCore.Models;
 using Microsoft.AspNetCore.Http;
-using System;
 using System.Collections.Generic;
+using AtheerBackend.Models;
 using AtheerBackend.Services.BlogService;
 
 namespace AtheerBackend.Extensions

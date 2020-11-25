@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
-using AtheerBackend.DTOs;
-using AtheerCore;
-using AtheerCore.Extensions;
+using AtheerBackend.Extensions;
+using AtheerBackend.Utilities;
+using AtheerBackend.Models;
 
 namespace AtheerBackend.Repositories.Contact
 {
@@ -18,12 +18,12 @@ namespace AtheerBackend.Repositories.Contact
             _client = new AmazonDynamoDBClient();
         }
 
-        public async Task PutContact(AtheerCore.Models.Contact.Contact contact)
+        public async Task PutContact(Models.Contact contact)
         {
             var request = new PutItemRequest
             {
                 TableName = _loader.ContactTableName,
-                Item = DynamoToFromModelMapper<AtheerCore.Models.Contact.Contact>.Map(contact),
+                Item = DynamoToFromModelMapper<Models.Contact>.Map(contact),
                 
             };
 

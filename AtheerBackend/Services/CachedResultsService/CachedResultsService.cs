@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using AtheerBackend.DTOs;
+using AtheerBackend.DTOs.BlogPost;
+using AtheerBackend.Models;
 using AtheerBackend.Services.CachedResultsService.Utilities;
-using AtheerCore.Models;
 
 namespace AtheerBackend.Services.CachedResultsService
 {

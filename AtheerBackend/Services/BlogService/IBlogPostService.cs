@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using AtheerBackend.DTOs;
-using AtheerCore.Models;
+using AtheerBackend.DTOs.BlogPost;
+using AtheerBackend.Models;
 
 namespace AtheerBackend.Services.BlogService
 {

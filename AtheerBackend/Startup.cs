@@ -3,7 +3,7 @@ using AtheerBackend.Repositories.Blog;
 using AtheerBackend.Repositories.Contact;
 using AtheerBackend.Services.BlogService;
 using AtheerBackend.Services.ContactService;
-using AtheerCore;
+using AtheerBackend.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

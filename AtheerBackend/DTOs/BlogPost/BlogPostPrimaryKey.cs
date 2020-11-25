@@ -1,4 +1,4 @@
-﻿namespace AtheerBackend.DTOs
+﻿namespace AtheerBackend.DTOs.BlogPost
 {
     public struct BlogPostPrimaryKey
     {

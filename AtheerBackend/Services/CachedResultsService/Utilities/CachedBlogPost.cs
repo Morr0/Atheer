@@ -1,5 +1,5 @@
 ﻿using System;
-using AtheerCore.Models;
+using AtheerBackend.Models;
 
 namespace AtheerBackend.Services.CachedResultsService.Utilities
 {

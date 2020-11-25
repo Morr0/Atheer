@@ -1,4 +1,5 @@
 using AtheerBackend.DTOs;
+using AtheerBackend.DTOs.BlogPost;
 using AtheerBackend.Services.CachedResultsService;
 using AtheerCore.Models;
 using Xunit;

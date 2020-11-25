@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using AtheerBackend.DTOs;
+using AtheerBackend.DTOs.BlogPost;
+using AtheerBackend.Models;
 using AtheerBackend.Repositories.Blog;
 using AtheerBackend.Repositories.Contact;
 using AtheerBackend.Services.ContactService.Exceptions;
 using AtheerBackend.Utilities;
-using AtheerCore.Models;
-using AtheerCore.Models.Contact;
 
 namespace AtheerBackend.Services.ContactService
 {
