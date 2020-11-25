@@ -1,7 +1,6 @@
-using AtheerBackend.DTOs;
 using AtheerBackend.DTOs.BlogPost;
+using AtheerBackend.Models;
 using AtheerBackend.Services.CachedResultsService;
-using AtheerCore.Models;
 using Xunit;
 
 namespace AtheerBackendTest
