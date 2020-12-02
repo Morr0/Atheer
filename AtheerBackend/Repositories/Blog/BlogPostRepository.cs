@@ -15,6 +15,8 @@ namespace AtheerBackend.Repositories.Blog
 {
     public class BlogPostRepository
     {
+        private const string SortByLatestDatetimeFormat = "d/M/yyyy h:m:s tt";
+        
         private readonly ConstantsLoader _constantsLoader;
         private readonly AmazonDynamoDBClient _client;
 
@@ -155,15 +157,27 @@ namespace AtheerBackend.Repositories.Blog
 
         private void SortPostsByDayInMonth(List<BlogPost> posts)
         {
-            posts.Sort((post1, post2) =>
+            posts.Sort((post1, post2) => SortByDayInMonth(post1.CreationDate, post2.CreationDate));
+        }
+
+        private void SortPostsByDayInMonth(List<BareBlogPostReadDTO> posts)
+        {
+            posts.Sort((post1, post2) => SortByDayInMonth(post1.CreationDate, post2.CreationDate));
+        }
+
+        private int SortByDayInMonth(string creationDate1, string creationDate2)
+        {
+            try
             {
-                string post1Stripped = post1.CreationDate.Split(' ')[0];
-                string post2Stripped = post2.CreationDate.Split(' ')[0];
-                
-                DateTime dt1 = DateTime.Parse(post1Stripped);
-                DateTime dt2 = DateTime.Parse(post2Stripped);
+                var dt1 = DateTime.ParseExact(creationDate1, SortByLatestDatetimeFormat, null);
+                var dt2 = DateTime.ParseExact(creationDate2, SortByLatestDatetimeFormat, null);
+
                 return dt2.CompareTo(dt1);
-            });
+            }
+            catch (FormatException e)
+            {
+                return default;
+            }
         }
 
         #endregion
@@ -221,7 +235,7 @@ namespace AtheerBackend.Repositories.Blog
                 posts.Add(DynamoToFromModelMapper<BareBlogPostReadDTO>.Map(item));
             }
             
-            // return SortPostsByDayInMonth(posts);
+            SortPostsByDayInMonth(posts);
             return posts;
         }
 
