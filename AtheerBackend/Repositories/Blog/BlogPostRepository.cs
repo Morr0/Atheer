@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
-using AtheerBackend.DTOs;
 using AtheerBackend.DTOs.BlogPost;
 using AtheerBackend.Extensions;
 using AtheerBackend.Models;
@@ -156,19 +155,14 @@ namespace AtheerBackend.Repositories.Blog
 
         private void SortPostsByDayInMonth(List<BlogPost> posts)
         {
-            int count = 10;
             posts.Sort((post1, post2) =>
             {
-                try
-                {
-                    DateTime dt1 = DateTime.Parse(post1.CreationDate);
-                    DateTime dt2 = DateTime.Parse(post2.CreationDate);
-                    return dt2.CompareTo(dt1);
-                }
-                catch (Exception)
-                {
-                    return count--;
-                }
+                string post1Stripped = post1.CreationDate.Split(' ')[0];
+                string post2Stripped = post2.CreationDate.Split(' ')[0];
+                
+                DateTime dt1 = DateTime.Parse(post1Stripped);
+                DateTime dt2 = DateTime.Parse(post2Stripped);
+                return dt2.CompareTo(dt1);
             });
         }
 
