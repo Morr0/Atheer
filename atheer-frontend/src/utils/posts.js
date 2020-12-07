@@ -19,14 +19,21 @@ let _pageApiLastTitle = null;
 
 module.exports.post = async function (year, titleShrinked){
     const endpoint = `${_endpointArticles}${year}/${titleShrinked}`;
-    const res = await fetch(endpoint);
+    const res = await fetch(endpoint, {
+        mode: "no-cors",
+        headers: {
+            "Access-Control-Allow-Origin" : "*"
+        }
+    });
     return res.status === 404 ? undefined : await res.json();
 }
 
 module.exports.barePosts = async function (){
     const endpoint = _endpointArticles;
 
-    const res = await fetch(endpoint);
+    const res = await fetch(endpoint, {
+        mode: "no-cors"
+    });
     if (res.status === 404)
         return undefined;
 
@@ -40,7 +47,9 @@ module.exports.posts = async function (year = undefined, titleShrinked = undefin
         endpoint = `${endpoint}${year}`;
     endpoint = `${endpoint}?size=${_pageSize}`;
 
-    const res = await fetch(endpoint);
+    const res = await fetch(endpoint, {
+        mode: "no-cors"
+    });
     if (res.status === 404)
         return undefined;
 
@@ -84,7 +93,8 @@ module.exports.morePosts = async function (){
             headers: {
                 X_AthBlog_Last_Year: _pageApiLastYear,
                 X_AthBlog_Last_Title: _pageApiLastTitle,
-            }
+            },
+            mode: "no-cors"
         });
 
         let data = await res.json();
@@ -100,7 +110,8 @@ module.exports.morePosts = async function (){
 module.exports.like = async function (year, titleShrinked){
     const endpoint = `${_endpoint}api/blog/like/${year}/${titleShrinked}`;
     const res = await fetch(endpoint, {
-        method: "POST"
+        method: "POST",
+        mode: "no-cors"
     });
 
     return res.status === 400? undefined : await res.json();
@@ -109,7 +120,8 @@ module.exports.like = async function (year, titleShrinked){
 module.exports.share = async function (year, titleShrinked){
     const endpoint = `${_endpoint}api/blog/share/${year}/${titleShrinked}`;
     const res = await fetch(endpoint, {
-        method: "POST"
+        method: "POST",
+        mode: "no-cors"
     });
 
     return res.status === 400? undefined : await res.json();

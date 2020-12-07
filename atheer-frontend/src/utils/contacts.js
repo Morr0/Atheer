@@ -38,7 +38,8 @@ async function contact(title, content, email, payload){
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        mode: "no-cors"
     });
     
     if (res.status !== 200){
