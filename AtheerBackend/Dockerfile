@@ -1,5 +1,7 @@
 ﻿FROM mcr.microsoft.com/dotnet/core/sdk:3.1-alpine AS build-env
 
+ENV ASPNETCORE_ENVIRONMENT = "Production"
+
 WORKDIR /src
 COPY *.csproj .
 RUN dotnet restore

@@ -22,7 +22,7 @@ namespace AtheerBackend.Repositories.Contact
         {
             var request = new PutItemRequest
             {
-                TableName = _loader.ContactTableName,
+                TableName = _loader.ContactsTable,
                 Item = DynamoToFromModelMapper<Models.Contact>.Map(contact),
                 
             };
