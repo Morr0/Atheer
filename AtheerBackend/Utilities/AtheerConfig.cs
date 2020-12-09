@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace AtheerBackend.Utilities
 {
-    public class ConstantsLoader
+    public class AtheerConfig
     {
         // Config keys in appsettings.json or any other doc you use in DynamoDBTables
         private static readonly string DynamoDbTables = "DynamoDBTables";
@@ -13,7 +13,7 @@ namespace AtheerBackend.Utilities
 
         public static readonly string TtlAttribute = "TTL";
         
-        public ConstantsLoader(IConfiguration configuration)
+        public AtheerConfig(IConfiguration configuration)
         {
             PostsTable = configuration[$"{DynamoDbTables}:{PostsTableKey}"];
             ContactsTable = configuration[$"{DynamoDbTables}:{ContactsTableKey}"];

@@ -17,12 +17,12 @@ namespace AtheerBackend.Repositories.Blog
     {
         private const string SortByLatestDatetimeFormat = "d/M/yyyy h:m:s tt";
         
-        private readonly ConstantsLoader _constantsLoader;
+        private readonly AtheerConfig _config;
         private readonly AmazonDynamoDBClient _client;
 
-        public BlogPostRepository(ConstantsLoader loader)
+        public BlogPostRepository(AtheerConfig loader)
         {
-            _constantsLoader = loader;
+            _config = loader;
             _client = new AmazonDynamoDBClient();
         }
 
@@ -32,7 +32,7 @@ namespace AtheerBackend.Repositories.Blog
         {
             var request = new GetItemRequest
             {
-                TableName = _constantsLoader.PostsTable,
+                TableName = _config.PostsTable,
                 Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(primaryKey.CreatedYear, primaryKey.TitleShrinked),
             };
 
@@ -43,17 +43,17 @@ namespace AtheerBackend.Repositories.Blog
         public async Task<BlogRepositoryBlogResponse> GetMany(int amount, PostsPaginationPrimaryKey paginationHeader, 
             bool loadContentProperty)
         {
-            string ttlNameSubstitute = $"#{ConstantsLoader.TtlAttribute}";
+            string ttlNameSubstitute = $"#{AtheerConfig.TtlAttribute}";
             
             var request = new ScanRequest
             {
-                TableName = _constantsLoader.PostsTable,
+                TableName = _config.PostsTable,
                 Limit = amount,
                 
                 // Conditionals
                 ExpressionAttributeNames = new Dictionary<string, string>
                 {
-                    {ttlNameSubstitute, ConstantsLoader.TtlAttribute}
+                    {ttlNameSubstitute, AtheerConfig.TtlAttribute}
                 },
                 // Define the values looking for
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
@@ -92,7 +92,7 @@ namespace AtheerBackend.Repositories.Blog
 
             var request = new QueryRequest
             {
-                TableName = _constantsLoader.PostsTable,
+                TableName = _config.PostsTable,
                 Limit = amount,
 
                 KeyConditionExpression = $"{hashKey} = {vHashKey}",
@@ -192,7 +192,7 @@ namespace AtheerBackend.Repositories.Blog
             
             var request = new UpdateItemRequest
             {
-                TableName = _constantsLoader.PostsTable,
+                TableName = _config.PostsTable,
                 Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(primaryKey.CreatedYear, primaryKey.TitleShrinked),
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
@@ -223,7 +223,7 @@ namespace AtheerBackend.Repositories.Blog
         {
             var request = new ScanRequest
             {
-                TableName = _constantsLoader.PostsTable,
+                TableName = _config.PostsTable,
                 ProjectionExpression = BareOnlyAttributeNames()
             };
 
@@ -257,7 +257,7 @@ namespace AtheerBackend.Repositories.Blog
         {
             var request = new GetItemRequest
             {
-                TableName = _constantsLoader.PostsTable,
+                TableName = _config.PostsTable,
                 Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(key.CreatedYear, key.TitleShrinked),
                 ProjectionExpression = $"{flag}"
             };
@@ -273,7 +273,7 @@ namespace AtheerBackend.Repositories.Blog
         {
             var request = new DeleteItemRequest
             {
-                TableName = _constantsLoader.PostsTable,
+                TableName = _config.PostsTable,
                 Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(key.CreatedYear, key.TitleShrinked)
             };
             

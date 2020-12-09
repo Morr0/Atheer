@@ -9,10 +9,10 @@ namespace AtheerBackend.Repositories.Contact
 {
     public class ContactRepository
     {
-        private ConstantsLoader _loader;
+        private AtheerConfig _loader;
         private AmazonDynamoDBClient _client;
 
-        public ContactRepository(ConstantsLoader loader)
+        public ContactRepository(AtheerConfig loader)
         {
             _loader = loader;
             _client = new AmazonDynamoDBClient();
