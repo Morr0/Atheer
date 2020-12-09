@@ -39,12 +39,7 @@ namespace AtheerBackend.Controllers
             };
             var repoResponse = await _blogRepo.Get(query.Size, paginationHeader);
 
-            return Ok(new BlogPostsResult
-            {
-                Posts = _mapper.Map<List<BlogPostReadDTO>>(repoResponse.Posts),
-                X_AthBlog_Last_Year = repoResponse?.PaginationHeader?.X_AthBlog_Last_Year,
-                X_AthBlog_Last_Title = repoResponse?.PaginationHeader?.X_AthBlog_Last_Title
-            }.Posts);
+            return Ok(_mapper.Map<List<BlogPostReadDTO>>(repoResponse.Posts));
         }
 
         [HttpGet("bare")]
@@ -68,14 +63,8 @@ namespace AtheerBackend.Controllers
             BlogRepositoryBlogResponse response = await _blogRepo.GetByYear(year, query.Size, paginationHeader);
             if (response.Posts.Count == 0)
                 return NotFound();
-
-            IEnumerable<BlogPostReadDTO> postsReadDTO = _mapper.Map<List<BlogPostReadDTO>>(response.Posts);
-            return Ok(new BlogPostsResult
-            {
-                Posts = postsReadDTO,
-                X_AthBlog_Last_Year = response?.PaginationHeader?.X_AthBlog_Last_Year,
-                X_AthBlog_Last_Title = response?.PaginationHeader?.X_AthBlog_Last_Title
-            }.Posts);
+            
+            return Ok(_mapper.Map<List<BlogPostReadDTO>>(response.Posts));
         }
 
         [HttpGet("{year}/{title}")]
