@@ -10,7 +10,10 @@
 
         <div v-else>
             <v-card-title>
-			    {{year ? `${year} posts` : "Latest posts"}}
+			    {{year ? `${year} posts` : "Latest posts "}}
+            </v-card-title>
+            <v-card-title v-if="articles.length === 0">
+                Loading ...
             </v-card-title>
 
             <Article v-for="article in articles" :key="article.titleShrinked || Math.random()" :article="article" />        </div>
