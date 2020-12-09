@@ -44,7 +44,7 @@ namespace AtheerBackend.Controllers
                 Posts = _mapper.Map<List<BlogPostReadDTO>>(repoResponse.Posts),
                 X_AthBlog_Last_Year = repoResponse?.PaginationHeader?.X_AthBlog_Last_Year,
                 X_AthBlog_Last_Title = repoResponse?.PaginationHeader?.X_AthBlog_Last_Title
-            });
+            }.Posts);
         }
 
         [HttpGet("bare")]
@@ -75,7 +75,7 @@ namespace AtheerBackend.Controllers
                 Posts = postsReadDTO,
                 X_AthBlog_Last_Year = response?.PaginationHeader?.X_AthBlog_Last_Year,
                 X_AthBlog_Last_Title = response?.PaginationHeader?.X_AthBlog_Last_Title
-            });
+            }.Posts);
         }
 
         [HttpGet("{year}/{title}")]

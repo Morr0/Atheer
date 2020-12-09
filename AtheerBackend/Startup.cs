@@ -24,7 +24,7 @@ namespace AtheerBackend
             _constantsLoader = new ConstantsLoader(configuration);
         }
 
-        public static IConfiguration Configuration { get; private set; }
+        public static IConfiguration Configuration { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
@@ -63,9 +63,7 @@ namespace AtheerBackend
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseHttpsRedirection();
-
+            
             app.UseCors();
 
             app.UseRouting();

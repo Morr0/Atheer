@@ -13,9 +13,7 @@
 			    {{year ? `${year} posts` : "Latest posts"}}
             </v-card-title>
 
-            <Article v-for="article in articles" :key="article.titleShrinked || Math.random()" :article="article" />
-            <v-btn v-if="loadMore" text type="button" @click="maybeLoadMore">Load more ???</v-btn>
-        </div>
+            <Article v-for="article in articles" :key="article.titleShrinked || Math.random()" :article="article" />        </div>
 	</v-main>
 </template>
 
@@ -69,24 +67,12 @@ export default {
                     return that.$router.push({name: "Placeholder"});
                 }
 
-                that.loadMore = data.canLoadMore;
-                return that.articles = data.posts;
+                return that.articles = data;
             });
 
 		return {
 			articles: articles,
-			loadMore: false
 		};
-    },
-	methods: {
-		maybeLoadMore: function (){
-			const that = this;
-			this.$store.state.postsUtil.morePosts()
-				.then((data) => {
-                    that.loadMore = data.canLoadMore;
-                    that.articles = that.articles.concat(data.posts); 
-				});
-		}
-	}
+    }
 }
 </script>

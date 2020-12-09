@@ -174,7 +174,7 @@ namespace AtheerBackend.Repositories.Blog
 
                 return dt2.CompareTo(dt1);
             }
-            catch (FormatException e)
+            catch (FormatException)
             {
                 return default;
             }
