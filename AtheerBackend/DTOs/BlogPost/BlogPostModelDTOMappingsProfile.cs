@@ -9,6 +9,8 @@ namespace AtheerBackend.DTOs.BlogPost
             CreateMap<Models.BlogPost, BlogPostReadDTO>();
 
             CreateMap<Models.BlogPost, BareBlogPostReadDTO>();
+
+            CreateMap<BlogPostUpdateDTO, Models.BlogPost>();
         }
     }
 }

@@ -60,5 +60,10 @@ namespace AtheerBackend.Services.BlogService
         {
             return _repository.Delete(key);
         }
+
+        public Task<BlogPost> Update(BlogPostPrimaryKey key, BlogPost newPost)
+        {
+            return _repository.Update(key, newPost);
+        }
     }
 }

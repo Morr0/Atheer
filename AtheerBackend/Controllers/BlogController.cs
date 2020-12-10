@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AtheerBackend.Controllers.Queries;
 using AtheerBackend.Controllers.Results;
@@ -114,6 +115,24 @@ namespace AtheerBackend.Controllers
             var key = new BlogPostPrimaryKey(year, titleShrinked);
             await _blogRepo.Delete(key);
             return Ok();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] BlogPostUpdateDTO postUpdateDto)
+        {
+            var post = _mapper.Map<BlogPost>(postUpdateDto);
+
+            try
+            {
+                var key = new BlogPostPrimaryKey(postUpdateDto.CreatedYear, postUpdateDto.TitleShrinked);
+                var updatedPost = await _blogRepo.Update(key, post);
+                return Ok(_mapper.Map<BlogPostReadDTO>(updatedPost));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return NotFound();
+            }
         }
 
         #endregion

@@ -49,6 +49,30 @@ namespace AtheerBackend.Extensions
             return @object;
         }
 
+        public static object FromDynamoDB(object @object, PropertyInfo prop, AttributeValue val)
+        {
+            if (prop.PropertyType == typeof(string))
+                prop.SetValue(@object, val.S);
+            else if (prop.PropertyType == typeof(int))
+            {
+                try
+                {
+                    prop.SetValue(@object, int.Parse(val.N));
+                } catch (ArgumentNullException)
+                {
+                    prop.SetValue(@object, 0);
+                }
+            }
+            else if (prop.PropertyType == typeof(bool))
+                prop.SetValue(@object, val.BOOL);
+            else if (prop.PropertyType == typeof(List<string>))
+                prop.SetValue(@object, val.SS);
+            else
+                throw new Exception("The type from DynamoDB was not mapped.");
+
+            return @object;
+        }
+
         public static Dictionary<string, AttributeValue> Map(T @object)
         {
             PropertyInfo[] props = typeof(T).GetProperties();
@@ -72,6 +96,23 @@ namespace AtheerBackend.Extensions
             }
 
             return dict;
+        }
+
+        public static AttributeValue ToDynamoDB(object @object, PropertyInfo prop)
+        {
+            AttributeValue val = new AttributeValue();
+            if (prop.PropertyType == typeof(int))
+                val.N = ((int)prop.GetValue(@object)).ToString();
+            else if (prop.PropertyType == typeof(string))
+                val.S = (prop.GetValue(@object) as string) ?? "";
+            else if (prop.PropertyType == typeof(bool))
+                val.BOOL = (bool)prop.GetValue(@object);
+            else if (prop.PropertyType == typeof(List<string>))
+                val.SS = (List<string>) prop.GetValue(@object);
+            else
+                throw new Exception("The type to DynamoDB was not mapped.");
+
+            return val;
         }
 
         // Get key

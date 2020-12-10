@@ -184,6 +184,47 @@ namespace AtheerBackend.Repositories.Blog
 
         #region Updating
 
+        public async Task<BlogPost> Update(BlogPostPrimaryKey key, BlogPost newBlogPost)
+        {
+            var updatables = GetUpdateExpression(newBlogPost);
+            var request = new UpdateItemRequest
+            {
+                TableName = _config.PostsTable,
+                Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(key.CreatedYear, key.TitleShrinked),
+                UpdateExpression = updatables.updateString,
+                ExpressionAttributeValues = updatables.values,
+                ReturnValues = ReturnValue.ALL_NEW
+            };
+
+            var response = await _client.UpdateItemAsync(request).ConfigureAwait(false);
+            return DynamoToFromModelMapper<BlogPost>.Map(response.Attributes);
+        }
+        
+        private (string updateString, Dictionary<string, AttributeValue> values) GetUpdateExpression(BlogPost post)
+        {
+            var props = typeof(BlogPost).GetProperties();
+            var sb = new StringBuilder(props.Length * 2);
+            sb.Append("SET "); // Check AWS docs for updating an item in DynamoDB
+            var values = new Dictionary<string, AttributeValue>(props.Length * 2);
+
+            foreach (var prop in props)
+            {
+                if (prop.Name != nameof(BlogPost.CreatedYear) && prop.Name != nameof(BlogPost.TitleShrinked))
+                {
+                    string valueName = $":{prop.Name}";
+                    values.Add(valueName, DynamoToFromModelMapper<BlogPost>.ToDynamoDB(post, prop));
+
+                    if (prop.Name == nameof(BlogPost.Topics)) Console.WriteLine(values[valueName].SS.Count);
+                    
+                    sb.Append($"{prop.Name} = {valueName},");
+                }
+            }
+
+            sb.Remove(sb.Length - 1, 1);
+            string updateString = sb.ToString();
+            return (updateString, values);
+        }
+
         public async Task<BlogPost> IncrementSpecificPropertyIf(BlogPostPrimaryKey primaryKey, string toIncrementPropertyName
             , string conditionPropertyName)
         {
@@ -227,7 +268,7 @@ namespace AtheerBackend.Repositories.Blog
                 ProjectionExpression = BareOnlyAttributeNames()
             };
 
-            var response = await _client.ScanAsync(request);
+            var response = await _client.ScanAsync(request).ConfigureAwait(false);
             
             var posts = new List<BareBlogPostReadDTO>();
             foreach (var item in response.Items)
@@ -269,7 +310,7 @@ namespace AtheerBackend.Repositories.Blog
             return response.Item[flag].BOOL;
         }
 
-        public async Task Delete(BlogPostPrimaryKey key)
+        public Task Delete(BlogPostPrimaryKey key)
         {
             var request = new DeleteItemRequest
             {
@@ -277,7 +318,7 @@ namespace AtheerBackend.Repositories.Blog
                 Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(key.CreatedYear, key.TitleShrinked)
             };
             
-            var response = await _client.DeleteItemAsync(request).ConfigureAwait(false);
+            return _client.DeleteItemAsync(request);
         }
     }
 }
