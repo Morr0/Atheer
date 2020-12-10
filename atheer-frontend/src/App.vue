@@ -42,22 +42,38 @@ export default {
     metaInfo(){
         return {
             title: "Home",
-            titleTemplate: `%s | ${this.$store.state.title || "Atheer home"}`,
+            titleTemplate: `%s | ${this.title}`,
             content: 'width=device-width, initial-scale=1',
             charset: "utf-8",
             meta: [
                 {
                     name: "description",
-                    content: this.$store.state.description || "Atheer Home page"
+                    content: this.$store.state.description
                 },
                 {
                     property: "og:title",
-                    content: this.$store.state.title || "Atheer home"
+                    content: this.title
                 },
                 {
                     property: "og:description",
-                    content: this.$store.state.description || "Atheer Blog"
+                    content: this.description
                 },
+                {
+                    property: "og:url",
+                    content: window.location.href
+                },
+                {
+                    property: "twitter:title",
+                    content: this.title
+                },
+                {
+                    property: "twitter:description",
+                    content: this.description
+                },
+                {
+                    property: "twitter:url",
+                    content: window.location.href
+                }
                 // TODO add logo of Atheer here
                 // {
                 //     property: "og:image",
@@ -65,6 +81,10 @@ export default {
                 // }
             ]
         };
+    },
+    mounted(){
+        document.title = this.title;
+        document.description = this.description;
     },
     computed: {
         toApps: function (){
@@ -87,6 +107,9 @@ export default {
         },
         title: function (){
             return this.$store.state.title;
+        },
+        description: function (){
+            return this.$store.state.description;
         }
     },
     methods: {
