@@ -16,7 +16,7 @@ export default {
     computed: {
         to: function(){
             return {
-                name: "AdminArticle",
+                name: "ArticleEdit",
                 query: {
                     createdYear: this.article.createdYear,
                     titleShrinked: this.article.titleShrinked

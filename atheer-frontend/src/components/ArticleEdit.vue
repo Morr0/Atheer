@@ -11,6 +11,7 @@
                     label="Title Shrinked"
                     v-model="article.titleShrinked"
                 ></v-text-field>
+                <v-btn text @click.prevent="refresh">Refresh</v-btn>
             </v-row>
 
             <v-text-field
@@ -59,58 +60,60 @@ const MODE_EDIT_ARTICLE = "edit";
 
 export default {
     name: "ArticleEdit",
-    props: {
-        operation: String,
-    },
     data(){
         return {
             createdYear: this.$route.query.createdYear,
             titleShrinked: this.$route.query.titleShrinked,
             mode: MODE_NEW_ARTICLE,
+            changedIdsWhileEditing: false,
             article: {}
         };
     },
     methods: {
-        checkout: async function(){
+        checkout: async function (){
             this.validate();
         },
-        validate: function(){
+        validate: function (){
 
         },
+        refresh: async function (){
+            if (this.changedIdsWhileEditing){
+                // TODO handle error when fetching a non-existent and set things back
+                await this.getPost();
 
-
+                this.createdYear = createdYear;
+                this.titleShrinked = titleShrinked;
+                this.mode = MODE_EDIT_ARTICLE; 
+                this.changedIdsWhileEditing = false;
+            }
+        },
         idChange: function (){
-            // TODO handle changes
+            if (this.article.createdYear !== this.createdYear || this.article.titleShrinked != this.titleShrinked){
+                this.mode = MODE_EDIT_ARTICLE;
+                this.changedIdsWhileEditing = true;
+            }
+        },
+        getPost: async function (){
+            if (this.mode === MODE_EDIT_ARTICLE){
+                const createdYear = this.changedIdsWhileEditing ? this.article.createdYear : this.createdYear;
+                const titleShrinked = this.changedIdsWhileEditing ? this.article.titleShrinked : this.titleShrinked;
+
+                console.log("HERE");
+                const article = await this.$store.state.postsUtil.post(createdYear, titleShrinked);
+                if (article) 
+                    this.article = article;
+                else
+                    throw new Error();
+            }
         }
     },
-    watch: {
-        // Watching the URL path changes to render the new post once it happens
-        '$route.query': {
-            handler: function(params) {
-                const that = this;
-                this.$store.state.postsUtil.post(this.createdYear, this.titleShrinked)
-                    .then((data) => {
-                        that.article = MODE_EDIT_ARTICLE;
-                        return that.article = data;
-                    })
-                    .then((data) => {
-                        if (data === undefined){
-                            return that.$router.push({name: "Placeholder"});
-                        }
-                    });
-            },
-            deep: true,
-            immediate: true
-        },
+    mounted(){
+        console.log(this.createdYear);
+        console.log(this.titleShrinked);
+        this.mode = this.titleShrinked && this.createdYear ? MODE_EDIT_ARTICLE : MODE_NEW_ARTICLE;
 
-        // Id changes
-        // createdYear: function(){
-        //     this.idChange();
-        // },
-        // titleShrinked: function(){
-        //     this.idChange();
-        // }
-
+        const that = this;  
+        this.getPost().catch((error) => that.$router.push({name: "Placeholder"}));
     }
 }
 </script>

@@ -14,15 +14,15 @@ Vue.use(Meta);
 
 const routes = [
     {
+        path: "/admin/article",
+        name: "ArticleEdit",
+        component: ArticleEdit,
+        props: true
+    },
+    {
         path: "/admin",
         name: "Admin",
         component: AdminView
-    },
-    {
-        path: "/admin/article",
-        name: "AdminArticle",
-        component: ArticleEdit,
-        props: true
     },
     {
         path: "/article/:year/:titleShrinked",
@@ -32,10 +32,6 @@ const routes = [
     },
     {
         path: "/articles/0",
-        redirect: "/"
-    },
-    {
-        path: "/article/0",
         redirect: "/"
     },
     {
