@@ -6,7 +6,7 @@
     >
     <!-- To make the title have a link if was not in main view -->
         <v-toolbar-title @click="toHome" primary-title style="color:#010000;" class="cursor">
-            Atheer Blog
+            {{title}}
         </v-toolbar-title>
 
       <v-spacer></v-spacer>
@@ -84,6 +84,9 @@ export default {
                     titleShrinked: "contact"
                 }
             };
+        },
+        title: function (){
+            return this.$store.state.title;
         }
     },
     methods: {
