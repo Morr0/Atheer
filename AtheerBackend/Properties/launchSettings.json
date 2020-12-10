@@ -18,9 +18,8 @@
     "AtheerBackend": {
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:5000"
+      "applicationUrl": "http://0.0.0.0:5000"
     },
     "Mock Lambda Test Tool": {
       "commandName": "Executable",
