@@ -62,7 +62,7 @@ namespace AtheerBackend
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                Console.WriteLine("Debug");
+                Console.WriteLine("Development");
             }
             
             app.UseCors();
