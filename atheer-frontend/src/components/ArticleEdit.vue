@@ -5,13 +5,15 @@
                 <v-text-field 
                     label="Created Year"
                     v-model="article.createdYear"
+                    @change="idChange"
                 ></v-text-field>
                 <v-spacer />
                 <v-text-field
                     label="Title Shrinked"
                     v-model="article.titleShrinked"
+                    @change="idChange"
                 ></v-text-field>
-                <v-btn text @click.prevent="refresh">Refresh</v-btn>
+                <v-btn ref="refreshButton" v-if="mode === `edit`" text @click.prevent="refresh">Refresh</v-btn>
             </v-row>
 
             <v-text-field
@@ -78,19 +80,31 @@ export default {
         },
         refresh: async function (){
             if (this.changedIdsWhileEditing){
-                // TODO handle error when fetching a non-existent and set things back
-                await this.getPost();
+                console.log("Trying to refresh");
+                try {
+                    await this.getPost();
+                } catch (error){
+                    this.reset();
+                }
 
-                this.createdYear = createdYear;
-                this.titleShrinked = titleShrinked;
                 this.mode = MODE_EDIT_ARTICLE; 
                 this.changedIdsWhileEditing = false;
-            }
+            } else
+                console.log("Nothing has changed so will not refresh");
+        },
+        reset: function (){
+            console.log("Post does not exist");
+            this.$set(this.article, "createdYear", this.createdYear);
+            this.$set(this.article, "titleShrinked", this.titleShrinked);
+            this.changedIdsWhileEditing = false;
+            console.log("RESET DONE");
         },
         idChange: function (){
             if (this.article.createdYear !== this.createdYear || this.article.titleShrinked != this.titleShrinked){
                 this.mode = MODE_EDIT_ARTICLE;
                 this.changedIdsWhileEditing = true;
+            } else {
+                this.changedIdsWhileEditing = false;
             }
         },
         getPost: async function (){
@@ -104,6 +118,9 @@ export default {
                     this.article = article;
                 else
                     throw new Error();
+
+                this.createdYear = createdYear;
+                this.titleShrinked = titleShrinked;
             }
         }
     },
