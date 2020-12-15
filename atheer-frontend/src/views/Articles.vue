@@ -2,7 +2,7 @@
 	<v-main>
 		<div v-if="admin">
             <v-list two-line>
-                <BareArticle v-for="article in articles" :key="article.titleShrinked || Math.random()" :article="article" />
+                <BareArticle v-for="article in articles" :key="article.titleShrinked + uuid()" :article="article" />
             </v-list>
         </div>
 
@@ -16,11 +16,13 @@
                 Loading ...
             </v-card-title>
 
-            <Article v-for="article in articles" :key="article.titleShrinked || Math.random()" :article="article" />        </div>
+            <Article v-for="article in articles" :key="article.titleShrinked + uuid()" :article="article" />        </div>
 	</v-main>
 </template>
 
 <script>
+const uuid = require("uuid").v4;
+
 import Article from "@/components/Article.vue";
 import BareArticle from "@/components/BareArticle.vue";
 
@@ -74,6 +76,7 @@ export default {
             });
 
 		return {
+            uuid,
 			articles: articles,
 		};
     }
