@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -150,23 +151,30 @@ namespace AtheerBackend.Repositories.Blog
                     .PostsPaginationHeaderFromLastEvalKey(lastEvalKey);
             }
 
-            SortPostsByDayInMonth(response.Posts);
+            response.Posts = SortDesc(response.Posts);
 
             return response;
         }
 
-        private void SortPostsByDayInMonth(List<BlogPost> posts)
+        private List<BlogPost> SortDesc(List<BlogPost> posts)
         {
-            posts.Sort((post1, post2) => SortByDayInMonth(post1.CreationDate, post2.CreationDate));
+            posts = posts.OrderByDescending(x => x.CreatedYear).ToList();
+            posts.Sort((post1, post2) => SortDesc(post1.CreationDate, post2.CreationDate));
+            return posts;
         }
 
-        private void SortPostsByDayInMonth(List<BareBlogPostReadDTO> posts)
+        private List<BareBlogPostReadDTO> SortDesc(List<BareBlogPostReadDTO> posts)
         {
-            posts.Sort((post1, post2) => SortByDayInMonth(post1.CreationDate, post2.CreationDate));
+            posts = posts.OrderByDescending(x => x.CreatedYear).ToList();
+            posts.Sort((post1, post2) => SortDesc(post1.CreationDate, post2.CreationDate));
+            return posts;
         }
 
-        private int SortByDayInMonth(string creationDate1, string creationDate2)
+        private int SortDesc(string creationDate1, string creationDate2)
         {
+            if (string.IsNullOrEmpty(creationDate1) || string.IsNullOrEmpty(creationDate2))
+                return default;
+            
             try
             {
                 var dt1 = DateTime.ParseExact(creationDate1, SortByLatestDatetimeFormat, null);
@@ -175,6 +183,10 @@ namespace AtheerBackend.Repositories.Blog
                 return dt2.CompareTo(dt1);
             }
             catch (FormatException)
+            {
+                return default;
+            }
+            catch (InvalidOperationException)
             {
                 return default;
             }
@@ -276,7 +288,7 @@ namespace AtheerBackend.Repositories.Blog
                 posts.Add(DynamoToFromModelMapper<BareBlogPostReadDTO>.Map(item));
             }
             
-            SortPostsByDayInMonth(posts);
+            posts = SortDesc(posts);
             return posts;
         }
 
