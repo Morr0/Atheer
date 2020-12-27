@@ -20,15 +20,12 @@
         @if (Model.Likeable)
         {
             <label for="like">@Model.Likes Likes | </label>
-            <button type="submit" class="btn btn-outline-secondary" id="like">Like</button>
+            <button name="submit" type="submit" class="btn btn-outline-secondary" id="like" value="Like">Like</button>
         }
-        @if (Model.Shareable)
-        {
-            <button type="submit" class="btn btn-outline-secondary" id="share">Share</button>
-        }
-        @if (Model.Contactable)
-        {
-            <button type="submit" class="btn btn-outline-secondary" id="contact">Contact regarding this</button>
-        }
+        @* TODO implement to copy link
+        @* @if (Model.Shareable) *@
+        @* { *@
+        @*     <button name="submit" type="submit" class="btn btn-outline-secondary" id="share" value="Share">Share</button> *@
+        @* } *@
     </form>
 </div>
