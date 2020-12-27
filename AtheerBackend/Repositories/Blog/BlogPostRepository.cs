@@ -75,10 +75,10 @@ namespace AtheerBackend.Repositories.Blog
             }
             
             // Query the last evaluated key if not null
-            if (!paginationHeader.Empty())
-            {
-                request.ExclusiveStartKey = PostsPaginationHeaderExtension.LastEvalKey(paginationHeader);
-            }
+            // if (!paginationHeader.Empty())
+            // {
+            //     request.ExclusiveStartKey = PostsPaginationHeaderExtension.LastEvalKey(paginationHeader);
+            // }
 
             var response = await _client.ScanAsync(request).ConfigureAwait(false);
 

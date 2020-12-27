@@ -1,0 +1,13 @@
+﻿@page
+@model Atheer.Views.Articles.Index
+
+
+@{
+    var posts = ViewBag.Posts as List<BlogPost>;
+}
+
+@* @foreach (var post in Model) *@
+@* { *@
+@*     @post.Title *@
+@* } *@
+@posts.Count
