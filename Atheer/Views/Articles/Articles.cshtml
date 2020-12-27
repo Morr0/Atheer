@@ -1,5 +1,9 @@
 ﻿@model List<BlogPost>
 
+@{
+    ViewData["Title"] = "Articles";
+}
+
 @foreach (var post in Model)
 {
     <div class="card">
