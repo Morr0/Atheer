@@ -1,12 +1,6 @@
-﻿@page
-@model Atheer.Views.Articles.Index
+﻿@model List<BlogPost>
 
-
-@{
-    var posts = ViewBag.Posts as List<BlogPost>;
-}
-
-@foreach (var post in posts)
+@foreach (var post in Model)
 {
     <div class="card">
         <div class="card-body">

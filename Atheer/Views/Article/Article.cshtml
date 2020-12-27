@@ -1,0 +1,34 @@
+﻿@using Markdig
+@inject MarkdownPipeline MarkdownPipeline
+@model BlogPost
+@{
+    string content = Markdown.ToHtml(Model.Content, MarkdownPipeline);
+}
+
+<div class="container">
+    <h2 class="text-dark">@Model.Title</h2>
+    <h6 class="card-subtitle">@DateTime.Parse(Model.CreationDate).ToString("d")</h6>
+    <p class="card-text">@Model.Description</p>
+    <br/>
+    @Html.Raw(content)
+    <br/>
+    <br/>
+    <form method="post">
+        <input asp-for="CreatedYear" type="hidden" />
+        <input asp-for="TitleShrinked" type="hidden" />
+        
+        @if (Model.Likeable)
+        {
+            <label for="like">@Model.Likes Likes | </label>
+            <button type="submit" class="btn btn-outline-secondary" id="like">Like</button>
+        }
+        @if (Model.Shareable)
+        {
+            <button type="submit" class="btn btn-outline-secondary" id="share">Share</button>
+        }
+        @if (Model.Contactable)
+        {
+            <button type="submit" class="btn btn-outline-secondary" id="contact">Contact regarding this</button>
+        }
+    </form>
+</div>

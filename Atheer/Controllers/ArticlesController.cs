@@ -20,11 +20,10 @@ namespace Atheer.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var tasks = (await _service.Get(500).ConfigureAwait(false));
-            if (tasks?.Posts is null) return Redirect("/");
+            var blogResponse = (await _service.Get(500).ConfigureAwait(false));
+            if (blogResponse?.Posts is null) return Redirect("/");
 
-            ViewBag.Posts = tasks.Posts;
-            return View();
+            return View("Articles", blogResponse.Posts);
         }
     }
 }
