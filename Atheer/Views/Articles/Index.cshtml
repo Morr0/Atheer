@@ -8,7 +8,16 @@
 
 @foreach (var post in posts)
 {
-    <div>
-        <p>@post.TitleShrinked</p>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">
+                <a class="text-dark" asp-controller="Article"
+                asp-route-CreatedYear="@post.CreatedYear" asp-route-TitleShrinked="@post.TitleShrinked">
+                @post.Title
+                </a>
+            </h5>
+            <h6 class="card-subtitle">@DateTime.Parse(post.CreationDate).ToString("d")</h6>
+            <p class="card-text">@post.Description</p>
+        </div>
     </div>
 }
