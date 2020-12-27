@@ -20,7 +20,7 @@ namespace AtheerBackend.Models
         public string Content { get; set; }
 
         // This and update date, are seperate from the key above. These are for info only.
-        public string CreationDate { get; set; }
+        public string CreationDate { get; set; } = DateTime.UtcNow.ToString();
 
         public string LastUpdatedDate { get; set; }
 

@@ -68,14 +68,13 @@ namespace AtheerBackend.Services.BlogService
             return _repository.Update(key, newPost);
         }
 
-        public async Task<BlogPost> AddPost(BlogPost post)
+        public Task<BlogPost> AddPost(BlogPost post)
         {
             post.CreatedYear = DateTime.UtcNow.Year;
             post.TitleShrinked = GetShrinkedTitle(post.Title);
             
-            // TODO update
-            Console.WriteLine("Adding POsst");
-            return post;
+            // TODO create different titleShrinked if this title exists
+            return _repository.Add(post);
         }
 
         private string GetShrinkedTitle(string title)
@@ -96,6 +95,7 @@ namespace AtheerBackend.Services.BlogService
         public async Task<BlogPost> UpdatePost(BlogPost post)
         {
             Console.WriteLine("Updating");
+            // TODO update and update date
             return post;
         }
     }

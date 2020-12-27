@@ -47,7 +47,7 @@ namespace Atheer.Controllers
             if (IsNewPost(post.TitleShrinked))
             {
                 checkedOutPost = await _service.AddPost(post).ConfigureAwait(false);
-                return Redirect($"/Article/{checkedOutPost.CreatedYear}/{checkedOutPost.TitleShrinked}");
+                return RedirectToAction("Index", "Article", post);
             }
             else
             {
