@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using AtheerBackend.DTOs.BlogPost;
 using AtheerBackend.Models;
@@ -64,6 +66,37 @@ namespace AtheerBackend.Services.BlogService
         public Task<BlogPost> Update(BlogPostPrimaryKey key, BlogPost newPost)
         {
             return _repository.Update(key, newPost);
+        }
+
+        public async Task<BlogPost> AddPost(BlogPost post)
+        {
+            post.CreatedYear = DateTime.UtcNow.Year;
+            post.TitleShrinked = GetShrinkedTitle(post.Title);
+            
+            // TODO update
+            Console.WriteLine("Adding POsst");
+            return post;
+        }
+
+        private string GetShrinkedTitle(string title)
+        {
+            string[] splitTitle = title.Split();
+            var sb = new StringBuilder(splitTitle.Length * 2);
+            char separator = '-';
+            for (var index = 0; index < splitTitle.Length; index++)
+            {
+                var t = splitTitle[index];
+                sb.Append($"{t.ToLower()}");
+                if ((index + 1) != splitTitle.Length) sb.Append(separator);
+            }
+
+            return sb.ToString();
+        }
+
+        public async Task<BlogPost> UpdatePost(BlogPost post)
+        {
+            Console.WriteLine("Updating");
+            return post;
         }
     }
 }

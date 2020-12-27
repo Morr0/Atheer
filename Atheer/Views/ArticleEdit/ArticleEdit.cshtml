@@ -1,0 +1,63 @@
+﻿@using System.Text
+@model BlogPost
+
+@{
+    string TopicsAsString()
+    {
+        var sb = new StringBuilder();
+        if (Model?.Topics != null)
+        {
+            foreach (var topic in Model?.Topics)
+            {
+                sb.Append($"{topic}, ");
+            }
+        }
+
+        return sb.ToString();
+    }
+}
+
+<form method="post">
+    @if (!string.IsNullOrEmpty(Model.TitleShrinked))
+    {
+        <div class="form-group">
+            <label for="CreatedYear">Created Year: </label>
+            <label name="CreatedYear" id="CreatedYear">@Model.CreatedYear</label>
+            <label for="TitleShrinked">Title Shrinked: </label>
+            <label name="TitleShrinked" id="TitleShrinked">@Model.TitleShrinked</label>
+        </div>
+    }
+    <br>
+    <div class="form-group">
+        <label for="Title">Title: </label>
+        <input type="text" name="Title" id="Title" value="@Model.Title" class="form-control" />
+        <label for="Topics">Topics (CSV): </label>
+        <input type="text" name="Topics" id="Topics" value="@TopicsAsString()" class="form-control" />
+        <label for="Description">Description: </label>
+        <input type="text" name="Description" id="Description" value="@Model.Description" class="form-control" />
+        <label for="Content">Content (Markdown):</label>
+        <textarea type="text" name="Content" id="Content" value="@Model.Content" class="form-control"></textarea>
+    </div>
+    <br/>
+    <div class="form-group">
+        <div class="form-check">
+            <input name="Draft" id="Draft" value="@Model.Draft" type="checkbox" class="form-check-input"/>
+            <label class="form-check-label" for="Draft">Draft</label>
+        </div>
+        <div class="form-check">
+            <input name="Unlisted" value="@Model.Unlisted" id="Unlisted" type="checkbox" class="form-check-input" />
+            <label class="form-check-label" for="Unlisted" >Unlisted</label>
+        </div>
+        <div class="form-check">
+            <input name="Likeable" value="@Model.Likeable" id="Likeable" type="checkbox" class="form-check-input" />
+            <label class="form-check-label" for="Likeable">Likeable</label>
+        </div>
+        <div class="form-check">
+            <input name="Shareable" id="Shareable" value="@Model.Shareable" type="checkbox" class="form-check-input" />
+            <label class="form-check-label" for="Shareable">Shareable</label>
+        </div>
+    </div>
+    
+    <button class="btn btn-outline-primary">Checkout</button>
+</form>
+

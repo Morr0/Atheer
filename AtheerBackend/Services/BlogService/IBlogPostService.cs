@@ -21,5 +21,7 @@ namespace AtheerBackend.Services.BlogService
         Task Delete(BlogPostPrimaryKey key);
 
         Task<BlogPost> Update(BlogPostPrimaryKey key, BlogPost newPost);
+        Task<BlogPost> AddPost(BlogPost post);
+        Task<BlogPost> UpdatePost(BlogPost post);
     }
 }
