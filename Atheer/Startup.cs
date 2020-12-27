@@ -4,6 +4,7 @@ using AtheerBackend.Repositories.Contact;
 using AtheerBackend.Services.BlogService;
 using AtheerBackend.Services.ContactService;
 using AtheerBackend.Utilities;
+using Markdig;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -30,6 +31,8 @@ namespace Atheer
             services.AddControllersWithViews();
 
             services.AddSingleton<AtheerConfig>(_config);
+            services.AddSingleton<MarkdownPipeline>(
+                provider => new MarkdownPipelineBuilder().UseAdvancedExtensions().UseBootstrap().Build());
 
             // Repositories
             services.AddTransient<ContactRepository>();

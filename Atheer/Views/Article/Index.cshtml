@@ -1,15 +1,18 @@
 ﻿@page
+@using Markdig
+@inject MarkdownPipeline MarkdownPipeline
 @model Atheer.Views.Article.Index
 @{
     var post = ViewBag.Post as BlogPost;
+    string content = Markdown.ToHtml(post.Content, MarkdownPipeline);
 }
 
 <div class="container">
-    <h5 class="text-dark">@post.Title</h5>
+    <h2 class="text-dark">@post.Title</h2>
     <h6 class="card-subtitle">@DateTime.Parse(post.CreationDate).ToString("d")</h6>
     <p class="card-text">@post.Description</p>
     <br/>
-    @Html.Raw(post.Content)
+    @Html.Raw(content)
     <br/>
     <br/>
     <form method="post">
