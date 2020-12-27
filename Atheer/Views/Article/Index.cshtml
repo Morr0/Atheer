@@ -1,6 +1,9 @@
 ﻿@page
-@model BlogPost
+@model Atheer.Views.Article.Index
+@{
+    var post = ViewBag.Post as BlogPost;
+}
 
 <p>
-    @Model.CreatedYear
+    @post.CreatedYear
 </p>

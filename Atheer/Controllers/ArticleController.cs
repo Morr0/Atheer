@@ -25,8 +25,9 @@ namespace Atheer.Controllers
         {
             var post = await _service.GetSpecific(Route).ConfigureAwait(false);
             if (post is null) return Redirect("/");
-            
-            return View(post);
+
+            ViewBag.Post = post;
+            return View();
         }
     }
 }
