@@ -68,16 +68,31 @@ namespace AtheerBackend.Services.BlogService
             return _repository.Update(key, newPost);
         }
 
-        public Task<BlogPost> AddPost(BlogPost post)
+        public async Task<BlogPost> AddPost(BlogPost post)
         {
-            post.CreatedYear = DateTime.UtcNow.Year;
-            post.TitleShrinked = GetShrinkedTitle(post.Title);
+            int createdYear = DateTime.UtcNow.Year;
+            string titleShrinked = GetShrinkedTitle(post.Title);
+
+            // Check that no other post has same titleShrinked, else generate a new titleShrinked
+            var key = new BlogPostPrimaryKey(createdYear, titleShrinked);
+            while (await GetSpecific(key) is not null)
+            {
+                titleShrinked = RandomiseExistingShrinkedTitle(ref titleShrinked);
+                key.TitleShrinked = titleShrinked;
+            }
+
+            post.CreatedYear = createdYear;
+            post.TitleShrinked = titleShrinked;
             
-            // TODO create different titleShrinked if this title exists
-            return _repository.Add(post);
+            return await _repository.Add(post);
         }
 
-        private string GetShrinkedTitle(string title)
+        private string RandomiseExistingShrinkedTitle(ref string existingTitleShrinked)
+        {
+            return $"{existingTitleShrinked}-";
+        }
+
+        private string GetShrinkedTitle(string title, string anotherChance = null)
         {
             string[] splitTitle = title.Split();
             var sb = new StringBuilder(splitTitle.Length * 2);

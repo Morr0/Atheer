@@ -3,6 +3,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <AWSProjectType>Lambda</AWSProjectType>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="aws-lambda-tools-defaults.json" />
