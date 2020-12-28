@@ -1,9 +1,11 @@
 using System;
+using System.Reflection;
 using AtheerBackend.Repositories.Blog;
 using AtheerBackend.Repositories.Contact;
 using AtheerBackend.Services.BlogService;
 using AtheerBackend.Services.ContactService;
 using AtheerBackend.Utilities;
+using AutoMapper;
 using Markdig;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,6 +31,8 @@ namespace Atheer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddSingleton<AtheerConfig>(_config);
             services.AddSingleton<MarkdownPipeline>(

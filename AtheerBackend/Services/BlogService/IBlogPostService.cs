@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using AtheerBackend.DTOs;
 using AtheerBackend.DTOs.BlogPost;
 using AtheerBackend.Models;
 
@@ -21,7 +22,7 @@ namespace AtheerBackend.Services.BlogService
         Task Delete(BlogPostPrimaryKey key);
 
         Task<BlogPost> Update(BlogPostPrimaryKey key, BlogPost newPost);
-        Task<BlogPost> AddPost(BlogPost post);
-        Task<BlogPost> UpdatePost(BlogPost post);
+        Task<BlogPost> AddPost(BlogPostEditDto post);
+        Task<BlogPost> UpdatePost(BlogPostEditDto post);
     }
 }

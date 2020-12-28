@@ -2,19 +2,23 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using AtheerBackend.DTOs;
 using AtheerBackend.DTOs.BlogPost;
 using AtheerBackend.Models;
 using AtheerBackend.Repositories.Blog;
+using AutoMapper;
 
 namespace AtheerBackend.Services.BlogService
 {
     public class BlogPostService : IBlogPostService
     {
         private readonly BlogPostRepository _repository;
+        private readonly IMapper _mapper;
 
-        public BlogPostService(BlogPostRepository repository)
+        public BlogPostService(BlogPostRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         public Task<BlogRepositoryBlogResponse> Get(int amount, PostsPaginationPrimaryKey paginationHeader = null)
@@ -68,23 +72,24 @@ namespace AtheerBackend.Services.BlogService
             return _repository.Update(key, newPost);
         }
 
-        public async Task<BlogPost> AddPost(BlogPost post)
+        public async Task<BlogPost> AddPost(BlogPostEditDto postDto)
         {
             int createdYear = DateTime.UtcNow.Year;
-            string titleShrinked = GetShrinkedTitle(post.Title);
+            string titleShrinked = GetShrinkedTitle(postDto.Title);
 
             // Check that no other post has same titleShrinked, else generate a new titleShrinked
             var key = new BlogPostPrimaryKey(createdYear, titleShrinked);
-            while (await GetSpecific(key) is not null)
+            while ((await GetSpecific(key).ConfigureAwait(false)) is not null)
             {
                 titleShrinked = RandomiseExistingShrinkedTitle(ref titleShrinked);
                 key.TitleShrinked = titleShrinked;
             }
 
-            post.CreatedYear = createdYear;
-            post.TitleShrinked = titleShrinked;
-            
-            return await _repository.Add(post);
+            postDto.CreatedYear = createdYear;
+            postDto.TitleShrinked = titleShrinked;
+
+            var post = _mapper.Map<BlogPost>(postDto);
+            return await _repository.Add(post).ConfigureAwait(false);
         }
 
         private string RandomiseExistingShrinkedTitle(ref string existingTitleShrinked)
@@ -107,11 +112,11 @@ namespace AtheerBackend.Services.BlogService
             return sb.ToString();
         }
 
-        public async Task<BlogPost> UpdatePost(BlogPost post)
+        public async Task<BlogPost> UpdatePost(BlogPostEditDto post)
         {
             Console.WriteLine("Updating");
             // TODO update and update date
-            return post;
+            return null;
         }
     }
 }

@@ -1,8 +1,11 @@
 ﻿using System.Threading.Tasks;
+using Atheer.Controllers.Dtos;
 using Atheer.Controllers.Queries;
+using AtheerBackend.DTOs;
 using AtheerBackend.DTOs.BlogPost;
 using AtheerBackend.Models;
 using AtheerBackend.Services.BlogService;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -14,11 +17,14 @@ namespace Atheer.Controllers
     {
         private ILogger<ArticleEditController> _logger;
         private IBlogPostService _service;
+        private readonly IMapper _mapper;
 
-        public ArticleEditController(ILogger<ArticleEditController> logger, IBlogPostService service)
+        public ArticleEditController(ILogger<ArticleEditController> logger, IBlogPostService service
+        , IMapper mapper)
         {
             _logger = logger;
             _service = service;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -41,19 +47,20 @@ namespace Atheer.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Checkout([FromForm] BlogPost post)
+        public async Task<IActionResult> Checkout([FromForm] BlogPostEditDto postDto)
         {
-            BlogPost checkedOutPost = null;
-            if (IsNewPost(post.TitleShrinked))
+            BlogPost post = null;
+            if (IsNewPost(postDto.TitleShrinked))
             {
-                checkedOutPost = await _service.AddPost(post).ConfigureAwait(false);
-                return RedirectToAction("Index", "Article", post);
+                post = await _service.AddPost(postDto).ConfigureAwait(false);
+                return LocalRedirect($"/article/{post.CreatedYear}/{post.TitleShrinked}");
+                // return RedirectToAction("Index", "Article", post);
             }
             else
             {
-                checkedOutPost = await _service.UpdatePost(post).ConfigureAwait(false);
+                post = await _service.UpdatePost(postDto).ConfigureAwait(false);
                 // Refresh as GET
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", post);
             }
         }
 

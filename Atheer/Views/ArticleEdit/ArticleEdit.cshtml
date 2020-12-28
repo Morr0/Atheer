@@ -15,10 +15,14 @@
 
         return sb.ToString();
     }
+
+    bool IsNew = string.IsNullOrEmpty(Model.TitleShrinked);
+
+    ViewData["Title"] = IsNew ? "New" : "Edit"; 
 }
 
 <form method="post">
-    @if (!string.IsNullOrEmpty(Model.TitleShrinked))
+    @if (!IsNew)
     {
         <div class="form-group">
             <label for="CreatedYear">Created Year: </label>
