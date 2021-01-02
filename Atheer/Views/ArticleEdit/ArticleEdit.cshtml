@@ -31,12 +31,22 @@
     <div class="form-group">
         <label for="Title">Title: </label>
         <input type="text" name="Title" id="Title" value="@Model.Title" class="form-control" />
-        <label for="Topics">Topics (CSV): </label>
-        <input type="text" name="Topics" id="Topics" value="@TopicsAsString()" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+        
+        @*Requires a custom validator
+        TODO validate list
+        TODO address the ',' of topics*@
+        @* <label for="Topics">Topics (CSV): </label> *@
+        @* <input type="text" name="Topics" id="Topics" value="@TopicsAsString()" class="form-control" /> *@
+        @* <span asp-validation-for="Topics" class="text-danger"></span> *@
+
         <label for="Description">Description: </label>
         <input type="text" name="Description" id="Description" value="@Model.Description" class="form-control" />
+        <span asp-validation-for="Description" class="text-danger"></span>
+        
         <label for="Content">Content (Markdown):</label>
         <textarea type="text" name="Content" id="Content" class="form-control">@Model.Content</textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
     </div>
     <br/>
     <div class="form-group">

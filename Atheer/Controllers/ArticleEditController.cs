@@ -62,6 +62,8 @@ namespace Atheer.Controllers
         
         private async Task<IActionResult> Checkout(BlogPostEditDto postDto)
         {
+            if (!ModelState.IsValid) return View("ArticleEdit", postDto);
+            
             if (IsNewPost(postDto.TitleShrinked))
             {
                 _logger.LogInformation("New");
