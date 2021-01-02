@@ -9,9 +9,9 @@
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">
-                <a class="text-dark" asp-controller="Article"
-                asp-route-CreatedYear="@post.CreatedYear" asp-route-TitleShrinked="@post.TitleShrinked">
-                @post.Title
+                <a class="text-dark" asp-controller="Article" asp-action="Index"
+                   asp-route-CreatedYear="@post.CreatedYear" asp-route-TitleShrinked="@post.TitleShrinked">
+                    @post.Title
                 </a>
             </h5>
             <h6 class="card-subtitle">@DateTime.Parse(post.CreationDate).ToString("d")</h6>
