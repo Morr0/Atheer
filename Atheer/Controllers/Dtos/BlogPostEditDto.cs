@@ -22,6 +22,7 @@ namespace Atheer.Controllers.Dtos
         {
             " "
         };
+
         public bool Likeable { get; set; }
         public bool Shareable { get; set; }
         public bool Draft { get; set; }

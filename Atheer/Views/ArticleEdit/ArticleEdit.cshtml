@@ -54,20 +54,20 @@
     <br/>
     <div class="form-group">
         <div class="form-check">
-            <input name="Draft" id="Draft" value="@Model.Draft" type="checkbox" class="form-check-input"/>
-            <label class="form-check-label" for="Draft">Draft</label>
+            <input asp-for="Draft" type="checkbox" class="form-check-input"/>
+            <label class="form-check-label" asp-for="Draft">Draft</label>
         </div>
         <div class="form-check">
-            <input name="Unlisted" value="@Model.Unlisted" id="Unlisted" type="checkbox" class="form-check-input"/>
-            <label class="form-check-label" for="Unlisted">Unlisted</label>
+            <input asp-for="Unlisted" type="checkbox" class="form-check-input"/>
+            <label class="form-check-label" asp-for="Unlisted">Unlisted</label>
         </div>
         <div class="form-check">
-            <input name="Likeable" value="@Model.Likeable" id="Likeable" type="checkbox" class="form-check-input"/>
-            <label class="form-check-label" for="Likeable">Likeable</label>
+            <input asp-for="Likeable" type="checkbox" class="form-check-input"/>
+            <label class="form-check-label" asp-for="Likeable">Likeable</label>
         </div>
         <div class="form-check">
-            <input name="Shareable" id="Shareable" value="@Model.Shareable" type="checkbox" class="form-check-input"/>
-            <label class="form-check-label" for="Shareable">Shareable</label>
+            <input asp-for="Shareable" type="checkbox" class="form-check-input"/>
+            <label class="form-check-label" asp-for="Shareable">Shareable</label>
         </div>
     </div>
 
