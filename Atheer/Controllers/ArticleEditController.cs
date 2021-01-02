@@ -44,7 +44,23 @@ namespace Atheer.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Checkout([FromForm] BlogPostEditDto postDto)
+        public async Task<IActionResult> Post([FromForm] string button, [FromForm] BlogPostEditDto postDto)
+        {
+            var key = new BlogPostPrimaryKey(postDto.CreatedYear, postDto.TitleShrinked);
+            switch (button)
+            {
+                case "Checkout":
+                    return await Checkout(postDto);
+                case "Page":
+                    return VisitPage(ref key);
+                case "Delete":
+                    return await Delete(key);
+                default:
+                    return Redirect("/");
+            }
+        }
+        
+        public async Task<IActionResult> Checkout(BlogPostEditDto postDto)
         {
             if (IsNewPost(postDto.TitleShrinked))
             {
@@ -65,6 +81,16 @@ namespace Atheer.Controllers
                 TitleShrinked = postDto.TitleShrinked
             });
             
+        }
+
+        public IActionResult VisitPage(ref BlogPostPrimaryKey key)
+        {
+            return RedirectToAction("Index", "Article", key);
+        }
+
+        public async Task<IActionResult> Delete([FromForm] BlogPostPrimaryKey key)
+        {
+            return Redirect("/");
         }
 
         private bool IsNewPost(string titleShrinked)

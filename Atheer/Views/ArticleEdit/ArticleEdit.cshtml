@@ -21,7 +21,7 @@
     ViewData["Title"] = IsNew ? "New" : "Edit"; 
 }
 
-<form method="post" asp-controller="ArticleEdit" asp-action="Checkout">
+<form method="post">
     @if (!IsNew)
     {
         // For POST on edit 
@@ -58,6 +58,11 @@
         </div>
     </div>
     
-    <button class="btn btn-outline-primary">Checkout</button>
-</form>
+    <button name="button" value="Checkout" class="btn btn-outline-primary">Checkout</button>
+@if (!IsNew)
+{
+    <button name="button" value="Page" class="btn btn-info">Visit page</button>
+    <button name="button" value="Delete" class="btn btn-danger">Delete</button>
 
+}
+</form>
