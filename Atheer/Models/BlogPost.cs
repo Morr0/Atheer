@@ -7,7 +7,7 @@ namespace Atheer.Models
     public class BlogPost
     {
         // Partition key
-        public int CreatedYear { get; set; } = DateTime.UtcNow.Year;
+        public int CreatedYear { get; set; }
 
         // Range key, e.g. this-is-a-title <- replace spaces with - and lower case everything
         public string TitleShrinked { get; set; }
@@ -20,17 +20,17 @@ namespace Atheer.Models
         public string Content { get; set; }
 
         // This and update date, are seperate from the key above. These are for info only.
-        public string CreationDate { get; set; } = DateTime.UtcNow.ToString();
+        public string CreationDate { get; set; }
 
         public string LastUpdatedDate { get; set; }
 
         public List<string> Topics { get; set; }
 
-        public bool Likeable { get; set; } = true;
+        public bool Likeable { get; set; }
 
         public int Likes { get; set; }
 
-        public bool Shareable { get; set; } = true;
+        public bool Shareable { get; set; }
         
         public int Shares { get; set; }
 

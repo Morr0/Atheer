@@ -32,6 +32,7 @@ namespace Atheer
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
+            services.AddSingleton<BlogPostFactory>();
             services.AddSingleton<AtheerConfig>(_config);
             services.AddSingleton<MarkdownPipeline>(
                 provider => new MarkdownPipelineBuilder().UseAdvancedExtensions().UseBootstrap().Build());

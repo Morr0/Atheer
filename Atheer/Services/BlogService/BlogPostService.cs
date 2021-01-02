@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using System.Threading.Tasks;
 using Atheer.Controllers.Dtos;
 using Atheer.Models;
@@ -12,11 +11,13 @@ namespace Atheer.Services.BlogService
     {
         private readonly BlogPostRepository _repository;
         private readonly IMapper _mapper;
+        private readonly BlogPostFactory _factory;
 
-        public BlogPostService(BlogPostRepository repository, IMapper mapper)
+        public BlogPostService(BlogPostRepository repository, IMapper mapper, BlogPostFactory factory)
         {
             _repository = repository;
             _mapper = mapper;
+            _factory = factory;
         }
 
         public Task<BlogRepositoryBlogResponse> Get(int amount, PostsPaginationPrimaryKey paginationHeader = null)
@@ -66,43 +67,27 @@ namespace Atheer.Services.BlogService
         }
 
         public async Task AddPost(BlogPostEditDto postDto)
-        {
-            int createdYear = DateTime.UtcNow.Year;
-            string titleShrinked = GetShrinkedTitle(postDto.Title);
-
+        { 
+            var post = _factory.Create(ref postDto);
+            string titleShrinked = post.TitleShrinked;
+            
             // Check that no other post has same titleShrinked, else generate a new titleShrinked
-            var key = new BlogPostPrimaryKey(createdYear, titleShrinked);
+            var key = new BlogPostPrimaryKey(post.CreatedYear, titleShrinked);
             while ((await GetSpecific(key).ConfigureAwait(false)) is not null)
             {
                 titleShrinked = RandomiseExistingShrinkedTitle(ref titleShrinked);
                 key.TitleShrinked = titleShrinked;
             }
 
-            postDto.CreatedYear = createdYear;
-            postDto.TitleShrinked = titleShrinked;
+            postDto.CreatedYear = post.CreatedYear;
+            postDto.TitleShrinked = post.TitleShrinked = titleShrinked;
 
-            var post = _mapper.Map<BlogPost>(postDto);
             await _repository.Add(post).ConfigureAwait(false);
         }
 
         private string RandomiseExistingShrinkedTitle(ref string existingTitleShrinked)
         {
             return $"{existingTitleShrinked}-";
-        }
-
-        private string GetShrinkedTitle(string title, string anotherChance = null)
-        {
-            string[] splitTitle = title.Split();
-            var sb = new StringBuilder(splitTitle.Length * 2);
-            char separator = '-';
-            for (var index = 0; index < splitTitle.Length; index++)
-            {
-                var t = splitTitle[index];
-                sb.Append($"{t.ToLower()}");
-                if ((index + 1) != splitTitle.Length) sb.Append(separator);
-            }
-
-            return sb.ToString();
         }
 
         public async Task Update(BlogPostEditDto postDto)

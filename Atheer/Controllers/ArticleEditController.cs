@@ -50,7 +50,7 @@ namespace Atheer.Controllers
             switch (button)
             {
                 case "Checkout":
-                    return await Checkout(postDto).ConfigureAwait(false);
+                    return await Checkout(key, postDto).ConfigureAwait(false);
                 case "Page":
                     return VisitPage(ref key);
                 case "Delete":
@@ -60,30 +60,24 @@ namespace Atheer.Controllers
             }
         }
         
-        private async Task<IActionResult> Checkout(BlogPostEditDto postDto)
+        private async Task<IActionResult> Checkout(BlogPostPrimaryKey key, BlogPostEditDto postDto)
         {
             if (!ModelState.IsValid) return View("ArticleEdit", postDto);
             
             // ADD
             if (IsNewPost(postDto.TitleShrinked))
             {
+                key = new BlogPostPrimaryKey(postDto.CreatedYear, postDto.TitleShrinked);
                 _logger.LogInformation("New");
                 await _service.AddPost(postDto).ConfigureAwait(false);
-                return RedirectToAction("Index", "Article", new BlogPostPrimaryKey
-                {
-                    CreatedYear = postDto.CreatedYear,
-                    TitleShrinked = postDto.TitleShrinked
-                });
+                return RedirectToAction("Index", "Article", new BlogPostPrimaryKey(
+                    postDto.CreatedYear, postDto.TitleShrinked));
             }
             
             // UPDATE
             await _service.Update(postDto).ConfigureAwait(false);
             TempData["Info"] = "Updated post successfully";
-            return RedirectToAction("Index", "ArticleEdit", new BlogPostPrimaryKey
-            {
-                CreatedYear = postDto.CreatedYear,
-                TitleShrinked = postDto.TitleShrinked
-            });
+            return RedirectToAction("Index", "ArticleEdit", key);
             
         }
 
