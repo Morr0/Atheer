@@ -50,17 +50,17 @@ namespace Atheer.Controllers
             switch (button)
             {
                 case "Checkout":
-                    return await Checkout(postDto);
+                    return await Checkout(postDto).ConfigureAwait(false);
                 case "Page":
                     return VisitPage(ref key);
                 case "Delete":
-                    return await Delete(key);
+                    return await Delete(key).ConfigureAwait(false);
                 default:
                     return Redirect("/");
             }
         }
         
-        public async Task<IActionResult> Checkout(BlogPostEditDto postDto)
+        private async Task<IActionResult> Checkout(BlogPostEditDto postDto)
         {
             if (IsNewPost(postDto.TitleShrinked))
             {
@@ -83,13 +83,16 @@ namespace Atheer.Controllers
             
         }
 
-        public IActionResult VisitPage(ref BlogPostPrimaryKey key)
+        private IActionResult VisitPage(ref BlogPostPrimaryKey key)
         {
             return RedirectToAction("Index", "Article", key);
         }
 
-        public async Task<IActionResult> Delete([FromForm] BlogPostPrimaryKey key)
+        private async Task<IActionResult> Delete(BlogPostPrimaryKey key)
         {
+            if (await _service.GetSpecific(key).ConfigureAwait(false) is null) return Redirect("/");
+            
+            await _service.Delete(key).ConfigureAwait(false);
             return Redirect("/");
         }
 
