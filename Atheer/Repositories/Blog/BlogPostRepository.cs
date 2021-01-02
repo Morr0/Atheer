@@ -293,16 +293,16 @@ namespace Atheer.Repositories.Blog
         }
 
 
-        public async Task<BlogPost> Add(BlogPost post)
+        public async Task Add(BlogPost post)
         {
             var request = new PutItemRequest
             {
                 TableName = _config.PostsTable,
-                Item = DynamoToFromModelMapper<BlogPost>.Map(post)
+                Item = DynamoToFromModelMapper<BlogPost>.Map(post),
+                ReturnValues = ReturnValue.ALL_OLD
             };
 
-            var response = await _client.PutItemAsync(request).ConfigureAwait(false);
-            return DynamoToFromModelMapper<BlogPost>.Map(response.Attributes);
+            await _client.PutItemAsync(request).ConfigureAwait(false);
         }
     }
 }

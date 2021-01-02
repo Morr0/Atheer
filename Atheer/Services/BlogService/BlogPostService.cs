@@ -65,7 +65,7 @@ namespace Atheer.Services.BlogService
             return _repository.Update(key, newPost);
         }
 
-        public async Task<BlogPost> AddPost(BlogPostEditDto postDto)
+        public async Task AddPost(BlogPostEditDto postDto)
         {
             int createdYear = DateTime.UtcNow.Year;
             string titleShrinked = GetShrinkedTitle(postDto.Title);
@@ -82,7 +82,7 @@ namespace Atheer.Services.BlogService
             postDto.TitleShrinked = titleShrinked;
 
             var post = _mapper.Map<BlogPost>(postDto);
-            return await _repository.Add(post).ConfigureAwait(false);
+            await _repository.Add(post).ConfigureAwait(false);
         }
 
         private string RandomiseExistingShrinkedTitle(ref string existingTitleShrinked)

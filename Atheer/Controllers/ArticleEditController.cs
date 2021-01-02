@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Atheer.Controllers.Dtos;
-using Atheer.Controllers.Queries;
 using Atheer.Models;
 using Atheer.Services;
 using Atheer.Services.BlogService;
@@ -27,18 +26,16 @@ namespace Atheer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index([FromQuery] BlogPostEditQuery editQuery)
+        public async Task<IActionResult> Index([FromQuery] BlogPostPrimaryKey key)
         {
             BlogPost post = null;
-            if (IsNewPost(editQuery.TitleShrinked))
+            if (IsNewPost(key.TitleShrinked))
             {
                 post = new BlogPost();
             }
             else
             {
-                post =
-                    await _service.GetSpecific(new BlogPostPrimaryKey(editQuery.CreatedYear, editQuery.TitleShrinked))
-                        .ConfigureAwait(false);
+                post = await _service.GetSpecific(key).ConfigureAwait(false);
                 if (post is null) return Redirect("/");
             }
 
@@ -48,18 +45,18 @@ namespace Atheer.Controllers
         [HttpPost]
         public async Task<IActionResult> Checkout([FromForm] BlogPostEditDto postDto)
         {
-            BlogPost post = null;
             if (IsNewPost(postDto.TitleShrinked))
             {
-                post = await _service.AddPost(postDto).ConfigureAwait(false);
-                return LocalRedirect($"/article/{post.CreatedYear}/{post.TitleShrinked}");
-                // return RedirectToAction("Index", "Article", post);
+                await _service.AddPost(postDto).ConfigureAwait(false);
+                var key = new BlogPostPrimaryKey(postDto.CreatedYear, postDto.TitleShrinked);
+                return RedirectToAction("Index", "Article", key);
             }
             else
             {
-                post = await _service.UpdatePost(postDto).ConfigureAwait(false);
+                await _service.UpdatePost(postDto).ConfigureAwait(false);
                 // Refresh as GET
-                return RedirectToAction("Index", post);
+                var key = new BlogPostPrimaryKey(postDto.CreatedYear, postDto.TitleShrinked);
+                return RedirectToAction("Index", "ArticleEdit", key);
             }
         }
 

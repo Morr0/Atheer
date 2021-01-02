@@ -19,7 +19,7 @@ namespace Atheer.Services.BlogService
         Task Delete(BlogPostPrimaryKey key);
 
         Task<BlogPost> Update(BlogPostPrimaryKey key, BlogPost newPost);
-        Task<BlogPost> AddPost(BlogPostEditDto post);
+        Task AddPost(BlogPostEditDto post);
         Task<BlogPost> UpdatePost(BlogPostEditDto post);
     }
 }
