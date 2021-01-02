@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace AtheerBackend.DTOs
+namespace Atheer.Controllers.Dtos
 {
     public class BlogPostEditDto
     {

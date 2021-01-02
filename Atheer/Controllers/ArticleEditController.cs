@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Atheer.Controllers.Dtos;
 using Atheer.Controllers.Queries;
-using AtheerBackend.DTOs;
-using AtheerBackend.DTOs.BlogPost;
-using AtheerBackend.Models;
-using AtheerBackend.Services.BlogService;
+using Atheer.Models;
+using Atheer.Services;
+using Atheer.Services.BlogService;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

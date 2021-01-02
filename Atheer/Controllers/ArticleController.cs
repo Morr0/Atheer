@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using AtheerBackend.DTOs.BlogPost;
-using AtheerBackend.Models;
-using AtheerBackend.Services.BlogService;
+using Atheer.Models;
+using Atheer.Services;
+using Atheer.Services.BlogService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 

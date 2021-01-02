@@ -1,10 +1,8 @@
 using System;
 using System.Reflection;
-using AtheerBackend.Repositories.Blog;
-using AtheerBackend.Repositories.Contact;
-using AtheerBackend.Services.BlogService;
-using AtheerBackend.Services.ContactService;
-using AtheerBackend.Utilities;
+using Atheer.Repositories.Blog;
+using Atheer.Services.BlogService;
+using Atheer.Utilities;
 using AutoMapper;
 using Markdig;
 using Microsoft.AspNetCore.Builder;
@@ -39,12 +37,10 @@ namespace Atheer
                 provider => new MarkdownPipelineBuilder().UseAdvancedExtensions().UseBootstrap().Build());
 
             // Repositories
-            services.AddTransient<ContactRepository>();
             services.AddTransient<BlogPostRepository>();
 
             // Services
             services.AddTransient<IBlogPostService, BlogPostService>();
-            services.AddTransient<IContactService, ContactService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

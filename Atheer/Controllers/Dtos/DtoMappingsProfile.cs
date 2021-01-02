@@ -1,5 +1,4 @@
-﻿using AtheerBackend.DTOs;
-using AtheerBackend.Models;
+﻿using Atheer.Models;
 using AutoMapper;
 
 namespace Atheer.Controllers.Dtos

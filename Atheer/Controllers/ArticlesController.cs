@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using AtheerBackend.Services.BlogService;
+using Atheer.Services.BlogService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 

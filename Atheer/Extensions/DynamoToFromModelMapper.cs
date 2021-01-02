@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using AtheerBackend.Models;
+using Atheer.Models;
 
-namespace AtheerBackend.Extensions
+namespace Atheer.Extensions
 {
     public class DynamoToFromModelMapper<T> where T : new()
     {
@@ -122,14 +122,6 @@ namespace AtheerBackend.Extensions
             {
                 {nameof(BlogPost.CreatedYear), new AttributeValue{N = year.ToString()} },
                 {nameof(BlogPost.TitleShrinked), new AttributeValue{S = titleShrinked} }
-            };
-        }
-
-        public static Dictionary<string, AttributeValue> GetContactKey(string id)
-        {
-            return new Dictionary<string, AttributeValue>
-            {
-                {nameof(Contact.Id), new AttributeValue(id)}
             };
         }
     }
