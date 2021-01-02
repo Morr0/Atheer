@@ -64,6 +64,7 @@ namespace Atheer.Controllers
         {
             if (!ModelState.IsValid) return View("ArticleEdit", postDto);
             
+            // ADD
             if (IsNewPost(postDto.TitleShrinked))
             {
                 _logger.LogInformation("New");
@@ -75,8 +76,9 @@ namespace Atheer.Controllers
                 });
             }
             
-            _logger.LogInformation("Update");
+            // UPDATE
             await _service.Update(postDto).ConfigureAwait(false);
+            TempData["Info"] = "Updated post successfully";
             return RedirectToAction("Index", "ArticleEdit", new BlogPostPrimaryKey
             {
                 CreatedYear = postDto.CreatedYear,

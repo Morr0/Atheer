@@ -22,17 +22,20 @@
 }
 
 <form method="post">
+    <span class="text-info">@TempData["Info"]</span>
+
+
     @if (!IsNew)
     {
         // For POST on edit 
-        <input type="hidden" name="CreatedYear" id="CreatedYear" value="@Model.CreatedYear" />
-        <input type="hidden" name="TitleShrinked" id="TitleShrinked" value="@Model.TitleShrinked" />
+        <input type="hidden" name="CreatedYear" id="CreatedYear" value="@Model.CreatedYear"/>
+        <input type="hidden" name="TitleShrinked" id="TitleShrinked" value="@Model.TitleShrinked"/>
     }
     <div class="form-group">
         <label for="Title">Title: </label>
-        <input type="text" name="Title" id="Title" value="@Model.Title" class="form-control" />
+        <input type="text" name="Title" id="Title" value="@Model.Title" class="form-control"/>
         <span asp-validation-for="Title" class="text-danger"></span>
-        
+
         @*Requires a custom validator
         TODO validate list
         TODO address the ',' of topics*@
@@ -41,9 +44,9 @@
         @* <span asp-validation-for="Topics" class="text-danger"></span> *@
 
         <label for="Description">Description: </label>
-        <input type="text" name="Description" id="Description" value="@Model.Description" class="form-control" />
+        <input type="text" name="Description" id="Description" value="@Model.Description" class="form-control"/>
         <span asp-validation-for="Description" class="text-danger"></span>
-        
+
         <label for="Content">Content (Markdown):</label>
         <textarea type="text" name="Content" id="Content" class="form-control">@Model.Content</textarea>
         <span asp-validation-for="Content" class="text-danger"></span>
@@ -55,24 +58,24 @@
             <label class="form-check-label" for="Draft">Draft</label>
         </div>
         <div class="form-check">
-            <input name="Unlisted" value="@Model.Unlisted" id="Unlisted" type="checkbox" class="form-check-input" />
-            <label class="form-check-label" for="Unlisted" >Unlisted</label>
+            <input name="Unlisted" value="@Model.Unlisted" id="Unlisted" type="checkbox" class="form-check-input"/>
+            <label class="form-check-label" for="Unlisted">Unlisted</label>
         </div>
         <div class="form-check">
-            <input name="Likeable" value="@Model.Likeable" id="Likeable" type="checkbox" class="form-check-input" />
+            <input name="Likeable" value="@Model.Likeable" id="Likeable" type="checkbox" class="form-check-input"/>
             <label class="form-check-label" for="Likeable">Likeable</label>
         </div>
         <div class="form-check">
-            <input name="Shareable" id="Shareable" value="@Model.Shareable" type="checkbox" class="form-check-input" />
+            <input name="Shareable" id="Shareable" value="@Model.Shareable" type="checkbox" class="form-check-input"/>
             <label class="form-check-label" for="Shareable">Shareable</label>
         </div>
     </div>
-    
-    <button name="button" value="Checkout" class="btn btn-outline-primary">Checkout</button>
-@if (!IsNew)
-{
-    <button name="button" value="Page" class="btn btn-info">Visit page</button>
-    <button name="button" value="Delete" class="btn btn-danger">Delete</button>
 
-}
+    <button name="button" value="Checkout" class="btn btn-outline-primary">Checkout</button>
+    @if (!IsNew)
+    {
+        <button name="button" value="Page" class="btn btn-info">Visit page</button>
+        <button name="button" value="Delete" class="btn btn-danger">Delete</button>
+
+    }
 </form>

@@ -16,9 +16,12 @@ namespace Atheer.Controllers.Dtos
         [Required]
         [MinLength(3)]
         public string Content { get; set; }
-        [Required]
-        [MinLength(1)]
-        public List<string> Topics { get; set; }
+
+        // TODO validate and take initialization off
+        [Required] [MinLength(1)] public List<string> Topics { get; set; } = new List<string>
+        {
+            " "
+        };
         public bool Likeable { get; set; }
         public bool Shareable { get; set; }
         public bool Draft { get; set; }
