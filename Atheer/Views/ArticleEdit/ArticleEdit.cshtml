@@ -1,5 +1,5 @@
 ﻿@using System.Text
-@model BlogPost
+@model Atheer.Controllers.Dtos.BlogPostEditDto
 
 @{
     string TopicsAsString()
@@ -21,17 +21,13 @@
     ViewData["Title"] = IsNew ? "New" : "Edit"; 
 }
 
-<form method="post">
+<form method="post" asp-controller="ArticleEdit" asp-action="Checkout">
     @if (!IsNew)
     {
-        <div class="form-group">
-            <label for="CreatedYear">Created Year: </label>
-            <label name="CreatedYear" id="CreatedYear">@Model.CreatedYear</label>
-            <label for="TitleShrinked">Title Shrinked: </label>
-            <label name="TitleShrinked" id="TitleShrinked">@Model.TitleShrinked</label>
-        </div>
+        // For POST on edit 
+        <input type="hidden" name="CreatedYear" id="CreatedYear" value="@Model.CreatedYear" />
+        <input type="hidden" name="TitleShrinked" id="TitleShrinked" value="@Model.TitleShrinked" />
     }
-    <br>
     <div class="form-group">
         <label for="Title">Title: </label>
         <input type="text" name="Title" id="Title" value="@Model.Title" class="form-control" />
@@ -40,7 +36,7 @@
         <label for="Description">Description: </label>
         <input type="text" name="Description" id="Description" value="@Model.Description" class="form-control" />
         <label for="Content">Content (Markdown):</label>
-        <textarea type="text" name="Content" id="Content" value="@Model.Content" class="form-control"></textarea>
+        <textarea type="text" name="Content" id="Content" class="form-control">@Model.Content</textarea>
     </div>
     <br/>
     <div class="form-group">

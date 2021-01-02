@@ -19,5 +19,6 @@ namespace Atheer.Controllers.Dtos
         public bool Shareable { get; set; }
         public bool Draft { get; set; }
         public bool Unlisted { get; set; }
+        public string LastUpdatedDate { get; set; }
     }
 }

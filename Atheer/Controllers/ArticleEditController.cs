@@ -39,7 +39,8 @@ namespace Atheer.Controllers
                 if (post is null) return Redirect("/");
             }
 
-            return View("ArticleEdit", post);
+            var dto = _mapper.Map<BlogPostEditDto>(post);
+            return View("ArticleEdit", dto);
         }
 
         [HttpPost]
@@ -47,17 +48,23 @@ namespace Atheer.Controllers
         {
             if (IsNewPost(postDto.TitleShrinked))
             {
+                _logger.LogInformation("New");
                 await _service.AddPost(postDto).ConfigureAwait(false);
-                var key = new BlogPostPrimaryKey(postDto.CreatedYear, postDto.TitleShrinked);
-                return RedirectToAction("Index", "Article", key);
+                return RedirectToAction("Index", "Article", new BlogPostPrimaryKey
+                {
+                    CreatedYear = postDto.CreatedYear,
+                    TitleShrinked = postDto.TitleShrinked
+                });
             }
-            else
+            
+            _logger.LogInformation("Update");
+            await _service.Update(postDto).ConfigureAwait(false);
+            return RedirectToAction("Index", "ArticleEdit", new BlogPostPrimaryKey
             {
-                await _service.UpdatePost(postDto).ConfigureAwait(false);
-                // Refresh as GET
-                var key = new BlogPostPrimaryKey(postDto.CreatedYear, postDto.TitleShrinked);
-                return RedirectToAction("Index", "ArticleEdit", key);
-            }
+                CreatedYear = postDto.CreatedYear,
+                TitleShrinked = postDto.TitleShrinked
+            });
+            
         }
 
         private bool IsNewPost(string titleShrinked)

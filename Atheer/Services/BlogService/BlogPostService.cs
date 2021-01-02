@@ -105,11 +105,11 @@ namespace Atheer.Services.BlogService
             return sb.ToString();
         }
 
-        public async Task<BlogPost> UpdatePost(BlogPostEditDto post)
+        public async Task Update(BlogPostEditDto postDto)
         {
-            Console.WriteLine("Updating");
-            // TODO update and update date
-            return null;
+            postDto.LastUpdatedDate = DateTime.UtcNow.ToString();
+
+            await _repository.Update(postDto).ConfigureAwait(false);
         }
     }
 }

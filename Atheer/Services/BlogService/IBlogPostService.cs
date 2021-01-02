@@ -20,6 +20,6 @@ namespace Atheer.Services.BlogService
 
         Task<BlogPost> Update(BlogPostPrimaryKey key, BlogPost newPost);
         Task AddPost(BlogPostEditDto post);
-        Task<BlogPost> UpdatePost(BlogPostEditDto post);
+        Task Update(BlogPostEditDto post);
     }
 }

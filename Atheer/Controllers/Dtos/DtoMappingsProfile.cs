@@ -7,7 +7,7 @@ namespace Atheer.Controllers.Dtos
     {
         public DtoMappingsProfile()
         {
-            CreateMap<BlogPostEditDto, BlogPost>();
+            CreateMap<BlogPostEditDto, BlogPost>().ReverseMap();
         }
     }
 }

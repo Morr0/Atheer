@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
+using Atheer.Controllers.Dtos;
 using Atheer.Extensions;
 using Atheer.Models;
 using Atheer.Services;
@@ -218,8 +219,6 @@ namespace Atheer.Repositories.Blog
                 {
                     string valueName = $":{prop.Name}";
                     values.Add(valueName, DynamoToFromModelMapper<BlogPost>.ToDynamoDB(post, prop));
-
-                    if (prop.Name == nameof(BlogPost.Topics)) Console.WriteLine(values[valueName].SS.Count);
                     
                     sb.Append($"{prop.Name} = {valueName},");
                 }
@@ -298,11 +297,37 @@ namespace Atheer.Repositories.Blog
             var request = new PutItemRequest
             {
                 TableName = _config.PostsTable,
-                Item = DynamoToFromModelMapper<BlogPost>.Map(post),
-                ReturnValues = ReturnValue.ALL_OLD
+                Item = DynamoToFromModelMapper<BlogPost>.Map(post)
             };
 
             await _client.PutItemAsync(request).ConfigureAwait(false);
+        }
+
+        public async Task Update(BlogPostEditDto postDto)
+        {
+            var sb = new StringBuilder().Append("SET ");
+            var values = new Dictionary<string, AttributeValue>();
+            foreach (var prop in postDto.GetType().GetProperties())
+            {
+                if (prop.Name == nameof(BlogPost.TitleShrinked) || prop.Name == nameof(BlogPost.CreatedYear))
+                    continue;
+
+                string propValueName = $":{prop.Name}";
+                values.Add($"{propValueName}", DynamoToFromModelMapper<BlogPost>.ToDynamoDB(postDto, prop));
+                sb.Append($"{prop.Name} = {propValueName},");
+            }
+
+            string updateExpression = sb.ToString().TrimEnd(',');
+            
+            var request = new UpdateItemRequest
+            {
+                TableName = _config.PostsTable,
+                Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(postDto.CreatedYear, postDto.TitleShrinked),
+                UpdateExpression = updateExpression,
+                ExpressionAttributeValues = values
+            };
+
+            await _client.UpdateItemAsync(request).ConfigureAwait(false);
         }
     }
 }

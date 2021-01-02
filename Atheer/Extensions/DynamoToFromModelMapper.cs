@@ -80,19 +80,19 @@ namespace Atheer.Extensions
 
             foreach (var prop in props)
             {
-                AttributeValue val = new AttributeValue();
-                if (prop.PropertyType == typeof(int))
-                    val.N = (((int)prop.GetValue(@object)).ToString()) ?? "0";
-                else if (prop.PropertyType == typeof(string))
-                    val.S = (prop.GetValue(@object) as string) ?? "";
-                else if (prop.PropertyType == typeof(bool))
-                    val.BOOL = (bool)prop.GetValue(@object);
-                else if (prop.PropertyType == typeof(List<string>))
-                    val.SS = (List<string>) prop.GetValue(@object) ?? new List<string>();
-                else
-                    throw new Exception("The type to DynamoDB was not mapped.");
+                // AttributeValue val = new AttributeValue();
+                // if (prop.PropertyType == typeof(int))
+                //     val.N = (((int)prop.GetValue(@object)).ToString()) ?? "0";
+                // else if (prop.PropertyType == typeof(string))
+                //     val.S = (prop.GetValue(@object) as string) ?? "";
+                // else if (prop.PropertyType == typeof(bool))
+                //     val.BOOL = (bool)prop.GetValue(@object);
+                // else if (prop.PropertyType == typeof(List<string>))
+                //     val.SS = (List<string>) prop.GetValue(@object) ?? new List<string>();
+                // else
+                //     throw new Exception("The type to DynamoDB was not mapped.");
 
-                dict.Add(prop.Name, val);
+                dict.Add(prop.Name, ToDynamoDB(@object, prop));
             }
 
             return dict;
