@@ -14,19 +14,16 @@
     @Html.Raw(content)
     <br/>
     <br/>
-    <form method="post">
-        <input asp-for="CreatedYear" type="hidden" />
-        <input asp-for="TitleShrinked" type="hidden" />
-        
-        @if (Model.Likeable)
-        {
-            <label for="like">@Model.Likes Likes | </label>
-            <button name="submit" type="submit" class="btn btn-outline-secondary" id="like" value="Like">Like</button>
-        }
-        @* TODO implement to copy link
-        @* @if (Model.Shareable) *@
-        @* { *@
-        @*     <button name="submit" type="submit" class="btn btn-outline-secondary" id="share" value="Share">Share</button> *@
-        @* } *@
-    </form>
+
+    @if (Model.Likeable)
+    {
+        <label id="likes" for="like">@Model.Likes Likes | </label> 
+        <button type="button" class="btn btn-outline-secondary" id="like" value="Like" 
+                onclick="like(@Model.CreatedYear, '@Model.TitleShrinked')">Like</button>
+    } 
+    @if (Model.Shareable)
+    {
+        <button type="button" class="btn btn-outline-secondary" id="share" value="Share" 
+                onclick="share(@Model.CreatedYear, '@Model.TitleShrinked')">Share</button>
+    }
 </div>
