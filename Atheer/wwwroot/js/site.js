@@ -14,6 +14,8 @@ const like = (createdYear, titleShrinked) => {
             let likes = Number.parseInt($("#likes")[0].innerText);
             likes++;
             $("#likes")[0].innerText = `${likes.toString()} Likes | `;
+            
+            $("#like")[0].disabled = true;
         }
     });
 };
@@ -29,5 +31,6 @@ const share = (createdYear, titleShrinked) => {
     const fullUrl = window.location.href;
     navigator.clipboard.writeText(fullUrl).then(() => {
         $("#shareInfo")[0].innerText = "Successfully copied link to clipboard";
+        $("#share")[0].disabled = true;
     });
 };
