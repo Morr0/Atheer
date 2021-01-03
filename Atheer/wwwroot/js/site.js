@@ -23,6 +23,11 @@ const share = (createdYear, titleShrinked) => {
     const url = `${origin}/api/article/share?createdYear=${createdYear}&titleShrinked=${titleShrinked}`;
     $.ajax({
         type: "POST",
-        url
+        url,
+    });
+    
+    const fullUrl = window.location.href;
+    navigator.clipboard.writeText(fullUrl).then(() => {
+        $("#shareInfo")[0].innerText = "Successfully copied link to clipboard";
     });
 };
