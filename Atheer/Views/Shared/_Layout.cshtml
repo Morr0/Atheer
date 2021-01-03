@@ -1,16 +1,26 @@
 ﻿@using Atheer.Utilities.Config.Models
+@using Microsoft.AspNetCore.Http.Extensions
 @using Microsoft.Extensions.Options
 @inject IOptions<Site> Site
+
+@{
+    string FullTitle = $"{ViewData["Title"]} - {Site.Value.Title}";
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - @Site.Value.Title</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-    
-    <meta name="description" content="@Site.Value.Description" />
+    <meta property="og:title" content="@FullTitle">
+    <meta property="og:site_name" content="@Site.Value.Title">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="@Context.Request.GetDisplayUrl()">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@FullTitle</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/css/site.css"/>
+
+    <meta name="description" content="@Site.Value.Description"/>
 </head>
 <body>
     <header>
