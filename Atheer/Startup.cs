@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using Atheer.Repositories.Blog;
 using Atheer.Services.BlogService;
-using Atheer.Utilities;
+using Atheer.Utilities.Config.Models;
 using AutoMapper;
 using Markdig;
 using Microsoft.AspNetCore.Builder;
@@ -15,12 +15,9 @@ namespace Atheer
 {
     public class Startup
     {
-        private AtheerConfig _config;
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            _config = new AtheerConfig(configuration);
         }
 
         public IConfiguration Configuration { get; }
@@ -28,17 +25,19 @@ namespace Atheer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<DynamoDbTables>(Configuration.GetSection("DynamoDbTables"));
+            services.Configure<Site>(Configuration.GetSection("Site"));
+            
             services.AddControllersWithViews();
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddSingleton<BlogPostFactory>();
-            services.AddSingleton<AtheerConfig>(_config);
             services.AddSingleton<MarkdownPipeline>(
                 provider => new MarkdownPipelineBuilder().UseAdvancedExtensions().UseBootstrap().Build());
 
             // Repositories
-            services.AddTransient<BlogPostRepository>();
+            services.AddSingleton<BlogPostRepository>();
 
             // Services
             services.AddTransient<IBlogPostService, BlogPostService>();

@@ -11,20 +11,21 @@ using Atheer.Extensions;
 using Atheer.Models;
 using Atheer.Services;
 using Atheer.Services.BlogService;
-using Atheer.Utilities;
+using Atheer.Utilities.Config.Models;
+using Microsoft.Extensions.Options;
 
 namespace Atheer.Repositories.Blog
 {
     public class BlogPostRepository
     {
+        private readonly DynamoDbTables _tables;
         private const string SortByLatestDatetimeFormat = "d/M/yyyy h:m:s tt";
         
-        private readonly AtheerConfig _config;
         private readonly AmazonDynamoDBClient _client;
 
-        public BlogPostRepository(AtheerConfig loader)
+        public BlogPostRepository(IOptions<DynamoDbTables> tables)
         {
-            _config = loader;
+            _tables = tables.Value;
             _client = new AmazonDynamoDBClient();
         }
 
@@ -34,7 +35,7 @@ namespace Atheer.Repositories.Blog
         {
             var request = new GetItemRequest
             {
-                TableName = _config.PostsTable,
+                TableName = _tables.Posts,
                 Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(primaryKey.CreatedYear, primaryKey.TitleShrinked),
             };
 
@@ -45,17 +46,17 @@ namespace Atheer.Repositories.Blog
         public async Task<BlogRepositoryBlogResponse> GetMany(int amount, PostsPaginationPrimaryKey paginationHeader, 
             bool loadContentProperty)
         {
-            string ttlNameSubstitute = $"#{AtheerConfig.TtlAttribute}";
+            string ttlNameSubstitute = $"#TTL";
             
             var request = new ScanRequest
             {
-                TableName = _config.PostsTable,
+                TableName = _tables.Posts,
                 Limit = amount,
                 
                 // Conditionals
                 ExpressionAttributeNames = new Dictionary<string, string>
                 {
-                    {ttlNameSubstitute, AtheerConfig.TtlAttribute}
+                    {ttlNameSubstitute, "TTL"}
                 },
                 // Define the values looking for
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
@@ -94,7 +95,7 @@ namespace Atheer.Repositories.Blog
 
             var request = new QueryRequest
             {
-                TableName = _config.PostsTable,
+                TableName = _tables.Posts,
                 Limit = amount,
 
                 KeyConditionExpression = $"{hashKey} = {vHashKey}",
@@ -195,7 +196,7 @@ namespace Atheer.Repositories.Blog
             var updatables = GetUpdateExpression(newBlogPost);
             var request = new UpdateItemRequest
             {
-                TableName = _config.PostsTable,
+                TableName = _tables.Posts,
                 Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(key.CreatedYear, key.TitleShrinked),
                 UpdateExpression = updatables.updateString,
                 ExpressionAttributeValues = updatables.values,
@@ -237,7 +238,7 @@ namespace Atheer.Repositories.Blog
             
             var request = new UpdateItemRequest
             {
-                TableName = _config.PostsTable,
+                TableName = _tables.Posts,
                 Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(primaryKey.CreatedYear, primaryKey.TitleShrinked),
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
@@ -268,7 +269,7 @@ namespace Atheer.Repositories.Blog
         {
             var request = new GetItemRequest
             {
-                TableName = _config.PostsTable,
+                TableName = _tables.Posts,
                 Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(key.CreatedYear, key.TitleShrinked),
                 ProjectionExpression = $"{flag}"
             };
@@ -284,7 +285,7 @@ namespace Atheer.Repositories.Blog
         {
             var request = new DeleteItemRequest
             {
-                TableName = _config.PostsTable,
+                TableName = _tables.Posts,
                 Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(key.CreatedYear, key.TitleShrinked)
             };
             
@@ -296,7 +297,7 @@ namespace Atheer.Repositories.Blog
         {
             var request = new PutItemRequest
             {
-                TableName = _config.PostsTable,
+                TableName = _tables.Posts,
                 Item = DynamoToFromModelMapper<BlogPost>.Map(post)
             };
 
@@ -321,7 +322,7 @@ namespace Atheer.Repositories.Blog
             
             var request = new UpdateItemRequest
             {
-                TableName = _config.PostsTable,
+                TableName = _tables.Posts,
                 Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(postDto.CreatedYear, postDto.TitleShrinked),
                 UpdateExpression = updateExpression,
                 ExpressionAttributeValues = values

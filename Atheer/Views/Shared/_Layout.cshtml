@@ -1,22 +1,23 @@
-﻿@using Atheer.Utilities
-@inject AtheerConfig Config
+﻿@using Atheer.Utilities.Config.Models
+@using Microsoft.Extensions.Options
+@inject IOptions<Site> Site
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - @Config.Title</title>
+    <title>@ViewData["Title"] - @Site.Value.Title</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     
-    <meta name="description" content="@Config.Description" />
+    <meta name="description" content="@Site.Value.Description" />
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-controller="Articles" asp-action="Index">
-                    @Config.Title
+                    @Site.Value.Title
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
