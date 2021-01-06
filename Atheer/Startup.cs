@@ -1,10 +1,12 @@
 using System;
 using System.Reflection;
+using System.Security.Claims;
 using Atheer.Repositories.Blog;
 using Atheer.Services.BlogService;
 using Atheer.Utilities.Config.Models;
 using AutoMapper;
 using Markdig;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -41,6 +43,25 @@ namespace Atheer
 
             // Services
             services.AddTransient<IBlogPostService, BlogPostService>();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(opts =>
+                {
+                    opts.LoginPath = "/login";
+                    opts.LogoutPath = "/logout";
+                    opts.AccessDeniedPath = "/denied";
+
+                    opts.ExpireTimeSpan = DateTimeOffset.UtcNow.AddHours(4).Offset;
+                });
+
+            // services.AddAuthorization(opts =>
+            // {
+            //     opts.AddPolicy("User", builder =>
+            //     {
+            //         builder.RequireClaim(ClaimTypes.Name);
+            //         builder.RequireAuthenticatedUser();
+            //     });
+            // });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,7 +85,8 @@ namespace Atheer
 
             app.UseRouting();
 
-            // app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints((endpoints) =>
             {
