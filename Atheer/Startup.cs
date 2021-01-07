@@ -1,8 +1,9 @@
 using System;
 using System.Reflection;
-using System.Security.Claims;
+using Atheer.Repositories;
 using Atheer.Repositories.Blog;
 using Atheer.Services.BlogService;
+using Atheer.Services.UserService;
 using Atheer.Utilities.Config.Models;
 using AutoMapper;
 using Markdig;
@@ -35,14 +36,18 @@ namespace Atheer
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddSingleton<BlogPostFactory>();
+            services.AddSingleton<UserFactory>();
+            
             services.AddSingleton<MarkdownPipeline>(
                 provider => new MarkdownPipelineBuilder().UseAdvancedExtensions().UseBootstrap().Build());
 
             // Repositories
             services.AddSingleton<BlogPostRepository>();
+            services.AddSingleton<UserRepository>();
 
             // Services
             services.AddTransient<IBlogPostService, BlogPostService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(opts =>

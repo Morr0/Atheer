@@ -124,5 +124,13 @@ namespace Atheer.Extensions
                 {nameof(BlogPost.TitleShrinked), new AttributeValue{S = titleShrinked} }
             };
         }
+
+        public static Dictionary<string, AttributeValue> GetUserKey(string id)
+        {
+            return new Dictionary<string, AttributeValue>
+            {
+                {nameof(User.Id), new AttributeValue{S = id}}
+            };
+        }
     }
 }
