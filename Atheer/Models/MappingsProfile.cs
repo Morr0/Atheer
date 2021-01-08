@@ -1,4 +1,4 @@
-﻿using Atheer.Controllers.Dtos;
+﻿using Atheer.Controllers.ViewModels;
 using AutoMapper;
 
 namespace Atheer.Models

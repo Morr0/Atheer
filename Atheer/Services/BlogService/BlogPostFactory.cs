@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-using Atheer.Controllers.Dtos;
+using Atheer.Controllers.ViewModels;
 using Atheer.Models;
 using AutoMapper;
 
@@ -15,13 +15,13 @@ namespace Atheer.Services.BlogService
             _mapper = mapper;
         }
 
-        public BlogPost Create(ref BlogPostEditDto postDto)
+        public BlogPost Create(ref BlogPostEditViewModel postViewModel)
         {
-            var post = _mapper.Map<BlogPost>(postDto);
+            var post = _mapper.Map<BlogPost>(postViewModel);
 
             var date = DateTime.UtcNow;
             post.CreatedYear = date.Year;
-            post.TitleShrinked = GetShrinkedTitle(postDto.Title);
+            post.TitleShrinked = GetShrinkedTitle(postViewModel.Title);
             post.CreationDate = date.ToString();
 
             return post;

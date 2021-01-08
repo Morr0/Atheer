@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Atheer.Controllers.Dtos
+namespace Atheer.Controllers.ViewModels
 {
-    public class BlogPostEditDto
+    public class BlogPostEditViewModel
     {
         public int CreatedYear { get; set; }
         public string TitleShrinked { get; set; }

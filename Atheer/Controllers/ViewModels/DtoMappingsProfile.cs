@@ -1,13 +1,13 @@
 ﻿using Atheer.Models;
 using AutoMapper;
 
-namespace Atheer.Controllers.Dtos
+namespace Atheer.Controllers.ViewModels
 {
     public class DtoMappingsProfile : Profile
     {
         public DtoMappingsProfile()
         {
-            CreateMap<BlogPostEditDto, BlogPost>().ReverseMap();
+            CreateMap<BlogPostEditViewModel, BlogPost>().ReverseMap();
         }
     }
 }

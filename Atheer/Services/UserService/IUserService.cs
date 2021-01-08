@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Atheer.Controllers.Dtos;
+using Atheer.Controllers.ViewModels;
 using Atheer.Models;
 
 namespace Atheer.Services.UserService

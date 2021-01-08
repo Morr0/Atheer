@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Atheer.Controllers.Dtos;
+using Atheer.Controllers.ViewModels;
 using Atheer.Models;
 using Atheer.Repositories;
 using Atheer.Services.UserService;

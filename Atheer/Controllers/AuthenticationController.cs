@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Atheer.Controllers.Dtos;
+using Atheer.Controllers.ViewModels;
 using Atheer.Services.UserService;
 using Atheer.Services.UserService.Exceptions;
 using Atheer.Services.UserSessionsService;

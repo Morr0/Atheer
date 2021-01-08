@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Atheer.Controllers.Dtos;
+using Atheer.Controllers.ViewModels;
 using Atheer.Models;
 using Atheer.Repositories.Blog;
 using AutoMapper;
@@ -66,9 +66,9 @@ namespace Atheer.Services.BlogService
             return _repository.Update(key, newPost);
         }
 
-        public async Task AddPost(BlogPostEditDto postDto)
+        public async Task AddPost(BlogPostEditViewModel postViewModel)
         { 
-            var post = _factory.Create(ref postDto);
+            var post = _factory.Create(ref postViewModel);
             string titleShrinked = post.TitleShrinked;
             
             // Check that no other post has same titleShrinked, else generate a new titleShrinked
@@ -79,8 +79,8 @@ namespace Atheer.Services.BlogService
                 key.TitleShrinked = titleShrinked;
             }
 
-            postDto.CreatedYear = post.CreatedYear;
-            postDto.TitleShrinked = post.TitleShrinked = titleShrinked;
+            postViewModel.CreatedYear = post.CreatedYear;
+            postViewModel.TitleShrinked = post.TitleShrinked = titleShrinked;
 
             await _repository.Add(post).ConfigureAwait(false);
         }
@@ -90,11 +90,11 @@ namespace Atheer.Services.BlogService
             return $"{existingTitleShrinked}-";
         }
 
-        public async Task Update(BlogPostEditDto postDto)
+        public async Task Update(BlogPostEditViewModel postViewModel)
         {
-            postDto.LastUpdatedDate = DateTime.UtcNow.ToString();
+            postViewModel.LastUpdatedDate = DateTime.UtcNow.ToString();
 
-            await _repository.Update(postDto).ConfigureAwait(false);
+            await _repository.Update(postViewModel).ConfigureAwait(false);
         }
     }
 }

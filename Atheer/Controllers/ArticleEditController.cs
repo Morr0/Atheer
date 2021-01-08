@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Atheer.Controllers.Dtos;
+using Atheer.Controllers.ViewModels;
 using Atheer.Models;
 using Atheer.Services;
 using Atheer.Services.BlogService;
@@ -39,18 +39,18 @@ namespace Atheer.Controllers
                 if (post is null) return Redirect("/");
             }
 
-            var dto = _mapper.Map<BlogPostEditDto>(post);
+            var dto = _mapper.Map<BlogPostEditViewModel>(post);
             return View("ArticleEdit", dto);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromForm] string button, [FromForm] BlogPostEditDto postDto)
+        public async Task<IActionResult> Post([FromForm] string button, [FromForm] BlogPostEditViewModel postViewModel)
         {
-            var key = new BlogPostPrimaryKey(postDto.CreatedYear, postDto.TitleShrinked);
+            var key = new BlogPostPrimaryKey(postViewModel.CreatedYear, postViewModel.TitleShrinked);
             switch (button)
             {
                 case "Checkout":
-                    return await Checkout(key, postDto).ConfigureAwait(false);
+                    return await Checkout(key, postViewModel).ConfigureAwait(false);
                 case "Page":
                     return VisitPage(ref key);
                 case "Delete":
@@ -60,22 +60,22 @@ namespace Atheer.Controllers
             }
         }
         
-        private async Task<IActionResult> Checkout(BlogPostPrimaryKey key, BlogPostEditDto postDto)
+        private async Task<IActionResult> Checkout(BlogPostPrimaryKey key, BlogPostEditViewModel postViewModel)
         {
-            if (!ModelState.IsValid) return View("ArticleEdit", postDto);
+            if (!ModelState.IsValid) return View("ArticleEdit", postViewModel);
             
             // ADD
-            if (IsNewPost(postDto.TitleShrinked))
+            if (IsNewPost(postViewModel.TitleShrinked))
             {
-                key = new BlogPostPrimaryKey(postDto.CreatedYear, postDto.TitleShrinked);
+                key = new BlogPostPrimaryKey(postViewModel.CreatedYear, postViewModel.TitleShrinked);
                 _logger.LogInformation("New");
-                await _service.AddPost(postDto).ConfigureAwait(false);
+                await _service.AddPost(postViewModel).ConfigureAwait(false);
                 return RedirectToAction("Index", "Article", new BlogPostPrimaryKey(
-                    postDto.CreatedYear, postDto.TitleShrinked));
+                    postViewModel.CreatedYear, postViewModel.TitleShrinked));
             }
             
             // UPDATE
-            await _service.Update(postDto).ConfigureAwait(false);
+            await _service.Update(postViewModel).ConfigureAwait(false);
             TempData["Info"] = "Updated post successfully";
             return RedirectToAction("Index", "ArticleEdit", key);
             

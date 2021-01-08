@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
-using Atheer.Controllers.Dtos;
+using Atheer.Controllers.ViewModels;
 using Atheer.Extensions;
 using Atheer.Models;
 using Atheer.Services;
@@ -304,17 +304,17 @@ namespace Atheer.Repositories.Blog
             await _client.PutItemAsync(request).ConfigureAwait(false);
         }
 
-        public async Task Update(BlogPostEditDto postDto)
+        public async Task Update(BlogPostEditViewModel postViewModel)
         {
             var sb = new StringBuilder().Append("SET ");
             var values = new Dictionary<string, AttributeValue>();
-            foreach (var prop in postDto.GetType().GetProperties())
+            foreach (var prop in postViewModel.GetType().GetProperties())
             {
                 if (prop.Name == nameof(BlogPost.TitleShrinked) || prop.Name == nameof(BlogPost.CreatedYear))
                     continue;
 
                 string propValueName = $":{prop.Name}";
-                values.Add($"{propValueName}", DynamoToFromModelMapper<BlogPost>.ToDynamoDB(postDto, prop));
+                values.Add($"{propValueName}", DynamoToFromModelMapper<BlogPost>.ToDynamoDB(postViewModel, prop));
                 sb.Append($"{prop.Name} = {propValueName},");
             }
 
@@ -323,7 +323,7 @@ namespace Atheer.Repositories.Blog
             var request = new UpdateItemRequest
             {
                 TableName = _tables.Posts,
-                Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(postDto.CreatedYear, postDto.TitleShrinked),
+                Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(postViewModel.CreatedYear, postViewModel.TitleShrinked),
                 UpdateExpression = updateExpression,
                 ExpressionAttributeValues = values
             };

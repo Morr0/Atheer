@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Atheer.Controllers.Dtos
+namespace Atheer.Controllers.ViewModels
 {
     public class RegisterViewModel
     {

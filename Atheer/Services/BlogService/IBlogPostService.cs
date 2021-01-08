@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Atheer.Controllers.Dtos;
+using Atheer.Controllers.ViewModels;
 using Atheer.Models;
 
 namespace Atheer.Services.BlogService
@@ -19,7 +19,7 @@ namespace Atheer.Services.BlogService
         Task Delete(BlogPostPrimaryKey key);
 
         Task<BlogPost> Update(BlogPostPrimaryKey key, BlogPost newPost);
-        Task AddPost(BlogPostEditDto post);
-        Task Update(BlogPostEditDto post);
+        Task AddPost(BlogPostEditViewModel post);
+        Task Update(BlogPostEditViewModel post);
     }
 }

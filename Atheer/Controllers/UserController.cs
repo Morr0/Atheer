@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Atheer.Controllers.Dtos;
+using Atheer.Controllers.ViewModels;
 using Atheer.Services.UserService;
 using Atheer.Services.UserService.Exceptions;
 using Microsoft.AspNetCore.Mvc;
