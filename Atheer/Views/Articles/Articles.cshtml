@@ -5,6 +5,11 @@
     ViewData["Title"] = "Articles";
 }
 
+@if (TempData.ContainsKey("Error"))
+{
+    <h5 class="text-danger">@TempData["Error"]</h5>
+}
+
 @foreach (var post in Model)
 {
     <div class="card">

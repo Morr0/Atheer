@@ -87,12 +87,16 @@ namespace Atheer
             else
             {
                 Console.WriteLine("Production");
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 // TODO Configure this
                 // app.UseHsts();
             }
+            
             // app.UseHttpsRedirection();
+
+            app.UseStatusCodePagesWithRedirects("/NotFound");
+            
             app.UseStaticFiles();
 
             app.UseRouting();
