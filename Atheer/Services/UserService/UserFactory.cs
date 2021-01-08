@@ -20,7 +20,8 @@ namespace Atheer.Services.UserService
         public User Create(RegisterViewModel registerViewModel)
         {
             var user = _mapper.Map<User>(registerViewModel);
-            Id(ref user);
+
+            user.Id = Id(user.Email);
 
             user.DateCreated = DateTime.UtcNow.ToString();
 
@@ -31,10 +32,10 @@ namespace Atheer.Services.UserService
             return user;
         }
 
-        private void Id(ref User user)
+        internal string Id(string email)
         {
             // Before the @
-            user.Id = user?.Email.Split('@')[0];
+            return email.Split('@')[0];
         }
 
         private string HashPassword(string textPassword)
@@ -42,9 +43,14 @@ namespace Atheer.Services.UserService
             return Crypt.HashPassword(textPassword, HashRounds);
         }
 
+        internal bool EqualPasswords(string rawPassword, string hashedPassword)
+        {
+            return Crypt.Verify(rawPassword, hashedPassword);
+        }
+
         private string DefaultRole()
         {
-            return UserRoles.ViewerRole;
+            return UserRoles.BasicRole;
         }
     }
 }

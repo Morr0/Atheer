@@ -39,5 +39,10 @@ namespace Atheer.Services.UserService
         {
             return _repository.Get(id);
         }
+
+        public Task<User> GetFromEmail(string email)
+        {
+            return Get(_factory.Id(email));
+        }
     }
 }

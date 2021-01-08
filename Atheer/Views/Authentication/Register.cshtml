@@ -4,6 +4,11 @@
     ViewData["Title"] = "Register";
 }
 
+@if (TempData.ContainsKey("Info"))
+{
+    <span class="text-info">@TempData["Info"]</span>
+}
+
 <h4 class="text-dark">Register</h4>
 
 <form asp-controller="Authentication" asp-action="Register" method="post">

@@ -4,14 +4,17 @@ using Atheer.Repositories;
 using Atheer.Repositories.Blog;
 using Atheer.Services.BlogService;
 using Atheer.Services.UserService;
+using Atheer.Services.UserSessionsService;
 using Atheer.Utilities.Config.Models;
 using AutoMapper;
 using Markdig;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace Atheer
@@ -46,8 +49,9 @@ namespace Atheer
             services.AddSingleton<UserRepository>();
 
             // Services
-            services.AddTransient<IBlogPostService, BlogPostService>();
+            services.AddScoped<IBlogPostService, BlogPostService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserSessionsService, UserSessionsService>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(opts =>
@@ -56,6 +60,9 @@ namespace Atheer
                     opts.LogoutPath = "/logout";
                     opts.AccessDeniedPath = "/denied";
 
+                    opts.Cookie.HttpOnly = true;
+                    opts.Cookie.IsEssential = true;
+                    
                     opts.ExpireTimeSpan = DateTimeOffset.UtcNow.AddHours(4).Offset;
                 });
 
@@ -91,7 +98,7 @@ namespace Atheer
             app.UseRouting();
 
             app.UseAuthentication();
-            app.UseAuthorization();
+            // app.UseAuthorization();
 
             app.UseEndpoints((endpoints) =>
             {
