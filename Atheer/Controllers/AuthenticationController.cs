@@ -110,30 +110,5 @@ namespace Atheer.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
             return Redirect("/");
         }
-
-        [AllowAnonymous]
-        [HttpGet("register")]
-        public IActionResult RegisterView(RegisterViewModel? registerViewModel)
-        {
-            return View("Register", registerViewModel);
-        }
-
-        [AllowAnonymous]
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromForm] RegisterViewModel registerView)
-        {
-            try
-            {
-                await _userService.Add(registerView).ConfigureAwait(false);
-            }
-            catch (UserWithThisEmailAlreadyExistsException e)
-            {
-                TempData["EmailsExistsError"] = "Email registered already";
-                return RedirectToAction("RegisterView", registerView);
-            }
-            
-            TempData["Info"] = "Successfully registered, please login now";
-            return Redirect("/login");
-        }
     }
 }
