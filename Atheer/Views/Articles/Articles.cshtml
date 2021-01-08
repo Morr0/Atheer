@@ -1,4 +1,5 @@
-﻿@model List<BlogPost>
+﻿@using Atheer.ViewComponents
+@model List<BlogPost>
 
 @{
     ViewData["Title"] = "Articles";
@@ -13,6 +14,7 @@
                    asp-route-CreatedYear="@post.CreatedYear" asp-route-TitleShrinked="@post.TitleShrinked">
                     @post.Title
                 </a>
+                @await Component.InvokeAsync("ArticleEditLink", new ArticleEditLinkModel(post))
             </h5>
             <h6 class="card-subtitle">@DateTime.Parse(post.CreationDate).ToString("d")</h6>
             <p class="card-text">@post.Description</p>

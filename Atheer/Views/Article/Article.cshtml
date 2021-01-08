@@ -1,4 +1,5 @@
 ﻿@using Markdig
+@using Atheer.ViewComponents
 @inject MarkdownPipeline MarkdownPipeline
 @model BlogPost
 @{
@@ -8,6 +9,7 @@
 
 <div class="container">
     <h2 class="text-dark">@Model.Title</h2>
+    @await Component.InvokeAsync("ArticleEditLink", new ArticleEditLinkModel(Model))
     <h6 class="card-subtitle">@DateTime.Parse(Model.CreationDate).ToString("d")</h6>
     <p class="card-text">@Model.Description</p>
     <br/>
