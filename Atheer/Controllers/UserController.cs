@@ -2,7 +2,9 @@
 using Atheer.Controllers.ViewModels;
 using Atheer.Services.UserService;
 using Atheer.Services.UserService.Exceptions;
+using Atheer.Utilities.Config.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace Atheer.Controllers
 {
@@ -22,13 +24,16 @@ namespace Atheer.Controllers
             return Redirect("/");
         }
         
-        [HttpGet("/register")]
-        public IActionResult RegisterView(RegisterViewModel? registerViewModel)
+        [HttpGet("/Register")]
+        public IActionResult RegisterView(RegisterViewModel? registerViewModel, 
+            [FromServices] IOptions<Site> options)
         {
+            if (!options.Value.CanRegister) return Redirect("NotFound");
+            
             return View("Register", registerViewModel);
         }
         
-        [HttpPost("/register")]
+        [HttpPost("/Register")]
         public async Task<IActionResult> Register([FromForm] RegisterViewModel registerView)
         {
             try

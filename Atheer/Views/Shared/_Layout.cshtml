@@ -5,19 +5,21 @@
 @inject IOptions<Site> Site
 
 @{
-    string FullTitle = $"{ViewData["Title"]} - {Site.Value.Title}";
+    string fullTitle = $"{ViewData["Title"]} - {Site.Value.Title}";
+
+    bool authenticated = User.Identity?.IsAuthenticated == true;
 }
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta property="og:title" content="@FullTitle">
+    <meta property="og:title" content="@fullTitle">
     <meta property="og:site_name" content="@Site.Value.Title">
     <meta property="og:type" content="website">
     <meta property="og:url" content="@Context.Request.GetDisplayUrl()">
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@FullTitle</title>
+    <title>@fullTitle</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css"/>
 
@@ -36,18 +38,24 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-0 ml-auto">
-                        @if (User.Identity?.IsAuthenticated == true)
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="User" asp-action="UserView"
-                                       asp-route-userId="@User.FindFirst(AuthenticationController.CookieUserId)?.Value">
-                                        @User.Identity.Name
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Authentication" asp-action="LogoutView">Logout</a>
-                                </li>
-                            }
+                        @if (Site.Value.ShowLoginButton && !authenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Authentication" asp-action="LoginView">Login</a>
+                            </li>
+                        }
+                        @if (authenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="User" asp-action="UserView"
+                                   asp-route-userId="@User.FindFirst(AuthenticationController.CookieUserId)?.Value">
+                                    @User.Identity.Name
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Authentication" asp-action="LogoutView">Logout</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
