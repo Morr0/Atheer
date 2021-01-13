@@ -16,12 +16,8 @@ namespace Atheer.Controllers.ViewModels
         [Required]
         [MinLength(3)]
         public string Content { get; set; }
-
-        // TODO validate and take initialization off
-        [Required] [MinLength(1)] public List<string> Topics { get; set; } = new List<string>
-        {
-            " "
-        };
+        [Required] 
+        public string TopicsAsString { get; set; }
 
         public bool Likeable { get; set; }
         public bool Shareable { get; set; }

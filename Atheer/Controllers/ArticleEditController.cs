@@ -71,7 +71,7 @@ namespace Atheer.Controllers
         private async Task<IActionResult> Checkout(BlogPostPrimaryKey key, BlogPostEditViewModel postViewModel)
         {
             string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
-
+_logger.LogInformation(postViewModel.TopicsAsString);
             if (!ModelState.IsValid) return View("ArticleEdit", postViewModel);
             
             // ADD

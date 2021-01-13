@@ -1,4 +1,6 @@
-﻿using Atheer.Controllers.ViewModels;
+﻿using System;
+using System.Linq;
+using Atheer.Controllers.ViewModels;
 using Atheer.Models;
 using AutoMapper;
 
@@ -11,13 +13,29 @@ namespace Atheer.Utilities
             TakeCareOfViewModels();
         }
         
-        void TakeCareOfViewModels()
+        private void TakeCareOfViewModels()
         {
             // Post
-            CreateMap<BlogPostEditViewModel, BlogPost>().ReverseMap();
+            TakeCareOfPostToFromPostEditVm();
             
             // User
             CreateMap<RegisterViewModel, User>();
+        }
+
+        private void TakeCareOfPostToFromPostEditVm()
+        {
+            CreateMap<BlogPostEditViewModel, BlogPost>()
+                .ForMember(dest => dest.Topics, opts =>
+                {
+                    opts.MapFrom(src 
+                        => src.TopicsAsString.Split(',', StringSplitOptions.None).ToList());
+                });
+
+            CreateMap<BlogPost, BlogPostEditViewModel>()
+                .ForMember(dest => dest.TopicsAsString, opts =>
+                {
+                    opts.MapFrom(src => String.Join(',', src.Topics));
+                });
         }
     }
 }

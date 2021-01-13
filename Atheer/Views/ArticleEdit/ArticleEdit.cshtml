@@ -1,21 +1,6 @@
-﻿@using System.Text
-@model Atheer.Controllers.ViewModels.BlogPostEditViewModel
+﻿@model Atheer.Controllers.ViewModels.BlogPostEditViewModel
 
 @{
-    string TopicsAsString()
-    {
-        var sb = new StringBuilder();
-        if (Model?.Topics != null)
-        {
-            foreach (var topic in Model?.Topics)
-            {
-                sb.Append($"{topic}, ");
-            }
-        }
-
-        return sb.ToString();
-    }
-
     bool IsNew = string.IsNullOrEmpty(Model.TitleShrinked);
 
     ViewData["Title"] = IsNew ? "New" : "Edit"; 
@@ -23,7 +8,6 @@
 
 <form method="post">
     <span class="text-info">@TempData["Info"]</span>
-
 
     @if (!IsNew)
     {
@@ -37,11 +21,10 @@
         <span asp-validation-for="Title" class="text-danger"></span>
 
         @*Requires a custom validator
-        TODO validate list
-        TODO address the ',' of topics*@
-        @* <label for="Topics">Topics (CSV): </label> *@
-        @* <input type="text" name="Topics" id="Topics" value="@TopicsAsString()" class="form-control" /> *@
-        @* <span asp-validation-for="Topics" class="text-danger"></span> *@
+        TODO validate list*@
+        <label for="TopicsAsString">Topics (CSV): </label>
+        <input type="text" name="TopicsAsString" id="TopicsAsString" value="@Model.TopicsAsString" class="form-control" />
+        <span asp-validation-for="TopicsAsString" class="text-danger"></span>
 
         <label for="Description">Description: </label>
         <input type="text" name="Description" id="Description" value="@Model.Description" class="form-control"/>
