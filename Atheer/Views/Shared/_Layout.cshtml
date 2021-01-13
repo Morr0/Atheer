@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Http.Extensions
 @using Microsoft.Extensions.Options
 @using Atheer.Controllers
+@using Atheer.Services.UserService
 @inject IOptions<Site> Site
 
 @{
@@ -46,6 +47,13 @@
                         }
                         @if (authenticated)
                         {
+                            @if (User.IsInRole(UserRoles.EditorRole))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="ArticleEdit" asp-action="Index">Write</a>
+                                </li>
+                            }
+                            
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="User" asp-action="UserView"
                                    asp-route-userId="@User.FindFirst(AuthenticationController.CookieUserId)?.Value">

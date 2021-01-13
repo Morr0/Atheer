@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Atheer.Services;
 using Atheer.Services.BlogService;
+using Atheer.Services.UserService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Atheer.ViewComponents
@@ -24,7 +25,7 @@ namespace Atheer.ViewComponents
             var key = new BlogPostPrimaryKey(model.CreatedYear, model.TitleShrinked);
             if (!(await _postService.AuthorizedFor(key, model.UserId).ConfigureAwait(false)))
             {
-                return Content(string.Empty);
+                if (!User.IsInRole(UserRoles.AdminRole)) return Content(string.Empty);
             }
             
             return View("Default", model);

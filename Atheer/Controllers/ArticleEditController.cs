@@ -3,6 +3,7 @@ using Atheer.Controllers.ViewModels;
 using Atheer.Models;
 using Atheer.Services;
 using Atheer.Services.BlogService;
+using Atheer.Services.UserService;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,7 @@ using Microsoft.Extensions.Logging;
 namespace Atheer.Controllers
 {
     // Used for both editing/adding new posts
-    [Authorize]
+    [Authorize(Roles = UserRoles.EditorRole)]
     [Route("Article/Edit")]
     public class ArticleEditController : Controller
     {
@@ -41,7 +42,9 @@ namespace Atheer.Controllers
                 if (post is null) return Redirect("/");
 
                 if (User.FindFirst(AuthenticationController.CookieUserId)?.Value != post.AuthorId)
-                    return Forbid();
+                {
+                    if (!User.IsInRole(UserRoles.AdminRole)) return Forbid();
+                }
             }
 
             var dto = _mapper.Map<BlogPostEditViewModel>(post);
@@ -79,9 +82,11 @@ namespace Atheer.Controllers
                 return RedirectToAction("Index", "Article", new BlogPostPrimaryKey(
                     postViewModel.CreatedYear, postViewModel.TitleShrinked));
             }
-            
+
             if (!(await _service.AuthorizedFor(key, userId).ConfigureAwait(false)))
-                return Forbid();
+            {
+                if (!User.IsInRole(UserRoles.AdminRole)) return Forbid();
+            }
             
             // UPDATE
             await _service.Update(postViewModel).ConfigureAwait(false);
