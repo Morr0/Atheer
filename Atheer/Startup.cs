@@ -56,24 +56,13 @@ namespace Atheer
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(opts =>
                 {
-                    opts.LoginPath = "/login";
-                    opts.LogoutPath = "/logout";
-                    opts.AccessDeniedPath = "/denied";
+                    opts.LoginPath = "/Login";
+                    opts.LogoutPath = "/Logout";
+                    opts.AccessDeniedPath = "/Denied";
 
                     opts.Cookie.HttpOnly = true;
                     opts.Cookie.IsEssential = true;
-                    
-                    opts.ExpireTimeSpan = DateTimeOffset.UtcNow.AddHours(4).Offset;
                 });
-
-            // services.AddAuthorization(opts =>
-            // {
-            //     opts.AddPolicy("User", builder =>
-            //     {
-            //         builder.RequireClaim(ClaimTypes.Name);
-            //         builder.RequireAuthenticatedUser();
-            //     });
-            // });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -88,9 +77,6 @@ namespace Atheer
             {
                 Console.WriteLine("Production");
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                // TODO Configure this
-                // app.UseHsts();
             }
             
             // app.UseHttpsRedirection();
@@ -102,7 +88,7 @@ namespace Atheer
             app.UseRouting();
 
             app.UseAuthentication();
-            // app.UseAuthorization();
+            app.UseAuthorization();
 
             app.UseEndpoints((endpoints) =>
             {

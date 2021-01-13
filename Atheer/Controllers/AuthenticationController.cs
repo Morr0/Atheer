@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Atheer.Controllers.ViewModels;
+using Atheer.Models;
 using Atheer.Services.UserService;
 using Atheer.Services.UserService.Exceptions;
 using Atheer.Services.UserSessionsService;
@@ -33,13 +34,13 @@ namespace Atheer.Controllers
         }
         
         [AllowAnonymous]
-        [HttpGet("login")]
+        [HttpGet("Login")]
         public IActionResult LoginView()
         {
             return View("Login");
         }
 
-        [HttpPost("login")]
+        [HttpPost("Login")]
         public async Task<IActionResult> Login([FromForm] LoginViewModel loginView)
         {
             var user = await _userService.GetFromEmail(loginView.Email).ConfigureAwait(false);
@@ -48,17 +49,9 @@ namespace Atheer.Controllers
                 string sessionId = _sessionsService.Login(loginView, user);
                 if (sessionId is not null)
                 {
-                    _logger.LogInformation(sessionId);
-                    var claims = Claims(ref sessionId, user.Roles);
-                    _logger.LogInformation(claims.Count.ToString());
-                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-                    
-
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
-                        , claimsPrincipal).ConfigureAwait(false);
-                    _logger.LogInformation($"Claims count from .User: {HttpContext.User.Claims.Count()}");
-                    _logger.LogInformation(HttpContext.User.Identity.IsAuthenticated.ToString());
+                        , ClaimsPrincipal(ref sessionId, ref user)).ConfigureAwait(false);
+
                     return Redirect("/");
                 }
             }
@@ -67,39 +60,33 @@ namespace Atheer.Controllers
             return RedirectToAction("LoginView");
         }
 
-        private IList<Claim> Claims(ref string sessionId, string roles)
+        private ClaimsPrincipal ClaimsPrincipal(ref string sessionId, ref User user)
         {
-            IList<string> rolesList = roles.Split(',');
-
             var claims = new List<Claim>
             {
                 new Claim(CookieSessionId, sessionId),
+                new Claim(ClaimTypes.Role, user.Roles)
             };
-
-            foreach (var role in rolesList)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
-
-            return claims;
+            
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            return new ClaimsPrincipal(claimsIdentity);
         }
         
-        [HttpGet("logout")]
+        [Authorize]
+        [HttpGet("Logout")]
         public IActionResult LogoutView()
         {
             return View("Logout");
         }
 
-        [HttpPost("logout")]
+        [Authorize]
+        [HttpPost("Logout")]
         public async Task<IActionResult> LogoutPost()
         {
-            string sessionId = HttpContext.User.FindFirst(CookieSessionId)?.Value;
+            var t = this;
+            string sessionId = Request.HttpContext.User.FindFirst(CookieSessionId)?.Value;
 
             _logger.LogInformation($"{HttpContext.User.Claims.Count()} dgsjg");
-            foreach (var claim in HttpContext.User.Claims)
-            {
-                _logger.LogInformation($"{claim.Type} : {claim.Value} : {claim.ValueType}");
-            }
             _logger.LogInformation(sessionId);
             if (_sessionsService.LoggedIn(sessionId))
             {
