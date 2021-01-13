@@ -68,9 +68,13 @@ namespace Atheer.Controllers
             {
                 new Claim(CookieSessionId, sessionId),
                 new Claim(CookieUserId, user.Id),
-                new Claim(ClaimTypes.Role, user.Roles),
                 new Claim(ClaimTypes.Name, user.FullName())
             };
+            
+            foreach (var role in user.Roles.Split(','))
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
             
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             return new ClaimsPrincipal(claimsIdentity);
