@@ -12,6 +12,7 @@ namespace Atheer.Models
         // Range key, e.g. this-is-a-title <- replace spaces with - and lower case everything
         public string TitleShrinked { get; set; }
 
+        public string AuthorId { get; set; }
 
         public string Title { get; set; }
 

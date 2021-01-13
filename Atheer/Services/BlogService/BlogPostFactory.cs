@@ -15,9 +15,11 @@ namespace Atheer.Services.BlogService
             _mapper = mapper;
         }
 
-        public BlogPost Create(ref BlogPostEditViewModel postViewModel)
+        public BlogPost Create(ref BlogPostEditViewModel postViewModel, string userId)
         {
             var post = _mapper.Map<BlogPost>(postViewModel);
+
+            post.AuthorId = userId;
 
             var date = DateTime.UtcNow;
             post.CreatedYear = date.Year;

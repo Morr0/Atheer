@@ -39,6 +39,9 @@ namespace Atheer.Controllers
             {
                 post = await _service.GetSpecific(key).ConfigureAwait(false);
                 if (post is null) return Redirect("/");
+
+                if (User.FindFirst(AuthenticationController.CookieUserId)?.Value != post.AuthorId)
+                    return Forbid();
             }
 
             var dto = _mapper.Map<BlogPostEditViewModel>(post);
@@ -64,23 +67,26 @@ namespace Atheer.Controllers
         
         private async Task<IActionResult> Checkout(BlogPostPrimaryKey key, BlogPostEditViewModel postViewModel)
         {
+            string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+
             if (!ModelState.IsValid) return View("ArticleEdit", postViewModel);
             
             // ADD
             if (IsNewPost(postViewModel.TitleShrinked))
             {
                 key = new BlogPostPrimaryKey(postViewModel.CreatedYear, postViewModel.TitleShrinked);
-                _logger.LogInformation("New");
-                await _service.AddPost(postViewModel).ConfigureAwait(false);
+                await _service.AddPost(postViewModel, userId).ConfigureAwait(false);
                 return RedirectToAction("Index", "Article", new BlogPostPrimaryKey(
                     postViewModel.CreatedYear, postViewModel.TitleShrinked));
             }
+            
+            if (!(await _service.AuthorizedFor(key, userId).ConfigureAwait(false)))
+                return Forbid();
             
             // UPDATE
             await _service.Update(postViewModel).ConfigureAwait(false);
             TempData["Info"] = "Updated post successfully";
             return RedirectToAction("Index", "ArticleEdit", key);
-            
         }
 
         private IActionResult VisitPage(ref BlogPostPrimaryKey key)

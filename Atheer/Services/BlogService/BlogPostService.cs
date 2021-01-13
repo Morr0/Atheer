@@ -66,9 +66,9 @@ namespace Atheer.Services.BlogService
             return _repository.Update(key, newPost);
         }
 
-        public async Task AddPost(BlogPostEditViewModel postViewModel)
+        public async Task AddPost(BlogPostEditViewModel postViewModel, string userId)
         { 
-            var post = _factory.Create(ref postViewModel);
+            var post = _factory.Create(ref postViewModel, userId);
             string titleShrinked = post.TitleShrinked;
             
             // Check that no other post has same titleShrinked, else generate a new titleShrinked
@@ -95,6 +95,14 @@ namespace Atheer.Services.BlogService
             postViewModel.LastUpdatedDate = DateTime.UtcNow.ToString();
 
             await _repository.Update(postViewModel).ConfigureAwait(false);
+        }
+
+        public async Task<bool> AuthorizedFor(BlogPostPrimaryKey key, string userId)
+        {
+            var post = await GetSpecific(key).ConfigureAwait(false);
+            if (post is null) return false;
+
+            return post.AuthorId == userId;
         }
     }
 }

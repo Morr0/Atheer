@@ -19,7 +19,9 @@ namespace Atheer.Services.BlogService
         Task Delete(BlogPostPrimaryKey key);
 
         Task<BlogPost> Update(BlogPostPrimaryKey key, BlogPost newPost);
-        Task AddPost(BlogPostEditViewModel post);
+        Task AddPost(BlogPostEditViewModel post, string userId);
         Task Update(BlogPostEditViewModel post);
+
+        Task<bool> AuthorizedFor(BlogPostPrimaryKey key, string userId);
     }
 }

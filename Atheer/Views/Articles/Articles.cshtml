@@ -1,4 +1,5 @@
 ﻿@using Atheer.ViewComponents
+@using Atheer.Controllers
 @model List<BlogPost>
 
 @{
@@ -19,7 +20,8 @@
                    asp-route-CreatedYear="@post.CreatedYear" asp-route-TitleShrinked="@post.TitleShrinked">
                     @post.Title
                 </a>
-                @await Component.InvokeAsync("ArticleEditLink", new ArticleEditLinkModel(post))
+                @await Component.InvokeAsync("ArticleEditLink", 
+                    new ArticleEditLinkModel(post, @User.FindFirst(AuthenticationController.CookieUserId)?.Value))
             </h5>
             <h6 class="card-subtitle">@DateTime.Parse(post.CreationDate).ToString("d")</h6>
             <p class="card-text">@post.Description</p>
