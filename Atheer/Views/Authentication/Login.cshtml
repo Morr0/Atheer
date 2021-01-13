@@ -18,3 +18,11 @@
     <input asp-for="Password">
     <button class="btn btn-outline-primary">Login</button>
 </form>
+
+@if (User.Identity?.IsAuthenticated == false)
+{
+    <div>
+        Don't have a user account, 
+        <a class="text-info" asp-controller="User" asp-action="RegisterView">Click here to register.</a>
+    </div>
+}
