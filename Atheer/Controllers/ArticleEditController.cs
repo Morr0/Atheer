@@ -102,6 +102,12 @@ namespace Atheer.Controllers
         private async Task<IActionResult> Delete(BlogPostPrimaryKey key)
         {
             if (await _service.GetSpecific(key).ConfigureAwait(false) is null) return Redirect("/");
+         
+            string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            if (!(await _service.AuthorizedFor(key, userId).ConfigureAwait(false)))
+            {
+                if (!User.IsInRole(UserRoles.AdminRole)) return Forbid();
+            }
             
             await _service.Delete(key).ConfigureAwait(false);
             return Redirect("/");
