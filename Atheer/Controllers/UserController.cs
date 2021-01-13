@@ -15,6 +15,12 @@ namespace Atheer.Controllers
         {
             _userService = userService;
         }
+
+        [HttpGet]
+        public IActionResult UserView([FromRoute] string userId)
+        {
+            return Redirect("/");
+        }
         
         [HttpGet("/register")]
         public IActionResult RegisterView(RegisterViewModel? registerViewModel)

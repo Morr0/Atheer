@@ -17,5 +17,7 @@
 
         // Separated by comma
         public string Roles { get; set; }
+
+        public string FullName() => $"{FirstName} {LastName}";
     }
 }

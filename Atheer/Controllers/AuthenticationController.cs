@@ -20,6 +20,7 @@ namespace Atheer.Controllers
     public class AuthenticationController : Controller
     {
         private const string CookieSessionId = "sessionId";
+        public static string CookieUserId = "userId";
         
         private readonly IUserService _userService;
         private readonly IUserSessionsService _sessionsService;
@@ -65,7 +66,9 @@ namespace Atheer.Controllers
             var claims = new List<Claim>
             {
                 new Claim(CookieSessionId, sessionId),
-                new Claim(ClaimTypes.Role, user.Roles)
+                new Claim(CookieUserId, user.Id),
+                new Claim(ClaimTypes.Role, user.Roles),
+                new Claim(ClaimTypes.Name, user.FullName())
             };
             
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -83,11 +86,8 @@ namespace Atheer.Controllers
         [HttpPost("Logout")]
         public async Task<IActionResult> LogoutPost()
         {
-            var t = this;
             string sessionId = Request.HttpContext.User.FindFirst(CookieSessionId)?.Value;
 
-            _logger.LogInformation($"{HttpContext.User.Claims.Count()} dgsjg");
-            _logger.LogInformation(sessionId);
             if (_sessionsService.LoggedIn(sessionId))
             {
                 _sessionsService.Logout(sessionId);
