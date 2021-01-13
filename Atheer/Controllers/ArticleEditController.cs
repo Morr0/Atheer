@@ -4,12 +4,14 @@ using Atheer.Models;
 using Atheer.Services;
 using Atheer.Services.BlogService;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Atheer.Controllers
 {
     // Used for both editing/adding new posts
+    [Authorize]
     [Route("Article/Edit")]
     public class ArticleEditController : Controller
     {

@@ -34,10 +34,11 @@ namespace Atheer.Controllers
             _logger = logger;
         }
         
-        [AllowAnonymous]
         [HttpGet("Login")]
         public IActionResult LoginView()
         {
+            if (User.Identity?.IsAuthenticated == true) return Redirect("/");
+            
             return View("Login");
         }
 

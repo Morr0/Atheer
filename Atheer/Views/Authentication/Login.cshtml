@@ -11,7 +11,7 @@
 
 <h4 class="text-dark">Login</h4>
 
-<form asp-controller="Authentication" asp-action="Login" method="post">
+<form asp-controller="Authentication" asp-action="Login" asp-route-returnUrl="@Url." method="post">
     <label asp-for="Email"></label>
     <input asp-for="Email">
     <label asp-for="Password"></label>

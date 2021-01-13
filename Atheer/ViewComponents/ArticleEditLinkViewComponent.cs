@@ -6,6 +6,11 @@ namespace Atheer.ViewComponents
     {
         public IViewComponentResult Invoke(ArticleEditLinkModel model)
         {
+            if (User.Identity?.IsAuthenticated == false)
+            {
+                return Content(string.Empty);
+            }
+            
             return View("Default", model);
         }
     }
