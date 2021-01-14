@@ -92,9 +92,13 @@ namespace Atheer.Services.BlogService
 
         public async Task Update(BlogPostEditViewModel postViewModel)
         {
-            postViewModel.LastUpdatedDate = DateTime.UtcNow.ToString();
+            var key = new BlogPostPrimaryKey(postViewModel.CreatedYear, postViewModel.TitleShrinked);
+            var oldPost = await GetSpecific(key).ConfigureAwait(false);
+            var newPost = _mapper.Map(postViewModel, oldPost);
+            
+            newPost.LastUpdatedDate = DateTime.UtcNow.ToString();
 
-            await _repository.Update(postViewModel).ConfigureAwait(false);
+            await _repository.Update(newPost).ConfigureAwait(false);
         }
 
         public async Task<bool> AuthorizedFor(BlogPostPrimaryKey key, string userId)

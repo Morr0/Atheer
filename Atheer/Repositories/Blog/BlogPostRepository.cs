@@ -304,17 +304,17 @@ namespace Atheer.Repositories.Blog
             await _client.PutItemAsync(request).ConfigureAwait(false);
         }
 
-        public async Task Update(BlogPostEditViewModel postViewModel)
+        public async Task Update(BlogPost post)
         {
             var sb = new StringBuilder().Append("SET ");
             var values = new Dictionary<string, AttributeValue>();
-            foreach (var prop in postViewModel.GetType().GetProperties())
+            foreach (var prop in post.GetType().GetProperties())
             {
                 if (prop.Name == nameof(BlogPost.TitleShrinked) || prop.Name == nameof(BlogPost.CreatedYear))
                     continue;
 
                 string propValueName = $":{prop.Name}";
-                values.Add($"{propValueName}", DynamoToFromModelMapper<BlogPost>.ToDynamoDB(postViewModel, prop));
+                values.Add($"{propValueName}", DynamoToFromModelMapper<BlogPost>.ToDynamoDB(post, prop));
                 sb.Append($"{prop.Name} = {propValueName},");
             }
 
@@ -323,7 +323,7 @@ namespace Atheer.Repositories.Blog
             var request = new UpdateItemRequest
             {
                 TableName = _tables.Posts,
-                Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(postViewModel.CreatedYear, postViewModel.TitleShrinked),
+                Key = DynamoToFromModelMapper<BlogPost>.GetPostKey(post.CreatedYear, post.TitleShrinked),
                 UpdateExpression = updateExpression,
                 ExpressionAttributeValues = values
             };

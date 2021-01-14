@@ -28,7 +28,7 @@ namespace Atheer.Utilities
                 .ForMember(dest => dest.Topics, opts =>
                 {
                     opts.MapFrom(src 
-                        => src.TopicsAsString.Split(',', StringSplitOptions.None).ToList());
+                        => src.TopicsAsString.Split(',', StringSplitOptions.TrimEntries).ToList());
                 });
 
             CreateMap<BlogPost, BlogPostEditViewModel>()
