@@ -6,29 +6,34 @@
 @{
     ViewData["Title"] = Model.Title;
     string content = Markdown.ToHtml(Model.Content, MarkdownPipeline);
+
+    var topics = String.Join(',', Model.Topics);
 }
 
 <div class="container">
-    <h2 class="text-dark">@Model.Title</h2>
-    @await Component.InvokeAsync("ArticleEditLink", 
-        new ArticleEditLinkModel(Model, @User.FindFirst(AuthenticationController.CookieUserId)?.Value))
-    <h6 class="card-subtitle">@DateTime.Parse(Model.CreationDate).ToString("d")</h6>
-    <p class="card-text">@Model.Description</p>
-    <br/>
-    @Html.Raw(content)
-    <br/>
-    <br/>
-
-    @if (Model.Likeable)
-    {
-        <label id="likes" for="like">@Model.Likes Likes | </label> 
-        <button type="button" class="btn btn-outline-secondary" id="like" value="Like" 
-                onclick="like(@Model.CreatedYear, '@Model.TitleShrinked')">Like</button>
-    } 
-    @if (Model.Shareable)
-    {
-        <button type="button" class="btn btn-outline-secondary" id="share" value="Share" 
-                onclick="share(@Model.CreatedYear, '@Model.TitleShrinked')">Share</button>
-    }
-    <span class="text-info" id="shareInfo"></span> 
+    <div class="card-header">
+        <h2 class="text-dark">@Model.Title</h2>
+        @await Component.InvokeAsync("ArticleEditLink",
+            new ArticleEditLinkModel(Model, @User.FindFirst(AuthenticationController.CookieUserId)?.Value))
+        <h6 class="card-subtitle">@DateTime.Parse(Model.CreationDate).ToString("d") Topics: @topics</h6>
+        <p class="card-text">@Model.Description</p>
+    </div>
+    <div class="card-body">
+        <div class="h-di"></div>
+        @Html.Raw(content)
+    </div>
+    <div class="card-footer">
+        @if (Model.Likeable)
+        {
+            <label id="likes" for="like">@Model.Likes Likes | </label>
+            <button type="button" class="btn btn-outline-secondary" id="like" value="Like"
+                    onclick="like(@Model.CreatedYear, '@Model.TitleShrinked')">Like</button>
+        }
+        @if (Model.Shareable)
+        {
+            <button type="button" class="btn btn-outline-secondary" id="share" value="Share"
+                    onclick="share(@Model.CreatedYear, '@Model.TitleShrinked')">Share</button>
+        }
+        <span class="text-info" id="shareInfo"></span>
+    </div>
 </div>
