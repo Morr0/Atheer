@@ -52,5 +52,10 @@ namespace Atheer.Services.UserService
         {
             return UserRoles.BasicRole;
         }
+
+        public string AnotherId(string id)
+        {
+            return $"{id}-{DateTime.UtcNow.Minute}";
+        }
     }
 }

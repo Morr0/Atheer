@@ -25,9 +25,23 @@ namespace Atheer.Services.UserService
             }
 
             var user = _factory.Create(registerViewModel);
+            user.Id = await GetIdUntilVacancyExists(user.Id).ConfigureAwait(false);
+            
             await _repository.Add(user).ConfigureAwait(false);
 
             return user;
+        }
+
+        // Will generate a new id until one is non-already existent
+        private async Task<string> GetIdUntilVacancyExists(string id)
+        {
+            do
+            {
+                var user = await Get(id).ConfigureAwait(false);
+                if (user is null) return id;
+                
+                id = _factory.AnotherId(id);
+            } while (true);
         }
 
         public Task<bool> EmailRegistered(string email)
