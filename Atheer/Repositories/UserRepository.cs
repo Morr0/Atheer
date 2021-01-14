@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Atheer.Extensions;
@@ -19,16 +20,23 @@ namespace Atheer.Repositories
             _client = new AmazonDynamoDBClient();
         }
 
-        public async Task<bool> Has(string id)
+        public async Task<bool> Has(string email)
         {
-            var request = new GetItemRequest
+            string emailAttName = nameof(User.Email);
+            string emailAttValue = $":{nameof(User.Email)}";
+            var request = new ScanRequest
             {
                 TableName = _config.Users,
-                Key = DynamoToFromModelMapper<User>.GetUserKey(id)
+                ProjectionExpression = emailAttName,
+                FilterExpression = $"{emailAttName} = {emailAttValue}",
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                {
+                    {emailAttValue, new AttributeValue{ S = email}}
+                }
             };
 
-            var response = await _client.GetItemAsync(request).ConfigureAwait(false);
-            return response.Item.Count > 0;
+            var response = await _client.ScanAsync(request).ConfigureAwait(false);
+            return response.Items.Count > 0;
         }
 
         public Task Add(User user)
