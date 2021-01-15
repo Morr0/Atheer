@@ -8,6 +8,9 @@
     string content = Markdown.ToHtml(Model.Content, MarkdownPipeline);
 
     var topics = String.Join(',', Model.Topics);
+    
+    string dateStr = Model.CreationDate.Split()[0];
+
 }
 
 <div class="container">
@@ -15,7 +18,7 @@
         <h2 class="text-dark">@Model.Title</h2>
         @await Component.InvokeAsync("ArticleEditLink",
             new ArticleEditLinkModel(Model, @User.FindFirst(AuthenticationController.CookieUserId)?.Value))
-        <h6 class="card-subtitle">@DateTime.Parse(Model.CreationDate).ToString("d") Topics: @topics</h6>
+        <h6 class="card-subtitle">@dateStr Topics: @topics</h6>
         <p class="card-text">@Model.Description</p>
     </div>
     <div class="card-body">
