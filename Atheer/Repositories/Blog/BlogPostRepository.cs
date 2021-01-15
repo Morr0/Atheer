@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -172,8 +173,8 @@ namespace Atheer.Repositories.Blog
             
             try
             {
-                var dt1 = DateTime.ParseExact(creationDate1, SortByLatestDatetimeFormat, null);
-                var dt2 = DateTime.ParseExact(creationDate2, SortByLatestDatetimeFormat, null);
+                var dt1 = DateTime.ParseExact(creationDate1, SortByLatestDatetimeFormat, CultureInfo.InvariantCulture);
+                var dt2 = DateTime.ParseExact(creationDate2, SortByLatestDatetimeFormat, CultureInfo.InvariantCulture);
 
                 return dt2.CompareTo(dt1);
             }
