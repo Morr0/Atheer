@@ -20,7 +20,7 @@ namespace Atheer.Repositories.Blog
     public class BlogPostRepository
     {
         private readonly DynamoDbTables _tables;
-        private const string SortByLatestDatetimeFormat = "d/M/yyyy h:m:s tt";
+        private const string SortByLatestDatetimeFormat = "d/M/yyyy";
         
         private readonly AmazonDynamoDBClient _client;
 
@@ -170,7 +170,10 @@ namespace Atheer.Repositories.Blog
         {
             if (string.IsNullOrEmpty(creationDate1) || string.IsNullOrEmpty(creationDate2))
                 return default;
-            
+
+            creationDate1 = creationDate1.Split()[0];
+            creationDate2 = creationDate2.Split()[0];
+
             try
             {
                 var dt1 = DateTime.ParseExact(creationDate1, SortByLatestDatetimeFormat, CultureInfo.InvariantCulture);
