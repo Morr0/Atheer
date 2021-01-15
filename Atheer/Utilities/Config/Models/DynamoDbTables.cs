@@ -3,8 +3,6 @@
     public class DynamoDbTables
     {
         public string Posts { get; set; }
-        
         public string Users { get; set; }
-        public string UserSessions { get; set; }
     }
 }
