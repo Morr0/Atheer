@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using Atheer.BackgroundServices;
 using Atheer.Repositories;
 using Atheer.Repositories.Blog;
 using Atheer.Services.BlogService;
@@ -33,7 +34,7 @@ namespace Atheer
         {
             services.Configure<DynamoDbTables>(Configuration.GetSection("DynamoDbTables"));
             services.Configure<Site>(Configuration.GetSection("Site"));
-            
+
             services.AddControllersWithViews();
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
@@ -63,6 +64,9 @@ namespace Atheer
                     opts.Cookie.HttpOnly = true;
                     opts.Cookie.IsEssential = true;
                 });
+
+            // Background services
+            services.AddHostedService<ReloadConfigBackgroundService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
