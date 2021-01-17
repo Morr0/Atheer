@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Globalization;
+using System.Threading.Tasks;
+using Atheer.Controllers.Queries;
+using Atheer.Controllers.ViewModels;
 using Atheer.Services.BlogService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,12 +21,21 @@ namespace Atheer.Controllers
             _service = service;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] YearQuery query)
         {
-            var blogResponse = (await _service.Get(500).ConfigureAwait(false));
+            bool specificYear = query.CreatedYear != 0;
+            var blogResponse = specificYear ?
+                    await _service.GetByYear(query.CreatedYear, 500).ConfigureAwait(false)
+                :   await _service.Get(500).ConfigureAwait(false);
             if (blogResponse?.Posts is null) return Redirect("/");
 
-            return View("Articles", blogResponse.Posts);
+            var viewModel = new ArticlesViewModel
+            {
+                Posts = blogResponse.Posts,
+                SpecificYear = specificYear,
+                Year = query.CreatedYear
+            };
+            return View("Articles", viewModel);
         }
     }
 }

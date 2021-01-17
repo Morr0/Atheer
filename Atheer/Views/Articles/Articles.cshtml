@@ -1,6 +1,6 @@
 ﻿@using Atheer.ViewComponents
 @using Atheer.Controllers
-@model List<BlogPost>
+@model Atheer.Controllers.ViewModels.ArticlesViewModel
 
 @{
     ViewData["Title"] = "Articles";
@@ -11,7 +11,18 @@
     <h5 class="text-danger">@TempData["Error"]</h5>
 }
 
-@foreach (var post in Model)
+<h6 class="text-dark">
+@if (Model.SpecificYear)
+{
+    @Model.Year @Html.Raw(" Posts") 
+}
+else
+{
+    @Html.Raw("Latest Posts")
+}
+</h6>
+
+@foreach (var post in Model.Posts)
 {
     string dateStr = post.CreationDate.Split()[0];
     

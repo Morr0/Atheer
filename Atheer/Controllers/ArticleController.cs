@@ -19,34 +19,12 @@ namespace Atheer.Controllers
             _service = service;
         }
 
-        [FromRoute]
-        public BlogPostPrimaryKey Route { get; set; }
-
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromRoute] BlogPostPrimaryKey route)
         {
-            var post = await _service.GetSpecific(Route).ConfigureAwait(false);
+            var post = await _service.GetSpecific(route).ConfigureAwait(false);
             if (post is null) return Redirect("/");
 
-            return View("Article", post);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Post(string submit, [FromForm] BlogPostPrimaryKey key)
-        {
-            _logger.LogInformation($"Like: {key.CreatedYear}, {key.TitleShrinked}");
-            BlogPost post = null;
-            switch (submit)
-            {
-                case "Like":
-                    post = await _service.Like(key).ConfigureAwait(false);
-                    break;
-                case "Share":
-                    post = await _service.Share(key).ConfigureAwait(false);
-                    break;
-            }
-            if (post is null) return Redirect("Error");
-            
             return View("Article", post);
         }
     }
