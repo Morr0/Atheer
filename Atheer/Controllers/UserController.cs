@@ -29,6 +29,7 @@ namespace Atheer.Controllers
             [FromServices] IOptionsSnapshot<Site> options)
         {
             if (!options.Value.CanRegister) return Redirect("NotFound");
+            if (User.Identity?.IsAuthenticated == true) return Redirect("/");
             
             return View("Register", registerViewModel);
         }
@@ -36,6 +37,8 @@ namespace Atheer.Controllers
         [HttpPost("/Register")]
         public async Task<IActionResult> Register([FromForm] RegisterViewModel registerView)
         {
+            if (User.Identity?.IsAuthenticated == true) return Redirect("/");
+            
             try
             {
                 await _userService.Add(registerView).ConfigureAwait(false);
