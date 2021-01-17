@@ -1,4 +1,7 @@
-﻿@model Atheer.Controllers.ViewModels.LoginViewModel
+﻿@using Microsoft.Extensions.Options
+@using Atheer.Utilities.Config.Models
+@model Atheer.Controllers.ViewModels.LoginViewModel
+@inject IOptionsSnapshot<Site> Site
 
 @{
     ViewData["Title"] = "Login";
@@ -19,7 +22,7 @@
     <button class="btn btn-outline-primary">Login</button>
 </form>
 
-@if (User.Identity?.IsAuthenticated == false)
+@if (Site.Value.CanRegister)
 {
     <div>
         Don't have a user account, 
