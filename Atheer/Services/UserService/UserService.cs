@@ -54,9 +54,14 @@ namespace Atheer.Services.UserService
             return _repository.Get(id);
         }
 
-        public Task<User> GetFromEmail(string email)
+        public Task<User> GetFromEmailOrUsername(string emailOrUsername)
         {
-            return Get(_factory.Id(email));
+            return Get(IsEmail(emailOrUsername) ? _factory.Id(emailOrUsername) : emailOrUsername);
+        }
+
+        private bool IsEmail(string emailOrUsername)
+        {
+            return emailOrUsername.Contains('@') && emailOrUsername.Contains('.');
         }
     }
 }

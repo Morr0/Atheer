@@ -45,7 +45,7 @@ namespace Atheer.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromForm] LoginViewModel loginView)
         {
-            var user = await _userService.GetFromEmail(loginView.Email).ConfigureAwait(false);
+            var user = await _userService.GetFromEmailOrUsername(loginView.EmailOrUsername).ConfigureAwait(false);
             if (user is not null)
             {
                 string sessionId = _sessionsService.Login(loginView, user);

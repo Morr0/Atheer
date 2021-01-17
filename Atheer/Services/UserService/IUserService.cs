@@ -9,6 +9,6 @@ namespace Atheer.Services.UserService
         Task<User> Add(RegisterViewModel registerViewModel);
         Task<bool> EmailRegistered(string email);
         Task<User> Get(string id);
-        Task<User> GetFromEmail(string email);
+        Task<User> GetFromEmailOrUsername(string emailOrUsername);
     }
 }
