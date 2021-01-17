@@ -3,7 +3,7 @@
 @using Microsoft.Extensions.Options
 @using Atheer.Controllers
 @using Atheer.Services.UserService
-@inject IOptions<Site> Site
+@inject IOptionsSnapshot<Site> Site
 
 @{
     string fullTitle = $"{ViewData["Title"]} - {Site.Value.Title}";

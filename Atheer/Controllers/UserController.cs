@@ -26,7 +26,7 @@ namespace Atheer.Controllers
         
         [HttpGet("/Register")]
         public IActionResult RegisterView(RegisterViewModel? registerViewModel, 
-            [FromServices] IOptions<Site> options)
+            [FromServices] IOptionsSnapshot<Site> options)
         {
             if (!options.Value.CanRegister) return Redirect("NotFound");
             
