@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Globalization;
+using System.Threading.Tasks;
 using Atheer.Controllers.ViewModels;
 using Atheer.Models;
 using Atheer.Repositories;
@@ -57,6 +59,12 @@ namespace Atheer.Services.UserService
         public Task<User> GetFromEmailOrUsername(string emailOrUsername)
         {
             return Get(IsEmail(emailOrUsername) ? _factory.Id(emailOrUsername) : emailOrUsername);
+        }
+
+        public Task SetLogin(string id)
+        {
+            var time = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture);
+            return _repository.Set(id, nameof(User.DateLastLoggedIn), time);
         }
 
         private bool IsEmail(string emailOrUsername)

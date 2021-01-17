@@ -10,5 +10,6 @@ namespace Atheer.Services.UserService
         Task<bool> EmailRegistered(string email);
         Task<User> Get(string id);
         Task<User> GetFromEmailOrUsername(string emailOrUsername);
+        Task SetLogin(string id);
     }
 }

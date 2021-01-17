@@ -61,5 +61,23 @@ namespace Atheer.Repositories
             var response = await _client.GetItemAsync(request).ConfigureAwait(false);
             return DynamoToFromModelMapper<User>.Map(response.Item);
         }
+
+        public async Task Set(string id, string attributeName, string value)
+        {
+            string attVal = $":{attributeName}";
+            
+            var request = new UpdateItemRequest
+            {
+                TableName = _config.Users,
+                Key = DynamoToFromModelMapper<User>.GetUserKey(id),
+                UpdateExpression = $"SET {attributeName} = {attVal}",
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                {
+                    { attVal, new AttributeValue{ S = value}}
+                }
+            };
+
+            await _client.UpdateItemAsync(request).ConfigureAwait(false);
+        }
     }
 }

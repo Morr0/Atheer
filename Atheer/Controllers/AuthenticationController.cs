@@ -51,6 +51,8 @@ namespace Atheer.Controllers
                 string sessionId = _sessionsService.Login(loginView, user);
                 if (sessionId is not null)
                 {
+                    await _userService.SetLogin(user.Id).ConfigureAwait(false);
+                    
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
                         , ClaimsPrincipal(ref sessionId, ref user)).ConfigureAwait(false);
 
