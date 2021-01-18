@@ -60,16 +60,9 @@ namespace Atheer.Repositories.Blog
                     {ttlNameSubstitute, "TTL"}
                 },
                 // Define the values looking for
-                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-                {
-                    {":false", new AttributeValue
-                    {
-                        BOOL = false
-                    }}
-                },
                 // filter, refer to AWS docs
                 // Fetch only non-draft and listed posts and where there is no `TTL` attribute
-                FilterExpression = $"Unlisted = :false AND Draft = :false AND attribute_not_exists({ttlNameSubstitute})"
+                FilterExpression = $"attribute_not_exists({ttlNameSubstitute})"
             };
             
             if (!loadContentProperty)
