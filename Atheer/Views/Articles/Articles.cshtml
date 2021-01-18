@@ -4,6 +4,8 @@
 
 @{
     ViewData["Title"] = "Articles";
+    
+    string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
 }
 
 @if (TempData.ContainsKey("Error"))
@@ -28,14 +30,31 @@ else
     
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">
-                <a class="text-dark" asp-controller="Article" asp-action="Index"
-                   asp-route-CreatedYear="@post.CreatedYear" asp-route-TitleShrinked="@post.TitleShrinked">
-                    @post.Title
-                </a>
-                @await Component.InvokeAsync("ArticleEditLink", 
+            <div class="card-title">
+                <h5>
+                    <a class="text-dark" asp-controller="Article" asp-action="Index"
+                       asp-route-CreatedYear="@post.CreatedYear" asp-route-TitleShrinked="@post.TitleShrinked">
+                        @post.Title
+                    </a>
+                </h5>
+
+                @if (post.AuthorId == userId)
+                {
+                    <span class="text-info">Mine</span>
+                }
+
+                @if (post.Draft)
+                {
+                    <span class="text-info">Draft</span>
+                }
+                @if (post.Unlisted)
+                {
+                    <span class="text-info">Unlisted</span>
+                }
+
+                @await Component.InvokeAsync("ArticleEditLink",
                     new ArticleEditLinkModel(post, @User.FindFirst(AuthenticationController.CookieUserId)?.Value))
-            </h5>
+            </div>
             <h6 class="card-subtitle">@dateStr</h6>
             <p class="card-text">@post.Description</p>
         </div>

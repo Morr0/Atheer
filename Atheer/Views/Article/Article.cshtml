@@ -11,11 +11,27 @@
     
     string dateStr = Model.CreationDate.Split()[0];
 
+    string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
 }
 
 <div class="container">
     <div class="card-header">
         <h2 class="text-dark">@Model.Title</h2>
+        
+        @if (Model.AuthorId == userId)
+        {
+            <span class="text-info">Mine</span>
+        }
+        
+        @if (Model.Draft)
+        {
+            <span class="text-info">Draft</span>
+        }
+        @if (Model.Unlisted)
+        {
+            <span class="text-info">Unlisted</span>
+        }
+        
         @await Component.InvokeAsync("ArticleEditLink",
             new ArticleEditLinkModel(Model, @User.FindFirst(AuthenticationController.CookieUserId)?.Value))
         <h6 class="card-subtitle">@dateStr Topics: @topics</h6>
