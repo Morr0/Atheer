@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Atheer.Controllers.ViewModels;
 using Atheer.Models;
@@ -20,15 +21,21 @@ namespace Atheer.Services.BlogService
             _factory = factory;
         }
 
-        public Task<BlogRepositoryBlogResponse> Get(int amount, PostsPaginationPrimaryKey paginationHeader = null)
+        public async Task<BlogRepositoryBlogResponse> Get(int amount, PostsPaginationPrimaryKey paginationHeader = null,
+            string userId = null)
         {
-            return _repository.GetMany(amount, paginationHeader, false);
+            var response = await _repository.GetMany(amount, paginationHeader, false).ConfigureAwait(false);
+            response.Posts = response.Posts.Where(post => post.HasAccessTo(userId)).ToList();
+            return response;
         }
 
-        public Task<BlogRepositoryBlogResponse> GetByYear(int year, int amount, 
-            PostsPaginationPrimaryKey paginationHeader = null)
+        public async Task<BlogRepositoryBlogResponse> GetByYear(int year, int amount, 
+            PostsPaginationPrimaryKey paginationHeader = null, string userId = null)
         {
-            return _repository.GetMany(year, amount, paginationHeader, false);
+            var response = await _repository.GetMany(year, amount, 
+                paginationHeader, false).ConfigureAwait(false);
+            response.Posts = response.Posts.Where(post => post.HasAccessTo(userId)).ToList();
+            return response;
         }
 
         public Task<BlogPost> GetSpecific(BlogPostPrimaryKey primaryKey)

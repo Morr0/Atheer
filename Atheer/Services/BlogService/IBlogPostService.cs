@@ -6,10 +6,11 @@ namespace Atheer.Services.BlogService
 {
     public interface IBlogPostService
     {
-        Task<BlogRepositoryBlogResponse> Get(int amount, PostsPaginationPrimaryKey paginationHeader = null);
+        Task<BlogRepositoryBlogResponse> Get(int amount, PostsPaginationPrimaryKey paginationHeader = null
+            , string userId = null);
 
         Task<BlogRepositoryBlogResponse> GetByYear(int year, int amount, 
-            PostsPaginationPrimaryKey paginationHeader = null);
+            PostsPaginationPrimaryKey paginationHeader = null, string userId = null);
 
         Task<BlogPost> GetSpecific(BlogPostPrimaryKey primaryKey);
         

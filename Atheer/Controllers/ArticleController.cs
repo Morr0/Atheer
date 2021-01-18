@@ -2,6 +2,7 @@
 using Atheer.Models;
 using Atheer.Services;
 using Atheer.Services.BlogService;
+using Atheer.Services.UserService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -23,6 +24,10 @@ namespace Atheer.Controllers
         public async Task<IActionResult> Index([FromRoute] BlogPostPrimaryKey route)
         {
             var post = await _service.GetSpecific(route).ConfigureAwait(false);
+            
+            string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            if (!post.HasAccessTo(userId, isAdmin: User.IsInRole(UserRoles.AdminRole))) return Forbid();
+            
             if (post is null) return Redirect("/");
 
             return View("Article", post);
