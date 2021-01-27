@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Atheer.Services;
-using Atheer.Services.BlogService;
+using Atheer.Services.ArticlesService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Atheer.Controllers

@@ -4,11 +4,10 @@ using System.Threading.Tasks;
 using Atheer.Controllers.ViewModels;
 using Atheer.Models;
 using Atheer.Repositories;
-using Atheer.Repositories.Blog;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
-namespace Atheer.Services.BlogService
+namespace Atheer.Services.ArticlesService
 {
     public class ArticleService : IArticleService
     {
@@ -17,16 +16,14 @@ namespace Atheer.Services.BlogService
         private readonly ArticleFactory _factory;
         private readonly Data _context;
 
-        public ArticleService(ArticleRepository repository, IMapper mapper, ArticleFactory factory, Data data)
+        public ArticleService(IMapper mapper, ArticleFactory factory, Data data)
         {
-            // _repository = repository;
             _mapper = mapper;
             _factory = factory;
             _context = data;
         }
 
-        public async Task<ArticleResponse> Get(int amount, ArticlePaginationPrimaryKey paginationHeader = null,
-            string userId = null)
+        public async Task<ArticleResponse> Get(int amount, string userId = null)
         {
             // TODO implement user.HasAccess
             var list = await _context.Article.AsNoTracking()
@@ -37,14 +34,9 @@ namespace Atheer.Services.BlogService
             {
                 Articles = list
             };
-            
-            // var response = await _repository.GetMany(amount, paginationHeader, false).ConfigureAwait(false);
-            // response.Articles = response.Articles.Where(article => article.HasAccessTo(userId)).ToList();
-            // return response;
         }
 
-        public async Task<ArticleResponse> GetByYear(int year, int amount, 
-            ArticlePaginationPrimaryKey paginationHeader = null, string userId = null)
+        public async Task<ArticleResponse> GetByYear(int year, int amount, string userId = null)
         {
             // TODO implement user.HasAccess
             var list = await _context.Article.AsNoTracking()
@@ -55,11 +47,6 @@ namespace Atheer.Services.BlogService
             {
                 Articles = list
             };
-            
-            // var response = await _repository.GetMany(year, amount, 
-            //     paginationHeader, false).ConfigureAwait(false);
-            // response.Articles = response.Articles.Where(article => article.HasAccessTo(userId)).ToList();
-            // return response;
         }
 
         public async Task<Article> GetSpecific(ArticlePrimaryKey primaryKey)
@@ -69,8 +56,6 @@ namespace Atheer.Services.BlogService
                 .FirstOrDefaultAsync(x =>
                     x.CreatedYear == primaryKey.CreatedYear && x.TitleShrinked == primaryKey.TitleShrinked)
                 .ConfigureAwait(false);
-
-            // return _repository.Get(primaryKey);
         }
 
         public async Task Like(ArticlePrimaryKey primaryKey)
@@ -82,8 +67,6 @@ namespace Atheer.Services.BlogService
 
             _context.Entry(article).Property(x => x.Likes).IsModified = true;
             await _context.SaveChangesAsync().ConfigureAwait(false);
-
-            // return UpdateRecord(primaryKey, UpdateArticleOperation.UpdateLikes);
         }
 
         public async Task Share(ArticlePrimaryKey primaryKey)
@@ -95,19 +78,7 @@ namespace Atheer.Services.BlogService
 
             _context.Entry(article).Property(x => x.Shares).IsModified = true;
             await _context.SaveChangesAsync().ConfigureAwait(false);
-
-            // return UpdateRecord(primaryKey, UpdateArticleOperation.UpdateShares);
         }
-
-        // private Task<Article> UpdateRecord(ArticlePrimaryKey primaryKey, UpdateArticleOperation operation)
-        // {
-        //     string propertyToIncrement =
-        //         operation == UpdateArticleOperation.UpdateLikes ? nameof(Article.Likes) : nameof(Article.Shares);
-        //     string conditionProperty =
-        //         operation == UpdateArticleOperation.UpdateLikes ? nameof(Article.Likeable) : nameof(Article.Shareable);
-        //
-        //     return _repository.IncrementSpecificPropertyIf(primaryKey, propertyToIncrement, conditionProperty);
-        // }
 
         public async Task Delete(ArticlePrimaryKey key)
         {
@@ -117,8 +88,6 @@ namespace Atheer.Services.BlogService
                 .ConfigureAwait(false);
             _context.Article.Remove(article);
             await _context.SaveChangesAsync().ConfigureAwait(false);
-
-            // return _repository.Delete(key);
         }
 
         public async Task Add(ArticleEditViewModel articleEditViewModel, string userId)
@@ -139,8 +108,6 @@ namespace Atheer.Services.BlogService
 
             await _context.Article.AddAsync(article).ConfigureAwait(false);
             await _context.SaveChangesAsync().ConfigureAwait(false);
-
-            // await _repository.Add(article).ConfigureAwait(false);
         }
 
         private string RandomiseExistingShrinkedTitle(ref string existingTitleShrinked)
@@ -158,11 +125,8 @@ namespace Atheer.Services.BlogService
             
             _mapper.Map(articleEditViewModel, article);
             article.LastUpdatedDate = DateTime.UtcNow.ToString();
-
-            // _context.Article.Update(article);
+            
             await _context.SaveChangesAsync().ConfigureAwait(false);
-
-            // await _repository.Update(newArticle).ConfigureAwait(false);
         }
 
         public async Task<bool> AuthorizedFor(ArticlePrimaryKey key, string userId)

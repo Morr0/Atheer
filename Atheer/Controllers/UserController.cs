@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Atheer.Controllers.ViewModels;
-using Atheer.Services.UserService;
-using Atheer.Services.UserService.Exceptions;
+using Atheer.Services.UsersService;
+using Atheer.Services.UsersService.Exceptions;
 using Atheer.Utilities.Config.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;

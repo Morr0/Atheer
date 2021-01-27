@@ -1,4 +1,4 @@
-﻿using Atheer.Services.UserService;
+﻿using Atheer.Services.UsersService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

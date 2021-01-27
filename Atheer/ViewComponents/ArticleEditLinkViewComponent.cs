@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Atheer.Services;
-using Atheer.Services.BlogService;
-using Atheer.Services.UserService;
+using Atheer.Services.ArticlesService;
+using Atheer.Services.UsersService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Atheer.ViewComponents

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Atheer.Services.UserService.Exceptions
+namespace Atheer.Services.UsersService.Exceptions
 {
     public class UserWithThisEmailAlreadyExistsException : Exception
     {

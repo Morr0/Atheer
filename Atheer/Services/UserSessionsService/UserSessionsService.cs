@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Atheer.Controllers.ViewModels;
 using Atheer.Models;
 using Atheer.Repositories;
-using Atheer.Services.UserService;
+using Atheer.Services.UsersService;
 
 namespace Atheer.Services.UserSessionsService
 {

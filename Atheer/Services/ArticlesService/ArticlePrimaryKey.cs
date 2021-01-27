@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Atheer.Services
+namespace Atheer.Services.ArticlesService
 {
     public class ArticlePrimaryKey
     {

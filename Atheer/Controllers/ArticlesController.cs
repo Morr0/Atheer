@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Atheer.Controllers.Queries;
 using Atheer.Controllers.ViewModels;
-using Atheer.Services.BlogService;
+using Atheer.Services.ArticlesService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 

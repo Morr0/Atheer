@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Atheer.Models;
-using Atheer.Services.BlogService;
+using Atheer.Services.ArticlesService;
 
-namespace Atheer.Services.BlogService
+namespace Atheer.Services.ArticlesService
 {
     // A wrapper on what will the service return
     // This is a cleaner choice to tuples
@@ -14,7 +14,5 @@ namespace Atheer.Services.BlogService
         }
 
         public List<Article> Articles { get; set; }
-
-        public ArticlePaginationPrimaryKey PaginationHeader { get; set; }
     }
 }

@@ -2,8 +2,8 @@
 using Atheer.Controllers.ViewModels;
 using Atheer.Models;
 using Atheer.Services;
-using Atheer.Services.BlogService;
-using Atheer.Services.UserService;
+using Atheer.Services.ArticlesService;
+using Atheer.Services.UsersService;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

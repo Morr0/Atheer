@@ -1,4 +1,4 @@
-﻿namespace Atheer.Services.UserService
+﻿namespace Atheer.Services.UsersService
 {
     public static class UserRoles
     {

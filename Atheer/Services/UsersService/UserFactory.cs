@@ -4,7 +4,7 @@ using Atheer.Models;
 using AutoMapper;
 using Crypt = BCrypt.Net.BCrypt;
 
-namespace Atheer.Services.UserService
+namespace Atheer.Services.UsersService
 {
     public class UserFactory
     {

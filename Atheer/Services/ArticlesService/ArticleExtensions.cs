@@ -1,6 +1,6 @@
 ﻿using Atheer.Models;
 
-namespace Atheer.Services.BlogService
+namespace Atheer.Services.ArticlesService
 {
     public static class ArticleExtensions
     {

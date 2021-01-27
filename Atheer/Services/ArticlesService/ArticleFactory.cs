@@ -4,7 +4,7 @@ using Atheer.Controllers.ViewModels;
 using Atheer.Models;
 using AutoMapper;
 
-namespace Atheer.Services.BlogService
+namespace Atheer.Services.ArticlesService
 {
     public sealed class ArticleFactory
     {

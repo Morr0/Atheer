@@ -2,7 +2,7 @@
 using Atheer.Controllers.ViewModels;
 using Atheer.Models;
 
-namespace Atheer.Services.UserService
+namespace Atheer.Services.UsersService
 {
     public interface IUserService
     {

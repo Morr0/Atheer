@@ -2,15 +2,13 @@
 using Atheer.Controllers.ViewModels;
 using Atheer.Models;
 
-namespace Atheer.Services.BlogService
+namespace Atheer.Services.ArticlesService
 {
     public interface IArticleService
     {
-        Task<ArticleResponse> Get(int amount, ArticlePaginationPrimaryKey paginationHeader = null
-            , string userId = null);
+        Task<ArticleResponse> Get(int amount, string userId = null);
 
-        Task<ArticleResponse> GetByYear(int year, int amount, 
-            ArticlePaginationPrimaryKey paginationHeader = null, string userId = null);
+        Task<ArticleResponse> GetByYear(int year, int amount, string userId = null);
 
         Task<Article> GetSpecific(ArticlePrimaryKey primaryKey);
         

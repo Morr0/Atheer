@@ -2,9 +2,8 @@ using System;
 using System.Reflection;
 using Atheer.BackgroundServices;
 using Atheer.Repositories;
-using Atheer.Repositories.Blog;
-using Atheer.Services.BlogService;
-using Atheer.Services.UserService;
+using Atheer.Services.ArticlesService;
+using Atheer.Services.UsersService;
 using Atheer.Services.UserSessionsService;
 using Atheer.Utilities.Config.Models;
 using AutoMapper;
@@ -49,8 +48,6 @@ namespace Atheer
             {
                 opts.UseNpgsql(Configuration.GetConnectionString("MainPostgres"));
             });
-            services.AddSingleton<ArticleRepository>();
-            services.AddSingleton<UserRepository>();
 
             // Services
             services.AddScoped<IArticleService, ArticleService>();
