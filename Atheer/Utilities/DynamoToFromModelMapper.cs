@@ -116,12 +116,12 @@ namespace Atheer.Extensions
         }
 
         // Get key
-        public static Dictionary<string, AttributeValue> GetPostKey(int year, string titleShrinked)
+        public static Dictionary<string, AttributeValue> GetArticleKey(int year, string titleShrinked)
         {
             return new Dictionary<string, AttributeValue>
             {
-                {nameof(BlogPost.CreatedYear), new AttributeValue{N = year.ToString()} },
-                {nameof(BlogPost.TitleShrinked), new AttributeValue{S = titleShrinked} }
+                {nameof(Article.CreatedYear), new AttributeValue{N = year.ToString()} },
+                {nameof(Article.TitleShrinked), new AttributeValue{S = titleShrinked} }
             };
         }
 

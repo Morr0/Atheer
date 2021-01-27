@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Atheer.Models
 {
     // WHENEVER YOU UPDATE HERE, UPDATE THE MAPPER AS WELL AS THE MAPPING METHODS
-    public class BlogPost
+    public class Article
     {
         // Partition key
         public int CreatedYear { get; set; }
@@ -35,7 +34,7 @@ namespace Atheer.Models
         
         public int Shares { get; set; }
 
-        // The post is not done
+        // The article is not done
         public bool Draft { get; set; }
 
         // Not to be listed however can be accessed

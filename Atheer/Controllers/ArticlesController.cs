@@ -12,9 +12,9 @@ namespace Atheer.Controllers
     public class ArticlesController : Controller
     {
         private readonly ILogger<ArticlesController> _logger;
-        private readonly IBlogPostService _service;
+        private readonly IArticleService _service;
 
-        public ArticlesController(ILogger<ArticlesController> logger, IBlogPostService service)
+        public ArticlesController(ILogger<ArticlesController> logger, IArticleService service)
         {
             _logger = logger;
             _service = service;
@@ -28,11 +28,11 @@ namespace Atheer.Controllers
             var blogResponse = specificYear ?
                     await _service.GetByYear(query.CreatedYear, 500, userId: userId).ConfigureAwait(false)
                 :   await _service.Get(500, userId: userId).ConfigureAwait(false);
-            if (blogResponse?.Posts is null) return Redirect("/");
+            if (blogResponse?.Articles is null) return Redirect("/");
 
             var viewModel = new ArticlesViewModel
             {
-                Posts = blogResponse.Posts,
+                Articles = blogResponse.Articles,
                 SpecificYear = specificYear,
                 Year = query.CreatedYear
             };

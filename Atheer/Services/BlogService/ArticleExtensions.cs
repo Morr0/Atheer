@@ -2,15 +2,15 @@
 
 namespace Atheer.Services.BlogService
 {
-    public static class BlogPostExtensions
+    public static class ArticleExtensions
     {
-        public static bool HasAccessTo(this BlogPost post, string userId, bool isAdmin = false)
+        public static bool HasAccessTo(this Article article, string userId, bool isAdmin = false)
         {
             if (isAdmin) return true;
             
-            if (post.Draft)
+            if (article.Draft)
             {
-                if (post.AuthorId == userId) return true;
+                if (article.AuthorId == userId) return true;
 
                 return false;
             }

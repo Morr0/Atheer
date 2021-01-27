@@ -4,10 +4,10 @@ namespace Atheer.ViewComponents
 {
     public class ArticleEditLinkModel
     {
-        public ArticleEditLinkModel(BlogPost post, string userId)
+        public ArticleEditLinkModel(Article article, string userId)
         {
-            CreatedYear = post.CreatedYear;
-            TitleShrinked = post.TitleShrinked;
+            CreatedYear = article.CreatedYear;
+            TitleShrinked = article.TitleShrinked;
             UserId = userId;
         }
         

@@ -1,6 +1,6 @@
 ﻿namespace Atheer.Controllers.Queries
 {
-    public class BlogPostEditQuery
+    public class ArticleEditQuery
     {
         public int CreatedYear { get; set; }
         public string TitleShrinked { get; set; }

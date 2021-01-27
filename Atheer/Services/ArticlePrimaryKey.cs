@@ -2,14 +2,14 @@
 
 namespace Atheer.Services
 {
-    public class BlogPostPrimaryKey
+    public class ArticlePrimaryKey
     {
-        public BlogPostPrimaryKey()
+        public ArticlePrimaryKey()
         {
             
         }
 
-        public BlogPostPrimaryKey(int createdYear, string titleShrinked)
+        public ArticlePrimaryKey(int createdYear, string titleShrinked)
         {
             CreatedYear = createdYear;
             TitleShrinked = titleShrinked;

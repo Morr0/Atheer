@@ -15,23 +15,23 @@ namespace Atheer.Utilities
         
         private void TakeCareOfViewModels()
         {
-            // Post
-            TakeCareOfPostToFromPostEditVm();
+            // Article
+            TakeCareOfArticleToFromArticleEditVm();
             
             // User
             CreateMap<RegisterViewModel, User>();
         }
 
-        private void TakeCareOfPostToFromPostEditVm()
+        private void TakeCareOfArticleToFromArticleEditVm()
         {
-            CreateMap<BlogPostEditViewModel, BlogPost>()
+            CreateMap<ArticleEditViewModel, Article>()
                 .ForMember(dest => dest.Topics, opts =>
                 {
                     opts.MapFrom(src 
                         => src.TopicsAsString.Split(',', StringSplitOptions.TrimEntries).ToList());
                 });
 
-            CreateMap<BlogPost, BlogPostEditViewModel>()
+            CreateMap<Article, ArticleEditViewModel>()
                 .ForMember(dest => dest.TopicsAsString, opts =>
                 {
                     opts.MapFrom(src => String.Join(',', src.Topics));

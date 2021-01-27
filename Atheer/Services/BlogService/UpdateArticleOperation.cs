@@ -1,6 +1,6 @@
 ﻿namespace Atheer.Services.BlogService
 {
-    internal enum UpdateBlogPostOperation : byte
+    internal enum UpdateArticleOperation : byte
     {
         UpdateLikes,
         UpdateShares

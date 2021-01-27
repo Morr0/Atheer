@@ -2,7 +2,7 @@
 @using Atheer.ViewComponents
 @using Atheer.Controllers
 @inject MarkdownPipeline MarkdownPipeline
-@model BlogPost
+@model Article
 @{
     ViewData["Title"] = Model.Title;
     string content = Markdown.ToHtml(Model.Content, MarkdownPipeline);

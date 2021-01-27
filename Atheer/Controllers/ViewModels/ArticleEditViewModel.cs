@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Atheer.Controllers.ViewModels
 {
-    public class BlogPostEditViewModel
+    public class ArticleEditViewModel
     {
         public int CreatedYear { get; set; }
         public string TitleShrinked { get; set; }

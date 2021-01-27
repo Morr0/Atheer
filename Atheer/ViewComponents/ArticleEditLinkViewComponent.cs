@@ -8,11 +8,11 @@ namespace Atheer.ViewComponents
 {
     public class ArticleEditLinkViewComponent : ViewComponent
     {
-        private readonly IBlogPostService _postService;
+        private readonly IArticleService _articleService;
 
-        public ArticleEditLinkViewComponent(IBlogPostService postService)
+        public ArticleEditLinkViewComponent(IArticleService articleService)
         {
-            _postService = postService;
+            _articleService = articleService;
         }
         
         public async Task<IViewComponentResult> InvokeAsync(ArticleEditLinkModel model)
@@ -22,8 +22,8 @@ namespace Atheer.ViewComponents
                 return Content(string.Empty);
             }
 
-            var key = new BlogPostPrimaryKey(model.CreatedYear, model.TitleShrinked);
-            if (!(await _postService.AuthorizedFor(key, model.UserId).ConfigureAwait(false)))
+            var key = new ArticlePrimaryKey(model.CreatedYear, model.TitleShrinked);
+            if (!(await _articleService.AuthorizedFor(key, model.UserId).ConfigureAwait(false)))
             {
                 if (!User.IsInRole(UserRoles.AdminRole)) return Content(string.Empty);
             }

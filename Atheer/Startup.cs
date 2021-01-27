@@ -39,18 +39,18 @@ namespace Atheer
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-            services.AddSingleton<BlogPostFactory>();
+            services.AddSingleton<ArticleFactory>();
             services.AddSingleton<UserFactory>();
             
             services.AddSingleton<MarkdownPipeline>(
                 provider => new MarkdownPipelineBuilder().UseAdvancedExtensions().UseBootstrap().Build());
 
             // Repositories
-            services.AddSingleton<BlogPostRepository>();
+            services.AddSingleton<ArticleRepository>();
             services.AddSingleton<UserRepository>();
 
             // Services
-            services.AddScoped<IBlogPostService, BlogPostService>();
+            services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserSessionsService, UserSessionsService>();
 

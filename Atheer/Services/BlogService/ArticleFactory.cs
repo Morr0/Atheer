@@ -6,27 +6,27 @@ using AutoMapper;
 
 namespace Atheer.Services.BlogService
 {
-    public sealed class BlogPostFactory
+    public sealed class ArticleFactory
     {
         private readonly IMapper _mapper;
 
-        public BlogPostFactory(IMapper mapper)
+        public ArticleFactory(IMapper mapper)
         {
             _mapper = mapper;
         }
 
-        public BlogPost Create(ref BlogPostEditViewModel postViewModel, string userId)
+        public Article Create(ref ArticleEditViewModel articleViewModel, string userId)
         {
-            var post = _mapper.Map<BlogPost>(postViewModel);
+            var article = _mapper.Map<Article>(articleViewModel);
 
-            post.AuthorId = userId;
+            article.AuthorId = userId;
 
             var date = DateTime.UtcNow;
-            post.CreatedYear = date.Year;
-            post.TitleShrinked = GetShrinkedTitle(postViewModel.Title);
-            post.CreationDate = date.ToString();
+            article.CreatedYear = date.Year;
+            article.TitleShrinked = GetShrinkedTitle(articleViewModel.Title);
+            article.CreationDate = date.ToString();
 
-            return post;
+            return article;
         }
 
         private string GetShrinkedTitle(string title)

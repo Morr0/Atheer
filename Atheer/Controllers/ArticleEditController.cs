@@ -11,16 +11,16 @@ using Microsoft.Extensions.Logging;
 
 namespace Atheer.Controllers
 {
-    // Used for both editing/adding new posts
+    // Used for both editing/adding new articles
     [Authorize(Roles = UserRoles.EditorRole)]
     [Route("Article/Edit")]
     public class ArticleEditController : Controller
     {
         private ILogger<ArticleEditController> _logger;
-        private IBlogPostService _service;
+        private IArticleService _service;
         private readonly IMapper _mapper;
 
-        public ArticleEditController(ILogger<ArticleEditController> logger, IBlogPostService service
+        public ArticleEditController(ILogger<ArticleEditController> logger, IArticleService service
         , IMapper mapper)
         {
             _logger = logger;
@@ -29,36 +29,36 @@ namespace Atheer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index([FromQuery] BlogPostPrimaryKey key)
+        public async Task<IActionResult> Index([FromQuery] ArticlePrimaryKey key)
         {
-            BlogPost post = null;
-            if (IsNewPost(key.TitleShrinked))
+            Article article = null;
+            if (IsNewArticle(key.TitleShrinked))
             {
-                post = new BlogPost();
+                article = new Article();
             }
             else
             {
-                post = await _service.GetSpecific(key).ConfigureAwait(false);
-                if (post is null) return Redirect("/");
+                article = await _service.GetSpecific(key).ConfigureAwait(false);
+                if (article is null) return Redirect("/");
 
-                if (User.FindFirst(AuthenticationController.CookieUserId)?.Value != post.AuthorId)
+                if (User.FindFirst(AuthenticationController.CookieUserId)?.Value != article.AuthorId)
                 {
                     if (!User.IsInRole(UserRoles.AdminRole)) return Forbid();
                 }
             }
 
-            var dto = _mapper.Map<BlogPostEditViewModel>(post);
+            var dto = _mapper.Map<ArticleEditViewModel>(article);
             return View("ArticleEdit", dto);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromForm] string button, [FromForm] BlogPostEditViewModel postViewModel)
+        public async Task<IActionResult> Post([FromForm] string button, [FromForm] ArticleEditViewModel articleViewModel)
         {
-            var key = new BlogPostPrimaryKey(postViewModel.CreatedYear, postViewModel.TitleShrinked);
+            var key = new ArticlePrimaryKey(articleViewModel.CreatedYear, articleViewModel.TitleShrinked);
             switch (button)
             {
                 case "Checkout":
-                    return await Checkout(key, postViewModel).ConfigureAwait(false);
+                    return await Checkout(key, articleViewModel).ConfigureAwait(false);
                 case "Page":
                     return VisitPage(ref key);
                 case "Delete":
@@ -68,19 +68,19 @@ namespace Atheer.Controllers
             }
         }
         
-        private async Task<IActionResult> Checkout(BlogPostPrimaryKey key, BlogPostEditViewModel postViewModel)
+        private async Task<IActionResult> Checkout(ArticlePrimaryKey key, ArticleEditViewModel articleViewModel)
         {
             string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
-_logger.LogInformation(postViewModel.TopicsAsString);
-            if (!ModelState.IsValid) return View("ArticleEdit", postViewModel);
+_logger.LogInformation(articleViewModel.TopicsAsString);
+            if (!ModelState.IsValid) return View("ArticleEdit", articleViewModel);
             
             // ADD
-            if (IsNewPost(postViewModel.TitleShrinked))
+            if (IsNewArticle(articleViewModel.TitleShrinked))
             {
-                key = new BlogPostPrimaryKey(postViewModel.CreatedYear, postViewModel.TitleShrinked);
-                await _service.AddPost(postViewModel, userId).ConfigureAwait(false);
-                return RedirectToAction("Index", "Article", new BlogPostPrimaryKey(
-                    postViewModel.CreatedYear, postViewModel.TitleShrinked));
+                key = new ArticlePrimaryKey(articleViewModel.CreatedYear, articleViewModel.TitleShrinked);
+                await _service.Add(articleViewModel, userId).ConfigureAwait(false);
+                return RedirectToAction("Index", "Article", new ArticlePrimaryKey(
+                    articleViewModel.CreatedYear, articleViewModel.TitleShrinked));
             }
 
             if (!(await _service.AuthorizedFor(key, userId).ConfigureAwait(false)))
@@ -89,17 +89,17 @@ _logger.LogInformation(postViewModel.TopicsAsString);
             }
             
             // UPDATE
-            await _service.Update(postViewModel).ConfigureAwait(false);
-            TempData["Info"] = "Updated post successfully";
+            await _service.Update(articleViewModel).ConfigureAwait(false);
+            TempData["Info"] = "Updated article successfully";
             return RedirectToAction("Index", "ArticleEdit", key);
         }
 
-        private IActionResult VisitPage(ref BlogPostPrimaryKey key)
+        private IActionResult VisitPage(ref ArticlePrimaryKey key)
         {
             return RedirectToAction("Index", "Article", key);
         }
 
-        private async Task<IActionResult> Delete(BlogPostPrimaryKey key)
+        private async Task<IActionResult> Delete(ArticlePrimaryKey key)
         {
             if (await _service.GetSpecific(key).ConfigureAwait(false) is null) return Redirect("/");
          
@@ -113,7 +113,7 @@ _logger.LogInformation(postViewModel.TopicsAsString);
             return Redirect("/");
         }
 
-        private bool IsNewPost(string titleShrinked)
+        private bool IsNewArticle(string titleShrinked)
         {
             return string.IsNullOrEmpty(titleShrinked);
         }

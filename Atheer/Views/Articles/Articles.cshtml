@@ -16,15 +16,15 @@
 <h6 class="text-dark">
 @if (Model.SpecificYear)
 {
-    @Model.Year @Html.Raw(" Posts") 
+    @Model.Year @Html.Raw(" Articles") 
 }
 else
 {
-    @Html.Raw("Latest Posts")
+    @Html.Raw("Latest Articles")
 }
 </h6>
 
-@foreach (var post in Model.Posts)
+@foreach (var post in Model.Articles)
 {
     string dateStr = post.CreationDate.Split()[0];
     

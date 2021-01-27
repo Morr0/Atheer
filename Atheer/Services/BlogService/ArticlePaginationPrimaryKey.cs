@@ -1,6 +1,6 @@
 ﻿namespace Atheer.Services.BlogService
 {
-    public class PostsPaginationPrimaryKey
+    public class ArticlePaginationPrimaryKey
     {
         // The hash key
         public string X_AthBlog_Last_Year { get; set; }

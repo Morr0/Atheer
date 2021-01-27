@@ -9,28 +9,28 @@ namespace Atheer.Controllers
     [ApiController]
     public class ArticleApiController : ControllerBase
     {
-        private readonly IBlogPostService _service;
+        private readonly IArticleService _service;
 
-        public ArticleApiController(IBlogPostService service)
+        public ArticleApiController(IArticleService service)
         {
             _service = service;
         }
         
         [HttpPost("like")]
-        public async Task<IActionResult> Like([FromQuery] BlogPostPrimaryKey key)
+        public async Task<IActionResult> Like([FromQuery] ArticlePrimaryKey key)
         {
-            var post = await _service.GetSpecific(key).ConfigureAwait(false);
-            if (post is null) return BadRequest();
+            var article = await _service.GetSpecific(key).ConfigureAwait(false);
+            if (article is null) return BadRequest();
 
             await _service.Like(key).ConfigureAwait(false);
             return Ok();
         }
         
         [HttpPost("share")]
-        public async Task<IActionResult> Share([FromQuery] BlogPostPrimaryKey key)
+        public async Task<IActionResult> Share([FromQuery] ArticlePrimaryKey key)
         {
-            var post = await _service.GetSpecific(key).ConfigureAwait(false);
-            if (post is null) return BadRequest();
+            var article = await _service.GetSpecific(key).ConfigureAwait(false);
+            if (article is null) return BadRequest();
 
             await _service.Share(key).ConfigureAwait(false);
             return Ok();
