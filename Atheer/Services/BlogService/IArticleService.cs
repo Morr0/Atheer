@@ -14,12 +14,10 @@ namespace Atheer.Services.BlogService
 
         Task<Article> GetSpecific(ArticlePrimaryKey primaryKey);
         
-        Task<Article> Like(ArticlePrimaryKey primaryKey);
-        Task<Article> Share(ArticlePrimaryKey primaryKey);
+        Task Like(ArticlePrimaryKey primaryKey);
+        Task Share(ArticlePrimaryKey primaryKey);
 
         Task Delete(ArticlePrimaryKey key);
-
-        Task<Article> Update(ArticlePrimaryKey key, Article newArticle);
         Task Add(ArticleEditViewModel articleEditViewModel, string userId);
         Task Update(ArticleEditViewModel article);
 

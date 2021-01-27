@@ -3,74 +3,122 @@ using System.Linq;
 using System.Threading.Tasks;
 using Atheer.Controllers.ViewModels;
 using Atheer.Models;
+using Atheer.Repositories;
 using Atheer.Repositories.Blog;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace Atheer.Services.BlogService
 {
     public class ArticleService : IArticleService
     {
-        private readonly ArticleRepository _repository;
+        // private readonly ArticleRepository _repository;
         private readonly IMapper _mapper;
         private readonly ArticleFactory _factory;
+        private readonly Data _context;
 
-        public ArticleService(ArticleRepository repository, IMapper mapper, ArticleFactory factory)
+        public ArticleService(ArticleRepository repository, IMapper mapper, ArticleFactory factory, Data data)
         {
-            _repository = repository;
+            // _repository = repository;
             _mapper = mapper;
             _factory = factory;
+            _context = data;
         }
 
         public async Task<ArticleResponse> Get(int amount, ArticlePaginationPrimaryKey paginationHeader = null,
             string userId = null)
         {
-            var response = await _repository.GetMany(amount, paginationHeader, false).ConfigureAwait(false);
-            response.Articles = response.Articles.Where(article => article.HasAccessTo(userId)).ToList();
-            return response;
+            // TODO implement user.HasAccess
+            var list = await _context.Article.AsNoTracking()
+                .Where(x => x.Unlisted == false && x.Draft == false)
+                .Take(amount)
+                .ToListAsync().ConfigureAwait(false);
+            return new ArticleResponse(amount)
+            {
+                Articles = list
+            };
+            
+            // var response = await _repository.GetMany(amount, paginationHeader, false).ConfigureAwait(false);
+            // response.Articles = response.Articles.Where(article => article.HasAccessTo(userId)).ToList();
+            // return response;
         }
 
         public async Task<ArticleResponse> GetByYear(int year, int amount, 
             ArticlePaginationPrimaryKey paginationHeader = null, string userId = null)
         {
-            var response = await _repository.GetMany(year, amount, 
-                paginationHeader, false).ConfigureAwait(false);
-            response.Articles = response.Articles.Where(article => article.HasAccessTo(userId)).ToList();
-            return response;
+            // TODO implement user.HasAccess
+            var list = await _context.Article.AsNoTracking()
+                .Where(x => x.CreatedYear == year && x.Unlisted == false && x.Draft == false)
+                .Take(amount)
+                .ToListAsync().ConfigureAwait(false);
+            return new ArticleResponse(amount)
+            {
+                Articles = list
+            };
+            
+            // var response = await _repository.GetMany(year, amount, 
+            //     paginationHeader, false).ConfigureAwait(false);
+            // response.Articles = response.Articles.Where(article => article.HasAccessTo(userId)).ToList();
+            // return response;
         }
 
-        public Task<Article> GetSpecific(ArticlePrimaryKey primaryKey)
+        public async Task<Article> GetSpecific(ArticlePrimaryKey primaryKey)
         {
-            return _repository.Get(primaryKey);
+            // TODO implement user.HasAccess
+            return await _context.Article.AsNoTracking()
+                .FirstOrDefaultAsync(x =>
+                    x.CreatedYear == primaryKey.CreatedYear && x.TitleShrinked == primaryKey.TitleShrinked)
+                .ConfigureAwait(false);
+
+            // return _repository.Get(primaryKey);
         }
 
-        public Task<Article> Like(ArticlePrimaryKey primaryKey)
+        public async Task Like(ArticlePrimaryKey primaryKey)
         {
-            return UpdateRecord(primaryKey, UpdateArticleOperation.UpdateLikes);
+            var article = await _context.Article.FirstOrDefaultAsync(x =>
+                x.CreatedYear == primaryKey.CreatedYear && x.TitleShrinked == primaryKey.TitleShrinked).ConfigureAwait(false);
+            
+            article.Likes++;
+
+            _context.Entry(article).Property(x => x.Likes).IsModified = true;
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+
+            // return UpdateRecord(primaryKey, UpdateArticleOperation.UpdateLikes);
         }
 
-        public Task<Article> Share(ArticlePrimaryKey primaryKey)
+        public async Task Share(ArticlePrimaryKey primaryKey)
         {
-            return UpdateRecord(primaryKey, UpdateArticleOperation.UpdateShares);
+            var article = await _context.Article.FirstOrDefaultAsync(x =>
+                x.CreatedYear == primaryKey.CreatedYear && x.TitleShrinked == primaryKey.TitleShrinked).ConfigureAwait(false);
+            
+            article.Shares++;
+
+            _context.Entry(article).Property(x => x.Shares).IsModified = true;
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+
+            // return UpdateRecord(primaryKey, UpdateArticleOperation.UpdateShares);
         }
 
-        private Task<Article> UpdateRecord(ArticlePrimaryKey primaryKey, UpdateArticleOperation operation)
-        {
-            string propertyToIncrement =
-                operation == UpdateArticleOperation.UpdateLikes ? nameof(Article.Likes) : nameof(Article.Shares);
-            string conditionProperty =
-                operation == UpdateArticleOperation.UpdateLikes ? nameof(Article.Likeable) : nameof(Article.Shareable);
+        // private Task<Article> UpdateRecord(ArticlePrimaryKey primaryKey, UpdateArticleOperation operation)
+        // {
+        //     string propertyToIncrement =
+        //         operation == UpdateArticleOperation.UpdateLikes ? nameof(Article.Likes) : nameof(Article.Shares);
+        //     string conditionProperty =
+        //         operation == UpdateArticleOperation.UpdateLikes ? nameof(Article.Likeable) : nameof(Article.Shareable);
+        //
+        //     return _repository.IncrementSpecificPropertyIf(primaryKey, propertyToIncrement, conditionProperty);
+        // }
 
-            return _repository.IncrementSpecificPropertyIf(primaryKey, propertyToIncrement, conditionProperty);
-        }
-
-        public Task Delete(ArticlePrimaryKey key)
+        public async Task Delete(ArticlePrimaryKey key)
         {
-            return _repository.Delete(key);
-        }
+            // TODO implement user.HasAccess
+            var article = await _context.Article.FirstOrDefaultAsync(x =>
+                    x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked)
+                .ConfigureAwait(false);
+            _context.Article.Remove(article);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
 
-        public Task<Article> Update(ArticlePrimaryKey key, Article newArticle)
-        {
-            return _repository.Update(key, newArticle);
+            // return _repository.Delete(key);
         }
 
         public async Task Add(ArticleEditViewModel articleEditViewModel, string userId)
@@ -89,7 +137,10 @@ namespace Atheer.Services.BlogService
             articleEditViewModel.CreatedYear = article.CreatedYear;
             articleEditViewModel.TitleShrinked = article.TitleShrinked = titleShrinked;
 
-            await _repository.Add(article).ConfigureAwait(false);
+            await _context.Article.AddAsync(article).ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+
+            // await _repository.Add(article).ConfigureAwait(false);
         }
 
         private string RandomiseExistingShrinkedTitle(ref string existingTitleShrinked)
@@ -97,19 +148,26 @@ namespace Atheer.Services.BlogService
             return $"{existingTitleShrinked}-";
         }
 
-        public async Task Update(ArticleEditViewModel article)
+        public async Task Update(ArticleEditViewModel articleEditViewModel)
         {
-            var key = new ArticlePrimaryKey(article.CreatedYear, article.TitleShrinked);
-            var oldArticle = await GetSpecific(key).ConfigureAwait(false);
-            var newArticle = _mapper.Map(article, oldArticle);
+            // TODO Check everything good here?
+            var key = new ArticlePrimaryKey(articleEditViewModel.CreatedYear, articleEditViewModel.TitleShrinked);
             
-            newArticle.LastUpdatedDate = DateTime.UtcNow.ToString();
+            var article = await _context.Article.FirstOrDefaultAsync(x =>
+                x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked).ConfigureAwait(false);
+            
+            _mapper.Map(articleEditViewModel, article);
+            article.LastUpdatedDate = DateTime.UtcNow.ToString();
 
-            await _repository.Update(newArticle).ConfigureAwait(false);
+            // _context.Article.Update(article);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+
+            // await _repository.Update(newArticle).ConfigureAwait(false);
         }
 
         public async Task<bool> AuthorizedFor(ArticlePrimaryKey key, string userId)
         {
+            // TODO Rexamine what's going on here
             var article = await GetSpecific(key).ConfigureAwait(false);
             if (article is null) return false;
 
