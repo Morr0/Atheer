@@ -18,6 +18,9 @@
         // Separated by comma
         public string Roles { get; set; }
 
+        public bool Verified { get; set; }
+        public string VerificationDate { get; set; }
+
         public string FullName() => $"{FirstName} {LastName}";
     }
 }

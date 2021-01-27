@@ -5,10 +5,7 @@ namespace Atheer.Models
     // WHENEVER YOU UPDATE HERE, UPDATE THE MAPPER AS WELL AS THE MAPPING METHODS
     public class Article
     {
-        // Partition key
         public int CreatedYear { get; set; }
-
-        // Range key, e.g. this-is-a-title <- replace spaces with - and lower case everything
         public string TitleShrinked { get; set; }
 
         public string AuthorId { get; set; }
@@ -40,8 +37,7 @@ namespace Atheer.Models
         // Not to be listed however can be accessed
         public bool Unlisted { get; set; }
 
-        public bool Contactable { get; set; }
-        
         public bool Scheduled { get; set; }
+        public string ScheduledSinceDate { get; set; }
     }
 }

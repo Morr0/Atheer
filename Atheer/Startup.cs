@@ -12,10 +12,9 @@ using Markdig;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace Atheer
@@ -46,6 +45,10 @@ namespace Atheer
                 provider => new MarkdownPipelineBuilder().UseAdvancedExtensions().UseBootstrap().Build());
 
             // Repositories
+            services.AddDbContext<Data>(opts =>
+            {
+                opts.UseNpgsql(Configuration.GetConnectionString("MainPostgres"));
+            });
             services.AddSingleton<ArticleRepository>();
             services.AddSingleton<UserRepository>();
 
