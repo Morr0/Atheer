@@ -38,8 +38,10 @@ namespace Atheer.Controllers
             }
             else
             {
-                article = await _service.GetSpecific(key).ConfigureAwait(false);
-                if (article is null) return Redirect("/");
+                var vm = await _service.GetSpecific(key).ConfigureAwait(false);
+                if (vm is null) return Redirect("/");
+                
+                article = vm.Article;
 
                 if (User.FindFirst(AuthenticationController.CookieUserId)?.Value != article.AuthorId)
                 {

@@ -14,13 +14,15 @@ namespace Atheer.Services.ArticlesService
     {
         // private readonly ArticleRepository _repository;
         private readonly IMapper _mapper;
-        private readonly ArticleFactory _factory;
+        private readonly ArticleFactory _articleFactory;
+        private readonly TagFactory _tagFactory;
         private readonly Data _context;
 
-        public ArticleService(IMapper mapper, ArticleFactory factory, Data data)
+        public ArticleService(IMapper mapper, ArticleFactory articleFactory, TagFactory tagFactory,Data data)
         {
             _mapper = mapper;
-            _factory = factory;
+            _articleFactory = articleFactory;
+            _tagFactory = tagFactory;
             _context = data;
         }
 
@@ -52,13 +54,24 @@ namespace Atheer.Services.ArticlesService
             };
         }
 
-        public async Task<Article> GetSpecific(ArticlePrimaryKey primaryKey)
+        public async Task<ArticleViewModel> GetSpecific(ArticlePrimaryKey key)
         {
             // TODO implement user.HasAccess
-            return await _context.Article.AsNoTracking()
+            var article = await _context.Article.AsNoTracking()
                 .FirstOrDefaultAsync(x =>
-                    x.CreatedYear == primaryKey.CreatedYear && x.TitleShrinked == primaryKey.TitleShrinked)
+                    x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked)
                 .ConfigureAwait(false);
+            if (article is null) return null;
+            
+            var tags = await (from ta in _context.TagArticle
+                    join t in _context.Tag on ta.TagId equals t.Id
+                    where 
+                        ta.ArticleCreatedYear == key.CreatedYear &&
+                        ta.ArticleTitleShrinked == key.TitleShrinked
+                    select t
+                ).ToListAsync().ConfigureAwait(false);
+
+            return new ArticleViewModel(article, tags);
         }
 
         public async Task Like(ArticlePrimaryKey primaryKey)
@@ -106,7 +119,7 @@ namespace Atheer.Services.ArticlesService
 
         public async Task Add(ArticleEditViewModel articleEditViewModel, string userId)
         { 
-            var article = _factory.Create(ref articleEditViewModel, userId);
+            var article = _articleFactory.Create(ref articleEditViewModel, userId);
             string titleShrinked = article.TitleShrinked;
             
             // Check that no other article has same titleShrinked, else generate a new titleShrinked
@@ -148,7 +161,7 @@ namespace Atheer.Services.ArticlesService
                 x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked).ConfigureAwait(false);
             
             _mapper.Map(articleEditViewModel, article);
-            _factory.SetUpdated(ref article);
+            _articleFactory.SetUpdated(ref article);
 
             await using var transaction = await _context.Database.BeginTransactionAsync().ConfigureAwait(false);
             try
@@ -169,7 +182,7 @@ namespace Atheer.Services.ArticlesService
             var article = await GetSpecific(key).ConfigureAwait(false);
             if (article is null) return false;
 
-            return article.AuthorId == userId;
+            return article.Article.AuthorId == userId;
         }
     }
 }

@@ -24,11 +24,10 @@ namespace Atheer.Controllers
         public async Task<IActionResult> Index([FromRoute] ArticlePrimaryKey route)
         {
             var article = await _service.GetSpecific(route).ConfigureAwait(false);
+            if (article is null) return Redirect("/");
             
             string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
-            if (!article.HasAccessTo(userId, isAdmin: User.IsInRole(UserRoles.AdminRole))) return Forbid();
-            
-            if (article is null) return Redirect("/");
+            if (!article.Article.HasAccessTo(userId, isAdmin: User.IsInRole(UserRoles.AdminRole))) return Forbid();
 
             return View("Article", article);
         }

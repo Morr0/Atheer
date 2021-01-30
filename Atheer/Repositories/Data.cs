@@ -11,6 +11,8 @@ namespace Atheer.Repositories
         }
         
         public DbSet<Article> Article { get; set; }
+        public DbSet<Tag> Tag { get; set; }
+        public DbSet<TagArticle> TagArticle { get; set; }
         
         public DbSet<User> User { get; set; }
 
@@ -34,7 +36,7 @@ namespace Atheer.Repositories
             modelBuilder.Entity<TagArticle>()
                 .HasOne(tt => tt.Tag)
                 .WithMany(t => t.Tags)
-                .HasForeignKey(nameof(TagArticle.TagId));
+                .HasForeignKey(nameof(Models.TagArticle.TagId));
             modelBuilder.Entity<TagArticle>()
                 .HasOne(ta => ta.Article)
                 .WithMany(a => a.Tags)

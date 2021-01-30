@@ -2,56 +2,57 @@
 @using Atheer.ViewComponents
 @using Atheer.Controllers
 @inject MarkdownPipeline MarkdownPipeline
-@model Article
+@model Atheer.Controllers.ViewModels.ArticleViewModel
 @{
-    ViewData["Title"] = Model.Title;
-    string content = Model.Content is null ? "" : Markdown.ToHtml(Model.Content, MarkdownPipeline);
+    var article = Model.Article;
+    ViewData["Title"] = article.Title;
+    string content = article.Content is null ? "" : Markdown.ToHtml(article.Content, MarkdownPipeline);
 
-    string topics = Model.Topics is null ? "" : String.Join(',', Model.Topics);
+    string topics = article.Topics is null ? "" : String.Join(',', article.Topics);
     
-    string dateStr = Model.CreationDate.Split('T')[0];
+    string dateStr = article.CreationDate.Split('T')[0];
 
     string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
 }
 
 <div class="container">
     <div class="card-header">
-        <h2 class="text-dark">@Model.Title</h2>
+        <h2 class="text-dark">@article.Title</h2>
         
-        @if (Model.AuthorId == userId)
+        @if (article.AuthorId == userId)
         {
             <span class="text-info">Mine</span>
         }
         
-        @if (Model.Draft)
+        @if (article.Draft)
         {
             <span class="text-info">Draft</span>
         }
-        @if (Model.Unlisted)
+        @if (article.Unlisted)
         {
             <span class="text-info">Unlisted</span>
         }
         
         @await Component.InvokeAsync("ArticleEditLink",
-            new ArticleEditLinkModel(Model, @User.FindFirst(AuthenticationController.CookieUserId)?.Value))
+            new ArticleEditLinkModel(article, @User.FindFirst(AuthenticationController.CookieUserId)?.Value))
         <h6 class="card-subtitle">@dateStr Topics: @topics</h6>
-        <p class="card-text">@Model.Description</p>
+        <p class="card-text">@article.Description</p>
     </div>
     <div class="card-body">
         <div class="h-di"></div>
         @Html.Raw(content)
     </div>
     <div class="card-footer">
-        @if (Model.Likeable)
+        @if (article.Likeable)
         {
-            <label id="likes" for="like">@Model.Likes.ToString() Likes | </label>
+            <label id="likes" for="like">@article.Likes.ToString() Likes | </label>
             <button type="button" class="btn btn-outline-secondary" id="like" value="Like"
-                    onclick="like(@Model.CreatedYear.ToString(), '@Model.TitleShrinked')">Like</button>
+                    onclick="like(@article.CreatedYear.ToString(), '@article.TitleShrinked')">Like</button>
         }
-        @if (Model.Shareable)
+        @if (article.Shareable)
         {
             <button type="button" class="btn btn-outline-secondary" id="share" value="Share"
-                    onclick="share(@Model.CreatedYear.ToString(), '@Model.TitleShrinked')">Share</button>
+                    onclick="share(@article.CreatedYear.ToString(), '@article.TitleShrinked')">Share</button>
         }
         <span class="text-info" id="shareInfo"></span>
     </div>

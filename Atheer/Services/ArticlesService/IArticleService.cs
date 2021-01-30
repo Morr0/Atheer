@@ -10,7 +10,7 @@ namespace Atheer.Services.ArticlesService
 
         Task<ArticleResponse> GetByYear(int year, int amount, string userId = null);
 
-        Task<Article> GetSpecific(ArticlePrimaryKey primaryKey);
+        Task<ArticleViewModel> GetSpecific(ArticlePrimaryKey primaryKey);
         
         Task Like(ArticlePrimaryKey primaryKey);
         Task Share(ArticlePrimaryKey primaryKey);
