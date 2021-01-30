@@ -5,9 +5,9 @@
 @model Article
 @{
     ViewData["Title"] = Model.Title;
-    string content = Markdown.ToHtml(Model.Content, MarkdownPipeline);
+    string content = Model.Content is null ? "" : Markdown.ToHtml(Model.Content, MarkdownPipeline);
 
-    var topics = String.Join(',', Model.Topics);
+    string topics = Model.Topics is null ? "" : String.Join(',', Model.Topics);
     
     string dateStr = Model.CreationDate.Split('T')[0];
 
