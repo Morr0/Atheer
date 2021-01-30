@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Threading.Tasks;
 using Atheer.Controllers.ViewModels;
+using Atheer.Exceptions;
 using Atheer.Extensions;
 using Atheer.Models;
 using Atheer.Repositories;
@@ -31,8 +32,19 @@ namespace Atheer.Services.UsersService
             var user = _factory.Create(registerViewModel);
             user.Id = await GetIdUntilVacancyExists(user.Id).ConfigureAwait(false);
 
-            await _context.User.AddAsync(user).ConfigureAwait(false);
-            await _context.SaveChangesAsync();
+            await using var transaction = await _context.Database.BeginTransactionAsync().ConfigureAwait(false);
+            try
+            {
+                await _context.User.AddAsync(user).ConfigureAwait(false);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+                await transaction.CommitAsync().ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                // TODO log transaction error
+                throw new FailedOperationException();
+            }
+            
         }
 
         // Will generate a new id until one is non-already existent

@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Atheer.Controllers.ViewModels;
+using Atheer.Exceptions;
 using Atheer.Models;
 using Atheer.Repositories;
 using AutoMapper;
@@ -87,8 +89,19 @@ namespace Atheer.Services.ArticlesService
             var article = await _context.Article.FirstOrDefaultAsync(x =>
                     x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked)
                 .ConfigureAwait(false);
-            _context.Article.Remove(article);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+
+            await using var transaction = await _context.Database.BeginTransactionAsync().ConfigureAwait(false);
+            try
+            {
+                _context.Article.Remove(article);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+                await transaction.CommitAsync().ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                // TODO log failed transaction
+                throw new FailedOperationException();
+            }
         }
 
         public async Task Add(ArticleEditViewModel articleEditViewModel, string userId)
@@ -107,8 +120,18 @@ namespace Atheer.Services.ArticlesService
             articleEditViewModel.CreatedYear = article.CreatedYear;
             articleEditViewModel.TitleShrinked = article.TitleShrinked = titleShrinked;
 
-            await _context.Article.AddAsync(article).ConfigureAwait(false);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+            await using var transaction = await _context.Database.BeginTransactionAsync().ConfigureAwait(false);
+            try
+            {
+                await _context.Article.AddAsync(article).ConfigureAwait(false);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+                await transaction.CommitAsync().ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                // TODO log failed transaction
+                throw new FailedOperationException();
+            }
         }
 
         private string RandomiseExistingShrinkedTitle(ref string existingTitleShrinked)
@@ -126,8 +149,18 @@ namespace Atheer.Services.ArticlesService
             
             _mapper.Map(articleEditViewModel, article);
             _factory.SetUpdated(ref article);
-            
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+
+            await using var transaction = await _context.Database.BeginTransactionAsync().ConfigureAwait(false);
+            try
+            {
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+                await transaction.CommitAsync().ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                // TODO log failed transaction
+                throw new FailedOperationException();
+            }
         }
 
         public async Task<bool> AuthorizedFor(ArticlePrimaryKey key, string userId)

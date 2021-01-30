@@ -70,6 +70,7 @@ namespace Atheer.Controllers
         
         private async Task<IActionResult> Checkout(ArticlePrimaryKey key, ArticleEditViewModel articleViewModel)
         {
+            // TODO handle FailedOperationException
             string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
 _logger.LogInformation(articleViewModel.TopicsAsString);
             if (!ModelState.IsValid) return View("ArticleEdit", articleViewModel);
@@ -101,6 +102,7 @@ _logger.LogInformation(articleViewModel.TopicsAsString);
 
         private async Task<IActionResult> Delete(ArticlePrimaryKey key)
         {
+            // TODO handle FailedOperationException
             if (await _service.GetSpecific(key).ConfigureAwait(false) is null) return Redirect("/");
          
             string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;

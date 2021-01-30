@@ -37,6 +37,7 @@ namespace Atheer.Controllers
         [HttpPost("/Register")]
         public async Task<IActionResult> Register([FromForm] RegisterViewModel registerView)
         {
+            // TODO Handle FailedOperationException
             if (User.Identity?.IsAuthenticated == true) return Redirect("/");
             
             try
