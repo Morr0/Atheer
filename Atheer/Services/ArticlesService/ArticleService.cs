@@ -103,11 +103,16 @@ namespace Atheer.Services.ArticlesService
             var article = await _context.Article.FirstOrDefaultAsync(x =>
                     x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked)
                 .ConfigureAwait(false);
+            
+            var associatedTagArticles = await _context.TagArticle.AsNoTracking().Where(x =>
+                    x.ArticleCreatedYear == article.CreatedYear && x.ArticleTitleShrinked == article.TitleShrinked)
+                .ToListAsync().ConfigureAwait(false);
 
             await using var transaction = await _context.Database.BeginTransactionAsync().ConfigureAwait(false);
+
             try
             {
-                // TODO take care of deleting tagArticles associated with this
+                _context.TagArticle.RemoveRange(associatedTagArticles);
                 _context.Article.Remove(article);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 await transaction.CommitAsync().ConfigureAwait(false);
