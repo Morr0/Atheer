@@ -9,7 +9,7 @@
 
     var topics = String.Join(',', Model.Topics);
     
-    string dateStr = Model.CreationDate.Split()[0];
+    string dateStr = Model.CreationDate.Split('T')[0];
 
     string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
 }
@@ -44,14 +44,14 @@
     <div class="card-footer">
         @if (Model.Likeable)
         {
-            <label id="likes" for="like">@Model.Likes Likes | </label>
+            <label id="likes" for="like">@Model.Likes.ToString() Likes | </label>
             <button type="button" class="btn btn-outline-secondary" id="like" value="Like"
-                    onclick="like(@Model.CreatedYear, '@Model.TitleShrinked')">Like</button>
+                    onclick="like(@Model.CreatedYear.ToString(), '@Model.TitleShrinked')">Like</button>
         }
         @if (Model.Shareable)
         {
             <button type="button" class="btn btn-outline-secondary" id="share" value="Share"
-                    onclick="share(@Model.CreatedYear, '@Model.TitleShrinked')">Share</button>
+                    onclick="share(@Model.CreatedYear.ToString(), '@Model.TitleShrinked')">Share</button>
         }
         <span class="text-info" id="shareInfo"></span>
     </div>

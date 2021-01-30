@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using Atheer.Controllers.ViewModels;
+using Atheer.Extensions;
 using Atheer.Models;
 using AutoMapper;
 
@@ -24,9 +25,14 @@ namespace Atheer.Services.ArticlesService
             var date = DateTime.UtcNow;
             article.CreatedYear = date.Year;
             article.TitleShrinked = GetShrinkedTitle(articleViewModel.Title);
-            article.CreationDate = date.ToString();
+            article.CreationDate = date.GetString();
 
             return article;
+        }
+
+        public void SetUpdated(ref Article article)
+        {
+            article.LastUpdatedDate = DateTime.UtcNow.GetString();
         }
 
         private string GetShrinkedTitle(string title)

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Atheer.Controllers.ViewModels;
 using Atheer.Models;
@@ -29,6 +28,7 @@ namespace Atheer.Services.ArticlesService
             var list = await _context.Article.AsNoTracking()
                 .Where(x => x.Unlisted == false && x.Draft == false)
                 .Take(amount)
+                .OrderByDescending(x => x.CreationDate)
                 .ToListAsync().ConfigureAwait(false);
             return new ArticleResponse(amount)
             {
@@ -42,6 +42,7 @@ namespace Atheer.Services.ArticlesService
             var list = await _context.Article.AsNoTracking()
                 .Where(x => x.CreatedYear == year && x.Unlisted == false && x.Draft == false)
                 .Take(amount)
+                .OrderByDescending(x => x.CreationDate)
                 .ToListAsync().ConfigureAwait(false);
             return new ArticleResponse(amount)
             {
@@ -124,7 +125,7 @@ namespace Atheer.Services.ArticlesService
                 x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked).ConfigureAwait(false);
             
             _mapper.Map(articleEditViewModel, article);
-            article.LastUpdatedDate = DateTime.UtcNow.ToString();
+            _factory.SetUpdated(ref article);
             
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }

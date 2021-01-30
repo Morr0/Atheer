@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Threading.Tasks;
 using Atheer.Controllers.ViewModels;
+using Atheer.Extensions;
 using Atheer.Models;
 using Atheer.Repositories;
 using Atheer.Services.UsersService.Exceptions;
@@ -64,7 +65,7 @@ namespace Atheer.Services.UsersService
 
         public async Task SetLogin(string id)
         {
-            var time = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture);
+            var time = DateTime.UtcNow.GetString();
 
             var user = await _context.User.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             _context.Entry(user).Property(x => x.DateLastLoggedIn).IsModified = true;

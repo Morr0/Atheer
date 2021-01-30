@@ -1,5 +1,6 @@
 ﻿using System;
 using Atheer.Controllers.ViewModels;
+using Atheer.Extensions;
 using Atheer.Models;
 using AutoMapper;
 using Crypt = BCrypt.Net.BCrypt;
@@ -23,7 +24,7 @@ namespace Atheer.Services.UsersService
 
             user.Id = Id(user.Email);
 
-            user.DateCreated = DateTime.UtcNow.ToString();
+            user.DateCreated = DateTime.UtcNow.GetString();
 
             user.PasswordHash = HashPassword(registerViewModel.Password);
 
@@ -55,7 +56,7 @@ namespace Atheer.Services.UsersService
 
         public string AnotherId(string id)
         {
-            return $"{id}-{DateTime.UtcNow.Minute}";
+            return $"{id}-{DateTime.UtcNow.Minute.ToString()}";
         }
     }
 }

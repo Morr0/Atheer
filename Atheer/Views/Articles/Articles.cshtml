@@ -16,7 +16,7 @@
 <h6 class="text-dark">
 @if (Model.SpecificYear)
 {
-    @Model.Year @Html.Raw(" Articles") 
+    @Model.Year.ToString() @Html.Raw(" Articles") 
 }
 else
 {
@@ -26,14 +26,14 @@ else
 
 @foreach (var post in Model.Articles)
 {
-    string dateStr = post.CreationDate.Split()[0];
+    string dateStr = post.CreationDate.Split('T')[0];
     
     <div class="card">
         <div class="card-body">
             <div class="card-title">
                 <h5>
                     <a class="text-dark" asp-controller="Article" asp-action="Index"
-                       asp-route-CreatedYear="@post.CreatedYear" asp-route-TitleShrinked="@post.TitleShrinked">
+                       asp-route-CreatedYear="@post.CreatedYear.ToString()" asp-route-TitleShrinked="@post.TitleShrinked">
                         @post.Title
                     </a>
                 </h5>
