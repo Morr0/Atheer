@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Atheer.Models
 {
@@ -39,5 +40,8 @@ namespace Atheer.Models
 
         public bool Scheduled { get; set; }
         public string ScheduledSinceDate { get; set; }
+        
+        [JsonIgnore] 
+        public IList<TagArticle> Tags { get; set; }
     }
 }

@@ -39,6 +39,7 @@ namespace Atheer
 
             services.AddSingleton<ArticleFactory>();
             services.AddSingleton<UserFactory>();
+            services.AddSingleton<TagFactory>();
             
             services.AddSingleton<MarkdownPipeline>(
                 provider => new MarkdownPipelineBuilder().UseAdvancedExtensions().UseBootstrap().Build());

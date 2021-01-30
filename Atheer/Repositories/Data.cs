@@ -18,6 +18,31 @@ namespace Atheer.Repositories
         {
             ConfigureArticleModel(modelBuilder);
             ConfigureUserModel(modelBuilder);
+            ConfigureTagsModels(modelBuilder);
+        }
+
+        private void ConfigureTagsModels(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TagArticle>()
+                .HasKey(x => new
+                {
+                    x.TagId,
+                    x.ArticleCreatedYear,
+                    x.ArticleTitleShrinked
+                });
+
+            modelBuilder.Entity<TagArticle>()
+                .HasOne(tt => tt.Tag)
+                .WithMany(t => t.Tags)
+                .HasForeignKey(nameof(TagArticle.TagId));
+            modelBuilder.Entity<TagArticle>()
+                .HasOne(ta => ta.Article)
+                .WithMany(a => a.Tags)
+                .HasForeignKey(x => new
+                {
+                    x.ArticleCreatedYear,
+                    x.ArticleTitleShrinked
+                });
         }
 
         private void ConfigureUserModel(ModelBuilder modelBuilder)
