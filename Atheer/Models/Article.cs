@@ -22,8 +22,6 @@ namespace Atheer.Models
 
         public string LastUpdatedDate { get; set; }
 
-        public List<string> Topics { get; set; }
-
         public bool Likeable { get; set; }
 
         public int Likes { get; set; }

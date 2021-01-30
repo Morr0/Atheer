@@ -24,18 +24,8 @@ namespace Atheer.Utilities
 
         private void TakeCareOfArticleToFromArticleEditVm()
         {
-            CreateMap<ArticleEditViewModel, Article>()
-                .ForMember(dest => dest.Topics, opts =>
-                {
-                    opts.MapFrom(src 
-                        => src.TopicsAsString.Split(',', StringSplitOptions.TrimEntries).ToList());
-                });
-
-            CreateMap<Article, ArticleEditViewModel>()
-                .ForMember(dest => dest.TopicsAsString, opts =>
-                {
-                    opts.MapFrom(src => String.Join(',', src.Topics));
-                });
+            CreateMap<ArticleEditViewModel, Article>();
+            CreateMap<Article, ArticleEditViewModel>();
         }
     }
 }

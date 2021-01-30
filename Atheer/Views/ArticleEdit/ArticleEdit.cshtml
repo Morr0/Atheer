@@ -22,9 +22,9 @@
 
         @*Requires a custom validator
         TODO validate list*@
-        <label for="TopicsAsString">Topics (CSV): </label>
-        <input type="text" name="TopicsAsString" id="TopicsAsString" value="@Model.TopicsAsString" class="form-control" />
-        <span asp-validation-for="TopicsAsString" class="text-danger"></span>
+        <label for="Tags">Topics (CSV): </label>
+        <input type="text" name="TagsAsString" id="Tags" value="@Model.TagsAsString" class="form-control" />
+        <span asp-validation-for="TagsAsString" class="text-danger"></span>
 
         <label for="Description">Description: </label>
         <input type="text" name="Description" id="Description" value="@Model.Description" class="form-control"/>

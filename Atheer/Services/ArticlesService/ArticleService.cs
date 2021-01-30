@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Atheer.Controllers.ViewModels;
@@ -106,6 +107,7 @@ namespace Atheer.Services.ArticlesService
             await using var transaction = await _context.Database.BeginTransactionAsync().ConfigureAwait(false);
             try
             {
+                // TODO take care of deleting tagArticles associated with this
                 _context.Article.Remove(article);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 await transaction.CommitAsync().ConfigureAwait(false);
@@ -124,6 +126,7 @@ namespace Atheer.Services.ArticlesService
             
             // Check that no other article has same titleShrinked, else generate a new titleShrinked
             var key = new ArticlePrimaryKey(article.CreatedYear, titleShrinked);
+            // TODO inefficency: check for necessaries only
             while ((await GetSpecific(key).ConfigureAwait(false)) is not null)
             {
                 titleShrinked = RandomiseExistingShrinkedTitle(ref titleShrinked);
@@ -134,9 +137,19 @@ namespace Atheer.Services.ArticlesService
             articleEditViewModel.TitleShrinked = article.TitleShrinked = titleShrinked;
 
             await using var transaction = await _context.Database.BeginTransactionAsync().ConfigureAwait(false);
+            
+            // Article
+            await _context.Article.AddAsync(article).ConfigureAwait(false);
+
+            // Tag
+            var tagsTitles = articleEditViewModel.TagsAsString.Split(',');
+            var tags = await AddTagsToContextIfDontExist(tagsTitles).ConfigureAwait(false);
+
+            // TagArticle
+            await CreateTagArticles(article, tags).ConfigureAwait(false);
+                
             try
             {
-                await _context.Article.AddAsync(article).ConfigureAwait(false);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 await transaction.CommitAsync().ConfigureAwait(false);
             }
@@ -145,6 +158,33 @@ namespace Atheer.Services.ArticlesService
                 // TODO log failed transaction
                 throw new FailedOperationException();
             }
+        }
+
+        private async Task CreateTagArticles(Article article, IList<Tag> tags)
+        {
+            foreach (var tag in tags)
+            {
+                await _context.TagArticle.AddAsync(new TagArticle(tag, article)).ConfigureAwait(false);
+            }
+        }
+
+        private async Task<IList<Tag>> AddTagsToContextIfDontExist(IList<string> tagsTitles)
+        {
+            var list = new List<Tag>(tagsTitles.Count);
+            foreach (var title in tagsTitles)
+            {
+                string id = _tagFactory.GetId(title);
+                var tag = await _context.Tag.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
+                if (tag is null)
+                {
+                    tag = _tagFactory.CreateTag(title);
+                    await _context.Tag.AddAsync(tag).ConfigureAwait(false);
+                }
+
+                list.Add(tag);
+            }
+
+            return list;
         }
 
         private string RandomiseExistingShrinkedTitle(ref string existingTitleShrinked)
@@ -164,6 +204,14 @@ namespace Atheer.Services.ArticlesService
             _articleFactory.SetUpdated(ref article);
 
             await using var transaction = await _context.Database.BeginTransactionAsync().ConfigureAwait(false);
+            
+            // Tag
+            var tagsTitles = articleEditViewModel.TagsAsString.Split(',');
+            var tags = await AddTagsToContextIfDontExist(tagsTitles).ConfigureAwait(false);
+
+            // TagArticle
+            await AddTagArticlesIfNotPresent(article, tags).ConfigureAwait(false);
+                
             try
             {
                 await _context.SaveChangesAsync().ConfigureAwait(false);
@@ -173,6 +221,24 @@ namespace Atheer.Services.ArticlesService
             {
                 // TODO log failed transaction
                 throw new FailedOperationException();
+            }
+        }
+
+        private async Task AddTagArticlesIfNotPresent(Article article, IList<Tag> tags)
+        {
+            // TODO take care of editing tags, removing old ones
+            
+            foreach (var tag in tags)
+            {
+                var ta = await _context.TagArticle.FirstOrDefaultAsync(
+                    x => x.TagId == tag.Id &&
+                    x.ArticleCreatedYear == article.CreatedYear &&
+                    x.ArticleTitleShrinked == article.TitleShrinked).ConfigureAwait(false);
+
+                if (ta is null)
+                {
+                    await _context.TagArticle.AddAsync(new TagArticle(tag, article)).ConfigureAwait(false);
+                }
             }
         }
 

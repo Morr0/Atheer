@@ -8,7 +8,7 @@
     ViewData["Title"] = article.Title;
     string content = article.Content is null ? "" : Markdown.ToHtml(article.Content, MarkdownPipeline);
 
-    string topics = article.Topics is null ? "" : String.Join(',', article.Topics);
+    string tags = String.Join(',', Model.Tags);
     
     string dateStr = article.CreationDate.Split('T')[0];
 
@@ -35,7 +35,7 @@
         
         @await Component.InvokeAsync("ArticleEditLink",
             new ArticleEditLinkModel(article, @User.FindFirst(AuthenticationController.CookieUserId)?.Value))
-        <h6 class="card-subtitle">@dateStr Topics: @topics</h6>
+        <h6 class="card-subtitle">@dateStr Topics: @tags</h6>
         <p class="card-text">@article.Description</p>
     </div>
     <div class="card-body">

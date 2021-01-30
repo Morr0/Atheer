@@ -74,7 +74,7 @@ namespace Atheer.Controllers
         {
             // TODO handle FailedOperationException
             string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
-_logger.LogInformation(articleViewModel.TopicsAsString);
+_logger.LogInformation(articleViewModel.TagsAsString);
             if (!ModelState.IsValid) return View("ArticleEdit", articleViewModel);
             
             // ADD

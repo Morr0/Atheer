@@ -17,12 +17,11 @@ namespace Atheer.Controllers.ViewModels
         [MinLength(3)]
         public string Content { get; set; }
         [Required] 
-        public string TopicsAsString { get; set; }
+        public string TagsAsString { get; set; }
 
         public bool Likeable { get; set; }
         public bool Shareable { get; set; }
         public bool Draft { get; set; }
         public bool Unlisted { get; set; }
-        public string LastUpdatedDate { get; set; }
     }
 }
