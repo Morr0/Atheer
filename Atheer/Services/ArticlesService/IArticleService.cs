@@ -6,11 +6,8 @@ namespace Atheer.Services.ArticlesService
 {
     public interface IArticleService
     {
-        Task<ArticleResponse> Get(int amount, string userId = null);
-
-        Task<ArticleResponse> GetByYear(int year, int amount, string userId = null);
-
-        Task<ArticleViewModel> GetSpecific(ArticlePrimaryKey primaryKey);
+        Task<ArticleResponse> Get(int amount, int createdYear = 0, string userId = null);
+        Task<ArticleViewModel> Get(ArticlePrimaryKey primaryKey, string userId = null);
         
         Task Like(ArticlePrimaryKey primaryKey);
         Task Share(ArticlePrimaryKey primaryKey);

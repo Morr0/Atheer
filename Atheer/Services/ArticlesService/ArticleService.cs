@@ -27,43 +27,38 @@ namespace Atheer.Services.ArticlesService
             _context = data;
         }
 
-        public async Task<ArticleResponse> Get(int amount, string userId = null)
+        public async Task<ArticleResponse> Get(int amount, int createdYear = 0, string userId = null)
         {
-            // TODO implement user.HasAccess
-            var list = await _context.Article.AsNoTracking()
-                .Where(x => x.Unlisted == false && x.Draft == false)
-                .Take(amount)
-                .OrderByDescending(x => x.CreationDate)
-                .ToListAsync().ConfigureAwait(false);
+            var queryable = _context.Article.AsNoTracking();
+
+            queryable = userId is null
+                ? queryable.Where(x => x.Unlisted == false && x.Draft == false)
+                // Get what for the user otherwise get publicly listed
+                : queryable.Where(x =>
+                    x.AuthorId == userId || (x.AuthorId != userId && x.Unlisted == false && x.Draft == false));
+
+            if (createdYear != 0) queryable = queryable.Where(x => x.CreatedYear == createdYear);
+
+            queryable = queryable.Take(amount)
+                .OrderByDescending(x => x.CreationDate);
+
+            var list = await queryable.ToListAsync().ConfigureAwait(false);
             return new ArticleResponse(amount)
             {
                 Articles = list
             };
         }
 
-        public async Task<ArticleResponse> GetByYear(int year, int amount, string userId = null)
-        {
-            // TODO implement user.HasAccess
-            var list = await _context.Article.AsNoTracking()
-                .Where(x => x.CreatedYear == year && x.Unlisted == false && x.Draft == false)
-                .Take(amount)
-                .OrderByDescending(x => x.CreationDate)
-                .ToListAsync().ConfigureAwait(false);
-            return new ArticleResponse(amount)
-            {
-                Articles = list
-            };
-        }
-
-        public async Task<ArticleViewModel> GetSpecific(ArticlePrimaryKey key)
+        public async Task<ArticleViewModel> Get(ArticlePrimaryKey key, string userId = null)
         {
             // TODO implement user.HasAccess
             var article = await _context.Article.AsNoTracking()
-                .FirstOrDefaultAsync(x =>
-                    x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked)
+                .FirstOrDefaultAsync(x => x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked)
                 .ConfigureAwait(false);
-            if (article is null) return null;
             
+            if (article is null) return null;
+            if (article.Draft && article.AuthorId != userId) return null;
+
             var tags = await (from ta in _context.TagArticle
                     join t in _context.Tag on ta.TagId equals t.Id
                     where 
@@ -132,7 +127,7 @@ namespace Atheer.Services.ArticlesService
             // Check that no other article has same titleShrinked, else generate a new titleShrinked
             var key = new ArticlePrimaryKey(article.CreatedYear, titleShrinked);
             // TODO inefficency: check for necessaries only
-            while ((await GetSpecific(key).ConfigureAwait(false)) is not null)
+            while ((await Get(key).ConfigureAwait(false)) is not null)
             {
                 titleShrinked = RandomiseExistingShrinkedTitle(ref titleShrinked);
                 key.TitleShrinked = titleShrinked;
@@ -250,7 +245,7 @@ namespace Atheer.Services.ArticlesService
         public async Task<bool> AuthorizedFor(ArticlePrimaryKey key, string userId)
         {
             // TODO Rexamine what's going on here
-            var article = await GetSpecific(key).ConfigureAwait(false);
+            var article = await Get(key).ConfigureAwait(false);
             if (article is null) return false;
 
             return article.Article.AuthorId == userId;

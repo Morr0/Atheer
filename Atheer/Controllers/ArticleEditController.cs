@@ -38,7 +38,9 @@ namespace Atheer.Controllers
             }
             else
             {
-                var vm = await _service.GetSpecific(key).ConfigureAwait(false);
+                string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+                
+                var vm = await _service.Get(key, userId).ConfigureAwait(false);
                 if (vm is null) return Redirect("/");
                 
                 article = vm.Article;
@@ -105,9 +107,9 @@ _logger.LogInformation(articleViewModel.TagsAsString);
         private async Task<IActionResult> Delete(ArticlePrimaryKey key)
         {
             // TODO handle FailedOperationException
-            if (await _service.GetSpecific(key).ConfigureAwait(false) is null) return Redirect("/");
-         
             string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            if (await _service.Get(key, userId).ConfigureAwait(false) is null) return Redirect("/");
+         
             if (!(await _service.AuthorizedFor(key, userId).ConfigureAwait(false)))
             {
                 if (!User.IsInRole(UserRoles.AdminRole)) return Forbid();

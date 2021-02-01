@@ -21,14 +21,13 @@ namespace Atheer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index([FromRoute] ArticlePrimaryKey route)
+        public async Task<IActionResult> Index([FromRoute] ArticlePrimaryKey key)
         {
-            var article = await _service.GetSpecific(route).ConfigureAwait(false);
+            string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            
+            var article = await _service.Get(key, userId).ConfigureAwait(false);
             if (article is null) return Redirect("/");
             
-            string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
-            if (!article.Article.HasAccessTo(userId, isAdmin: User.IsInRole(UserRoles.AdminRole))) return Forbid();
-
             return View("Article", article);
         }
     }

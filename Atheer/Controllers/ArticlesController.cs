@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Atheer.Controllers.Queries;
 using Atheer.Controllers.ViewModels;
 using Atheer.Services.ArticlesService;
@@ -20,21 +21,19 @@ namespace Atheer.Controllers
             _service = service;
         }
 
-        public async Task<IActionResult> Index([FromQuery] YearQuery query)
+        public async Task<IActionResult> Index([FromQuery] ArticlesQuery query)
         {
             string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
 
-            bool specificYear = query.CreatedYear != 0;
-            var blogResponse = specificYear ?
-                    await _service.GetByYear(query.CreatedYear, 500, userId: userId).ConfigureAwait(false)
-                :   await _service.Get(500, userId: userId).ConfigureAwait(false);
-            if (blogResponse?.Articles is null) return Redirect("/");
+            bool specificYear = query.Year != 0;
+            var blogResponse = await _service.Get(500, query.Year, userId);
+            if (!blogResponse.Articles.Any()) return Redirect("/");
 
             var viewModel = new ArticlesViewModel
             {
                 Articles = blogResponse.Articles,
                 SpecificYear = specificYear,
-                Year = query.CreatedYear
+                Year = query.Year
             };
             return View("Articles", viewModel);
         }
