@@ -19,10 +19,8 @@
         <label for="Title">Title: </label>
         <input type="text" name="Title" id="Title" value="@Model.Title" class="form-control"/>
         <span asp-validation-for="Title" class="text-danger"></span>
-
-        @*Requires a custom validator
-        TODO validate list*@
-        <label for="Tags">Topics (CSV): </label>
+        
+        <label for="Tags">Tags (Space Separated Values): </label>
         <input type="text" name="TagsAsString" id="Tags" value="@Model.TagsAsString" class="form-control" />
         <span asp-validation-for="TagsAsString" class="text-danger"></span>
 

@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Atheer.Controllers.ViewModels;
 using Atheer.Models;
-using Atheer.Services;
 using Atheer.Services.ArticlesService;
 using Atheer.Services.UsersService;
 using AutoMapper;
@@ -32,6 +31,8 @@ namespace Atheer.Controllers
         public async Task<IActionResult> Index([FromQuery] ArticlePrimaryKey key)
         {
             Article article = null;
+            string tagsAsString = "";
+            
             if (IsNewArticle(key.TitleShrinked))
             {
                 article = new Article();
@@ -45,6 +46,8 @@ namespace Atheer.Controllers
                 
                 article = vm.Article;
 
+                tagsAsString = Tag.TagsAsString(vm.Tags);
+
                 if (User.FindFirst(AuthenticationController.CookieUserId)?.Value != article.AuthorId)
                 {
                     if (!User.IsInRole(UserRoles.AdminRole)) return Forbid();
@@ -52,6 +55,7 @@ namespace Atheer.Controllers
             }
 
             var dto = _mapper.Map<ArticleEditViewModel>(article);
+            dto.TagsAsString = tagsAsString;
             return View("ArticleEdit", dto);
         }
 
@@ -77,6 +81,8 @@ namespace Atheer.Controllers
             // TODO handle FailedOperationException
             string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
             if (!ModelState.IsValid) return View("ArticleEdit", articleViewModel);
+
+            articleViewModel.TagsAsString = articleViewModel.TagsAsString.TrimEnd();
             
             // ADD
             if (IsNewArticle(articleViewModel.TitleShrinked))

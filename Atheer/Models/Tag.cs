@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace Atheer.Models
@@ -15,5 +17,17 @@ namespace Atheer.Models
         
         [JsonIgnore] 
         public IList<TagArticle> Tags { get; set; }
+
+        public static string TagsAsString(IEnumerable<Tag> tags)
+        {
+            var sb = new StringBuilder(tags.Count());
+
+            foreach (var tag in tags)
+            {
+                sb.Append($"{tag.Title} ");
+            }
+
+            return sb.ToString().TrimEnd();
+        }
     }
 }

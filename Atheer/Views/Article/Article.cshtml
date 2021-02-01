@@ -8,7 +8,7 @@
     ViewData["Title"] = article.Title;
     string content = article.Content is null ? "" : Markdown.ToHtml(article.Content, MarkdownPipeline);
 
-    string tags = String.Join(',', Model.Tags);
+    string tags = Tag.TagsAsString(Model.Tags);
     
     string dateStr = article.CreationDate.Split('T')[0];
 
@@ -17,13 +17,15 @@
 
 <div class="container">
     <div class="card-header">
-        <h2 class="text-dark">@article.Title</h2>
+        <h6 class="card-subtitle">@tags</h6>
         
+        <h2 class="text-dark">@article.Title</h2>
+
         @if (article.AuthorId == userId)
         {
             <span class="text-info">Mine</span>
         }
-        
+
         @if (article.Draft)
         {
             <span class="text-info">Draft</span>
@@ -32,10 +34,10 @@
         {
             <span class="text-info">Unlisted</span>
         }
-        
+
         @await Component.InvokeAsync("ArticleEditLink",
             new ArticleEditLinkModel(article, @User.FindFirst(AuthenticationController.CookieUserId)?.Value))
-        <h6 class="card-subtitle">@dateStr Topics: @tags</h6>
+        <h6 class="card-subtitle text-info">@dateStr</h6>
         <p class="card-text">@article.Description</p>
     </div>
     <div class="card-body">

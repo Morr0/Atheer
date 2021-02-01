@@ -223,11 +223,11 @@ namespace Atheer.Services.ArticlesService
             await using var transaction = await _context.Database.BeginTransactionAsync().ConfigureAwait(false);
             
             // Tag
-            var tagsTitles = articleEditViewModel.TagsAsString.Split(',');
+            var tagsTitles = articleEditViewModel.TagsAsString.Split();
             var tags = await AddTagsToContextIfDontExist(tagsTitles).ConfigureAwait(false);
 
             // TagArticle
-            await AddTagArticlesIfNotPresent(article, tags).ConfigureAwait(false);
+            await UpdateTagArticles(article, tags).ConfigureAwait(false);
                 
             try
             {
@@ -241,21 +241,20 @@ namespace Atheer.Services.ArticlesService
             }
         }
 
-        private async Task AddTagArticlesIfNotPresent(Article article, IList<Tag> tags)
+        private async Task UpdateTagArticles(Article article, IList<Tag> tags)
         {
-            // TODO take care of editing tags, removing old ones
+            // Remove existing ones
+            var existingTagArticles = await _context.TagArticle
+                .Where(x => x.ArticleCreatedYear == article.CreatedYear &&
+                            x.ArticleTitleShrinked == article.TitleShrinked)
+                .ToListAsync().ConfigureAwait(false);
             
+            _context.TagArticle.RemoveRange(existingTagArticles);
+
+            // Add new ones
             foreach (var tag in tags)
             {
-                var ta = await _context.TagArticle.FirstOrDefaultAsync(
-                    x => x.TagId == tag.Id &&
-                    x.ArticleCreatedYear == article.CreatedYear &&
-                    x.ArticleTitleShrinked == article.TitleShrinked).ConfigureAwait(false);
-
-                if (ta is null)
-                {
-                    await _context.TagArticle.AddAsync(new TagArticle(tag, article)).ConfigureAwait(false);
-                }
+                await _context.TagArticle.AddAsync(new TagArticle(tag, article)).ConfigureAwait(false);
             }
         }
 
