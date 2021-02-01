@@ -49,9 +49,23 @@ namespace Atheer.Services.ArticlesService
             };
         }
 
+        public async Task<bool> Exists(ArticlePrimaryKey key, string userId = null)
+        {
+            var article = await _context.Article.AsNoTracking()
+                .Where(x => x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked)
+                .Select(x => new
+                {
+                    x.Draft,
+                    x.AuthorId
+                })
+                .FirstOrDefaultAsync().ConfigureAwait(false);
+
+            if (article is null) return false;
+            return !article.Draft || article.AuthorId == userId;
+        }
+
         public async Task<ArticleViewModel> Get(ArticlePrimaryKey key, string userId = null)
         {
-            // TODO implement user.HasAccess
             var article = await _context.Article.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked)
                 .ConfigureAwait(false);
@@ -74,6 +88,8 @@ namespace Atheer.Services.ArticlesService
         {
             var article = await _context.Article.FirstOrDefaultAsync(x =>
                 x.CreatedYear == primaryKey.CreatedYear && x.TitleShrinked == primaryKey.TitleShrinked).ConfigureAwait(false);
+
+            if (article is null) throw new InvalidOperationException();
             
             article.Likes++;
 
@@ -85,6 +101,8 @@ namespace Atheer.Services.ArticlesService
         {
             var article = await _context.Article.FirstOrDefaultAsync(x =>
                 x.CreatedYear == primaryKey.CreatedYear && x.TitleShrinked == primaryKey.TitleShrinked).ConfigureAwait(false);
+            
+            if (article is null) throw new InvalidOperationException();
             
             article.Shares++;
 

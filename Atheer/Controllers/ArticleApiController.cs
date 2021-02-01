@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Atheer.Exceptions;
 using Atheer.Services;
 using Atheer.Services.ArticlesService;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +8,6 @@ namespace Atheer.Controllers
 {
     [Route("api/article")]
     [ApiController]
-    // TODO inefficiency: should not need to see if post present
     public class ArticleApiController : ControllerBase
     {
         private readonly IArticleService _service;
@@ -20,21 +20,29 @@ namespace Atheer.Controllers
         [HttpPost("like")]
         public async Task<IActionResult> Like([FromQuery] ArticlePrimaryKey key)
         {
-            var article = await _service.Get(key).ConfigureAwait(false);
-            if (article is null) return BadRequest();
-
-            await _service.Like(key).ConfigureAwait(false);
-            return Ok();
+            try
+            {
+                await _service.Like(key).ConfigureAwait(false);
+                return Ok();
+            }
+            catch (IncorrectOperationException)
+            {
+                return BadRequest();
+            }
         }
         
         [HttpPost("share")]
         public async Task<IActionResult> Share([FromQuery] ArticlePrimaryKey key)
         {
-            var article = await _service.Get(key).ConfigureAwait(false);
-            if (article is null) return BadRequest();
-
-            await _service.Share(key).ConfigureAwait(false);
-            return Ok();
+            try
+            {
+                await _service.Share(key).ConfigureAwait(false);
+                return Ok();
+            }
+            catch (IncorrectOperationException)
+            {
+                return BadRequest();
+            }
         }
     }
 }
