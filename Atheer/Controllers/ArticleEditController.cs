@@ -76,7 +76,6 @@ namespace Atheer.Controllers
         {
             // TODO handle FailedOperationException
             string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
-_logger.LogInformation(articleViewModel.TagsAsString);
             if (!ModelState.IsValid) return View("ArticleEdit", articleViewModel);
             
             // ADD
@@ -108,8 +107,6 @@ _logger.LogInformation(articleViewModel.TagsAsString);
         {
             // TODO handle FailedOperationException
             string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
-            if (await _service.Get(key, userId).ConfigureAwait(false) is null) return Redirect("/");
-         
             if (!(await _service.AuthorizedFor(key, userId).ConfigureAwait(false)))
             {
                 if (!User.IsInRole(UserRoles.AdminRole)) return Forbid();

@@ -112,10 +112,11 @@ namespace Atheer.Services.ArticlesService
 
         public async Task Delete(ArticlePrimaryKey key)
         {
-            // TODO implement user.HasAccess
             var article = await _context.Article.FirstOrDefaultAsync(x =>
                     x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked)
                 .ConfigureAwait(false);
+
+            if (article is null) return;
             
             var associatedTagArticles = await _context.TagArticle.AsNoTracking().Where(x =>
                     x.ArticleCreatedYear == article.CreatedYear && x.ArticleTitleShrinked == article.TitleShrinked)
@@ -144,8 +145,7 @@ namespace Atheer.Services.ArticlesService
             
             // Check that no other article has same titleShrinked, else generate a new titleShrinked
             var key = new ArticlePrimaryKey(article.CreatedYear, titleShrinked);
-            // TODO inefficency: check for necessaries only
-            while ((await Get(key).ConfigureAwait(false)) is not null)
+            while (await Exists(key).ConfigureAwait(false))
             {
                 titleShrinked = RandomiseExistingShrinkedTitle(ref titleShrinked);
                 key.TitleShrinked = titleShrinked;
@@ -212,7 +212,6 @@ namespace Atheer.Services.ArticlesService
 
         public async Task Update(ArticleEditViewModel articleEditViewModel)
         {
-            // TODO Check everything good here?
             var key = new ArticlePrimaryKey(articleEditViewModel.CreatedYear, articleEditViewModel.TitleShrinked);
             
             var article = await _context.Article.FirstOrDefaultAsync(x =>
@@ -262,7 +261,6 @@ namespace Atheer.Services.ArticlesService
 
         public async Task<bool> AuthorizedFor(ArticlePrimaryKey key, string userId)
         {
-            // TODO Rexamine what's going on here
             var article = await Get(key).ConfigureAwait(false);
             if (article is null) return false;
 
