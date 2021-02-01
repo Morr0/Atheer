@@ -1,15 +1,4 @@
 ﻿@model Atheer.ViewComponents.ArticleEditLinkModel
 
-@{
-    bool CanEdit()
-    {
-        // TODO fill logic here with user roles
-        return true;
-    }
-}
-
-@if (CanEdit())
-{
-    <a asp-controller="ArticleEdit" asp-action="Index" 
-       asp-route-CreatedYear="@Model.CreatedYear" asp-route-TitleShrinked="@Model.TitleShrinked">Edit</a>
-}
+<a asp-controller="ArticleEdit" asp-action="Index" 
+   asp-route-CreatedYear="@Model.CreatedYear" asp-route-TitleShrinked="@Model.TitleShrinked">Edit</a>

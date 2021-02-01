@@ -8,6 +8,7 @@ using Atheer.Models;
 using Atheer.Repositories;
 using Atheer.Services.UsersService.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Atheer.Services.UsersService
 {
@@ -15,11 +16,13 @@ namespace Atheer.Services.UsersService
     {
         private readonly UserFactory _factory;
         private readonly Data _context;
+        private readonly ILogger<UserService> _logger;
 
-        public UserService(UserFactory factory, Data data)
+        public UserService(UserFactory factory, Data data, ILogger<UserService> logger)
         {
             _factory = factory;
             _context = data;
+            _logger = logger;
         }
         
         public async Task Add(RegisterViewModel registerViewModel)
@@ -39,9 +42,9 @@ namespace Atheer.Services.UsersService
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 await transaction.CommitAsync().ConfigureAwait(false);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                // TODO log transaction error
+                _logger.LogError(e.Message);
                 throw new FailedOperationException();
             }
             

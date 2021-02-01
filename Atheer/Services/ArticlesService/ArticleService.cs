@@ -8,6 +8,7 @@ using Atheer.Models;
 using Atheer.Repositories;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Atheer.Services.ArticlesService
 {
@@ -18,13 +19,15 @@ namespace Atheer.Services.ArticlesService
         private readonly ArticleFactory _articleFactory;
         private readonly TagFactory _tagFactory;
         private readonly Data _context;
+        private readonly ILogger<ArticleService> _logger;
 
-        public ArticleService(IMapper mapper, ArticleFactory articleFactory, TagFactory tagFactory,Data data)
+        public ArticleService(IMapper mapper, ArticleFactory articleFactory, TagFactory tagFactory, Data data, ILogger<ArticleService> logger)
         {
             _mapper = mapper;
             _articleFactory = articleFactory;
             _tagFactory = tagFactory;
             _context = data;
+            _logger = logger;
         }
 
         public async Task<ArticleResponse> Get(int amount, int createdYear = 0, string userId = null)
@@ -131,9 +134,9 @@ namespace Atheer.Services.ArticlesService
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 await transaction.CommitAsync().ConfigureAwait(false);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                // TODO log failed transaction
+                _logger.LogError(e.Message);
                 throw new FailedOperationException();
             }
         }
@@ -171,9 +174,9 @@ namespace Atheer.Services.ArticlesService
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 await transaction.CommitAsync().ConfigureAwait(false);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                // TODO log failed transaction
+                _logger.LogError(e.Message);
                 throw new FailedOperationException();
             }
         }
@@ -234,9 +237,9 @@ namespace Atheer.Services.ArticlesService
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 await transaction.CommitAsync().ConfigureAwait(false);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                // TODO log failed transaction
+                _logger.LogError(e.Message);
                 throw new FailedOperationException();
             }
         }

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Atheer.Controllers.ViewModels;
+using Atheer.Exceptions;
 using Atheer.Services.UsersService;
 using Atheer.Services.UsersService.Exceptions;
 using Atheer.Utilities.Config.Models;
@@ -37,14 +38,18 @@ namespace Atheer.Controllers
         [HttpPost("/Register")]
         public async Task<IActionResult> Register([FromForm] RegisterViewModel registerView)
         {
-            // TODO Handle FailedOperationException
             if (User.Identity?.IsAuthenticated == true) return Redirect("/");
-            
+
             try
             {
+                throw new FailedOperationException();
                 await _userService.Add(registerView).ConfigureAwait(false);
             }
-            catch (UserWithThisEmailAlreadyExistsException e)
+            catch (FailedOperationException)
+            {
+                return View("Register", registerView);
+            }
+            catch (UserWithThisEmailAlreadyExistsException)
             {
                 TempData["EmailsExistsError"] = "Email registered already";
                 return RedirectToAction("RegisterView", registerView);

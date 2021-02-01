@@ -1,10 +1,12 @@
 ﻿using System.Threading.Tasks;
 using Atheer.Controllers.ViewModels;
+using Atheer.Exceptions;
 using Atheer.Models;
 using Atheer.Services.ArticlesService;
 using Atheer.Services.UsersService;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -75,7 +77,7 @@ namespace Atheer.Controllers
                     return Redirect("/");
             }
         }
-        
+
         private async Task<IActionResult> Checkout(ArticlePrimaryKey key, ArticleEditViewModel articleViewModel)
         {
             // TODO handle FailedOperationException
@@ -83,7 +85,7 @@ namespace Atheer.Controllers
             if (!ModelState.IsValid) return View("ArticleEdit", articleViewModel);
 
             articleViewModel.TagsAsString = articleViewModel.TagsAsString.TrimEnd();
-            
+
             // ADD
             if (IsNewArticle(articleViewModel.TitleShrinked))
             {
@@ -97,11 +99,12 @@ namespace Atheer.Controllers
             {
                 if (!User.IsInRole(UserRoles.AdminRole)) return Forbid();
             }
-            
+
             // UPDATE
             await _service.Update(articleViewModel).ConfigureAwait(false);
             TempData["Info"] = "Updated article successfully";
             return RedirectToAction("Index", "ArticleEdit", key);
+            
         }
 
         private IActionResult VisitPage(ref ArticlePrimaryKey key)
@@ -111,15 +114,22 @@ namespace Atheer.Controllers
 
         private async Task<IActionResult> Delete(ArticlePrimaryKey key)
         {
-            // TODO handle FailedOperationException
             string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
             if (!(await _service.AuthorizedFor(key, userId).ConfigureAwait(false)))
             {
                 if (!User.IsInRole(UserRoles.AdminRole)) return Forbid();
             }
+
+            try
+            {
+                await _service.Delete(key).ConfigureAwait(false);
+                return Redirect("/");
+            }
+            catch (FailedOperationException)
+            {
+                return RedirectToAction("Index", key);
+            }
             
-            await _service.Delete(key).ConfigureAwait(false);
-            return Redirect("/");
         }
 
         private bool IsNewArticle(string titleShrinked)
