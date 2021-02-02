@@ -15,10 +15,17 @@
 <h4 class="text-dark">Login</h4>
 
 <form asp-controller="Authentication" asp-action="Login" asp-route-returnUrl="@Url." method="post">
+    
+    <div asp-validation-summary="ModelOnly"></div>
+    
     <label asp-for="EmailOrUsername"></label>
     <input asp-for="EmailOrUsername">
+    <span asp-validation-for="EmailOrUsername" class="text-danger"></span>
+    
     <label asp-for="Password"></label>
     <input asp-for="Password" type="password">
+    <span asp-validation-for="Password" class="text-danger"></span>
+    
     <button class="btn btn-outline-primary">Login</button>
 </form>
 

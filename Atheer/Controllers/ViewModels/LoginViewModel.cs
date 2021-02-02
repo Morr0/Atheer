@@ -5,9 +5,11 @@ namespace Atheer.Controllers.ViewModels
 {
     public class LoginViewModel
     {
-        [Required] 
-        [DisplayName("Email/Username")]
+        [Required, DisplayName("Email/Username"), MaxLength(128)]
         public string EmailOrUsername { get; set; }
-        [Required] public string Password { get; set; }
+        
+        private const string PasswordError = "The password must be between 8 and 32 characters";
+        [Required(ErrorMessage = PasswordError), MinLength(8, ErrorMessage = PasswordError), MaxLength(32)] 
+        public string Password { get; set; }
     }
 }
