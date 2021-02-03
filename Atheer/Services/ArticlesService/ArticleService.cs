@@ -30,9 +30,32 @@ namespace Atheer.Services.ArticlesService
             _logger = logger;
         }
 
-        public async Task<ArticleResponse> Get(int amount, int createdYear = 0, string userId = null)
+        public async Task<ArticleResponse> Get(int amount, int createdYear = 0, string tag = null, string userId = null)
         {
-            var queryable = _context.Article.AsNoTracking();
+            IQueryable<Article> queryable = null;
+            if (string.IsNullOrEmpty(tag))
+            {
+                queryable = _context.Article.AsNoTracking();
+            }
+            // Specific tag
+            else
+            {
+                queryable = from ta in _context.TagArticle.AsNoTracking()
+                    join t in _context.Tag.AsNoTracking() on ta.TagId equals t.Id
+                    join a in _context.Article.AsNoTracking() on
+                        new
+                        {
+                            ta.ArticleCreatedYear,
+                            ta.ArticleTitleShrinked
+                        } equals 
+                        new
+                        {
+                            ArticleCreatedYear = a.CreatedYear,
+                            ArticleTitleShrinked = a.TitleShrinked
+                        }
+                    where t.Id == tag
+                    select a;
+            }
 
             queryable = userId is null
                 ? queryable.Where(x => x.Unlisted == false && x.Draft == false)
@@ -77,7 +100,7 @@ namespace Atheer.Services.ArticlesService
             if (article.Draft && article.AuthorId != userId) return null;
 
             var tags = await (from ta in _context.TagArticle
-                    join t in _context.Tag on ta.TagId equals t.Id
+                    join t in _context.Tag.AsNoTracking() on ta.TagId equals t.Id
                     where 
                         ta.ArticleCreatedYear == key.CreatedYear &&
                         ta.ArticleTitleShrinked == key.TitleShrinked

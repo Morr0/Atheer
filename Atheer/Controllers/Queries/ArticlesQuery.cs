@@ -6,5 +6,8 @@ namespace Atheer.Controllers.Queries
     {
         [Range(1, int.MaxValue)]
         public int Year { get; set; }
+
+        [MinLength(1)]
+        public string Tag { get; set; }
     }
 }

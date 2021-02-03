@@ -26,7 +26,7 @@ namespace Atheer.Controllers
             string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
 
             bool specificYear = query.Year != 0;
-            var blogResponse = await _service.Get(500, query.Year, userId);
+            var blogResponse = await _service.Get(500, query.Year, query.Tag, userId);
             if (!blogResponse.Articles.Any()) return Redirect("/");
 
             var viewModel = new ArticlesViewModel
