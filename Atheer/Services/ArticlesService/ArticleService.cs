@@ -30,7 +30,8 @@ namespace Atheer.Services.ArticlesService
             _logger = logger;
         }
 
-        public async Task<ArticleResponse> Get(int amount, int createdYear = 0, string tag = null, string userId = null)
+        public async Task<ArticlesResponse> Get(int amount, int page, int createdYear = 0, string tag = null,
+            string userId = null)
         {
             IQueryable<Article> queryable = null;
             if (string.IsNullOrEmpty(tag))
@@ -65,13 +66,26 @@ namespace Atheer.Services.ArticlesService
 
             if (createdYear != 0) queryable = queryable.Where(x => x.CreatedYear == createdYear);
 
-            queryable = queryable.Take(amount)
-                .OrderByDescending(x => x.CreationDate);
+            // if (page > 1) queryable = queryable.Skip(page * amount);
+
+            int skip = amount * page;
+            queryable = queryable
+                .OrderByDescending(x => x.CreationDate)
+                .Skip(skip)
+                .Take(amount);
 
             var list = await queryable.ToListAsync().ConfigureAwait(false);
-            return new ArticleResponse(amount)
+
+            bool hasNext = await queryable.Skip(1).AnyAsync().ConfigureAwait(false);
+            bool hasPrevious = skip > 0;
+
+            return new ArticlesResponse
             {
-                Articles = list
+                Articles = list,
+                AnyNext = hasNext,
+                AnyPrevious = hasPrevious,
+                Year = createdYear,
+                CurrentPage = page
             };
         }
 

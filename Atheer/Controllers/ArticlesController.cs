@@ -12,6 +12,8 @@ namespace Atheer.Controllers
     [Route("Articles")]
     public class ArticlesController : Controller
     {
+        private static int _pageSize = 3;
+        
         private readonly ILogger<ArticlesController> _logger;
         private readonly IArticleService _service;
 
@@ -25,17 +27,10 @@ namespace Atheer.Controllers
         {
             string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
 
-            bool specificYear = query.Year != 0;
-            var blogResponse = await _service.Get(500, query.Year, query.Tag, userId);
+            var blogResponse = await _service.Get(_pageSize, query.Page, query.Year, query.Tag, userId);
             if (!blogResponse.Articles.Any()) return Redirect("/");
-
-            var viewModel = new ArticlesViewModel
-            {
-                Articles = blogResponse.Articles,
-                SpecificYear = specificYear,
-                Year = query.Year
-            };
-            return View("Articles", viewModel);
+            
+            return View("Articles", blogResponse);
         }
     }
 }

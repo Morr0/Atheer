@@ -9,5 +9,8 @@ namespace Atheer.Controllers.Queries
 
         [MinLength(1)]
         public string Tag { get; set; }
+
+        [Range(0, uint.MaxValue)]
+        public int Page { get; set; }
     }
 }

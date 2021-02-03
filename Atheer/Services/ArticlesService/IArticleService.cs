@@ -8,7 +8,8 @@ namespace Atheer.Services.ArticlesService
     {
         Task<bool> Exists(ArticlePrimaryKey key, string userId = null);
         Task<ArticleViewModel> Get(ArticlePrimaryKey primaryKey, string userId = null);
-        Task<ArticleResponse> Get(int amount, int createdYear = 0, string tag = null, string userId = null);
+        Task<ArticlesResponse> Get(int amount, int page, int createdYear = 0, string tag = null,
+            string userId = null);
         
         Task Like(ArticlePrimaryKey primaryKey);
         Task Share(ArticlePrimaryKey primaryKey);
