@@ -1,10 +1,18 @@
-﻿using Atheer.Models;
+﻿using Atheer.Controllers.ViewModels;
+using Atheer.Models;
 
 namespace Atheer.ViewComponents
 {
     public class ArticleEditLinkModel
     {
         public ArticleEditLinkModel(Article article, string userId)
+        {
+            CreatedYear = article.CreatedYear;
+            TitleShrinked = article.TitleShrinked;
+            UserId = userId;
+        }
+
+        public ArticleEditLinkModel(StrippedArticleViewModel article, string userId)
         {
             CreatedYear = article.CreatedYear;
             TitleShrinked = article.TitleShrinked;

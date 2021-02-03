@@ -31,39 +31,39 @@
     }
 </h6>
 
-@foreach (var post in Model.Articles)
+@foreach (var article in Model.Articles)
 {
-    string dateStr = post.CreationDate.Split('T')[0];
+    string dateStr = article.CreationDate.Split('T')[0];
     
     <div class="card">
         <div class="card-body">
             <div class="card-title">
                 <h5>
                     <a class="text-dark" asp-controller="Article" asp-action="Index"
-                       asp-route-CreatedYear="@post.CreatedYear.ToString()" asp-route-TitleShrinked="@post.TitleShrinked">
-                        @post.Title
+                       asp-route-CreatedYear="@article.CreatedYear.ToString()" asp-route-TitleShrinked="@article.TitleShrinked">
+                        @article.Title
                     </a>
                 </h5>
 
-                @if (post.AuthorId == userId)
+                @if (article.AuthorId == userId)
                 {
                     <span class="text-info">Mine</span>
                 }
 
-                @if (post.Draft)
+                @if (article.Draft)
                 {
                     <span class="text-info">Draft</span>
                 }
-                @if (post.Unlisted)
+                @if (article.Unlisted)
                 {
                     <span class="text-info">Unlisted</span>
                 }
 
                 @await Component.InvokeAsync("ArticleEditLink",
-                    new ArticleEditLinkModel(post, @User.FindFirst(AuthenticationController.CookieUserId)?.Value))
+                    new ArticleEditLinkModel(article, @User.FindFirst(AuthenticationController.CookieUserId)?.Value))
             </div>
             <h6 class="card-subtitle">@dateStr</h6>
-            <p class="card-text">@post.Description</p>
+            <p class="card-text">@article.Description</p>
         </div>
     </div>
 }

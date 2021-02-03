@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Atheer.Controllers.ViewModels;
 using Atheer.Models;
 using Atheer.Services.ArticlesService;
 
@@ -9,7 +10,7 @@ namespace Atheer.Services.ArticlesService
     public class ArticlesResponse
     {
         public int CurrentPage { get; set; }
-        public IList<Article> Articles { get; set; }
+        public IList<StrippedArticleViewModel> Articles { get; set; }
         public bool AnyNext { get; set; }
         public bool AnyPrevious { get; set; }
         public string TagId { get; set; }

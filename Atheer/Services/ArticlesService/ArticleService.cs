@@ -71,16 +71,24 @@ namespace Atheer.Services.ArticlesService
                     x.AuthorId == userId || (x.AuthorId != userId && x.Unlisted == false && x.Draft == false));
 
             if (createdYear != 0) queryable = queryable.Where(x => x.CreatedYear == createdYear);
-
-            // if (page > 1) queryable = queryable.Skip(page * amount);
-
+            
             int skip = amount * page;
             queryable = queryable
                 .OrderByDescending(x => x.CreationDate)
                 .Skip(skip)
                 .Take(amount);
 
-            var list = await queryable.ToListAsync().ConfigureAwait(false);
+            var list = await queryable.Select<Article, StrippedArticleViewModel>(x => new StrippedArticleViewModel
+            {
+                CreatedYear = x.CreatedYear,
+                Description = x.Description,
+                Draft = x.Draft,
+                Title = x.Title,
+                Unlisted = x.Unlisted,
+                AuthorId = x.AuthorId,
+                CreationDate = x.CreationDate,
+                TitleShrinked = x.TitleShrinked
+            }).ToListAsync().ConfigureAwait(false);
 
             bool hasNext = await queryable.Skip(1).AnyAsync().ConfigureAwait(false);
             bool hasPrevious = skip > 0;
