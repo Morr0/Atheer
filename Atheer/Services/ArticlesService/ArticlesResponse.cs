@@ -12,6 +12,8 @@ namespace Atheer.Services.ArticlesService
         public IList<Article> Articles { get; set; }
         public bool AnyNext { get; set; }
         public bool AnyPrevious { get; set; }
+        public string TagId { get; set; }
+        public string TagTitle { get; set; }
         public int Year { get; set; }
         public bool SpecificYear => Year != 0;
     }

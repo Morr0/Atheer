@@ -30,17 +30,23 @@ namespace Atheer.Services.ArticlesService
             _logger = logger;
         }
 
-        public async Task<ArticlesResponse> Get(int amount, int page, int createdYear = 0, string tag = null,
+        public async Task<ArticlesResponse> Get(int amount, int page, int createdYear = 0, string tagId = null,
             string userId = null)
         {
+            string tagTitle = null;
+
             IQueryable<Article> queryable = null;
-            if (string.IsNullOrEmpty(tag))
+            if (string.IsNullOrEmpty(tagId))
             {
                 queryable = _context.Article.AsNoTracking();
             }
             // Specific tag
             else
             {
+                tagTitle = await _context.Tag.Where(x => x.Id == tagId)
+                    .Select(x => x.Title).FirstOrDefaultAsync().ConfigureAwait(false);
+                if (tagTitle is null) return null;
+                
                 queryable = from ta in _context.TagArticle.AsNoTracking()
                     join t in _context.Tag.AsNoTracking() on ta.TagId equals t.Id
                     join a in _context.Article.AsNoTracking() on
@@ -54,7 +60,7 @@ namespace Atheer.Services.ArticlesService
                             ArticleCreatedYear = a.CreatedYear,
                             ArticleTitleShrinked = a.TitleShrinked
                         }
-                    where t.Id == tag
+                    where t.Id == tagId
                     select a;
             }
 
@@ -85,7 +91,9 @@ namespace Atheer.Services.ArticlesService
                 AnyNext = hasNext,
                 AnyPrevious = hasPrevious,
                 Year = createdYear,
-                CurrentPage = page
+                CurrentPage = page,
+                TagId = tagId,
+                TagTitle = tagTitle
             };
         }
 

@@ -12,7 +12,7 @@ namespace Atheer.Controllers
     [Route("Articles")]
     public class ArticlesController : Controller
     {
-        private static int _pageSize = 3;
+        private static int _pageSize = 10;
         
         private readonly ILogger<ArticlesController> _logger;
         private readonly IArticleService _service;
@@ -27,8 +27,8 @@ namespace Atheer.Controllers
         {
             string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
 
-            var blogResponse = await _service.Get(_pageSize, query.Page, query.Year, query.Tag, userId);
-            if (!blogResponse.Articles.Any()) return Redirect("/");
+            var blogResponse = await _service.Get(_pageSize, query.Page, query.Year, query.Tag, userId).ConfigureAwait(false);
+            if (blogResponse is null || !blogResponse.Articles.Any()) return Redirect("/");
             
             return View("Articles", blogResponse);
         }

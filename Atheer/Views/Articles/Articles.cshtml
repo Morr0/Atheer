@@ -14,14 +14,21 @@
 }
 
 <h6 class="text-dark">
-@if (Model.SpecificYear)
-{
-    @Model.Year.ToString() @Html.Raw(" Articles") 
-}
-else
-{
-    @Html.Raw("Latest Articles")
-}
+    @if (!string.IsNullOrEmpty(Model.TagTitle))
+    {
+        @Html.Raw("Tag: ")
+        @Model.TagTitle
+        <br/>
+    }
+    @if (Model.SpecificYear)
+    {
+        @Model.Year.ToString()
+        @Html.Raw(" Articles")
+    }
+    else
+    {
+        @Html.Raw("Latest Articles")
+    }
 </h6>
 
 @foreach (var post in Model.Articles)
