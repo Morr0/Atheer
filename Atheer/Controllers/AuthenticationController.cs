@@ -43,7 +43,7 @@ namespace Atheer.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromForm] LoginViewModel loginView)
+        public async Task<IActionResult> Login([FromForm] LoginViewModel loginView, [FromQuery] string returnUrl = "/")
         {
             if (!ModelState.IsValid) return RedirectToAction("LoginView");
             
@@ -58,7 +58,7 @@ namespace Atheer.Controllers
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
                         , ClaimsPrincipal(ref sessionId, ref user)).ConfigureAwait(false);
 
-                    return Redirect("/");
+                    return LocalRedirect(returnUrl);
                 }
             }
 
