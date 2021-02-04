@@ -64,6 +64,13 @@ namespace Atheer
 
                     opts.Cookie.HttpOnly = true;
                     opts.Cookie.IsEssential = true;
+
+                    opts.SlidingExpiration = true;
+                    var cookieTtl = TimeSpan.FromHours(4);
+                    opts.ExpireTimeSpan = cookieTtl;
+                    opts.Cookie.MaxAge = cookieTtl;
+                    
+                    opts.Validate();
                 });
 
             // Background services

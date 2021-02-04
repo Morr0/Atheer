@@ -36,6 +36,7 @@ namespace Atheer.Controllers
         }
         
         [HttpGet("Login")]
+        [ResponseCache(Duration = 0, NoStore = true, Location = ResponseCacheLocation.None)]
         public IActionResult LoginView()
         {
             if (User.Identity?.IsAuthenticated == true) return Redirect("/");
@@ -44,6 +45,7 @@ namespace Atheer.Controllers
         }
 
         [HttpPost("Login")]
+        [ResponseCache(Duration = 0, NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<IActionResult> Login([FromForm] LoginViewModel loginView, [FromQuery] string returnUrl = "/")
         {
             if (!ModelState.IsValid) return RedirectToAction("LoginView");
@@ -89,6 +91,7 @@ namespace Atheer.Controllers
         
         [Authorize]
         [HttpGet("Logout")]
+        [ResponseCache(Duration = 0, NoStore = true, Location = ResponseCacheLocation.None)]
         public IActionResult LogoutView()
         {
             return View("Logout");
@@ -96,6 +99,7 @@ namespace Atheer.Controllers
 
         [Authorize]
         [HttpPost("Logout")]
+        [ResponseCache(Duration = 0, NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<IActionResult> LogoutPost()
         {
             string sessionId = Request.HttpContext.User.FindFirst(CookieSessionId)?.Value;
