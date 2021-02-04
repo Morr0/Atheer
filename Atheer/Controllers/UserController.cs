@@ -42,7 +42,6 @@ namespace Atheer.Controllers
 
             try
             {
-                throw new FailedOperationException();
                 await _userService.Add(registerView).ConfigureAwait(false);
             }
             catch (FailedOperationException)

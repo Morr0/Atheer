@@ -14,7 +14,7 @@
 
 <h4 class="text-dark">Login</h4>
 
-<form asp-controller="Authentication" asp-action="Login" asp-route-returnUrl="@Url." method="post">
+<form asp-controller="Authentication" asp-action="Login" asp-route-returnUrl="@Context.Request.Query["returnUrl"]" method="post">
     
     <div asp-validation-summary="ModelOnly"></div>
     
