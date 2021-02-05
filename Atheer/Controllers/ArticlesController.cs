@@ -28,7 +28,9 @@ namespace Atheer.Controllers
             string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
 
             var blogResponse = await _service.Get(_pageSize, query.Page, query.Year, query.Tag, userId).ConfigureAwait(false);
-            if (blogResponse is null || !blogResponse.Articles.Any()) return Redirect("/");
+            
+            if (blogResponse is null) return Redirect("/");
+            if (!blogResponse.Articles.Any() && !query.Empty()) return Redirect("/");
             
             return View("Articles", blogResponse);
         }
