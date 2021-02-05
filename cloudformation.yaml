@@ -1,0 +1,77 @@
+﻿Parameters: 
+  ServerInstanceType:
+    Type: String
+    Description: The type of the EC2 instance e.g. t2.micro
+  ServerImage:
+    Type: String
+    Description: The AMI
+  ServerInstanceUserData:
+    Type: String
+    Description: The userdata (script that sets up and runs the webserver)
+  ServerInstanceStorageSize:
+    Type: Number
+    MinValue: 8
+    Default: 10
+    Description: The size in (GiB) of the instance root volume
+
+Resources:
+  ServerRole:
+    Type: AWS::IAM::Role
+    Properties: 
+      # This one makes sure this policy is for EC2 instances
+      AssumeRolePolicyDocument: 
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+      Path: /
+      # The actual policies
+      Policies: 
+        - PolicyName: ServerRolePolicies
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: 
+                  - "ssm:Describe*"
+                  - "ssm:Get*"
+                  - "ssm:List*"
+                Resource: "*"
+  ServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Server Security Group
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+  Server:
+    Type: AWS::EC2::Instance
+    DependsOn: 
+      - ServerRole
+      - ServerSecurityGroup
+    Properties:
+      BlockDeviceMappings:
+        - DeviceName: "/dev/sda1"
+          Ebs: 
+            VolumeSize: 
+              Ref: ServerInstanceStorageSize
+            VolumeType: gp3
+            DeleteOnTermination: false
+      ImageId: 
+        Ref: ServerImage
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: true
+          DeviceIndex: "0"
+          DeleteOnTermination: true
+      UserData:
+        Fn::Base64: 
+          !Ref ServerInstanceUserData
+      InstanceType: 
+        Ref: ServerInstanceType
+      
