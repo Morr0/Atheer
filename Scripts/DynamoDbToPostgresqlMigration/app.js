@@ -13,7 +13,7 @@ aws.config.update({
     const articlesSql = getSqlForTargetTableName(articles, "Article");
     const usersSql =  getSqlForTargetTableName(users, "User");
     
-    const combinedSql = `${JSON.stringify(articlesSql)}\n${JSON.stringify(usersSql)}`;
+    const combinedSql = `${articlesSql}${usersSql}`;
     fs.writeFileSync("sql.sql", combinedSql, {
         encoding: "utf8"
     });
@@ -30,11 +30,12 @@ async function getFromDynamoDBAsOrganised(client, tableName){
         
         for (const name in item){
             // Since no longer using topics
-            if (name === "Topics") continue;
+            if (name === "Topics" || name === "Topic" || name === "Contactable") continue;
             
             const attribute = item[name];
+            // Also replace ' with \' so that later SQL can parse it
+            if (attribute.S) organisedItem[name] = attribute.S.replace(/'/g, "\\'");
             
-            if (attribute.S) organisedItem[name] = attribute.S;
             else if (attribute.N) organisedItem[name] = attribute.N;
             else if (attribute.BOOL) organisedItem[name] = attribute.BOOL;
         }
@@ -56,7 +57,7 @@ function getSqlForTargetTableName(data, targetTableName){
         for (const name in record){
             names.push(`"${name}"`);
             const value = record[name];
-            values.push(`'${value}'`);
+            values.push(`E'${value}'`);
         }
         
         const commaSeparatedNames = names.join(',');
@@ -65,5 +66,6 @@ function getSqlForTargetTableName(data, targetTableName){
         statements.push(statement);
     }
     
-    return statements.join();
+    const joinedStatements = statements.join(' ');
+    return joinedStatements;
 }
