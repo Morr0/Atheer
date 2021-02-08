@@ -3,6 +3,7 @@ const aws = require("aws-sdk");
 aws.config.update({
     region: "ap-southeast-2"
 });
+const moment = require("moment");
 
 (async () => {
     const client = new aws.DynamoDB();
@@ -33,6 +34,12 @@ async function getFromDynamoDBAsOrganised(client, tableName){
             if (name === "Topics" || name === "Topic" || name === "Contactable") continue;
             
             const attribute = item[name];
+            
+            if (name === "CreationDate" || name === "LastUpdatedDate" || name === "DateCreated"){
+                organisedItem[name] = getDateToSpecificFormat(attribute.S);
+                continue;
+            }
+            
             // Also replace ' with \' so that later SQL can parse it
             if (attribute.S) organisedItem[name] = attribute.S.replace(/'/g, "\\'");
             
@@ -68,4 +75,13 @@ function getSqlForTargetTableName(data, targetTableName){
     
     const joinedStatements = statements.join(' ');
     return joinedStatements;
+}
+
+function getDateToSpecificFormat(oldFormat){
+    if (!oldFormat) return "";
+    
+    // From 18/01/2021 7:14:50 AM
+    // To 2021-01-18T07:14:50
+    const date = moment.utc(oldFormat, "DD/MM/YYYY h:m:s A");
+    return date.format("YYYY-MM-DDThh:mm:ss");
 }
