@@ -27,9 +27,9 @@
     Description: The size in (GiB) of the instance root volume
   ServerKeyName:
     Type: String
-    Description: A private key name to access the server via SSH
+    Description: A private key name to access the server via SSH. Don't include extension.
     MinLength: "1"
-    Default: "testKey.pem"
+    Default: "testKey"
 
 # TODO find an efficient way to refactor the availability zone used
 Resources:
@@ -40,6 +40,7 @@ Resources:
       CidrBlock: 10.0.0.0/16
       EnableDnsHostnames: true
       EnableDnsSupport: true
+      InstanceTenancy: default
   NetworkInternetGateway:
     Type: AWS::EC2::InternetGateway
   InternetGatewayAttachment:
@@ -98,51 +99,51 @@ Resources:
       RouteTableId: !Ref PublicRouteTable
       SubnetId: !Ref PublicSubnet
 
-  # Database
-#  DatabaseSecurityGroup:
-#    Type: AWS::EC2::SecurityGroup
-#    Properties:
-#      VpcId: !Ref Network
-#      GroupDescription: Only allow VPC in
-#      SecurityGroupIngress:
-#        - IpProtocol: tcp
-#          FromPort: 5432
-#          ToPort: 5432
-#          # from VPC only
-#          CidrIp: 10.0.0.0/16
-#  DatabaseSubnetGroup:
-#    DependsOn: 
-#      - Network
-#    Type: AWS::RDS::DBSubnetGroup
-#    Properties:
-#      DBSubnetGroupDescription: The subnet for the database
-#      SubnetIds:
-#        - !Ref PrivateSubnet
-#        - !Ref SecondPrivateSubnet
-#  Database:
-#    Type: AWS::RDS::DBInstance
-#    Properties:
-#      AllocatedStorage: 24
-#      AllowMajorVersionUpgrade: false
-#      AutoMinorVersionUpgrade: false
-#      AvailabilityZone: !Select [ 0, !GetAZs ""]
-#      BackupRetentionPeriod: 7
-#      DBInstanceClass: db.t3.micro
-#      DeleteAutomatedBackups: false
-#      DeletionProtection: true
-#      Engine: postgres
-#      EngineVersion: "12.5"
-#      # TODO switch to gp3 when supported
-#      StorageType: gp2
-#      DBInstanceIdentifier: database
-#      DBName: !Ref DBDatabaseName
-#      MasterUsername: !Ref DBRootUser
-#      MasterUserPassword: !Ref DBRootPassword
-#      Port: "5432"
-#      PubliclyAccessible: false
-#      VPCSecurityGroups:
-#        - Fn::GetAtt: [ DatabaseSecurityGroup, GroupId ]
-#      DBSubnetGroupName: !Ref DatabaseSubnetGroup
+#  Database
+  DatabaseSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref Network
+      GroupDescription: Only allow VPC in
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          # from VPC only
+          CidrIp: 10.0.0.0/16
+  DatabaseSubnetGroup:
+    DependsOn: 
+      - Network
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: The subnet for the database
+      SubnetIds:
+        - !Ref PrivateSubnet
+        - !Ref SecondPrivateSubnet
+  Database:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      AllocatedStorage: 24
+      AllowMajorVersionUpgrade: false
+      AutoMinorVersionUpgrade: false
+      AvailabilityZone: !Select [ 0, !GetAZs ""]
+      BackupRetentionPeriod: 7
+      DBInstanceClass: db.t3.micro
+      DeleteAutomatedBackups: false
+      DeletionProtection: true
+      Engine: postgres
+      EngineVersion: "12.5"
+      # TODO switch to gp3 when supported
+      StorageType: gp2
+      DBInstanceIdentifier: database
+      DBName: !Ref DBDatabaseName
+      MasterUsername: !Ref DBRootUser
+      MasterUserPassword: !Ref DBRootPassword
+      Port: "5432"
+      PubliclyAccessible: false
+      VPCSecurityGroups:
+        - Fn::GetAtt: [ DatabaseSecurityGroup, GroupId ]
+      DBSubnetGroupName: !Ref DatabaseSubnetGroup
 
   # Server
   ServerRole:
@@ -171,6 +172,11 @@ Resources:
                   - "ssm:Get*"
                   - "ssm:List*"
                 Resource: "*"
+  ServerInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties: 
+      Roles: 
+        - !Ref ServerRole
   ServerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -182,52 +188,51 @@ Resources:
         FromPort: 80
         ToPort: 80
         CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
   Server:
+    DependsOn: 
+      - Database
     Type: AWS::EC2::Instance
-#    DependsOn: 
-#      - Database
-    Properties:
-      KeyName: !Ref ServerKeyName
+    Properties: 
       BlockDeviceMappings:
         - DeviceName: "/dev/sda1"
-          Ebs: 
+          Ebs:
             VolumeSize: !Ref ServerInstanceStorageSize
             VolumeType: gp3
             DeleteOnTermination: true
+      KeyName: !Ref ServerKeyName
       ImageId: !Ref ServerImage
       InstanceType: !Ref ServerInstanceType
-      IamInstanceProfile: !Ref ServerRole
-      NetworkInterfaces:
-        - AssociatePublicIpAddress: true
-          DeleteOnTermination: true
-          DeviceIndex: "0"
-          GroupSet: 
-            - !Ref ServerSecurityGroup
-          SubnetId: !Ref PublicSubnet
-          #      UserData:
-#        !Base64 |
-#        #!/bin/bash
-#        apt-get update -y
-#        apt-get upgrade -y
-#        apt install git -y
-#        apt install tmux -y
-#        # Install dotnet - BEGIN
-#        # https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#2004-
-#        wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-#        sudo dpkg -i packages-microsoft-prod.deb
-#        sudo apt-get update -y; \
-#          sudo apt-get install -y apt-transport-https && \
-#          sudo apt-get update && \
-#          sudo apt-get install -y dotnet-sdk-5.0
-#        sudo apt-get update -y; \
-#          sudo apt-get install -y apt-transport-https && \
-#          sudo apt-get update && \
-#          sudo apt-get install -y aspnetcore-runtime-5.0
-#        ## END
-#        cd /home/ubuntu/
-#        mkdir atheer
-#        cd atheer
-#        git clone https://github.com/Morr0/Atheer .
-#        cd Atheer
-#        # Create a detached tmux session and run the website in it
-#        tmux new-session -d -s server "sudo dotnet run --environment Production"
+      IamInstanceProfile: !Ref ServerInstanceProfile
+      SubnetId: !Ref PublicSubnet
+      SecurityGroupIds:
+        - !Ref ServerSecurityGroup
+      UserData:
+        !Base64 |
+        #!/bin/bash
+        apt-get update -y
+        apt-get upgrade -y
+        apt install git -y
+        apt install tmux -y
+        # Install dotnet - BEGIN
+        # https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#2004-
+        wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+        sudo dpkg -i packages-microsoft-prod.deb
+        sudo apt-get update -y; \
+          sudo apt-get install -y apt-transport-https && \
+          sudo apt-get update && \
+          sudo apt-get install -y dotnet-sdk-5.0
+        sudo apt-get update -y; \
+          sudo apt-get install -y apt-transport-https && \
+          sudo apt-get update && \
+          sudo apt-get install -y aspnetcore-runtime-5.0
+        ## END
+        cd /home/ubuntu/
+        mkdir atheer
+        cd atheer
+        git clone https://github.com/Morr0/Atheer .
+        cd Atheer
+        # Create a detached tmux session and run the website in it
+        tmux new-session -d -s server "sudo dotnet run --environment Production"
