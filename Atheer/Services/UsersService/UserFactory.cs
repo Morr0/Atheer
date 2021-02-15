@@ -22,6 +22,7 @@ namespace Atheer.Services.UsersService
         {
             var user = _mapper.Map<User>(registerViewModel);
 
+            user.Email = user.Email.ToLowerInvariant();
             user.Id = Id(user.Email);
 
             user.DateCreated = DateTime.UtcNow.GetString();

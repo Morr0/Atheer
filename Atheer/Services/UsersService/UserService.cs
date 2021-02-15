@@ -28,7 +28,8 @@ namespace Atheer.Services.UsersService
 
         public async Task Add(RegisterViewModel registerViewModel)
         {
-            if (await EmailRegistered(registerViewModel.Email).ConfigureAwait(false))
+            string lowerCaseEmail = registerViewModel.Email.ToLowerInvariant();
+            if (await EmailRegistered(lowerCaseEmail).ConfigureAwait(false))
             {
                 throw new UserWithThisEmailAlreadyExistsException();
             }
@@ -56,8 +57,7 @@ namespace Atheer.Services.UsersService
         {
             do
             {
-                var user = await Get(id).ConfigureAwait(false);
-                if (user is null) return id;
+                if (!(await Exists(id).ConfigureAwait(false))) return id;
                 
                 id = _factory.AnotherId(id);
             } while (true);
@@ -76,7 +76,8 @@ namespace Atheer.Services.UsersService
 
         public Task<User> GetFromEmailOrUsername(string emailOrUsername)
         {
-            return Get(IsEmail(emailOrUsername) ? _factory.Id(emailOrUsername) : emailOrUsername);
+            string lowerCasedEmailOrUsername = emailOrUsername.ToLowerInvariant();
+            return Get(IsEmail(lowerCasedEmailOrUsername) ? _factory.Id(lowerCasedEmailOrUsername) : lowerCasedEmailOrUsername);
         }
 
         public async Task SetLogin(string id)
