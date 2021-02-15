@@ -5,24 +5,24 @@ namespace Atheer.ViewComponents
 {
     public class ArticleEditLinkModel
     {
-        public ArticleEditLinkModel(Article article, string userId)
+        public ArticleEditLinkModel(Article article, string currentUserId)
         {
             CreatedYear = article.CreatedYear;
             TitleShrinked = article.TitleShrinked;
-            UserId = userId;
+            CurrentUserId = currentUserId;
         }
 
-        public ArticleEditLinkModel(StrippedArticleViewModel article, string userId)
+        public ArticleEditLinkModel(StrippedArticleViewModel article, string currentUserId)
         {
             CreatedYear = article.CreatedYear;
             TitleShrinked = article.TitleShrinked;
-            UserId = userId;
+            CurrentUserId = currentUserId;
         }
         
         public int CreatedYear { get; set; }
         public string TitleShrinked { get; set; }
 
-        public string UserId { get; set; }
+        public string CurrentUserId { get; set; }
         
     }
 }

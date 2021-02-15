@@ -6,8 +6,8 @@ using Atheer.Services.ArticlesService;
 using Atheer.Services.UsersService;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Atheer.Controllers
@@ -20,22 +20,26 @@ namespace Atheer.Controllers
         private ILogger<ArticleEditController> _logger;
         private IArticleService _service;
         private readonly IMapper _mapper;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
         public ArticleEditController(ILogger<ArticleEditController> logger, IArticleService service
-        , IMapper mapper)
+        , IMapper mapper, IServiceScopeFactory serviceScopeFactory)
         {
             _logger = logger;
             _service = service;
             _mapper = mapper;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index([FromQuery] ArticlePrimaryKey key)
         {
+            bool isAdmin = User.IsInRole(UserRoles.AdminRole);
             Article article = null;
             string tagsAsString = "";
+            bool isNewArticle = IsNewArticle(key.TitleShrinked);
             
-            if (IsNewArticle(key.TitleShrinked))
+            if (isNewArticle)
             {
                 article = new Article();
             }
@@ -49,10 +53,10 @@ namespace Atheer.Controllers
                 article = vm.Article;
 
                 tagsAsString = Tag.TagsAsString(vm.Tags);
-
+                
                 if (User.FindFirst(AuthenticationController.CookieUserId)?.Value != article.AuthorId)
                 {
-                    if (!User.IsInRole(UserRoles.AdminRole)) return Forbid();
+                    if (!isAdmin) return Forbid();
                 }
             }
 
@@ -101,6 +105,25 @@ namespace Atheer.Controllers
             }
 
             // UPDATE
+            
+            // Check if updating user that it exists
+            // If user non-existent will update everything except for the author id
+            if (articleViewModel.AuthorId != articleViewModel.NewAuthorId)
+            {
+                using var scope = _serviceScopeFactory.CreateScope();
+                var userService = scope.ServiceProvider.GetService<IUserService>();
+                
+                if (!(await userService.Exists(articleViewModel.NewAuthorId).ConfigureAwait(false)))
+                {
+                    articleViewModel.NewAuthorId = articleViewModel.AuthorId;
+                    TempData["Err"] = "Author id was not updated due to selected user non-existent";
+                }
+                else
+                {
+                    articleViewModel.AuthorId = articleViewModel.NewAuthorId;
+                }
+            }
+            
             await _service.Update(articleViewModel).ConfigureAwait(false);
             TempData["Info"] = "Updated article successfully";
             return RedirectToAction("Index", "ArticleEdit", key);

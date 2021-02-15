@@ -23,7 +23,7 @@ namespace Atheer.ViewComponents
             }
 
             var key = new ArticlePrimaryKey(model.CreatedYear, model.TitleShrinked);
-            if (!(await _articleService.AuthorizedFor(key, model.UserId).ConfigureAwait(false)))
+            if (!(await _articleService.AuthorizedFor(key, model.CurrentUserId).ConfigureAwait(false)))
             {
                 if (!User.IsInRole(UserRoles.AdminRole)) return Content(string.Empty);
             }

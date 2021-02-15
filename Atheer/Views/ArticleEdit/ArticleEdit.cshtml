@@ -1,22 +1,33 @@
-﻿@model Atheer.Controllers.ViewModels.ArticleEditViewModel
+﻿@using Atheer.Services.UsersService
+@model Atheer.Controllers.ViewModels.ArticleEditViewModel
 
 @{
     bool IsNew = string.IsNullOrEmpty(Model.TitleShrinked);
+    Model.NewAuthorId = Model.AuthorId;
 
     ViewData["Title"] = IsNew ? "New" : "Edit"; 
 }
 
 <form method="post">
     <span class="text-info">@TempData["Info"]</span>
+    <span class="text-danger">@TempData["Err"]</span>
 
+    <div class="form-group">
     @if (!IsNew)
     {
         // For POST on edit 
         <input type="hidden" name="CreatedYear" id="CreatedYear" value="@Model.CreatedYear"/>
         <input type="hidden" name="TitleShrinked" id="TitleShrinked" value="@Model.TitleShrinked"/>
+        <input type="hidden" name="AuthorId" id="AuthorId" value="@Model.AuthorId"/>
+        
+        @if (User.IsInRole(UserRoles.AdminRole))
+        {
+            <label for="NewAuthorId">Author Id</label>
+            <input type="text" name="NewAuthorId" id="NewAuthorId" value="@Model.NewAuthorId" class="form-control">
+            <span asp-validation-for="NewAuthorId" class="text-danger"></span>
+        }
     }
-    <div class="form-group">
-        <label for="Title">Title: </label>
+    <label for="Title">Title: </label>
         <input type="text" name="Title" id="Title" value="@Model.Title" class="form-control"/>
         <span asp-validation-for="Title" class="text-danger"></span>
         

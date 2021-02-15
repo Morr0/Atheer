@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Atheer.Controllers.ViewModels
 {
@@ -23,5 +22,10 @@ namespace Atheer.Controllers.ViewModels
         public bool Shareable { get; set; }
         public bool Draft { get; set; }
         public bool Unlisted { get; set; }
+
+        [Required, MinLength(1)]
+        public string AuthorId { get; set; }
+        [Required, MinLength(1)]
+        public string NewAuthorId { get; set; }
     }
 }

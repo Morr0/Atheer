@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using Atheer.Controllers.ViewModels;
 using Atheer.Exceptions;
@@ -24,7 +25,7 @@ namespace Atheer.Services.UsersService
             _context = data;
             _logger = logger;
         }
-        
+
         public async Task Add(RegisterViewModel registerViewModel)
         {
             if (await EmailRegistered(registerViewModel.Email).ConfigureAwait(false))
@@ -85,6 +86,11 @@ namespace Atheer.Services.UsersService
             var user = await _context.User.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             _context.Entry(user).Property(x => x.DateLastLoggedIn).IsModified = true;
             await _context.SaveChangesAsync().ConfigureAwait(false);
+        }
+
+        public Task<bool> Exists(string userId)
+        {
+            return _context.User.AsNoTracking().Where(x => x.Id == userId).AnyAsync();
         }
 
         private bool IsEmail(string emailOrUsername)
