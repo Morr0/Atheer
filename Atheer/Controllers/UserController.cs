@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
+using Atheer.Controllers.Queries;
 using Atheer.Controllers.ViewModels;
 using Atheer.Exceptions;
+using Atheer.Services.ArticlesService;
 using Atheer.Services.UsersService;
 using Atheer.Services.UsersService.Exceptions;
 using Atheer.Utilities.Config.Models;
@@ -19,10 +21,22 @@ namespace Atheer.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
-        public IActionResult UserView([FromRoute] string userId)
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> UserView([FromRoute] string userId, [FromServices] IArticleService articleService, 
+            [FromQuery] ArticlesQuery query)
         {
-            return Redirect("/");
+            var user = await _userService.Get(userId).ConfigureAwait(false);
+            if (user is null) return NotFound();
+
+            var articlesResponse =
+                await articleService.Get(ArticlesController.PageSize, query.Page, viewerUserId: userId, specificUserId: userId).ConfigureAwait(false);
+
+            var viewModel = new UserPageViewModel
+            {
+                Articles = articlesResponse,
+                User = user
+            };
+            return View("UserPage", viewModel);
         }
         
         [HttpGet("/Register")]

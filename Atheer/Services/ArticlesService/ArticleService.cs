@@ -31,7 +31,7 @@ namespace Atheer.Services.ArticlesService
         }
 
         public async Task<ArticlesResponse> Get(int amount, int page, int createdYear = 0, string tagId = null,
-            string userId = null)
+            string viewerUserId = null, string specificUserId = null)
         {
             string tagTitle = null;
 
@@ -63,12 +63,20 @@ namespace Atheer.Services.ArticlesService
                     where t.Id == tagId
                     select a;
             }
-
-            queryable = userId is null
+            
+            queryable = string.IsNullOrEmpty(viewerUserId)
+                // Public viewing all articles
                 ? queryable.Where(x => x.Unlisted == false && x.Draft == false)
-                // Get what for the user otherwise get publicly listed
+                // Registered user viewing all articles
                 : queryable.Where(x =>
-                    x.AuthorId == userId || (x.AuthorId != userId && x.Unlisted == false && x.Draft == false));
+                    (x.AuthorId == viewerUserId) ||
+                    (x.AuthorId != viewerUserId && x.Unlisted == false && x.Draft == false));
+
+            // Viewing specific user's articles
+            if (!string.IsNullOrEmpty(specificUserId))
+            {
+                queryable = queryable.Where(x => x.AuthorId == specificUserId);
+            }
 
             if (createdYear != 0) queryable = queryable.Where(x => x.CreatedYear == createdYear);
             
