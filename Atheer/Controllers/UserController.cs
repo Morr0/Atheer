@@ -56,7 +56,10 @@ namespace Atheer.Controllers
 
             try
             {
-                await _userService.Add(registerView).ConfigureAwait(false);
+                string userId = await _userService.Add(registerView).ConfigureAwait(false);
+                
+                TempData["Info"] = "Successfully registered, please login now";
+                return Redirect($"/login?EmailOrUsername={userId}");
             }
             catch (FailedOperationException)
             {
@@ -67,9 +70,6 @@ namespace Atheer.Controllers
                 TempData["EmailsExistsError"] = "Email registered already";
                 return RedirectToAction("RegisterView", registerView);
             }
-            
-            TempData["Info"] = "Successfully registered, please login now";
-            return Redirect("/login");
         }
     }
 }

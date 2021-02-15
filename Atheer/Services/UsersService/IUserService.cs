@@ -6,7 +6,7 @@ namespace Atheer.Services.UsersService
 {
     public interface IUserService
     {
-        Task Add(RegisterViewModel registerViewModel);
+        Task<string> Add(RegisterViewModel registerViewModel);
         Task<bool> EmailRegistered(string email);
         Task<User> Get(string id);
         Task<User> GetFromEmailOrUsername(string emailOrUsername);

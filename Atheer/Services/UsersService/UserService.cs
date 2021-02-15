@@ -26,7 +26,7 @@ namespace Atheer.Services.UsersService
             _logger = logger;
         }
 
-        public async Task Add(RegisterViewModel registerViewModel)
+        public async Task<string> Add(RegisterViewModel registerViewModel)
         {
             string lowerCaseEmail = registerViewModel.Email.ToLowerInvariant();
             if (await EmailRegistered(lowerCaseEmail).ConfigureAwait(false))
@@ -49,7 +49,8 @@ namespace Atheer.Services.UsersService
                 _logger.LogError(e.Message);
                 throw new FailedOperationException();
             }
-            
+
+            return user.Id;
         }
 
         // Will generate a new id until one is non-already existent

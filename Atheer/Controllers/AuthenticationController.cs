@@ -37,11 +37,14 @@ namespace Atheer.Controllers
         
         [HttpGet("Login")]
         [ResponseCache(Duration = 0, NoStore = true, Location = ResponseCacheLocation.None)]
-        public IActionResult LoginView()
+        public IActionResult LoginView([FromQuery] string emailOrUsername)
         {
             if (User.Identity?.IsAuthenticated == true) return Redirect("/");
             
-            return View("Login");
+            return View("Login", new LoginViewModel
+            {
+                EmailOrUsername =  emailOrUsername
+            });
         }
 
         [HttpPost("Login")]
