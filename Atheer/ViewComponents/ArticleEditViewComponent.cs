@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Atheer.ViewComponents
 {
-    public class ArticleEditLinkViewComponent : ViewComponent
+    public class ArticleEditViewComponent : ViewComponent
     {
         private readonly IArticleService _articleService;
 
-        public ArticleEditLinkViewComponent(IArticleService articleService)
+        public ArticleEditViewComponent(IArticleService articleService)
         {
             _articleService = articleService;
         }

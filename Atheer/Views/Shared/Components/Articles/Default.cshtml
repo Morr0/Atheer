@@ -57,7 +57,8 @@
                     <span class="text-info">Unlisted</span>
                 }
 
-                @await Component.InvokeAsync("ArticleEditLink",
+
+                @await Component.InvokeAsync("ArticleEdit",
                     new ArticleEditLinkModel(article, @User.FindFirst(AuthenticationController.CookieUserId)?.Value))
             </div>
             <h6 class="card-subtitle">@dateStr</h6>
