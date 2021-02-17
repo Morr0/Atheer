@@ -47,6 +47,7 @@ namespace Atheer.Controllers
         }
 
         [HttpGet("Settings/{userId}")]
+        [Authorize]
         public async Task<IActionResult> UserSettingsView([FromRoute] string userId)
         {
             string viewingUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
@@ -60,6 +61,7 @@ namespace Atheer.Controllers
         }
 
         [HttpPost("Settings/{userId}")]
+        [Authorize]
         public async Task<IActionResult> UserSettingsPost([FromRoute] string userId,
             [FromForm] UserSettingsUpdate userSettingsUpdate)
         {
