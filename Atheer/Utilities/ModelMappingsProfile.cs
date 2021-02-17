@@ -20,6 +20,8 @@ namespace Atheer.Utilities
             
             // User
             CreateMap<RegisterViewModel, User>();
+            CreateMap<User, UserSettingsViewModel>();
+            CreateMap<UserSettingsUpdate, User>();
         }
 
         private void TakeCareOfArticleToFromArticleEditVm()

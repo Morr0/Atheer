@@ -6,7 +6,9 @@ using Atheer.Services.ArticlesService;
 using Atheer.Services.UsersService;
 using Atheer.Services.UsersService.Exceptions;
 using Atheer.Utilities.Config.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Atheer.Controllers
@@ -15,10 +17,14 @@ namespace Atheer.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _userService;
+        private readonly IMapper _mapper;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IMapper mapper, ILogger<UserController> logger)
         {
             _userService = userService;
+            _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpGet("{userId}")]
@@ -37,6 +43,32 @@ namespace Atheer.Controllers
                 User = user
             };
             return View("UserPage", viewModel);
+        }
+
+        [HttpGet("Settings/{userId}")]
+        public async Task<IActionResult> UserSettingsView([FromRoute] string userId)
+        {
+            string viewingUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            if (viewingUserId != userId) return RedirectToAction("UserView", userId);
+
+            var user = await _userService.Get(userId).ConfigureAwait(false);
+            if (user is null) return Redirect("/");
+
+            var userSettingsVm = _mapper.Map<UserSettingsViewModel>(user);
+            return View("UserSettings", userSettingsVm);
+        }
+
+        [HttpPost("Settings/{userId}")]
+        public async Task<IActionResult> UserSettingsPost([FromRoute] string userId,
+            [FromForm] UserSettingsUpdate userSettingsUpdate)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("UserSettingsView", "User", new {userId});
+            }
+            
+            await _userService.Update(userId, userSettingsUpdate).ConfigureAwait(false);
+            return RedirectToAction("UserView", "User", new {userId});
         }
         
         [HttpGet("/Register")]

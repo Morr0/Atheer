@@ -1,0 +1,57 @@
+﻿@using Atheer.Extensions
+@model Atheer.Controllers.ViewModels.UserSettingsViewModel
+
+@{
+    ViewData["Title"] = "Settings";
+}
+
+<span class="text-light">Username: @Model.Id</span>
+<span class="text-light">Created since: @DateTimeExtensions.GetLocalDate(@Model.DateCreated)</span>
+
+<form method="post" asp-controller="User" asp-action="UserSettingsPost">
+    <input type="hidden" name="userId" value="@Model.Id" />
+    
+    @* TODO prettify and make this accordion work *@
+    <div class="accordion" id="settingsAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="basicSettings">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#basicSettings" aria-expanded="true" aria-controls="basicSettingsForm">
+                    Basic settings
+                </button>
+            </h2>
+            <div id="basicSettingsForm" class="accordion-collapse collapse show" aria-labelledby="basicSettings" data-bs-parent="#settingsAccordion">
+                <div class="form-group row">
+                    <label for="FirstName" class="col-sm-2 col-form-label">First Name: </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" asp-for="FirstName" id="FirstName" maxlength="32" minlength="1">
+                    </div>
+                </div>
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+                <div class="form-group row">
+                    <label for="LastName" class="col-sm-2 col-form-label">Last Name: </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" asp-for="LastName" id="LastName" maxlength="32" minlength="1">
+                    </div>
+                </div>
+                <span asp-validation-for="LastName" class="text-danger"></span>
+                <div class="form-group row">
+                    <label for="Email" class="col-sm-2 col-form-label">Email: </label>
+                    <label asp-for="Email" class="col-sm-2 col-form-label" id="Email">@Model.Email</label>
+                </div>
+                <div class="form-group row">
+                    <label for="Bio" class="col-sm-2 col-form-label">Bio: </label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" asp-for="Bio" id="Bio" maxlength="256"></textarea>
+                    </div>
+                </div>
+                <span asp-validation-for="Bio" class="text-danger"></span>
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                      <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

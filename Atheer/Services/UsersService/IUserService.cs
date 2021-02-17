@@ -12,5 +12,6 @@ namespace Atheer.Services.UsersService
         Task<User> GetFromEmailOrUsername(string emailOrUsername);
         Task SetLogin(string id);
         Task<bool> Exists(string newAuthorId);
+        Task Update(string id, UserSettingsUpdate settingsViewModel);
     }
 }

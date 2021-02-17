@@ -3,9 +3,10 @@
 @model Atheer.Controllers.ViewModels.UserPageViewModel
 
 @{
-    string userId = User?.FindFirst(AuthenticationController.CookieUserId)?.Value;
+    string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
     string fullName = Model.User.FullName();
     ViewData["Title"] = fullName;
+    bool sameUserViewingIsSameAsThis = userId == Model.User.Id;
   
     // TODO add last seen
 }
@@ -18,9 +19,13 @@
     <div class="col-md-8">
       <div class="card-body">
         <h5 class="card-title">@fullName</h5>
-        @if (userId == Model.User.Id || User.IsInRole(UserRoles.AdminRole))
+        @if (sameUserViewingIsSameAsThis || User.IsInRole(UserRoles.AdminRole))
         {
           <span class="text-info">Username: @Model.User.Id</span>
+        }
+        @if (sameUserViewingIsSameAsThis)
+        {
+          <a asp-controller="User" asp-action="UserSettingsView" asp-route-userId="@userId" class="btn-link">Settings</a>
         }
         <p class="card-text">@Model.User.Bio</p>
         @* <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> *@

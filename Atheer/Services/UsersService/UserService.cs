@@ -8,7 +8,10 @@ using Atheer.Extensions;
 using Atheer.Models;
 using Atheer.Repositories;
 using Atheer.Services.UsersService.Exceptions;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Atheer.Services.UsersService
@@ -18,12 +21,14 @@ namespace Atheer.Services.UsersService
         private readonly UserFactory _factory;
         private readonly Data _context;
         private readonly ILogger<UserService> _logger;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public UserService(UserFactory factory, Data data, ILogger<UserService> logger)
+        public UserService(UserFactory factory, Data data, ILogger<UserService> logger, IServiceScopeFactory serviceScopeFactory)
         {
             _factory = factory;
             _context = data;
             _logger = logger;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         public async Task<string> Add(RegisterViewModel registerViewModel)
@@ -93,6 +98,18 @@ namespace Atheer.Services.UsersService
         public Task<bool> Exists(string userId)
         {
             return _context.User.AsNoTracking().Where(x => x.Id == userId).AnyAsync();
+        }
+
+        public async Task Update(string id, UserSettingsUpdate settingsViewModel)
+        {
+            var user = await _context.User.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
+
+            using var scope = _serviceScopeFactory.CreateScope();
+            var mapper = scope.ServiceProvider.GetService<IMapper>();
+            
+            mapper.Map(settingsViewModel, user);
+
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
         private bool IsEmail(string emailOrUsername)
