@@ -40,7 +40,7 @@ namespace Atheer.Services.UsersService
             return email.Split('@')[0];
         }
 
-        private string HashPassword(string textPassword)
+        internal string HashPassword(string textPassword)
         {
             return Crypt.HashPassword(textPassword, HashRounds);
         }

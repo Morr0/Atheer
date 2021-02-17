@@ -13,5 +13,6 @@ namespace Atheer.Services.UsersService
         Task SetLogin(string id);
         Task<bool> Exists(string newAuthorId);
         Task Update(string id, UserSettingsUpdate settingsViewModel);
+        Task UpdatePassword(string id, string oldPassword, string newPassword);
     }
 }

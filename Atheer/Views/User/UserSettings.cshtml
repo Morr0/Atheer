@@ -13,8 +13,8 @@
     
     @* TODO prettify and make this accordion work *@
     <div class="accordion" id="settingsAccordion">
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="basicSettings">
+        <div class="accordion-item" class="basicSettings">
+            <h2 class="accordion-header">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                         data-bs-target="#basicSettings" aria-expanded="true" aria-controls="basicSettingsForm">
                     Basic settings
@@ -48,7 +48,23 @@
                 <span asp-validation-for="Bio" class="text-danger"></span>
                 <div class="form-group row">
                     <div class="col-sm-10">
-                      <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item" id="securitySettings">
+            <h2 class="accordion-header">
+                Security settings
+            </h2>
+            <div class="accordion-collapse collapse show" aria-labelledby="securitySettings" data-bs-parent="#securitySettings">
+                <div class="form-group row">
+                    <label for="changePassword" class="col-sm-2 col-from-label">Password: </label>
+                    <div class="col-sm-10">
+                        <a type="button" asp-controller="User" asp-action="ChangePasswordView" asp-route-userId="@Model.Id" 
+                                class="btn-danger btn">
+                            Change password
+                        </a>
                     </div>
                 </div>
             </div>

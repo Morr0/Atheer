@@ -7,6 +7,7 @@ using Atheer.Services.UsersService;
 using Atheer.Services.UsersService.Exceptions;
 using Atheer.Utilities.Config.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -69,6 +70,41 @@ namespace Atheer.Controllers
             
             await _userService.Update(userId, userSettingsUpdate).ConfigureAwait(false);
             return RedirectToAction("UserView", "User", new {userId});
+        }
+
+        [HttpGet("ChangePassword/{userId}")]
+        [Authorize]
+        public IActionResult ChangePasswordView([FromRoute] string userId)
+        {
+            string viewingUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            if (viewingUserId != userId) return Unauthorized();
+
+            return View("ChangePassword", userId);
+        }
+
+        [HttpPost("ChangePassword/{userId}")]
+        [Authorize]
+        public async Task<IActionResult> ChangePasswordPost([FromRoute] string userId,
+            [FromForm] UserChangePassword userChangePassword, [FromForm] string button)
+        {
+            if (button != "change") return RedirectToAction("UserView", new {userId});
+            
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("ChangePasswordView", new {userId});
+            }
+            
+            string viewingUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            if (viewingUserId != userId) return Unauthorized();
+            
+            // TODO Let user know confirmed new password does not match
+            if (userChangePassword.NewPassword != userChangePassword.NewPasswordSecondTime)
+            {
+                return RedirectToAction("ChangePasswordView", new {userId});
+            }
+            
+            await _userService.UpdatePassword(userId, userChangePassword.OldPassword, userChangePassword.NewPassword).ConfigureAwait(false);
+            return RedirectToAction("UserView", new {userId});
         }
         
         [HttpGet("/Register")]

@@ -116,5 +116,19 @@ namespace Atheer.Services.UsersService
         {
             return emailOrUsername.Contains('@') && emailOrUsername.Contains('.');
         }
+
+        public async Task UpdatePassword(string id, string oldPassword, string newPassword)
+        {
+            var userPassword = await _context.User.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
+
+            if (userPassword == null) return;
+
+            if (!_factory.EqualPasswords(oldPassword, userPassword.PasswordHash)) return;
+
+            userPassword.PasswordHash = _factory.HashPassword(newPassword);
+
+            _context.Entry(userPassword).Property(x => x.PasswordHash).IsModified = true;
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+        }
     }
 }
