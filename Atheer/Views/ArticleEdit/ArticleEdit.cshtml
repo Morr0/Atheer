@@ -1,33 +1,39 @@
 ﻿@using Atheer.Services.UsersService
+@using Atheer.Extensions
 @model Atheer.Controllers.ViewModels.ArticleEditViewModel
 
 @{
     bool IsNew = string.IsNullOrEmpty(Model.TitleShrinked);
     Model.NewAuthorId = Model.AuthorId;
 
-    ViewData["Title"] = IsNew ? "New" : "Edit"; 
-}
+    ViewData["Title"] = IsNew ? "New" : "Edit";
+    
+    // For scheduled
+    // TODO add for when editing scheduled articles before release
+    bool canBeScheduled = IsNew;
 
+    bool wasScheduledBefore = !canBeScheduled && !string.IsNullOrEmpty(Model.ScheduledSinceDate);
+}
 <form method="post">
     <span class="text-info">@TempData["Info"]</span>
     <span class="text-danger">@TempData["Err"]</span>
 
     <div class="form-group">
-    @if (!IsNew)
-    {
-        // For POST on edit 
-        <input type="hidden" name="CreatedYear" id="CreatedYear" value="@Model.CreatedYear"/>
-        <input type="hidden" name="TitleShrinked" id="TitleShrinked" value="@Model.TitleShrinked"/>
-        <input type="hidden" name="AuthorId" id="AuthorId" value="@Model.AuthorId"/>
-        
-        @if (User.IsInRole(UserRoles.AdminRole))
+        @if (!IsNew)
         {
-            <label for="NewAuthorId">Author Id</label>
-            <input type="text" name="NewAuthorId" id="NewAuthorId" value="@Model.NewAuthorId" class="form-control">
-            <span asp-validation-for="NewAuthorId" class="text-danger"></span>
+            // For POST on edit 
+            <input type="hidden" name="CreatedYear" id="CreatedYear" value="@Model.CreatedYear"/>
+            <input type="hidden" name="TitleShrinked" id="TitleShrinked" value="@Model.TitleShrinked"/>
+            <input type="hidden" name="AuthorId" id="AuthorId" value="@Model.AuthorId"/>
+        
+            @if (User.IsInRole(UserRoles.AdminRole))
+            {
+                <label for="NewAuthorId">Author Id</label>
+                <input type="text" name="NewAuthorId" id="NewAuthorId" value="@Model.NewAuthorId" class="form-control">
+                <span asp-validation-for="NewAuthorId" class="text-danger"></span>
+            }
         }
-    }
-    <label for="Title">Title: </label>
+        <label for="Title">Title: </label>
         <input type="text" name="Title" id="Title" value="@Model.Title" class="form-control"/>
         <span asp-validation-for="Title" class="text-danger"></span>
         
@@ -38,6 +44,16 @@
         <label for="Description">Description: </label>
         <input type="text" name="Description" id="Description" value="@Model.Description" class="form-control"/>
         <span asp-validation-for="Description" class="text-danger"></span>
+        
+        @if (canBeScheduled)
+        {
+            <label for="Schedule">Schedule (dd/MM/YYYY in local time else is not going to be scheduled): </label>
+            <input type="text" class="form-control" id="Schedule" name="Schedule" placeholder="dd/MM/yyyy"/>
+        }
+        @if (wasScheduledBefore)
+        {
+            <span class="text-info">Was scheduled since: @DateTimeExtensions.GetLocalDate(@Model.ScheduledSinceDate)</span>
+        }
 
         <label for="Content">Content (Markdown):</label>
         <textarea type="text" name="Content" id="Content" class="form-control">@Model.Content</textarea>
@@ -92,7 +108,3 @@
         </div>
     </div>
 </div>
-
-<script>
-
-</script>

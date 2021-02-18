@@ -27,5 +27,10 @@ namespace Atheer.Controllers.ViewModels
         public string AuthorId { get; set; }
         [Required, MinLength(1)]
         public string NewAuthorId { get; set; }
+        
+        public string ScheduledSinceDate { get; set; }
+        // TODO separate reads from writes
+        public string Schedule { get; set; }
+
     }
 }

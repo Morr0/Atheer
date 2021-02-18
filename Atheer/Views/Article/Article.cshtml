@@ -1,6 +1,7 @@
 ﻿@using Markdig
 @using Atheer.ViewComponents
 @using Atheer.Controllers
+@using Atheer.Extensions
 @inject MarkdownPipeline MarkdownPipeline
 @model Atheer.Controllers.ViewModels.ArticleViewModel
 @{
@@ -33,6 +34,10 @@
         @if (article.Unlisted)
         {
             <span class="text-info">Unlisted</span>
+        }
+        @if (article.Scheduled)
+        {
+            <span class="text-info">Scheduled since: @DateTimeExtensions.GetLocalDate(@Model.Article.ScheduledSinceDate)</span>
         }
 
 
