@@ -66,11 +66,11 @@ namespace Atheer.Services.ArticlesService
             
             queryable = string.IsNullOrEmpty(viewerUserId)
                 // Public viewing all articles
-                ? queryable.Where(x => x.Unlisted == false && x.Draft == false)
+                ? queryable.Where(x => x.Unlisted == false && x.Draft == false && x.Scheduled == false)
                 // Registered user viewing all articles
                 : queryable.Where(x =>
                     (x.AuthorId == viewerUserId) ||
-                    (x.AuthorId != viewerUserId && x.Unlisted == false && x.Draft == false));
+                    (x.AuthorId != viewerUserId && x.Unlisted == false && x.Draft == false && x.Scheduled == false));
 
             // Viewing specific user's articles
             if (!string.IsNullOrEmpty(specificUserId))
