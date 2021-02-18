@@ -34,6 +34,7 @@ namespace Atheer.Controllers.ViewModels
         public string Schedule { get; set; }
         public string CreationDate { get; set; }
         public bool Unschedule { get; set; }
+        public bool Scheduled { get; set; }
 
     }
 }

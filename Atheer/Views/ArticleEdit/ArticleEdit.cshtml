@@ -9,12 +9,8 @@
     ViewData["Title"] = isNew ? "New" : "Edit";
     
     // For scheduled
-    // TODO add for when editing scheduled articles before release
-    bool scheduled = !string.IsNullOrEmpty(Model.ScheduledSinceDate);
-    bool canBeScheduled = isNew;
-    bool wasScheduledBefore = !isNew && scheduled;
-    string scheduledSinceDateLocal = !scheduled ? "" : DateTime.Parse(Model.ScheduledSinceDate).ToLocalTime().GetDateOnly();
-    string scheduledFor = scheduled ? DateTime.Parse(Model.CreationDate).ToLocalTime().GetDateOnly() : "";
+    bool wasScheduledBefore = !string.IsNullOrEmpty(Model.ScheduledSinceDate);
+    bool currentlyScheduled = wasScheduledBefore && Model.Scheduled;
 }
 <form method="post">
     <span class="text-info">@TempData["Info"]</span>
@@ -23,12 +19,14 @@
     <div class="form-group">
         @if (!isNew)
         {
-            // For POST on edit 
+            // For POST on edit
             <input type="hidden" name="CreatedYear" id="CreatedYear" value="@Model.CreatedYear"/>
             <input type="hidden" name="TitleShrinked" id="TitleShrinked" value="@Model.TitleShrinked"/>
             <input type="hidden" name="AuthorId" id="AuthorId" value="@Model.AuthorId"/>
             <input type="hidden" name="CreationDate" id="CreationDate" value="@Model.CreationDate"/>
-
+            <input type="hidden" name="ScheduledSinceDate" id="ScheduledSinceDate" value="@Model.ScheduledSinceDate"/>
+            <input type="checkbox" hidden name="Scheduled" id="Scheduled" value="@Model.Scheduled"/>
+        
             @if (User.IsInRole(UserRoles.AdminRole))
             {
                 <label for="NewAuthorId">Author Id</label>
@@ -49,24 +47,17 @@
         <span asp-validation-for="Description" class="text-danger"></span>
         
         @* Scheduling *@
-        @if (canBeScheduled)
+        @if (isNew)
         {
-            <label for="Schedule">Schedule (dd-MM-YYYY in UTC time else is not going to be scheduled): </label>
+            <label asp-for="Schedule">Schedule (dd-MM-YYYY in UTC time else is not going to be scheduled): </label>
             <input type="text" class="form-control" id="Schedule" asp-for="Schedule" placeholder="dd-MM-yyyy"/>
         }
-        @* - Currently scheduled *@
-        else if (scheduled)
+        else if (currentlyScheduled)
         {
-            <span>Scheduled for @scheduledFor</span>
+            <span class="text-info">Scheduled for @DateTime.Parse(Model.CreationDate).ToLocalTime().GetDateOnly()</span>
             <div class="form-check">
                 <input asp-for="Unschedule" type="checkbox" class="form-check-input"/>
                 <label class="form-check-label" asp-for="Unschedule">Release Now (Unschedule)</label>
-            </div>
-        }
-        else if (wasScheduledBefore)
-        {
-            <div class="text-info">
-                Was scheduled since: @scheduledSinceDateLocal
             </div>
         }
 

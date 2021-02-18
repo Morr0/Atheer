@@ -61,7 +61,7 @@ namespace Atheer.Services.ArticlesService
             article.LastUpdatedDate = now.GetString();
             
             // If is scheduled and still not yet released
-            if (article.Scheduled && unschedule)
+            if (unschedule && article.Scheduled)
             {
                 Unschedule(article, now);
             }
@@ -70,11 +70,12 @@ namespace Atheer.Services.ArticlesService
         public void Unschedule(Article article, DateTime now)
         {
             var releaseDate = DateTime.Parse(article.CreationDate);
+            Console.WriteLine(article.ScheduledSinceDate);
             var scheduledSince = DateTime.Parse(article.ScheduledSinceDate);
             // Not Between
-            if (!(scheduledSince > now && now < releaseDate)) return;
+            if (!(scheduledSince <= now && now < releaseDate)) return;
 
-            article.CreationDate = DateTime.Now.GetString();
+            article.CreationDate = now.GetString();
             article.Scheduled = false;
             // Now it is released of scheduling
         }
