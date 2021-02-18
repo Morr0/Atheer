@@ -53,7 +53,7 @@ namespace AtheerTests.UnitTests.Factories
         {
             var date = DateTime.UtcNow;
             var originalDate = date;
-            string proposedSchedule = date.AddDays(1).ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+            string proposedSchedule = date.AddDays(1).ToString("dd-MM-yyyy", CultureInfo.InvariantCulture);
             
             _factory.GetDate(proposedSchedule, ref date, out bool scheduled, out DateTime scheduledSinceUtc);
             
@@ -68,7 +68,7 @@ namespace AtheerTests.UnitTests.Factories
         {
             var date = new DateTime(2000, 2, 1);
             var originalDate = date;
-            string proposedSchedule = date.AddMinutes(1).ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+            string proposedSchedule = date.AddMinutes(1).ToString("dd-MM-yyyy", CultureInfo.InvariantCulture);
             
             _factory.GetDate(proposedSchedule, ref date, out bool scheduled, out DateTime scheduledSinceUtc);
             
@@ -80,7 +80,7 @@ namespace AtheerTests.UnitTests.Factories
         public void SchedulerShouldNotScheduleOnSameTime()
         {
             var date = new DateTime(2000, 2, 1);
-            string proposedSchedule = date.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+            string proposedSchedule = date.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture);
             
             _factory.GetDate(proposedSchedule, ref date, out bool scheduled, out DateTime scheduledSinceUtc);
             
@@ -100,7 +100,7 @@ namespace AtheerTests.UnitTests.Factories
                 Description = Description,
                 Title = Title,
                 AuthorId = UserId,
-                Schedule = releaseDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                Schedule = releaseDate.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture)
             };
 
             // Act

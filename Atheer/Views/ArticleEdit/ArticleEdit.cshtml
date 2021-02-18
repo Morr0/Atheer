@@ -10,9 +10,16 @@
     
     // For scheduled
     // TODO add for when editing scheduled articles before release
+    bool scheduled = !string.IsNullOrEmpty(Model.ScheduledSinceDate);
     bool canBeScheduled = IsNew;
 
-    bool wasScheduledBefore = !canBeScheduled && !string.IsNullOrEmpty(Model.ScheduledSinceDate);
+    if (scheduled){
+        var creationDate = DateTime.Parse(Model.CreationDate);
+        canBeScheduled = canBeScheduled || creationDate > DateTime.UtcNow;
+    }
+    
+    bool wasScheduledBefore = !canBeScheduled && scheduled;
+    string scheduledSinceDateLocal = !scheduled ? "" : DateTime.Parse(Model.ScheduledSinceDate).ToLocalTime().GetDateOnly();
 }
 <form method="post">
     <span class="text-info">@TempData["Info"]</span>
@@ -47,12 +54,14 @@
         
         @if (canBeScheduled)
         {
-            <label for="Schedule">Schedule (dd/MM/YYYY in local time else is not going to be scheduled): </label>
-            <input type="text" class="form-control" id="Schedule" name="Schedule" placeholder="dd/MM/yyyy"/>
+            <label for="Schedule">Schedule (dd-MM-YYYY in local time else is not going to be scheduled): </label>
+            <input type="text" class="form-control" id="Schedule" asp-for="Schedule" placeholder="dd-MM-yyyy"/>
         }
-        @if (wasScheduledBefore)
+        else if (wasScheduledBefore)
         {
-            <span class="text-info">Was scheduled since: @DateTimeExtensions.GetLocalDate(@Model.ScheduledSinceDate)</span>
+            <div class="text-info">
+                Was scheduled since: @scheduledSinceDateLocal
+            </div>
         }
 
         <label for="Content">Content (Markdown):</label>

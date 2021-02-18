@@ -23,14 +23,16 @@ namespace Atheer.Controllers.ViewModels
         public bool Draft { get; set; }
         public bool Unlisted { get; set; }
 
-        [Required, MinLength(1)]
+        // TODO refactor this to admin view only
+        // [Required, MinLength(1)]
         public string AuthorId { get; set; }
-        [Required, MinLength(1)]
+        // [Required, MinLength(1)]
         public string NewAuthorId { get; set; }
         
         public string ScheduledSinceDate { get; set; }
         // TODO separate reads from writes
         public string Schedule { get; set; }
+        public string CreationDate { get; set; }
 
     }
 }

@@ -48,8 +48,8 @@ namespace Atheer.Services.ArticlesService
             
             try
             {
-                // Expected format dd/MM/yyyy
-                var scheduledDate = DateTime.ParseExact(proposedSchedule, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                // Expected format dd-MM-yyyy
+                var scheduledDate = DateTime.ParseExact(proposedSchedule, "dd-MM-yyyy", CultureInfo.InvariantCulture);
                 
                 // Assuming did not throw
                 scheduledDate = scheduledDate.ToUniversalTime();

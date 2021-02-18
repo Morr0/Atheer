@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Atheer.Controllers.ViewModels;
 using Atheer.Exceptions;
+using Atheer.Extensions;
 using Atheer.Models;
 using Atheer.Services.ArticlesService;
 using Atheer.Services.UsersService;
@@ -62,6 +63,7 @@ namespace Atheer.Controllers
 
             var dto = _mapper.Map<ArticleEditViewModel>(article);
             dto.TagsAsString = tagsAsString;
+            dto.Schedule = DateTimeExtensions.GetDateOnly(article.ScheduledSinceDate);
             return View("ArticleEdit", dto);
         }
 
@@ -84,10 +86,25 @@ namespace Atheer.Controllers
 
         private async Task<IActionResult> Checkout(ArticlePrimaryKey key, ArticleEditViewModel articleViewModel)
         {
+            _logger.LogInformation("CALL");
             // TODO handle FailedOperationException
             string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
-            if (!ModelState.IsValid) return View("ArticleEdit", articleViewModel);
+            if (!ModelState.IsValid)
+            {
+                _logger.LogInformation("Errrors");
+                foreach (var pair in ModelState)
+                {
+                    _logger.LogInformation($"{pair.Key}: ");
+                    foreach (var error in pair.Value.Errors)
+                    {
+                        _logger.LogInformation(error.ErrorMessage);
+                    }
+                }
+                // TODO fix this to redirect
+                return View("ArticleEdit", articleViewModel);
+            }
 
+            _logger.LogInformation("CALL2");
             articleViewModel.TagsAsString = articleViewModel.TagsAsString.TrimEnd();
 
             // ADD
@@ -99,13 +116,11 @@ namespace Atheer.Controllers
                     articleViewModel.CreatedYear, articleViewModel.TitleShrinked));
             }
 
+            // UPDATE
             if (!(await _service.AuthorizedFor(key, userId).ConfigureAwait(false)))
             {
                 if (!User.IsInRole(UserRoles.AdminRole)) return Forbid();
             }
-
-            // UPDATE
-            
             // Check if updating user that it exists
             // If user non-existent will update everything except for the author id
             if (articleViewModel.AuthorId != articleViewModel.NewAuthorId)
@@ -116,7 +131,8 @@ namespace Atheer.Controllers
                 if (!(await userService.Exists(articleViewModel.NewAuthorId).ConfigureAwait(false)))
                 {
                     articleViewModel.NewAuthorId = articleViewModel.AuthorId;
-                    TempData["Err"] = "Author id was not updated due to selected user non-existent";
+                    if (User.IsInRole(UserRoles.AdminRole))
+                        TempData["Err"] = "Author id was not updated due to selected user non-existent";
                 }
                 else
                 {
