@@ -23,9 +23,9 @@ namespace Atheer.Controllers
         [HttpGet]
         public async Task<IActionResult> Index([FromRoute] ArticlePrimaryKey key)
         {
-            string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
             
-            var article = await _service.Get(key, userId).ConfigureAwait(false);
+            var article = await _service.Get(key, viewerUserId).ConfigureAwait(false);
             if (article is null) return Redirect("/");
             
             return View("Article", article);

@@ -131,15 +131,26 @@ namespace Atheer.Services.ArticlesService
             return !article.Draft || article.AuthorId == userId;
         }
 
-        public async Task<ArticleViewModel> Get(ArticlePrimaryKey key, string userId = null)
+        public async Task<ArticleViewModel> Get(ArticlePrimaryKey key, string viewerUserId = null)
         {
             var article = await _context.Article.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked)
                 .ConfigureAwait(false);
             
             if (article is null) return null;
-            if (article.Draft && article.AuthorId != userId) return null;
+            if (article.Draft && article.AuthorId != viewerUserId) return null;
 
+            // Get author full name
+            var authorFullName = await _context.User.AsNoTracking()
+                .Select(x => new
+                {
+                    x.Id,
+                    x.FirstName,
+                    x.LastName
+                })
+                .FirstOrDefaultAsync(x => x.Id == article.AuthorId).ConfigureAwait(false);
+
+            // Get tags associated with article
             var tags = await (from ta in _context.TagArticle
                     join t in _context.Tag.AsNoTracking() on ta.TagId equals t.Id
                     where 
@@ -148,7 +159,7 @@ namespace Atheer.Services.ArticlesService
                     select t
                 ).ToListAsync().ConfigureAwait(false);
 
-            return new ArticleViewModel(article, tags);
+            return new ArticleViewModel(article, tags, $"{authorFullName.FirstName} {authorFullName.LastName}");
         }
 
         public async Task Like(ArticlePrimaryKey primaryKey)

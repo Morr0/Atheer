@@ -22,6 +22,12 @@
         <h6 class="card-subtitle">@tags</h6>
         
         <h2 class="text-dark">@article.Title</h2>
+        <span class="card-subtitle">
+            By <a asp-controller="User" asp-action="UserView" asp-route-userId="@Model.Article.AuthorId" class="card-link">
+                @Model.AuthorFullName
+            </a>
+            since  @dateStr
+        </span>
 
         @if (isAuthor)
         {
@@ -42,7 +48,6 @@
         }
 
         @await Component.InvokeAsync("ArticleEdit", new ArticleEditLinkModel(article, viewerUserId))
-        <h6 class="card-subtitle text-info">@dateStr</h6>
         <p class="card-text">@article.Description</p>
     </div>
     <div class="card-body">
