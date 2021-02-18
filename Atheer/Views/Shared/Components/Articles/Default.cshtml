@@ -1,5 +1,6 @@
 ﻿@using Atheer.ViewComponents
 @using Atheer.Controllers
+@using Atheer.Extensions
 @model Atheer.Services.ArticlesService.ArticlesResponse
 
 @{
@@ -34,7 +35,7 @@
 
 @foreach (var article in Model.Articles)
 {
-    string dateStr = article.CreationDate.Split('T')[0];
+    string dateStr = DateTimeExtensions.GetDateOnly(article.CreationDate);
     
     <div class="card">
         <div class="card-body">
@@ -70,6 +71,7 @@
     </div>
 }
 
+@* Pagination *@
 <ul class="pagination justify-content-center mt-4">
     @if (Model.AnyPrevious)
     {

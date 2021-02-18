@@ -21,56 +21,62 @@ namespace Atheer.Services.ArticlesService
 
         public Article Create(ref ArticleEditViewModel articleViewModel, string userId)
         {
+            // TERMS:
+            // Release date = creation date when unscheduled or when the schedule ends
+            
             var article = _mapper.Map<Article>(articleViewModel);
 
             article.AuthorId = userId;
             
-            var date = DateTime.UtcNow;
-            GetDate(articleViewModel.Schedule, ref date, out bool scheduled, out DateTime scheduledSinceUtc);
+            GetDate(articleViewModel.Schedule, out DateTime releaseDate, out bool scheduled, out string scheduledSinceDate);
 
-            if (scheduled)
-            {
-                article.Scheduled = true;
-                article.ScheduledSinceDate = scheduledSinceUtc.GetString();
-            }
-
-            article.CreatedYear = date.Year;
+            article.CreatedYear = releaseDate.Year;
             article.TitleShrinked = GetShrinkedTitle(articleViewModel.Title);
-            article.CreationDate = date.GetString();
+            article.CreationDate = releaseDate.GetString();
+            article.Scheduled = scheduled;
+            article.ScheduledSinceDate = scheduledSinceDate;
 
             return article;
         }
 
-        internal void GetDate(string proposedSchedule, ref DateTime date, out bool scheduled, out DateTime scheduledSince)
+        internal void GetDate(string proposedDate, out DateTime releaseDate, out bool scheduled,
+            out string scheduledSinceDate)
         {
             scheduled = false;
-            scheduledSince = date;
-            
-            try
-            {
-                // Expected format dd-MM-yyyy
-                var releaseDate = DateTime.ParseExact(proposedSchedule, "dd-MM-yyyy", CultureInfo.InvariantCulture);
-                
-                // Assuming did not throw
-                // Ignore if the proposed date in the past
-                // int epochDay
-                int releaseDateEpoch = (int) Math.Floor((releaseDate - new DateTime(1970, 1, 1)).TotalDays);
-                int scheduledSinceDate = (int) Math.Floor((date - new DateTime(1970, 1, 1)).TotalDays);
-                if (releaseDateEpoch > scheduledSinceDate) return;
+            scheduledSinceDate = "";
+            var now = DateTime.UtcNow;
 
-                scheduled = true;
-                date = releaseDate;
-            }
-            catch (Exception)
+            bool parsedDate = DateTime.TryParseExact(proposedDate, "dd-MM-yyyy", CultureInfo.InvariantCulture,
+                DateTimeStyles.AssumeUniversal, out releaseDate);
+            releaseDate = releaseDate.FirstTickOfDay();
+            if (!parsedDate || releaseDate <= now) return;
+
+            scheduled = true;
+            scheduledSinceDate = now.GetString();
+        }
+
+        public void SetUpdated(ref Article article, bool unschedule)
+        {
+            var now = DateTime.UtcNow;
+            article.LastUpdatedDate = now.GetString();
+            
+            // If is scheduled and still not yet released
+            if (article.Scheduled && unschedule)
             {
-                // Basically nothing
+                Unschedule(article, now);
             }
         }
 
-        // TODO update scheduling status
-        public void SetUpdated(ref Article article)
+        public void Unschedule(Article article, DateTime now)
         {
-            article.LastUpdatedDate = DateTime.UtcNow.GetString();
+            var releaseDate = DateTime.Parse(article.CreationDate);
+            var scheduledSince = DateTime.Parse(article.ScheduledSinceDate);
+            // Not Between
+            if (!(scheduledSince > now && now < releaseDate)) return;
+
+            article.CreationDate = DateTime.Now.GetString();
+            article.Scheduled = false;
+            // Now it is released of scheduling
         }
 
         private string GetShrinkedTitle(string title)

@@ -33,6 +33,7 @@ namespace Atheer.Controllers.ViewModels
         // TODO separate reads from writes
         public string Schedule { get; set; }
         public string CreationDate { get; set; }
+        public bool Unschedule { get; set; }
 
     }
 }

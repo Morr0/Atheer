@@ -31,11 +31,22 @@ namespace Atheer.Extensions
         /// <summary>
         /// Datetime must like e.g. 2021-01-30T13:02:11
         /// </summary>
-        public static string GetLocalDate(string date)
+        public static string GetLocalDateOnly(string date)
         {
-            string dateStr = date.Split('T')[0];
-            var dateCreated = DateTime.Parse(dateStr, CultureInfo.InvariantCulture);
-            return dateCreated.ToLocalTime().ToShortDateString();
+            if (string.IsNullOrEmpty(date)) return "";
+            
+            var dateCreated = DateTime.Parse(date);
+            return dateCreated.ToLocalTime().GetDateOnly();
+        }
+
+        public static DateTime FirstTickOfDay(this DateTime dt)
+        {
+            return dt.Date;
+        }
+
+        public static DateTime LastTickOfDay(this DateTime dt)
+        {
+            return dt.Date.AddDays(1).AddTicks(-1);
         }
     }
 }

@@ -6,7 +6,7 @@
 }
 
 <span class="text-light">Username: @Model.Id</span>
-<span class="text-light">Created since: @DateTimeExtensions.GetLocalDate(@Model.DateCreated)</span>
+<span class="text-light">Created since: @DateTimeExtensions.GetLocalDateOnly(@Model.DateCreated)</span>
 
 <form method="post" asp-controller="User" asp-action="UserSettingsPost">
     <input type="hidden" name="userId" value="@Model.Id" />

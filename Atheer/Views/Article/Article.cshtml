@@ -11,10 +11,13 @@
 
     string tags = Tag.TagsAsString(Model.Tags);
     
-    string dateStr = article.CreationDate.Split('T')[0];
+    string dateStr = DateTimeExtensions.GetDateOnly(article.CreationDate);
 
     string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
     bool isAuthor = viewerUserId == Model.Article.AuthorId;
+    
+    string scheduledSince = DateTimeExtensions.GetDateOnly(@Model.Article.ScheduledSinceDate);
+    bool scheduled = isAuthor && article.Scheduled && !string.IsNullOrEmpty(scheduledSince);
 }
 
 <div class="container">
@@ -26,7 +29,10 @@
             By <a asp-controller="User" asp-action="UserView" asp-route-userId="@Model.Article.AuthorId" class="card-link">
                 @Model.AuthorFullName
             </a>
-            since  @dateStr
+            @if (!scheduled)
+            {
+                <span>since @dateStr</span>
+            }
         </span>
 
         @if (isAuthor)
@@ -42,9 +48,9 @@
         {
             <span class="text-info">Unlisted</span>
         }
-        @if (isAuthor && article.Scheduled)
+        @if (scheduled)
         {
-            <span class="text-info">Scheduled since: @DateTimeExtensions.GetLocalDate(@Model.Article.ScheduledSinceDate)</span>
+            <span class="text-info">Scheduled since @scheduledSince for @dateStr</span>
         }
 
         @await Component.InvokeAsync("ArticleEdit", new ArticleEditLinkModel(article, viewerUserId))

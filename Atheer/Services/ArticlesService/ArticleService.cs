@@ -296,7 +296,7 @@ namespace Atheer.Services.ArticlesService
                 x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked).ConfigureAwait(false);
             
             _mapper.Map(articleEditViewModel, article);
-            _articleFactory.SetUpdated(ref article);
+            _articleFactory.SetUpdated(ref article, articleEditViewModel.Unschedule);
 
             await using var transaction = await _context.Database.BeginTransactionAsync().ConfigureAwait(false);
             
