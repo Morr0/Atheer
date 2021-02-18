@@ -4,6 +4,9 @@
 
 @{
     string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+
+    int prevPage = Model.CurrentPage - 1;
+    int nextPage = Model.CurrentPage + 1;
 }
 
 <h6 class="text-dark">
@@ -66,3 +69,22 @@
         </div>
     </div>
 }
+
+<ul class="pagination justify-content-center mt-4">
+    @if (Model.AnyPrevious)
+    {
+        <li class="page-item"><a class="page-link" asp-controller="Articles" asp-action="Index" asp-route-page="@prevPage">Previous</a></li>
+    }
+    else
+    {
+        <li class="page-item disabled"><a class="page-link" tabindex="-1">Previous</a></li>
+    }
+    @if (Model.AnyNext)
+    {
+        <li class="page-item"><a class="page-link" asp-controller="Articles" asp-action="Index" asp-route-page="@nextPage">Next</a></li>
+    }
+    else
+    {
+        <li class="page-item disabled"><a class="page-link" tabindex="-1">Next</a></li>
+    }
+</ul>

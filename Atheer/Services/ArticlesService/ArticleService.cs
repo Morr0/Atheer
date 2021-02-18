@@ -98,7 +98,7 @@ namespace Atheer.Services.ArticlesService
                 TitleShrinked = x.TitleShrinked
             }).ToListAsync().ConfigureAwait(false);
 
-            bool hasNext = await queryable.Skip(1).AnyAsync().ConfigureAwait(false);
+            bool hasNext = await queryable.Skip(skip).AnyAsync().ConfigureAwait(false);
             bool hasPrevious = skip > 0;
 
             return new ArticlesResponse

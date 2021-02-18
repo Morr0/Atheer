@@ -9,13 +9,5 @@ namespace Atheer.Controllers.Queries
 
         [MinLength(1)]
         public string Tag { get; set; }
-
-        [Range(0, uint.MaxValue)]
-        public int Page { get; set; }
-
-        public bool Empty()
-        {
-            return Year == 0 && string.IsNullOrEmpty(Tag) && Page == 0;
-        }
     }
 }

@@ -35,8 +35,9 @@ namespace Atheer.Controllers
             var user = await _userService.Get(userId).ConfigureAwait(false);
             if (user is null) return NotFound();
 
+            // TODO fix user pagination
             var articlesResponse =
-                await articleService.Get(ArticlesController.PageSize, query.Page, viewerUserId: userId, specificUserId: userId).ConfigureAwait(false);
+                await articleService.Get(ArticlesController.PageSize, 0, viewerUserId: userId, specificUserId: userId).ConfigureAwait(false);
 
             var viewModel = new UserPageViewModel
             {

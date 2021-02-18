@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using Atheer.Controllers.Queries;
 using Atheer.Controllers.ViewModels;
@@ -23,14 +25,16 @@ namespace Atheer.Controllers
             _service = service;
         }
 
-        public async Task<IActionResult> Index([FromQuery] ArticlesQuery query)
+        [HttpGet("{page}")]
+        public async Task<IActionResult> Index([FromQuery] ArticlesQuery query, [FromRoute] int page = 0)
         {
             string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            page = Math.Max(0, page);
 
-            var blogResponse = await _service.Get(PageSize, query.Page, query.Year, query.Tag, userId).ConfigureAwait(false);
+            var blogResponse = await _service.Get(PageSize, page, query.Year, query.Tag, userId).ConfigureAwait(false);
             
             if (blogResponse is null) return Redirect("/");
-            if (!blogResponse.Articles.Any() && !query.Empty()) return Redirect("/");
+            if (!blogResponse.Articles.Any()) return Redirect("/");
             
             return View("Articles", blogResponse);
         }

@@ -86,25 +86,14 @@ namespace Atheer.Controllers
 
         private async Task<IActionResult> Checkout(ArticlePrimaryKey key, ArticleEditViewModel articleViewModel)
         {
-            _logger.LogInformation("CALL");
             // TODO handle FailedOperationException
             string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
             if (!ModelState.IsValid)
             {
-                _logger.LogInformation("Errrors");
-                foreach (var pair in ModelState)
-                {
-                    _logger.LogInformation($"{pair.Key}: ");
-                    foreach (var error in pair.Value.Errors)
-                    {
-                        _logger.LogInformation(error.ErrorMessage);
-                    }
-                }
                 // TODO fix this to redirect
                 return View("ArticleEdit", articleViewModel);
             }
 
-            _logger.LogInformation("CALL2");
             articleViewModel.TagsAsString = articleViewModel.TagsAsString.TrimEnd();
 
             // ADD
