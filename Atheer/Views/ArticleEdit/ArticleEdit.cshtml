@@ -49,8 +49,8 @@
         @* Scheduling *@
         @if (isNew)
         {
-            <label asp-for="Schedule">Schedule (dd-MM-YYYY in UTC time else is not going to be scheduled): </label>
-            <input type="text" class="form-control" id="Schedule" asp-for="Schedule" placeholder="dd-MM-yyyy"/>
+            <label asp-for="Schedule">Schedule (yyyy-MM-dd in UTC time else is not going to be scheduled): </label>
+            <input type="text" class="form-control" id="Schedule" asp-for="Schedule" placeholder="yyyy-MM-dd"/>
         }
         else if (currentlyScheduled)
         {

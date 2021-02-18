@@ -28,8 +28,9 @@ namespace Atheer.Services.ArticlesService
 
             article.AuthorId = userId;
             
-            GetDate(articleViewModel.Schedule, out DateTime releaseDate, out bool scheduled, out string scheduledSinceDate);
+            GetDate(articleViewModel.Schedule, out var releaseDate, out bool scheduled, out string scheduledSinceDate);
 
+            Console.WriteLine(releaseDate.GetString());
             article.CreatedYear = releaseDate.Year;
             article.TitleShrinked = GetShrinkedTitle(articleViewModel.Title);
             article.CreationDate = releaseDate.GetString();
@@ -48,8 +49,16 @@ namespace Atheer.Services.ArticlesService
 
             bool parsedDate = DateTime.TryParseExact(proposedDate, "dd-MM-yyyy", CultureInfo.InvariantCulture,
                 DateTimeStyles.AssumeUniversal, out releaseDate);
+
+            if (!parsedDate)
+            {
+                releaseDate = now;
+                return;
+            }
+
+            if (releaseDate <= now) return;
+            
             releaseDate = releaseDate.FirstTickOfDay();
-            if (!parsedDate || releaseDate <= now) return;
 
             scheduled = true;
             scheduledSinceDate = now.GetString();
