@@ -51,29 +51,22 @@ namespace AtheerTests.UnitTests.Factories
         [Fact]
         public void SchedulerShouldBeRight()
         {
-            var date = DateTime.UtcNow;
-            var originalDate = date;
-            string proposedSchedule = date.AddDays(1).ToString("dd-MM-yyyy", CultureInfo.InvariantCulture);
+            string proposedSchedule = DateTime.UtcNow.AddDays(1).ToString("dd-MM-yyyy", CultureInfo.InvariantCulture);
             
-            _factory.GetDate(proposedSchedule, ref date, out bool scheduled, out DateTime scheduledSinceUtc);
+            _factory.GetDate(proposedSchedule, out var now, out bool scheduled, out string scheduledSince);
             
             Assert.True(scheduled);
-            Assert.Equal(DateTimeKind.Utc, scheduledSinceUtc.Kind);
-            Assert.Equal(DateTimeKind.Utc, originalDate.Kind);
-            Assert.Equal(originalDate, scheduledSinceUtc);
         }
         
         [Fact]
         public void SchedulerShouldNotScheduleOnTheSameDay()
         {
             var date = new DateTime(2000, 2, 1);
-            var originalDate = date;
             string proposedSchedule = date.AddMinutes(1).ToString("dd-MM-yyyy", CultureInfo.InvariantCulture);
             
-            _factory.GetDate(proposedSchedule, ref date, out bool scheduled, out DateTime scheduledSinceUtc);
+            _factory.GetDate(proposedSchedule, out var now, out bool scheduled, out string scheduledSince);
             
             Assert.False(scheduled);
-            Assert.Equal(originalDate, scheduledSinceUtc);
         }
         
         [Fact]
@@ -82,7 +75,7 @@ namespace AtheerTests.UnitTests.Factories
             var date = new DateTime(2000, 2, 1);
             string proposedSchedule = date.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture);
             
-            _factory.GetDate(proposedSchedule, ref date, out bool scheduled, out DateTime scheduledSinceUtc);
+            _factory.GetDate(proposedSchedule, out var now, out bool scheduled, out string scheduledSince);
             
             Assert.False(scheduled);
         }
