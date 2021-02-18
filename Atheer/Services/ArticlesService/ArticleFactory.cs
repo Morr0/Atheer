@@ -41,24 +41,25 @@ namespace Atheer.Services.ArticlesService
             return article;
         }
 
-        internal void GetDate(string proposedSchedule, ref DateTime date, out bool scheduled, out DateTime scheduledSinceUtc)
+        internal void GetDate(string proposedSchedule, ref DateTime date, out bool scheduled, out DateTime scheduledSince)
         {
             scheduled = false;
-            scheduledSinceUtc = date;
+            scheduledSince = date;
             
             try
             {
                 // Expected format dd-MM-yyyy
-                var scheduledDate = DateTime.ParseExact(proposedSchedule, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+                var releaseDate = DateTime.ParseExact(proposedSchedule, "dd-MM-yyyy", CultureInfo.InvariantCulture);
                 
                 // Assuming did not throw
-                scheduledDate = scheduledDate.ToUniversalTime();
-
                 // Ignore if the proposed date in the past
-                if (scheduledDate < date) return;
+                // int epochDay
+                int releaseDateEpoch = (int) Math.Floor((releaseDate - new DateTime(1970, 1, 1)).TotalDays);
+                int scheduledSinceDate = (int) Math.Floor((date - new DateTime(1970, 1, 1)).TotalDays);
+                if (releaseDateEpoch > scheduledSinceDate) return;
 
                 scheduled = true;
-                date = scheduledDate;
+                date = releaseDate;
             }
             catch (Exception)
             {
@@ -66,6 +67,7 @@ namespace Atheer.Services.ArticlesService
             }
         }
 
+        // TODO update scheduling status
         public void SetUpdated(ref Article article)
         {
             article.LastUpdatedDate = DateTime.UtcNow.GetString();

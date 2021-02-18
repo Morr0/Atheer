@@ -54,7 +54,7 @@
         
         @if (canBeScheduled)
         {
-            <label for="Schedule">Schedule (dd-MM-YYYY in local time else is not going to be scheduled): </label>
+            <label for="Schedule">Schedule (dd-MM-YYYY in UTC time else is not going to be scheduled): </label>
             <input type="text" class="form-control" id="Schedule" asp-for="Schedule" placeholder="dd-MM-yyyy"/>
         }
         else if (wasScheduledBefore)
