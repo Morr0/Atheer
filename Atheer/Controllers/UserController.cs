@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Atheer.Controllers.Queries;
 using Atheer.Controllers.ViewModels;
 using Atheer.Exceptions;
@@ -29,15 +30,18 @@ namespace Atheer.Controllers
         }
 
         [HttpGet("{userId}")]
+        [HttpGet("{userId}/{page}")]
         public async Task<IActionResult> UserView([FromRoute] string userId, [FromServices] IArticleService articleService, 
-            [FromQuery] ArticlesQuery query)
+            [FromRoute] int page = 0)
         {
+            page = Math.Max(0, page);
+            string viewingUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
             var user = await _userService.Get(userId).ConfigureAwait(false);
             if (user is null) return NotFound();
-
-            // TODO fix user pagination
+            
             var articlesResponse =
-                await articleService.Get(ArticlesController.PageSize, 0, viewerUserId: userId, specificUserId: userId).ConfigureAwait(false);
+                await articleService.Get(ArticlesController.PageSize, page, viewerUserId: viewingUserId, 
+                    specificUserId: userId).ConfigureAwait(false);
 
             var viewModel = new UserPageViewModel
             {

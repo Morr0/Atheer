@@ -97,8 +97,10 @@ namespace Atheer.Services.ArticlesService
                 CreationDate = x.CreationDate,
                 TitleShrinked = x.TitleShrinked
             }).ToListAsync().ConfigureAwait(false);
-
-            bool hasNext = await queryable.Skip(skip).AnyAsync().ConfigureAwait(false);
+            
+            // Checks whether any next first by seeing if the returned list is less than the amount of page then surely
+            // no more exists otherwise will seek and see
+            bool hasNext = list.Count >= amount && await queryable.Skip(skip).AnyAsync().ConfigureAwait(false);
             bool hasPrevious = skip > 0;
 
             return new ArticlesResponse
@@ -109,7 +111,8 @@ namespace Atheer.Services.ArticlesService
                 Year = createdYear,
                 CurrentPage = page,
                 TagId = tagId,
-                TagTitle = tagTitle
+                TagTitle = tagTitle,
+                UserId = specificUserId
             };
         }
 

@@ -27,12 +27,22 @@ namespace Atheer.Controllers
 
         [HttpGet]
         [HttpGet("{page}")]
-        public async Task<IActionResult> Index([FromQuery] ArticlesQuery query, [FromRoute] int page = 0)
+        public async Task<IActionResult> Index([FromQuery] ArticlesQuery query, [FromRoute] int page = 0, string userId = null)
         {
-            string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
             page = Math.Max(0, page);
+            if (!string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("UserView", "User", new
+                {
+                    userId,
+                    page
+                });
+            }
+            
+            string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            
 
-            var blogResponse = await _service.Get(PageSize, page, query.Year, query.Tag, userId).ConfigureAwait(false);
+            var blogResponse = await _service.Get(PageSize, page, query.Year, query.Tag, viewerUserId).ConfigureAwait(false);
             
             if (blogResponse is null) return Redirect("/");
             if (!blogResponse.Articles.Any()) return Redirect("/");

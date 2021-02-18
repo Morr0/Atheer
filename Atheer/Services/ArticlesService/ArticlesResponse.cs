@@ -17,5 +17,6 @@ namespace Atheer.Services.ArticlesService
         public string TagTitle { get; set; }
         public int Year { get; set; }
         public bool SpecificYear => Year != 0;
+        public string UserId { get; set; }
     }
 }
