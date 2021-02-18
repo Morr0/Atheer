@@ -25,6 +25,7 @@ namespace Atheer.Controllers
             _service = service;
         }
 
+        [HttpGet]
         [HttpGet("{page}")]
         public async Task<IActionResult> Index([FromQuery] ArticlesQuery query, [FromRoute] int page = 0)
         {
