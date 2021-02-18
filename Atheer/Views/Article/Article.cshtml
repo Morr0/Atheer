@@ -13,7 +13,8 @@
     
     string dateStr = article.CreationDate.Split('T')[0];
 
-    string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+    string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+    bool isAuthor = viewerUserId == Model.Article.AuthorId;
 }
 
 <div class="container">
@@ -22,7 +23,7 @@
         
         <h2 class="text-dark">@article.Title</h2>
 
-        @if (article.AuthorId == userId)
+        @if (isAuthor)
         {
             <span class="text-info">Mine</span>
         }
@@ -35,14 +36,12 @@
         {
             <span class="text-info">Unlisted</span>
         }
-        @if (article.Scheduled)
+        @if (isAuthor && article.Scheduled)
         {
             <span class="text-info">Scheduled since: @DateTimeExtensions.GetLocalDate(@Model.Article.ScheduledSinceDate)</span>
         }
 
-
-        @await Component.InvokeAsync("ArticleEdit",
-            new ArticleEditLinkModel(article, @User.FindFirst(AuthenticationController.CookieUserId)?.Value))
+        @await Component.InvokeAsync("ArticleEdit", new ArticleEditLinkModel(article, viewerUserId))
         <h6 class="card-subtitle text-info">@dateStr</h6>
         <p class="card-text">@article.Description</p>
     </div>
