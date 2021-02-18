@@ -74,6 +74,7 @@ namespace Atheer
 
             // Background services
             services.AddHostedService<ReloadConfigBackgroundService>();
+            services.AddHostedService<ScheduledArticlesReleaserBackgroundService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

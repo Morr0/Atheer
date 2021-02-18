@@ -25,7 +25,7 @@ namespace Atheer.Extensions
 
         public static string GetDateOnly(this DateTime dt)
         {
-            return dt.ToString("dd-MM-yyyy");
+            return dt.ToString("yyyy-MM-dd");
         }
 
         /// <summary>
@@ -47,6 +47,12 @@ namespace Atheer.Extensions
         public static DateTime LastTickOfDay(this DateTime dt)
         {
             return dt.Date.AddDays(1).AddTicks(-1);
+        }
+
+        public static int MillisecondsUntilNextDay(this DateTime dt)
+        {
+            var now = DateTime.UtcNow;
+            return (int) (now.LastTickOfDay() - now).TotalMilliseconds;
         }
     }
 }
