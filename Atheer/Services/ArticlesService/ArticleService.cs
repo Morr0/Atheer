@@ -140,6 +140,8 @@ namespace Atheer.Services.ArticlesService
             if (article is null) return null;
             if (article.Draft && article.AuthorId != viewerUserId) return null;
 
+            if (article.Scheduled && article.AuthorId != viewerUserId) return null;
+
             // Get author full name
             var authorFullName = await _context.User.AsNoTracking()
                 .Select(x => new
