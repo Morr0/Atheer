@@ -15,10 +15,10 @@
 - Verify user by Recaptcha when have not logged in for a week
 - Update cloudformation for S3 and add VPC gateway endpoint for when accessing through VPC
 - Fix DOTNET_CLI_HOME bug
+- Add user last seen
 - 
 
 ### List of things if have time:
-- Update cookie full name after name change of user
 - Extract all string constants referenced both in razor and C# into their respective classes
 - Extract all words to an international word class (basically add very basic internationalizing support)
 
