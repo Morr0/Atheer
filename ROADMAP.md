@@ -1,7 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Make code more readable in an article
 - Admin can make a basic user an editor
 - Admin can make an editor a basic user
 - Ability to search using an article's title, content, description

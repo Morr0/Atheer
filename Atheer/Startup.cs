@@ -6,6 +6,7 @@ using Atheer.Services.ArticlesService;
 using Atheer.Services.UsersService;
 using Atheer.Services.UserSessionsService;
 using Atheer.Utilities.Config.Models;
+using Atheer.Utilities.Markdown;
 using AutoMapper;
 using Markdig;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -41,7 +42,7 @@ namespace Atheer
             services.AddSingleton<TagFactory>();
             
             services.AddSingleton<MarkdownPipeline>(
-                provider => new MarkdownPipelineBuilder().UseAdvancedExtensions().UseBootstrap().Build());
+                provider => new MarkdownPipelineBuilder().UseAdvancedExtensions().UseBootstrap().Use<CodeStyleExtension>().Build());
 
             // Repositories
             services.AddDbContext<Data>(opts =>
