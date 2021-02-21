@@ -16,20 +16,19 @@ using Microsoft.Extensions.Logging;
 namespace Atheer.Controllers
 {
     // Used for both editing/adding new articles
-    [Authorize(Roles = UserRoles.EditorRole)]
     [Route("Article/Edit")]
     public class ArticleEditController : Controller
     {
         private ILogger<ArticleEditController> _logger;
-        private IArticleService _service;
+        private IArticleService _articleService;
         private readonly IMapper _mapper;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public ArticleEditController(ILogger<ArticleEditController> logger, IArticleService service
+        public ArticleEditController(ILogger<ArticleEditController> logger, IArticleService articleService
         , IMapper mapper, IServiceScopeFactory serviceScopeFactory)
         {
             _logger = logger;
-            _service = service;
+            _articleService = articleService;
             _mapper = mapper;
             _serviceScopeFactory = serviceScopeFactory;
         }
@@ -37,35 +36,40 @@ namespace Atheer.Controllers
         [HttpGet]
         public async Task<IActionResult> Index([FromQuery] ArticlePrimaryKey key)
         {
-            bool isAdmin = User.IsInRole(UserRoles.AdminRole);
+            string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            
             Article article = null;
             string tagsAsString = "";
             bool isNewArticle = IsNewArticle(key.TitleShrinked);
             
             if (isNewArticle)
             {
+                using var scope = _serviceScopeFactory.CreateScope();
+                var userService = scope.ServiceProvider.GetService<IUserService>();
+                if (!(await userService.HasRole(viewerUserId, UserRoles.EditorRole).ConfigureAwait(false))) return Redirect("/");
+                
                 article = new Article();
             }
             else
             {
                 string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
                 
-                var vm = await _service.Get(key, userId).ConfigureAwait(false);
+                var vm = await _articleService.Get(key, userId).ConfigureAwait(false);
                 if (vm is null) return Redirect("/");
                 
-                article = vm.Article;
-
-                tagsAsString = Tag.TagsAsString(vm.Tags);
-                
-                if (User.FindFirst(AuthenticationController.CookieUserId)?.Value != article.AuthorId)
+                if (viewerUserId != vm.Article.AuthorId)
                 {
-                    if (!isAdmin) return Forbid();
+                    if (!User.IsInRole(UserRoles.AdminRole)) return Forbid();
                 }
+                
+                article = vm.Article;
+                tagsAsString = Tag.TagsAsString(vm.Tags);
             }
 
             var dto = _mapper.Map<ArticleEditViewModel>(article);
             dto.TagsAsString = tagsAsString;
             dto.Schedule = DateTimeExtensions.GetDateOnly(article.ScheduledSinceDate);
+            
             return View("ArticleEdit", dto);
         }
 
@@ -89,7 +93,7 @@ namespace Atheer.Controllers
         private async Task<IActionResult> Checkout(ArticlePrimaryKey key, ArticleEditViewModel articleViewModel)
         {
             // TODO handle FailedOperationException
-            string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
             if (!ModelState.IsValid)
             {
                 // TODO fix this to redirect
@@ -101,14 +105,18 @@ namespace Atheer.Controllers
             // ADD
             if (IsNewArticle(articleViewModel.TitleShrinked))
             {
+                using var scope = _serviceScopeFactory.CreateScope();
+                var userService = scope.ServiceProvider.GetService<IUserService>();
+                if (!(await userService.HasRole(viewerUserId, UserRoles.EditorRole).ConfigureAwait(false))) return Redirect("/");
+                
                 key = new ArticlePrimaryKey(articleViewModel.CreatedYear, articleViewModel.TitleShrinked);
-                await _service.Add(articleViewModel, userId).ConfigureAwait(false);
+                await _articleService.Add(articleViewModel, viewerUserId).ConfigureAwait(false);
                 return RedirectToAction("Index", "Article", new ArticlePrimaryKey(
                     articleViewModel.CreatedYear, articleViewModel.TitleShrinked));
             }
 
             // UPDATE
-            if (!(await _service.AuthorizedFor(key, userId).ConfigureAwait(false)))
+            if (!(await _articleService.AuthorizedFor(key, viewerUserId).ConfigureAwait(false)))
             {
                 if (!User.IsInRole(UserRoles.AdminRole)) return Forbid();
             }
@@ -131,7 +139,7 @@ namespace Atheer.Controllers
                 }
             }
             
-            await _service.Update(articleViewModel).ConfigureAwait(false);
+            await _articleService.Update(articleViewModel).ConfigureAwait(false);
             TempData["Info"] = "Updated article successfully";
             return RedirectToAction("Index", "ArticleEdit", key);
             
@@ -145,14 +153,14 @@ namespace Atheer.Controllers
         private async Task<IActionResult> Delete(ArticlePrimaryKey key)
         {
             string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
-            if (!(await _service.AuthorizedFor(key, userId).ConfigureAwait(false)))
+            if (!(await _articleService.AuthorizedFor(key, userId).ConfigureAwait(false)))
             {
                 if (!User.IsInRole(UserRoles.AdminRole)) return Forbid();
             }
 
             try
             {
-                await _service.Delete(key).ConfigureAwait(false);
+                await _articleService.Delete(key).ConfigureAwait(false);
                 return Redirect("/");
             }
             catch (FailedOperationException)

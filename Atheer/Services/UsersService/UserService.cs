@@ -130,5 +130,13 @@ namespace Atheer.Services.UsersService
             _context.Entry(userPassword).Property(x => x.PasswordHash).IsModified = true;
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }
+
+        public async Task<bool> HasRole(string id, string role)
+        {
+            string roles = await _context.User.AsNoTracking().Where(x => x.Id == id).Select(x => x.Roles)
+                .FirstOrDefaultAsync().ConfigureAwait(false);
+
+            return roles.Contains(role);
+        }
     }
 }
