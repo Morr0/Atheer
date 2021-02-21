@@ -18,14 +18,18 @@
     
     <div asp-validation-summary="ModelOnly"></div>
     
-    <label asp-for="EmailOrUsername"></label>
-    <input asp-for="EmailOrUsername">
-    <span asp-validation-for="EmailOrUsername" class="text-danger"></span>
+    <div class="form-group">
+        <label asp-for="EmailOrUsername"></label>
+        <input asp-for="EmailOrUsername" class="form-control">
+        <span asp-validation-for="EmailOrUsername" class="text-danger"></span>
+    </div>
     
-    <label asp-for="Password"></label>
-    <input asp-for="Password" type="password">
-    <span asp-validation-for="Password" class="text-danger"></span>
-    
+    <div class="form-group">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" type="password" class="form-control">
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
     <button class="btn btn-outline-primary">Login</button>
 </form>
 

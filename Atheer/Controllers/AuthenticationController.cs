@@ -51,7 +51,7 @@ namespace Atheer.Controllers
         [ResponseCache(Duration = 0, NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<IActionResult> Login([FromForm] LoginViewModel loginView, [FromQuery] string returnUrl = "/")
         {
-            if (!ModelState.IsValid) return RedirectToAction("LoginView");
+            if (!ModelState.IsValid) return View("Login", loginView);
             
             var user = await _userService.GetFromEmailOrUsername(loginView.EmailOrUsername).ConfigureAwait(false);
             if (user is not null)

@@ -72,7 +72,14 @@ namespace Atheer.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("UserSettingsView", "User", new {userId});
+                return View("UserSettings", new UserSettingsViewModel
+                {
+                    Id = userId,
+                    Bio = userSettingsUpdate.Bio,
+                    DateCreated = userSettingsUpdate.DateCreated,
+                    FirstName = userSettingsUpdate.FirstName,
+                    LastName = userSettingsUpdate.LastName
+                });
             }
             
             await _userService.Update(userId, userSettingsUpdate).ConfigureAwait(false);
@@ -127,6 +134,8 @@ namespace Atheer.Controllers
         [HttpPost("/Register")]
         public async Task<IActionResult> Register([FromForm] RegisterViewModel registerView)
         {
+            if (!ModelState.IsValid) return View("Register", registerView);
+            
             if (User.Identity?.IsAuthenticated == true) return Redirect("/");
 
             try
@@ -142,8 +151,8 @@ namespace Atheer.Controllers
             }
             catch (UserWithThisEmailAlreadyExistsException)
             {
-                TempData["EmailsExistsError"] = "Email registered already";
-                return RedirectToAction("RegisterView", registerView);
+                ViewData["EmailsExistsError"] = "Email registered already";
+                return View("Register", registerView);
             }
         }
     }
