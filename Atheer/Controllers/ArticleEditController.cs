@@ -96,7 +96,6 @@ namespace Atheer.Controllers
             string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
             if (!ModelState.IsValid)
             {
-                // TODO fix this to redirect
                 return View("ArticleEdit", articleViewModel);
             }
 
