@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Atheer.Controllers.Queries;
 using Atheer.Controllers.ViewModels;
@@ -10,6 +11,7 @@ using Atheer.Utilities.Config.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -63,6 +65,24 @@ namespace Atheer.Controllers
 
             var userSettingsVm = _mapper.Map<UserSettingsViewModel>(user);
             return View("UserSettings", userSettingsVm);
+        }
+
+        [HttpPost("ChangeImage")]
+        [Authorize]
+        public async Task<IActionResult> ChangeImage([FromForm] UserChangeImage form, [FromServices] IHostEnvironment env)
+        {
+            if (!ModelState.IsValid) return Redirect("/");
+            
+            string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            if (form.UserId != viewerUserId) return Redirect("/");
+
+            string filePath = Path.Combine(env.ContentRootPath, "pj.png");
+            using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+            {
+                await form.File.CopyToAsync(fileStream).ConfigureAwait(false);
+            }
+
+            return RedirectToAction("UserView", new {userId = form.UserId});
         }
 
         [HttpPost("Admin/ChangeRole")]

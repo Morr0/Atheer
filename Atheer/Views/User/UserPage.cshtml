@@ -10,12 +10,25 @@
 
     bool isAdminViewing = User.IsInRole(UserRoles.AdminRole);
     bool isUserInEditorRole = Model.User.Roles.Contains(UserRoles.EditorRole);
+
+    string imageUrl = "favicon.ico";
 }
 
 <div class="card mb-3">
   <div class="row g-0">
     <div class="col-md-4">
-      <img src="favicon.ico" alt="@fullName">
+      @if (sameUserViewingIsSameAsThis)
+      {
+        <form enctype="multipart/form-data" asp-controller="User" asp-action="ChangeImage" method="post" id="fileForm">
+          <input type="hidden" name="UserId" value="@Model.User.Id"/>
+          <img src="@imageUrl" alt="@fullName" ondblclick="popupFileDialog()">
+          <input type="file" hidden name="File" id="fileDialog" accept="image/png, image/jpeg" onchange="fileChanged()" />
+        </form>
+      }
+      else
+      {
+        <img src="@imageUrl" alt="@fullName">
+      }
     </div>
     <div class="col-md-8">
       <div class="card-body">
@@ -49,3 +62,24 @@
 </div>
 
 @await Component.InvokeAsync("Articles", Model.Articles).ConfigureAwait(false)
+
+@if (sameUserViewingIsSameAsThis)
+{
+  @section Scripts
+  {
+    <script>
+    const fileDialog = document.getElementById("fileDialog");
+    const fileForm = document.getElementById("fileForm");
+    
+    const popupFileDialog = () => {
+        fileDialog.click();
+    };
+    
+    const fileChanged = () => {
+        if (fileDialog.files.length > 0){
+            fileForm.submit();
+        }
+      };
+    </script>
+  }
+}
