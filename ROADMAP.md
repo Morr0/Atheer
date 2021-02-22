@@ -2,7 +2,6 @@
 ## Roadmap:
 ### List of things to work on:
 - Ability to search using an article's title, content, description
-- Sort by most recent/oldest
 - S3 abstraction with choice of public/private data storage
 - Ability for a user to upload profile image
 - Word counter auto generated after each add/update of article
@@ -19,6 +18,7 @@
 ### List of things if have time:
 - Extract all string constants referenced both in razor and C# into their respective classes
 - Extract all words to an international word class (basically add very basic internationalizing support)
+- Sort by most recent/oldest (done the backend just do the UI)
 
 ### List of longer term goals (not in order):
 

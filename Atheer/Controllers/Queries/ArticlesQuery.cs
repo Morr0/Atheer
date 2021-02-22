@@ -9,5 +9,7 @@ namespace Atheer.Controllers.Queries
 
         [MinLength(1)]
         public string Tag { get; set; }
+        
+        public bool Oldest { get; set; }
     }
 }

@@ -31,7 +31,7 @@ namespace Atheer.Services.ArticlesService
         }
 
         public async Task<ArticlesResponse> Get(int amount, int page, int createdYear = 0, string tagId = null,
-            string viewerUserId = null, string specificUserId = null)
+            string viewerUserId = null, string specificUserId = null, bool oldest = false)
         {
             string tagTitle = null;
 
@@ -81,8 +81,9 @@ namespace Atheer.Services.ArticlesService
             if (createdYear != 0) queryable = queryable.Where(x => x.CreatedYear == createdYear);
             
             int skip = amount * page;
-            queryable = queryable
-                .OrderByDescending(x => x.CreationDate)
+            
+            // Order by ASC or DESC depending on the user
+            queryable = (oldest ? queryable.OrderBy(x => x.CreationDate) : queryable.OrderByDescending(x => x.CreationDate))
                 .Skip(skip)
                 .Take(amount);
 
