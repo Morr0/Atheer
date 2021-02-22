@@ -65,6 +65,22 @@ namespace Atheer.Controllers
             return View("UserSettings", userSettingsVm);
         }
 
+        [HttpPost("Admin/ChangeRole")]
+        [Authorize(Roles = UserRoles.AdminRole)]
+        public async Task<IActionResult> AdminChangeRoleOfUser([FromForm] ChangeRoleByAdmin form)
+        {
+            Console.WriteLine(form.UserId + " " + form.NewRole);
+            if (!ModelState.IsValid) return Redirect("/");
+            
+            string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            // Don't allow an admin to play with self roles
+            if (form.UserId == viewerUserId) return Redirect("/");
+            
+            await _userService.ChangeRole(form.UserId, form.NewRole).ConfigureAwait(false);
+
+            return RedirectToAction("UserView", new {userId = form.UserId});
+        }
+
         [HttpPost("Settings/{userId}")]
         [Authorize]
         public async Task<IActionResult> UserSettingsPost([FromRoute] string userId,

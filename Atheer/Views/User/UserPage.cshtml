@@ -7,8 +7,9 @@
     string fullName = Model.User.FullName();
     ViewData["Title"] = fullName;
     bool sameUserViewingIsSameAsThis = userId == Model.User.Id;
-  
-    // TODO add last seen
+
+    bool isAdminViewing = User.IsInRole(UserRoles.AdminRole);
+    bool isUserInEditorRole = Model.User.Roles.Contains(UserRoles.EditorRole);
 }
 
 <div class="card mb-3">
@@ -19,7 +20,7 @@
     <div class="col-md-8">
       <div class="card-body">
         <h5 class="card-title">@fullName</h5>
-        @if (sameUserViewingIsSameAsThis || User.IsInRole(UserRoles.AdminRole))
+        @if (sameUserViewingIsSameAsThis || isAdminViewing)
         {
           <span class="text-info">Username: @Model.User.Id</span>
         }
@@ -27,8 +28,21 @@
         {
           <a asp-controller="User" asp-action="UserSettingsView" asp-route-userId="@userId" class="btn-link">Settings</a>
         }
+        @if (isAdminViewing && !sameUserViewingIsSameAsThis)
+        {
+          <form asp-controller="User" asp-action="AdminChangeRoleOfUser" method="post">
+            <input type="hidden" name="UserId" value="@Model.User.Id" />
+            @if (isUserInEditorRole)
+            {
+              <button type="submit" class="btn btn-danger" name="NewRole" value="@UserRoles.BasicRole">Make Basic User</button>
+            }
+            else
+            {
+              <button type="submit" class="btn btn-danger" name="NewRole" value="@UserRoles.EditorRole">Make Editor User</button>
+            }
+          </form>
+        }
         <p class="card-text">@Model.User.Bio</p>
-        @* <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> *@
       </div>
     </div>
   </div>

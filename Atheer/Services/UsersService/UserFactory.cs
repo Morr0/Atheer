@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Atheer.Controllers.ViewModels;
 using Atheer.Extensions;
 using Atheer.Models;
@@ -58,6 +59,19 @@ namespace Atheer.Services.UsersService
         public string AnotherId(string id)
         {
             return $"{id}-{DateTime.UtcNow.Minute.ToString()}";
+        }
+
+        public void TakeRole(ref User user, string role)
+        {
+            var roles = user.Roles.Split(',').Where(x => x != role);
+            user.Roles = string.Join(',', roles);
+        }
+
+        public void AddRole(ref User user, string role)
+        {
+            if (user.Roles.Contains(role)) return;
+
+            user.Roles = $"{user.Roles},{role}";
         }
     }
 }

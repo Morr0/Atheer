@@ -16,5 +16,6 @@ namespace Atheer.Services.UsersService
         Task UpdatePassword(string id, string oldPassword, string newPassword);
 
         Task<bool> HasRole(string id, string role);
+        Task ChangeRole(string id, string role);
     }
 }

@@ -1,8 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Admin can make a basic user an editor
-- Admin can make an editor a basic user
 - Ability to search using an article's title, content, description
 - Sort by most recent/oldest
 - S3 abstraction with choice of public/private data storage
