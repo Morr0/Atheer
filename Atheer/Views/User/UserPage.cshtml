@@ -10,8 +10,8 @@
 
     bool isAdminViewing = User.IsInRole(UserRoles.AdminRole);
     bool isUserInEditorRole = Model.User.Roles.Contains(UserRoles.EditorRole);
-
-    string imageUrl = "favicon.ico";
+  
+    string imageUrl = string.IsNullOrEmpty(Model.User.ImageUrl) ? Url.Content("~/img/defaultUserImage.jpg") : Model.User.ImageUrl;
 }
 
 <div class="card mb-3">
@@ -21,13 +21,13 @@
       {
         <form enctype="multipart/form-data" asp-controller="User" asp-action="ChangeImage" method="post" id="fileForm">
           <input type="hidden" name="UserId" value="@Model.User.Id"/>
-          <img src="@imageUrl" alt="@fullName" ondblclick="popupFileDialog()">
+          <img src="@imageUrl" alt="@fullName" ondblclick="popupFileDialog()" class="card-img">
           <input type="file" hidden name="File" id="fileDialog" accept="image/png, image/jpeg" onchange="fileChanged()" />
         </form>
       }
       else
       {
-        <img src="@imageUrl" alt="@fullName">
+        <img src="@imageUrl" alt="@fullName" class="card-img">
       }
     </div>
     <div class="col-md-8">

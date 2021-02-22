@@ -21,6 +21,8 @@
         public bool Verified { get; set; }
         public string VerificationDate { get; set; }
 
+        public string ImageUrl { get; set; }
+
         public string FullName() => $"{FirstName} {LastName}";
     }
 }
