@@ -17,17 +17,18 @@
 <div class="card mb-3">
   <div class="row g-0">
     <div class="col-md-4">
+      <span class="text-info" id="imageLoadingText">Loading image...</span>
       @if (sameUserViewingIsSameAsThis)
       {
         <form enctype="multipart/form-data" asp-controller="User" asp-action="ChangeImage" method="post" id="fileForm">
           <input type="hidden" name="UserId" value="@Model.User.Id"/>
-          <img src="@imageUrl" alt="@fullName" ondblclick="popupFileDialog()" class="card-img">
-          <input type="file" hidden name="File" id="fileDialog" accept="image/png, image/jpeg" onchange="fileChanged()" />
+          <img src="@imageUrl" alt="@fullName" ondblclick="popupFileDialog()" class="card-img" id="userImage">
+          <input type="file" hidden name="File" id="fileDialog" accept="image/png, image/jpeg" onchange="fileChanged()"/>
         </form>
       }
       else
       {
-        <img src="@imageUrl" alt="@fullName" class="card-img">
+        <img src="@imageUrl" alt="@fullName" class="card-img" id="userImage">
       }
     </div>
     <div class="col-md-8">
@@ -63,11 +64,12 @@
 
 @await Component.InvokeAsync("Articles", Model.Articles).ConfigureAwait(false)
 
-@if (sameUserViewingIsSameAsThis)
-{
+
   @section Scripts
   {
-    <script>
+    @if (sameUserViewingIsSameAsThis)
+    {
+      <script>
     const fileDialog = document.getElementById("fileDialog");
     const fileForm = document.getElementById("fileForm");
     
@@ -80,6 +82,13 @@
             fileForm.submit();
         }
       };
+    
+    </script>
+    }
+    <script>
+    const userImage = document.getElementById("userImage");
+    userImage.addEventListener("load", () => {
+      const imageLoadingText = document.getElementById("imageLoadingText").hidden = true;
+    });
     </script>
   }
-}
