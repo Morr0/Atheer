@@ -30,6 +30,10 @@
     Description: A private key name to access the server via SSH. Don't include extension.
     MinLength: "1"
     Default: "testKey"
+  PublicS3BucketName:
+    Type: String
+    Description: The name of the S3 bucket to deploy
+    AllowedPattern: "[a-z-]*"
 
 # TODO find an efficient way to refactor the availability zone used
 Resources:
@@ -144,6 +148,22 @@ Resources:
       VPCSecurityGroups:
         - Fn::GetAtt: [ DatabaseSecurityGroup, GroupId ]
       DBSubnetGroupName: !Ref DatabaseSubnetGroup
+      
+  # S3
+  Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Ref PublicS3BucketName
+      AccessControl: PublicRead
+      CorsConfiguration:
+        CorsRules:
+          - AllowedMethods:
+              - GET
+            AllowedOrigins:
+              - "*"
+            AllowedHeaders:
+              - "*"
 
   # Server
   ServerRole:

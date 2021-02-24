@@ -1,7 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Load default image if failed to load image of user
 - Ability to search using an article's title, content, description
 - Ability for a user to upload profile image
 - Word counter auto generated after each add/update of article
@@ -9,7 +8,8 @@
 - Integrate with Clicky for analytics
 - Verify user by Recaptcha at sign up
 - Verify user by Recaptcha when have not logged in for a week
-- Update cloudformation for S3 and add VPC gateway endpoint for when accessing through VPC
+- Add VPC gateway endpoint for when accessing through VPC
+- Add Cloudfront in front of S3 for when accessing images from the public 
 - Fix DOTNET_CLI_HOME bug
 - Add user last seen
 - 
