@@ -1,6 +1,7 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
+- Ability to remove image of user by user/admin
 - Ability to search using an article's title, content, description
 - S3 abstraction with choice of public/private data storage
 - Ability for a user to upload profile image

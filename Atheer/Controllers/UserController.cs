@@ -90,9 +90,7 @@ namespace Atheer.Controllers
                     .ConfigureAwait(false);
             }
             
-            _logger.LogInformation(imageUrl);
-            
-            // await _userService.Add()
+            await _userService.SetImage(form.UserId, imageUrl);
 
             return RedirectToAction("UserView", new {userId = form.UserId});
         }

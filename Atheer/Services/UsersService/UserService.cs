@@ -131,6 +131,15 @@ namespace Atheer.Services.UsersService
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
+        public async Task SetImage(string id, string imageUrl)
+        {
+            var user = await _context.User.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
+
+            user.ImageUrl = imageUrl;
+
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+        }
+
         public async Task<bool> HasRole(string id, string role)
         {
             string roles = await _context.User.AsNoTracking().Where(x => x.Id == id).Select(x => x.Roles)

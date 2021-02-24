@@ -15,6 +15,8 @@ namespace Atheer.Services.UsersService
         Task Update(string id, UserSettingsUpdate settingsViewModel);
         Task UpdatePassword(string id, string oldPassword, string newPassword);
 
+        Task SetImage(string id, string imageUrl);
+
         Task<bool> HasRole(string id, string role);
         Task ChangeRole(string id, string role);
     }
