@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using Amazon.S3;
 using Atheer.BackgroundServices;
 using Atheer.Repositories;
 using Atheer.Services.ArticlesService;
@@ -51,6 +52,7 @@ namespace Atheer
             {
                 opts.UseNpgsql(Configuration.GetConnectionString("MainPostgres"));
             });
+            services.AddTransient<IAmazonS3, AmazonS3Client>();
 
             // Services
             services.AddScoped<IArticleService, ArticleService>();

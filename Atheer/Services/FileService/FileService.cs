@@ -9,20 +9,20 @@ namespace Atheer.Services.FileService
 {
     public class FileService : IFileService
     {
+        private readonly IAmazonS3 _s3Client;
         private S3 _s3Config;
 
         private const string NoneDir = "None";
         private const string UserImageDir = "UserImage";
 
-        public FileService(IOptions<S3> s3Config)
+        public FileService(IOptions<S3> s3Config, IAmazonS3 s3Client)
         {
+            _s3Client = s3Client;
             _s3Config = s3Config.Value;
         }
         
         public async Task<string> Add(FileUse fileUse, string fileId, string contentType, Stream stream)
         {
-            using var s3Client = new AmazonS3Client();
-            
             string s3Key = GetKey(fileUse, fileId);
             var putObjectRequest = new PutObjectRequest
             {
@@ -34,7 +34,7 @@ namespace Atheer.Services.FileService
                 AutoCloseStream = false
             };
             
-            await s3Client.PutObjectAsync(putObjectRequest).ConfigureAwait(false);
+            await _s3Client.PutObjectAsync(putObjectRequest).ConfigureAwait(false);
             
             return GetFileUrl(ref s3Key);
         }
