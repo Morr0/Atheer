@@ -3,10 +3,8 @@
 ### List of things to work on:
 - Ability to remove image of user by user/admin
 - Ability to search using an article's title, content, description
-- S3 abstraction with choice of public/private data storage
 - Ability for a user to upload profile image
 - Word counter auto generated after each add/update of article
-- Article image stored to S3
 - List top tags
 - Integrate with Clicky for analytics
 - Verify user by Recaptcha at sign up

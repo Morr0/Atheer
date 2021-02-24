@@ -12,9 +12,6 @@ namespace Atheer.Services.FileService
         private readonly IAmazonS3 _s3Client;
         private S3 _s3Config;
 
-        private const string NoneDir = "None";
-        private const string UserImageDir = "UserImage";
-
         public FileService(IOptions<S3> s3Config, IAmazonS3 s3Client)
         {
             _s3Client = s3Client;
@@ -23,7 +20,7 @@ namespace Atheer.Services.FileService
         
         public async Task<string> Add(FileUse fileUse, string fileId, string contentType, Stream stream)
         {
-            string s3Key = GetKey(fileUse, fileId);
+            string s3Key = FileServiceUtilities.GetKey(fileUse, fileId);
             var putObjectRequest = new PutObjectRequest
             {
                 BucketName = _s3Config.BucketName,
@@ -36,25 +33,7 @@ namespace Atheer.Services.FileService
             
             await _s3Client.PutObjectAsync(putObjectRequest).ConfigureAwait(false);
             
-            return GetFileUrl(ref s3Key);
-        }
-
-        internal string GetKey(FileUse fileUse, string fileId)
-        {
-            switch (fileUse)
-            {
-                case FileUse.UserImage:
-                    return $"{UserImageDir}/{fileId}";
-                default:
-                    return $"{NoneDir}/{fileId}";
-            }
-        }
-
-        internal string GetFileUrl(ref string key)
-        {
-            // putObjectResponse.
-            string endpoint = $"https://{_s3Config.BucketName}.s3.amazonaws.com/{key}";
-            return endpoint;
+            return FileServiceUtilities.GetFileUrl(_s3Config.BucketName, ref s3Key);
         }
     }
 }
