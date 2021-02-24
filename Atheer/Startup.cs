@@ -3,6 +3,7 @@ using System.Reflection;
 using Atheer.BackgroundServices;
 using Atheer.Repositories;
 using Atheer.Services.ArticlesService;
+using Atheer.Services.FileService;
 using Atheer.Services.UsersService;
 using Atheer.Services.UserSessionsService;
 using Atheer.Utilities.Config.Models;
@@ -32,6 +33,7 @@ namespace Atheer
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<Site>(Configuration.GetSection("Site"));
+            services.Configure<S3>(Configuration.GetSection("S3"));
 
             services.AddControllersWithViews();
 
@@ -54,6 +56,7 @@ namespace Atheer
             services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserSessionsService, UserSessionsService>();
+            services.AddTransient<IFileService, FileService>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(opts =>

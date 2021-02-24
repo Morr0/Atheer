@@ -5,12 +5,14 @@ using Atheer.Controllers.Queries;
 using Atheer.Controllers.ViewModels;
 using Atheer.Exceptions;
 using Atheer.Services.ArticlesService;
+using Atheer.Services.FileService;
 using Atheer.Services.UsersService;
 using Atheer.Services.UsersService.Exceptions;
 using Atheer.Utilities.Config.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -69,18 +71,28 @@ namespace Atheer.Controllers
 
         [HttpPost("ChangeImage")]
         [Authorize]
-        public async Task<IActionResult> ChangeImage([FromForm] UserChangeImage form, [FromServices] IHostEnvironment env)
+        public async Task<IActionResult> ChangeImage([FromForm] UserChangeImage form, [FromServices] IServiceScopeFactory serviceScopeFactory)
         {
             if (!ModelState.IsValid) return Redirect("/");
             
             string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
             if (form.UserId != viewerUserId) return Redirect("/");
 
-            string filePath = Path.Combine(env.ContentRootPath, "pj.png");
-            using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+            string imageUrl = string.Empty;
+            await using (var memoryStream = new MemoryStream())
             {
-                await form.File.CopyToAsync(fileStream).ConfigureAwait(false);
+                await form.File.CopyToAsync(memoryStream).ConfigureAwait(false);
+
+                using var scope = serviceScopeFactory.CreateScope();
+                var fileService = scope.ServiceProvider.GetService<IFileService>();
+
+                imageUrl = await fileService.Add(FileUse.UserImage, form.UserId, form.File.ContentType, memoryStream)
+                    .ConfigureAwait(false);
             }
+            
+            _logger.LogInformation(imageUrl);
+            
+            // await _userService.Add()
 
             return RedirectToAction("UserView", new {userId = form.UserId});
         }
