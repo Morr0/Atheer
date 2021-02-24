@@ -95,6 +95,27 @@ namespace Atheer.Controllers
             return RedirectToAction("UserView", new {userId = form.UserId});
         }
 
+        [HttpPost("RemoveChange")]
+        [Authorize]
+        public async Task<IActionResult> RemoveImage([FromForm] UserRemoveImage form, [FromServices] IServiceScopeFactory serviceScopeFactory)
+        {
+            string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+
+            if (form.UserId != viewerUserId && !User.IsInRole(UserRoles.AdminRole)) return Redirect("/");
+
+            await _userService.SetImage(form.UserId, string.Empty).ConfigureAwait(false);
+            
+            using var scope = serviceScopeFactory.CreateScope();
+            var fileService = scope.ServiceProvider.GetService<IFileService>();
+
+            await fileService.Remove(FileUse.UserImage, form.UserId).ConfigureAwait(false);
+
+            // For S3 to update their clusters
+            await Task.Delay(1000).ConfigureAwait(false);
+
+            return RedirectToAction("UserView", new {userId = form.UserId});
+        }
+
         [HttpPost("Admin/ChangeRole")]
         [Authorize(Roles = UserRoles.AdminRole)]
         public async Task<IActionResult> AdminChangeRoleOfUser([FromForm] ChangeRoleByAdmin form)

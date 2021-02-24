@@ -35,5 +35,17 @@ namespace Atheer.Services.FileService
             
             return FileServiceUtilities.GetFileUrl(_s3Config.BucketName, ref s3Key);
         }
+
+        public Task Remove(FileUse fileUse, string fileId)
+        {
+            string s3Key = FileServiceUtilities.GetKey(fileUse, fileId);
+            var deleteObjectRequest = new DeleteObjectRequest
+            {
+                BucketName = _s3Config.BucketName,
+                Key = s3Key
+            };
+
+            return _s3Client.DeleteObjectAsync(deleteObjectRequest);
+        }
     }
 }

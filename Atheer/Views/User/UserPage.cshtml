@@ -10,16 +10,21 @@
 
     bool isAdminViewing = User.IsInRole(UserRoles.AdminRole);
     bool isUserInEditorRole = Model.User.Roles.Contains(UserRoles.EditorRole);
-  
-    string imageUrl = string.IsNullOrEmpty(Model.User.ImageUrl) ? Url.Content("~/img/defaultUserImage.jpg") : Model.User.ImageUrl;
+
+    bool hasImage = !string.IsNullOrEmpty(Model.User.ImageUrl);
+  Console.WriteLine(hasImage.ToString());
+    string imageUrl = hasImage ? Model.User.ImageUrl : Url.Content("~/img/defaultUserImage.jpg");
 }
 
 <div class="card mb-3">
   <div class="row g-0">
     <div class="col-md-4">
-      <span class="text-info" id="imageLoadingText">Loading image...</span>
       @if (sameUserViewingIsSameAsThis)
       {
+        @if (hasImage)
+        {
+          <span class="text-info" id="imageLoadingText">Loading image...</span>
+        }
         <form enctype="multipart/form-data" asp-controller="User" asp-action="ChangeImage" method="post" id="fileForm">
           <input type="hidden" name="UserId" value="@Model.User.Id"/>
           <img src="@imageUrl" alt="@fullName" ondblclick="popupFileDialog()" class="card-img" id="userImage">
@@ -56,6 +61,13 @@
             }
           </form>
         }
+        @if (hasImage && (sameUserViewingIsSameAsThis || isAdminViewing))
+        {
+          <form asp-controller="User" asp-action="RemoveImage" method="post">
+            <input type="hidden" name="UserId" value="@Model.User.Id"/>
+            <button type="submit" class="btn btn-danger">Remove Image</button>
+          </form>
+        }
         <p class="card-text">@Model.User.Bio</p>
       </div>
     </div>
@@ -85,10 +97,13 @@
     
     </script>
     }
-    <script>
-    const userImage = document.getElementById("userImage");
-    userImage.addEventListener("load", () => {
-      const imageLoadingText = document.getElementById("imageLoadingText").hidden = true;
-    });
-    </script>
+    @if (hasImage)
+    {
+      <script>
+      const userImage = document.getElementById("userImage");
+      userImage.addEventListener("load", () => {
+        const imageLoadingText = document.getElementById("imageLoadingText").hidden = true;
+      });
+      </script>
+    }
   }

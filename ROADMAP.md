@@ -1,7 +1,7 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Ability to remove image of user by user/admin
+- Load default image if failed to load image of user
 - Ability to search using an article's title, content, description
 - Ability for a user to upload profile image
 - Word counter auto generated after each add/update of article
