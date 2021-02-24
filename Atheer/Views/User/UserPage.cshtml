@@ -12,8 +12,8 @@
     bool isUserInEditorRole = Model.User.Roles.Contains(UserRoles.EditorRole);
 
     bool hasImage = !string.IsNullOrEmpty(Model.User.ImageUrl);
-  Console.WriteLine(hasImage.ToString());
-    string imageUrl = hasImage ? Model.User.ImageUrl : Url.Content("~/img/defaultUserImage.jpg");
+    string defaultImageUrl = Url.Content("~/img/defaultUserImage.jpg");
+    string imageUrl = hasImage ? Model.User.ImageUrl : defaultImageUrl;
 }
 
 <div class="card mb-3">
@@ -25,16 +25,15 @@
         {
           <span class="text-info" id="imageLoadingText">Loading image...</span>
         }
+        
+        // Change Image
         <form enctype="multipart/form-data" asp-controller="User" asp-action="ChangeImage" method="post" id="fileForm">
           <input type="hidden" name="UserId" value="@Model.User.Id"/>
-          <img src="@imageUrl" alt="@fullName" ondblclick="popupFileDialog()" class="card-img" id="userImage">
           <input type="file" hidden name="File" id="fileDialog" accept="image/png, image/jpeg" onchange="fileChanged()"/>
         </form>
       }
-      else
-      {
-        <img src="@imageUrl" alt="@fullName" class="card-img" id="userImage">
-      }
+      
+      <img src="@imageUrl" alt="@fullName" class="card-img" id="userImage">
     </div>
     <div class="col-md-8">
       <div class="card-body">
@@ -104,6 +103,10 @@
       userImage.addEventListener("load", () => {
         const imageLoadingText = document.getElementById("imageLoadingText").hidden = true;
       });
+      @if (sameUserViewingIsSameAsThis)
+      {
+        @:userImage.addEventListener("dblclick", popupFileDialog);
+      }
       </script>
     }
   }
