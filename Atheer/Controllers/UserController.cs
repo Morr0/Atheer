@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Atheer.Controllers.Queries;
 using Atheer.Controllers.ViewModels;
 using Atheer.Exceptions;
+using Atheer.Extensions;
 using Atheer.Services.ArticlesService;
 using Atheer.Services.FileService;
 using Atheer.Services.UsersService;
@@ -39,7 +40,7 @@ namespace Atheer.Controllers
             [FromRoute] int page = 0)
         {
             page = Math.Max(0, page);
-            string viewingUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            string viewingUserId = this.GetViewerUserId();
             var user = await _userService.Get(userId).ConfigureAwait(false);
             if (user is null) return NotFound();
             
@@ -59,7 +60,7 @@ namespace Atheer.Controllers
         [Authorize]
         public async Task<IActionResult> UserSettingsView([FromRoute] string userId)
         {
-            string viewingUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            string viewingUserId = this.GetViewerUserId();
             if (viewingUserId != userId) return RedirectToAction("UserView", userId);
 
             var user = await _userService.Get(userId).ConfigureAwait(false);
@@ -75,7 +76,7 @@ namespace Atheer.Controllers
         {
             if (!ModelState.IsValid) return Redirect("/");
             
-            string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            string viewerUserId = this.GetViewerUserId();
             if (form.UserId != viewerUserId) return Redirect("/");
 
             string imageUrl = string.Empty;
@@ -99,7 +100,7 @@ namespace Atheer.Controllers
         [Authorize]
         public async Task<IActionResult> RemoveImage([FromForm] UserRemoveImage form, [FromServices] IServiceScopeFactory serviceScopeFactory)
         {
-            string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            string viewerUserId = this.GetViewerUserId();
 
             if (form.UserId != viewerUserId && !User.IsInRole(UserRoles.AdminRole)) return Redirect("/");
 
@@ -123,7 +124,7 @@ namespace Atheer.Controllers
             Console.WriteLine(form.UserId + " " + form.NewRole);
             if (!ModelState.IsValid) return Redirect("/");
             
-            string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            string viewerUserId = this.GetViewerUserId();
             // Don't allow an admin to play with self roles
             if (form.UserId == viewerUserId) return Redirect("/");
             
@@ -157,7 +158,7 @@ namespace Atheer.Controllers
         [Authorize]
         public IActionResult ChangePasswordView([FromRoute] string userId)
         {
-            string viewingUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            string viewingUserId = this.GetViewerUserId();
             if (viewingUserId != userId) return Unauthorized();
 
             return View("ChangePassword", userId);
@@ -175,7 +176,7 @@ namespace Atheer.Controllers
                 return RedirectToAction("ChangePasswordView", new {userId});
             }
             
-            string viewingUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            string viewingUserId = this.GetViewerUserId();
             if (viewingUserId != userId) return Unauthorized();
             
             // TODO Let user know confirmed new password does not match

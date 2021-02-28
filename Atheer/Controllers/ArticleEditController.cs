@@ -36,7 +36,7 @@ namespace Atheer.Controllers
         [HttpGet]
         public async Task<IActionResult> Index([FromQuery] ArticlePrimaryKey key)
         {
-            string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            string viewerUserId = this.GetViewerUserId();
             
             Article article = null;
             string tagsAsString = "";
@@ -93,7 +93,7 @@ namespace Atheer.Controllers
         private async Task<IActionResult> Checkout(ArticlePrimaryKey key, ArticleEditViewModel articleViewModel)
         {
             // TODO handle FailedOperationException
-            string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            string viewerUserId = this.GetViewerUserId();
             if (!ModelState.IsValid)
             {
                 return View("ArticleEdit", articleViewModel);
@@ -151,7 +151,7 @@ namespace Atheer.Controllers
 
         private async Task<IActionResult> Delete(ArticlePrimaryKey key)
         {
-            string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+            string userId = this.GetViewerUserId();
             if (!(await _articleService.AuthorizedFor(key, userId).ConfigureAwait(false)))
             {
                 if (!User.IsInRole(UserRoles.AdminRole)) return Forbid();

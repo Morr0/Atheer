@@ -1,9 +1,8 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Atheer.Controllers.Queries;
-using Atheer.Controllers.ViewModels;
+using Atheer.Extensions;
 using Atheer.Services.ArticlesService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -39,8 +38,8 @@ namespace Atheer.Controllers
                     page
                 });
             }
-            
-            string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
+
+            string viewerUserId = this.GetViewerUserId();
 
             ArticlesResponse blogResponse = null;
             if (string.IsNullOrEmpty(searchQuery.Q))
