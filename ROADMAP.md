@@ -2,9 +2,6 @@
 ## Roadmap:
 ### List of things to work on:
 - Fix not updating author bug
-- Fix bug of when going back a page from user view goes to the main articles view 
-- Ability to search using an article's title, content, description
-- Ability for a user to upload profile image
 - Word counter auto generated after each add/update of article
 - List top tags
 - Integrate with Clicky for analytics

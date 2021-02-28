@@ -21,11 +21,6 @@
     <div class="col-md-4">
       @if (sameUserViewingIsSameAsThis)
       {
-        @if (hasImage)
-        {
-          <span class="text-info" id="imageLoadingText">Loading image...</span>
-        }
-        
         // Change Image
         <form enctype="multipart/form-data" asp-controller="User" asp-action="ChangeImage" method="post" id="fileForm">
           <input type="hidden" name="UserId" value="@Model.User.Id"/>
@@ -80,7 +75,7 @@
   {
     @if (sameUserViewingIsSameAsThis)
     {
-      <script>
+    <script>
     const fileDialog = document.getElementById("fileDialog");
     const fileForm = document.getElementById("fileForm");
     
@@ -94,19 +89,7 @@
         }
       };
     
+    document.getElementById("userImage").addEventListener("dblclick", popupFileDialog);
     </script>
-    }
-    @if (hasImage)
-    {
-      <script>
-      const userImage = document.getElementById("userImage");
-      userImage.addEventListener("load", () => {
-        const imageLoadingText = document.getElementById("imageLoadingText").hidden = true;
-      });
-      @if (sameUserViewingIsSameAsThis)
-      {
-        @:userImage.addEventListener("dblclick", popupFileDialog);
-      }
-      </script>
     }
   }

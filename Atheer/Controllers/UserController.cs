@@ -96,7 +96,7 @@ namespace Atheer.Controllers
             return RedirectToAction("UserView", new {userId = form.UserId});
         }
 
-        [HttpPost("RemoveChange")]
+        [HttpPost("RemoveImage")]
         [Authorize]
         public async Task<IActionResult> RemoveImage([FromForm] UserRemoveImage form, [FromServices] IServiceScopeFactory serviceScopeFactory)
         {

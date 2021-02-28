@@ -77,8 +77,8 @@
     <ul class="pagination justify-content-center mt-4">
         @if (Model.AnyPrevious)
         {
-            <li class="page-item"><a class="page-link" asp-controller="Articles" asp-action="Index" asp-route-page="@prevPage" 
-                                     asp-route-userId="@Model.UserId">
+            <li class="page-item"><a class="page-link" asp-controller="Articles" asp-action="Index" 
+                                     asp-route-userId="@Model.UserId" asp-route-page="@prevPage">
                 Previous
             </a></li>
         }
@@ -88,8 +88,8 @@
         }
         @if (Model.AnyNext)
         {
-            <li class="page-item"><a class="page-link" asp-controller="Articles" asp-action="Index" asp-route-page="@nextPage" 
-                                     asp-route-userId="@Model.UserId">
+            <li class="page-item"><a class="page-link" asp-controller="Articles" asp-action="Index" 
+                                     asp-route-userId="@Model.UserId" asp-route-page="@nextPage">
                 Next
             </a></li>
         }
