@@ -35,17 +35,7 @@ namespace Atheer.Services.ArticlesService
             var articles = await _context.Article.AsNoTracking().Where(x => x.SearchVector.Matches(searchQuery))
                 .OrderByDescending(x => x.CreationDate)
                 .Take(amount)
-                .Select<Article, StrippedArticleViewModel>(x => new StrippedArticleViewModel
-                {
-                    CreatedYear = x.CreatedYear,
-                    Description = x.Description,
-                    Draft = x.Draft,
-                    Title = x.Title,
-                    Unlisted = x.Unlisted,
-                    AuthorId = x.AuthorId,
-                    CreationDate = x.CreationDate,
-                    TitleShrinked = x.TitleShrinked
-                })
+                .ToStrippedArticles()
                 .ToListAsync().ConfigureAwait(false);
 
             return new ArticlesResponse
@@ -67,27 +57,12 @@ namespace Atheer.Services.ArticlesService
             // Specific tag
             else
             {
-                tagTitle = await _context.Tag.Where(x => x.Id == tagId)
-                    .Select(x => x.Title).FirstOrDefaultAsync().ConfigureAwait(false);
+                tagTitle = await GetTagTitle(tagId);
                 if (tagTitle is null) return null;
-                
-                queryable = from ta in _context.TagArticle.AsNoTracking()
-                    join t in _context.Tag.AsNoTracking() on ta.TagId equals t.Id
-                    join a in _context.Article.AsNoTracking() on
-                        new
-                        {
-                            ta.ArticleCreatedYear,
-                            ta.ArticleTitleShrinked
-                        } equals 
-                        new
-                        {
-                            ArticleCreatedYear = a.CreatedYear,
-                            ArticleTitleShrinked = a.TitleShrinked
-                        }
-                    where t.Id == tagId
-                    select a;
+
+                GetArticlesOfSpecificTag(ref queryable, tagId);
             }
-            
+
             queryable = string.IsNullOrEmpty(viewerUserId)
                 // Public viewing all articles
                 ? queryable.Where(x => x.Unlisted == false && x.Draft == false && x.Scheduled == false)
@@ -103,29 +78,20 @@ namespace Atheer.Services.ArticlesService
             }
 
             if (createdYear != 0) queryable = queryable.Where(x => x.CreatedYear == createdYear);
-            
+
             int skip = amount * page;
-            
+
             // Order by ASC or DESC depending on the user
-            queryable = (oldest ? queryable.OrderBy(x => x.CreationDate) : queryable.OrderByDescending(x => x.CreationDate))
+            queryable = (oldest
+                    ? queryable.OrderBy(x => x.CreationDate)
+                    : queryable.OrderByDescending(x => x.CreationDate))
                 .Skip(skip)
                 .Take(amount);
 
-            var list = await queryable.Select<Article, StrippedArticleViewModel>(x => new StrippedArticleViewModel
-            {
-                CreatedYear = x.CreatedYear,
-                Description = x.Description,
-                Draft = x.Draft,
-                Title = x.Title,
-                Unlisted = x.Unlisted,
-                AuthorId = x.AuthorId,
-                CreationDate = x.CreationDate,
-                TitleShrinked = x.TitleShrinked
-            }).ToListAsync().ConfigureAwait(false);
-            
-            // Checks whether any next first by seeing if the returned list is less than the amount of page then surely
-            // no more exists otherwise will seek and see
-            bool hasNext = list.Count >= amount && await queryable.Skip(skip).AnyAsync().ConfigureAwait(false);
+            var list = await queryable.ToStrippedArticles()
+                .ToListAsync().ConfigureAwait(false);
+
+            bool hasNext = await HasAnyMoreArticles(amount, list, queryable, skip);
             bool hasPrevious = skip > 0;
 
             return new ArticlesResponse
@@ -139,6 +105,36 @@ namespace Atheer.Services.ArticlesService
                 TagTitle = tagTitle,
                 UserId = specificUserId
             };
+        }
+
+        private async Task<string> GetTagTitle(string tagId)
+        {
+            return await _context.Tag.Where(x => x.Id == tagId)
+                .Select(x => x.Title).FirstOrDefaultAsync().ConfigureAwait(false);
+        }
+
+        private void GetArticlesOfSpecificTag(ref IQueryable<Article> queryable, string tagId)
+        {
+            queryable = from ta in _context.TagArticle.AsNoTracking()
+                join t in _context.Tag.AsNoTracking() on ta.TagId equals t.Id
+                join a in _context.Article.AsNoTracking() on
+                    new
+                    {
+                        ta.ArticleCreatedYear,
+                        ta.ArticleTitleShrinked
+                    } equals 
+                    new
+                    {
+                        ArticleCreatedYear = a.CreatedYear,
+                        ArticleTitleShrinked = a.TitleShrinked
+                    }
+                where t.Id == tagId
+                select a;
+        }
+
+        private static async Task<bool> HasAnyMoreArticles(int amount, List<StrippedArticleViewModel> list, IQueryable<Article> queryable, int skip)
+        {
+            return list.Count >= amount && await queryable.Skip(skip).AnyAsync().ConfigureAwait(false);
         }
 
         public async Task<bool> Exists(ArticlePrimaryKey key, string userId = null)
