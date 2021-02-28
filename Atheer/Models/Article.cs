@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
+using NpgsqlTypes;
 
 namespace Atheer.Models
 {
@@ -41,5 +42,9 @@ namespace Atheer.Models
         
         [JsonIgnore] 
         public IList<TagArticle> Tags { get; set; }
+        
+        // Postgresql specific
+        [JsonIgnore]
+        public NpgsqlTsVector SearchVector { get; set; }
     }
 }

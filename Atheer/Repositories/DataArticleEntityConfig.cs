@@ -70,6 +70,18 @@ namespace Atheer.Repositories
             modelBuilder.Entity<Article>()
                 .Property(x => x.Shares)
                 .HasDefaultValue(0);
+            
+            // Search
+            //  - Refer to: https://www.npgsql.org/efcore/mapping/full-text-search.html?tabs=pg12%2Cv5
+            modelBuilder.Entity<Article>()
+                .HasGeneratedTsVectorColumn(x => x.SearchVector, "english", x => new
+                {
+                    x.Title,
+                    x.Description,
+                    x.Content
+                })
+                .HasIndex(x => x.SearchVector)
+                .HasMethod("GIN");
         }
     }
 }

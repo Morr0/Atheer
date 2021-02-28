@@ -30,6 +30,30 @@ namespace Atheer.Services.ArticlesService
             _logger = logger;
         }
 
+        public async Task<ArticlesResponse> Get(int amount, string searchQuery)
+        {
+            var articles = await _context.Article.AsNoTracking().Where(x => x.SearchVector.Matches(searchQuery))
+                .OrderByDescending(x => x.CreationDate)
+                .Take(amount)
+                .Select<Article, StrippedArticleViewModel>(x => new StrippedArticleViewModel
+                {
+                    CreatedYear = x.CreatedYear,
+                    Description = x.Description,
+                    Draft = x.Draft,
+                    Title = x.Title,
+                    Unlisted = x.Unlisted,
+                    AuthorId = x.AuthorId,
+                    CreationDate = x.CreationDate,
+                    TitleShrinked = x.TitleShrinked
+                })
+                .ToListAsync().ConfigureAwait(false);
+
+            return new ArticlesResponse
+            {
+                Articles = articles
+            };
+        }
+
         public async Task<ArticlesResponse> Get(int amount, int page, int createdYear = 0, string tagId = null,
             string viewerUserId = null, string specificUserId = null, bool oldest = false)
         {

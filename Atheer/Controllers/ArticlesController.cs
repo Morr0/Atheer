@@ -27,7 +27,8 @@ namespace Atheer.Controllers
 
         [HttpGet]
         [HttpGet("{page}")]
-        public async Task<IActionResult> Index([FromQuery] ArticlesQuery query, [FromRoute] int page = 0, string userId = null)
+        public async Task<IActionResult> Index([FromQuery] ArticlesQuery query, [FromQuery] ArticlesSearchQuery searchQuery,
+            [FromRoute] int page = 0, string userId = null)
         {
             page = Math.Max(0, page);
             if (!string.IsNullOrEmpty(userId))
@@ -41,9 +42,17 @@ namespace Atheer.Controllers
             
             string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
 
-            var blogResponse = await _service.Get(PageSize, page, query.Year, query.Tag, viewerUserId, oldest: query.Oldest)
-                .ConfigureAwait(false);
-            
+            ArticlesResponse blogResponse = null;
+            if (string.IsNullOrEmpty(searchQuery.Q))
+            {
+                blogResponse = await _service.Get(PageSize, page, query.Year, query.Tag, viewerUserId, oldest: query.Oldest)
+                    .ConfigureAwait(false);
+            }
+            else
+            {
+                blogResponse = await _service.Get(PageSize, searchQuery.Q);
+            }
+
             if (blogResponse is null) return Redirect("/");
             if (!blogResponse.Articles.Any()) return Redirect("/");
             
