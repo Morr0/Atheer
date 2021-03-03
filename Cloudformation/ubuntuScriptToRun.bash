@@ -20,13 +20,8 @@ sudo apt-get update -y; \
 cd /home/ubuntu/
 mkdir atheer
 cd atheer
+export DOTNET_CLI_HOME="/tmp"
 git clone https://github.com/Morr0/Atheer .
 cd Atheer
-dotnet restore
-# Install dotnet-ef to make the database up-to-date
-dotnet tool uninstall --global dotnet-ef
-dotnet tool install --global dotnet-ef
-export ASPNETCORE_ENVIRONMENT="Production"
-dotnet ef database update
 # Create a detached tmux session and run the website in it
 tmux new-session -d -s server "dotnet run --environment Production"
