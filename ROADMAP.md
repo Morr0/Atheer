@@ -2,6 +2,7 @@
 ## Roadmap:
 ### List of things to work on:
 - Tagify all resources
+- Do not show SQL logs in server when in Production 
 - Integrate with Clicky for analytics
 - Fix not updating author bug
 - Verify user by Recaptcha at sign up

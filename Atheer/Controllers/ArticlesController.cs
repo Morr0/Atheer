@@ -53,7 +53,6 @@ namespace Atheer.Controllers
             }
 
             if (blogResponse is null) return Redirect("/");
-            if (!blogResponse.Articles.Any()) return Redirect("/");
             
             return View("Articles", blogResponse);
         }
