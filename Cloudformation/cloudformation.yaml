@@ -1,4 +1,17 @@
 ﻿Parameters: 
+  ProjectName:
+    Type: String
+    Description: The name of the project as well as what paid and key resources will be tagged with
+    MinLength: 0
+    MaxLength: 255
+    Default: Atheer
+  ProjectTagKeyName:
+    Type: String
+    Description: The name of the key of the tag of resources
+    MinLength: 1
+    MaxLength: 127
+    AllowedPattern: "[ A-Za-z-_./=+]+"
+    Default: Project
   DBDatabaseName:
     Type: String
     Description: The name of the database hosting Atheer
@@ -45,6 +58,9 @@ Resources:
       EnableDnsHostnames: true
       EnableDnsSupport: true
       InstanceTenancy: default
+      Tags:
+        - Key: !Ref ProjectTagKeyName
+          Value: !Ref ProjectName
   NetworkInternetGateway:
     Type: AWS::EC2::InternetGateway
   InternetGatewayAttachment:
@@ -80,6 +96,9 @@ Resources:
       CidrBlock: 10.0.0.0/24
       AvailabilityZone: !Select [ 0, !GetAZs ""]
       MapPublicIpOnLaunch: false
+      Tags:
+        - Key: !Ref ProjectTagKeyName
+          Value: !Ref ProjectName
   SecondPrivateSubnet:
     # \Because RDS Subnet group requires 2 zones
     Type: AWS::EC2::Subnet
@@ -88,6 +107,9 @@ Resources:
       CidrBlock: 10.0.1.0/24
       AvailabilityZone: !Select [ 1, !GetAZs "" ]
       MapPublicIpOnLaunch: false
+      Tags:
+        - Key: !Ref ProjectTagKeyName
+          Value: !Ref ProjectName
   PublicSubnet:
     Type: AWS::EC2::Subnet
     Properties:
@@ -95,6 +117,9 @@ Resources:
       CidrBlock: 10.0.2.0/24
       AvailabilityZone: !Select [ 0, !GetAZs ""]
       MapPublicIpOnLaunch: true
+      Tags:
+        - Key: !Ref ProjectTagKeyName
+          Value: !Ref ProjectName
       
   # - Subnets associations with Route tables
   PublicSubnetRouteTableAssociation:
@@ -115,6 +140,9 @@ Resources:
           ToPort: 5432
           # from VPC only
           CidrIp: 10.0.0.0/16
+      Tags:
+        - Key: !Ref ProjectTagKeyName
+          Value: !Ref ProjectName
   DatabaseSubnetGroup:
     DependsOn: 
       - Network
@@ -148,6 +176,9 @@ Resources:
       VPCSecurityGroups:
         - Fn::GetAtt: [ DatabaseSecurityGroup, GroupId ]
       DBSubnetGroupName: !Ref DatabaseSubnetGroup
+      Tags:
+        - Key: !Ref ProjectTagKeyName
+          Value: !Ref ProjectName
       
   # S3
   Bucket:
@@ -164,6 +195,9 @@ Resources:
               - "*"
             AllowedHeaders:
               - "*"
+      Tags:
+        - Key: !Ref ProjectTagKeyName
+          Value: !Ref ProjectName
 
   # Server
   ServerRole:
@@ -192,6 +226,9 @@ Resources:
                   - "ssm:Get*"
                   - "ssm:List*"
                 Resource: "*"
+      Tags:
+        - Key: !Ref ProjectTagKeyName
+          Value: !Ref ProjectName
   ServerInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties: 
@@ -211,6 +248,9 @@ Resources:
       SecurityGroupEgress:
         - IpProtocol: -1
           CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: !Ref ProjectTagKeyName
+          Value: !Ref ProjectName
   Server:
     DependsOn: 
       - Database
@@ -229,6 +269,9 @@ Resources:
       SubnetId: !Ref PublicSubnet
       SecurityGroupIds:
         - !Ref ServerSecurityGroup
+      Tags:
+        - Key: !Ref ProjectTagKeyName
+          Value: !Ref ProjectName
       UserData:
         !Base64 |
         #!/bin/bash
