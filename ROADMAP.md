@@ -9,7 +9,6 @@
 - Verify user by Recaptcha when have not logged in for a week
 - Add VPC gateway endpoint for when accessing through VPC
 - Add Cloudfront in front of S3 for when accessing images from the public 
-- Fix DOTNET_CLI_HOME bug
 - Add user last seen
 - 
 

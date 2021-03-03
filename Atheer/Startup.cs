@@ -84,7 +84,7 @@ namespace Atheer
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceScopeFactory serviceScopeFactory)
         {
             if (env.IsDevelopment())
             {
@@ -96,6 +96,8 @@ namespace Atheer
                 Console.WriteLine("Production");
                 app.UseExceptionHandler("/Error");
             }
+
+            UpdateDatabase(serviceScopeFactory);
             
             // app.UseHttpsRedirection();
 
@@ -112,6 +114,16 @@ namespace Atheer
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private void UpdateDatabase(IServiceScopeFactory serviceScopeFactory)
+        {
+            using (var scope = serviceScopeFactory.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetService<Data>();
+                
+                context.Database.Migrate();
+            }
         }
     }
 }
