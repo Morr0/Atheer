@@ -1,10 +1,9 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Fix not updating author bug
-- Word counter auto generated after each add/update of article
-- List top tags
+- Tagify all resources
 - Integrate with Clicky for analytics
+- Fix not updating author bug
 - Verify user by Recaptcha at sign up
 - Verify user by Recaptcha when have not logged in for a week
 - Add VPC gateway endpoint for when accessing through VPC
@@ -16,6 +15,8 @@
 - Extract all string constants referenced both in razor and C# into their respective classes
 - Extract all words to an international word class (basically add very basic internationalizing support)
 - Sort by most recent/oldest (done the backend just do the UI)
+- Word counter auto generated after each add/update of article
+- List top tags
 
 ### List of longer term goals (not in order):
 

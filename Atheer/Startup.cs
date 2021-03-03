@@ -79,7 +79,6 @@ namespace Atheer
                 });
 
             // Background services
-            services.AddHostedService<ReloadConfigBackgroundService>();
             services.AddHostedService<ScheduledArticlesReleaserBackgroundService>();
         }
 
