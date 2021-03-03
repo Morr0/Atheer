@@ -85,14 +85,13 @@ namespace Atheer
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceScopeFactory serviceScopeFactory)
         {
+            Console.WriteLine(env.EnvironmentName);
             if (env.IsDevelopment())
             {
-                Console.WriteLine("Development");
                 app.UseDeveloperExceptionPage();
             }
             else
             {
-                Console.WriteLine("Production");
                 app.UseExceptionHandler("/Error");
             }
 
