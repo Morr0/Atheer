@@ -1,36 +1,29 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
+﻿const site = window.location.origin;
 
 const like = (createdYear, titleShrinked) => {
-    const origin = window.location.origin;
-    const url = `${origin}/api/article/like?createdYear=${createdYear}&titleShrinked=${titleShrinked}`;
+    const likesLabelForButton = document.getElementById("likes");
     
-    $.ajax({
-        type: "POST",
-        url: url,
-        success: (result) => {
-            let likes = Number.parseInt($("#likes")[0].innerText);
+    fetch(`${site}/api/article/like?createdYear=${createdYear}&titleShrinked=${titleShrinked}`, {
+       method: "POST"
+    }).then((res) => {
+        if (res.status === 200){
+            let likes = Number.parseInt(likesLabelForButton.innerText);
             likes++;
-            $("#likes")[0].innerText = `${likes.toString()} Likes | `;
-            
-            $("#like")[0].disabled = true;
+            likesLabelForButton.innerText = `${likes.toString()} Likes | `;
+
+            document.getElementById("like").disabled = true;
         }
     });
 };
 
 const share = (createdYear, titleShrinked) => {
-    const origin = window.location.origin;
-    const url = `${origin}/api/article/share?createdYear=${createdYear}&titleShrinked=${titleShrinked}`;
-    $.ajax({
-        type: "POST",
-        url,
+    fetch(`${site}/api/article/share?createdYear=${createdYear}&titleShrinked=${titleShrinked}`, {
+        method: "POST"
     });
     
     const fullUrl = window.location.href;
     navigator.clipboard.writeText(fullUrl).then(() => {
-        $("#shareInfo")[0].innerText = "Successfully copied link to clipboard";
-        $("#share")[0].disabled = true;
+        document.getElementById("shareInfo").innerText = "Successfully copied link to clipboard";
+        document.getElementById("share").disabled = true;
     });
 };
