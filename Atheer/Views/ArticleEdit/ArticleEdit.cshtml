@@ -4,7 +4,6 @@
 
 @{
     bool isNew = string.IsNullOrEmpty(Model.TitleShrinked);
-    Model.NewAuthorId = Model.AuthorId;
 
     ViewData["Title"] = isNew ? "New" : "Edit";
     
@@ -30,8 +29,7 @@
             @if (User.IsInRole(UserRoles.AdminRole))
             {
                 <label for="NewAuthorId">Author Id</label>
-                <input type="text" name="NewAuthorId" id="NewAuthorId" value="@Model.NewAuthorId" class="form-control">
-                <span asp-validation-for="NewAuthorId" class="text-danger"></span>
+                <input type="text" name="NewAuthorId" id="NewAuthorId" value="@Model.AuthorId" class="form-control">
             }
         }
         <label for="Title">Title: </label>

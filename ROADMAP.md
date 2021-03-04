@@ -1,9 +1,7 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Do not show SQL logs in server when in Production 
 - Integrate with Clicky for analytics
-- Fix not updating author bug
 - Verify user by Recaptcha at sign up
 - Verify user by Recaptcha when have not logged in for a week
 - Add VPC gateway endpoint for when accessing through VPC

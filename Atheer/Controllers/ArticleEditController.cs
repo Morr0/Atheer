@@ -74,13 +74,16 @@ namespace Atheer.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromForm] string button, [FromForm] ArticleEditViewModel articleViewModel)
+        public async Task<IActionResult> Post([FromForm] string button, [FromForm] ArticleEditViewModel articleViewModel, 
+            [FromForm] ArticleEditChangeAuthorByAdmin changeAuthorByAdmin)
         {
+            if (string.IsNullOrEmpty(changeAuthorByAdmin.AuthorId) || string.IsNullOrEmpty(changeAuthorByAdmin.NewAuthorId)) 
+                _logger.LogInformation(" is null");
             var key = new ArticlePrimaryKey(articleViewModel.CreatedYear, articleViewModel.TitleShrinked);
             switch (button)
             {
                 case "Checkout":
-                    return await Checkout(key, articleViewModel).ConfigureAwait(false);
+                    return await Checkout(key, articleViewModel, changeAuthorByAdmin).ConfigureAwait(false);
                 case "Page":
                     return VisitPage(ref key);
                 case "Delete":
@@ -90,7 +93,8 @@ namespace Atheer.Controllers
             }
         }
 
-        private async Task<IActionResult> Checkout(ArticlePrimaryKey key, ArticleEditViewModel articleViewModel)
+        private async Task<IActionResult> Checkout(ArticlePrimaryKey key, ArticleEditViewModel articleViewModel, 
+            ArticleEditChangeAuthorByAdmin authorChangeByAdmin)
         {
             // TODO handle FailedOperationException
             string viewerUserId = this.GetViewerUserId();
@@ -98,14 +102,15 @@ namespace Atheer.Controllers
             {
                 return View("ArticleEdit", articleViewModel);
             }
+            
+            using var scope = _serviceScopeFactory.CreateScope();
+            var userService = scope.ServiceProvider.GetService<IUserService>();
 
             articleViewModel.TagsAsString = articleViewModel.TagsAsString.TrimEnd();
 
             // ADD
             if (IsNewArticle(articleViewModel.TitleShrinked))
             {
-                using var scope = _serviceScopeFactory.CreateScope();
-                var userService = scope.ServiceProvider.GetService<IUserService>();
                 if (!(await userService.HasRole(viewerUserId, UserRoles.EditorRole).ConfigureAwait(false))) return Redirect("/");
                 
                 key = new ArticlePrimaryKey(articleViewModel.CreatedYear, articleViewModel.TitleShrinked);
@@ -115,33 +120,40 @@ namespace Atheer.Controllers
             }
 
             // UPDATE
-            if (!(await _articleService.AuthorizedFor(key, viewerUserId).ConfigureAwait(false)))
-            {
-                if (!User.IsInRole(UserRoles.AdminRole)) return Forbid();
-            }
-            // Check if updating user that it exists
-            // If user non-existent will update everything except for the author id
-            if (articleViewModel.AuthorId != articleViewModel.NewAuthorId)
-            {
-                using var scope = _serviceScopeFactory.CreateScope();
-                var userService = scope.ServiceProvider.GetService<IUserService>();
-                
-                if (!(await userService.Exists(articleViewModel.NewAuthorId).ConfigureAwait(false)))
-                {
-                    articleViewModel.NewAuthorId = articleViewModel.AuthorId;
-                    if (User.IsInRole(UserRoles.AdminRole))
-                        TempData["Err"] = "Author id was not updated due to selected user non-existent";
-                }
-                else
-                {
-                    articleViewModel.AuthorId = articleViewModel.NewAuthorId;
-                }
-            }
-            
+            if (!(await AuthorizedFor(key, viewerUserId).ConfigureAwait(false))) return Forbid();
+
+            await ChangeAuthorIfChangedByAdmin(userService, articleViewModel, authorChangeByAdmin).ConfigureAwait(false);
+
             await _articleService.Update(articleViewModel).ConfigureAwait(false);
             TempData["Info"] = "Updated article successfully";
             return RedirectToAction("Index", "ArticleEdit", key);
-            
+        }
+
+        private async Task<bool> AuthorizedFor(ArticlePrimaryKey key, string viewerUserId)
+        {
+            if (!(await _articleService.AuthorizedFor(key, viewerUserId).ConfigureAwait(false)))
+            {
+                if (!User.IsInRole(UserRoles.AdminRole)) return false;
+            }
+
+            return true;
+        }
+
+        private async Task ChangeAuthorIfChangedByAdmin(IUserService userService, ArticleEditViewModel articleViewModel,
+            ArticleEditChangeAuthorByAdmin changeAuthorByAdmin)
+        {
+            if (string.IsNullOrEmpty(articleViewModel.AuthorId) || !User.IsInRole(UserRoles.AdminRole)) return;
+            if (!changeAuthorByAdmin.IsValid()) return;
+            if (articleViewModel.AuthorId == changeAuthorByAdmin.NewAuthorId) return;
+
+            if (await userService.Exists(changeAuthorByAdmin.NewAuthorId).ConfigureAwait(false))
+            {
+                articleViewModel.AuthorId = changeAuthorByAdmin.NewAuthorId;
+            }
+            else
+            {
+                TempData["Err"] = "Author id was not updated due to selected user non-existent";
+            }
         }
 
         private IActionResult VisitPage(ref ArticlePrimaryKey key)
@@ -151,11 +163,8 @@ namespace Atheer.Controllers
 
         private async Task<IActionResult> Delete(ArticlePrimaryKey key)
         {
-            string userId = this.GetViewerUserId();
-            if (!(await _articleService.AuthorizedFor(key, userId).ConfigureAwait(false)))
-            {
-                if (!User.IsInRole(UserRoles.AdminRole)) return Forbid();
-            }
+            string viewerUserId = this.GetViewerUserId();
+            if (!(await AuthorizedFor(key, viewerUserId).ConfigureAwait(false))) return Forbid();
 
             try
             {
