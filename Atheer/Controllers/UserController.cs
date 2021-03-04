@@ -7,6 +7,7 @@ using Atheer.Exceptions;
 using Atheer.Extensions;
 using Atheer.Services.ArticlesService;
 using Atheer.Services.FileService;
+using Atheer.Services.RecaptchaService;
 using Atheer.Services.UsersService;
 using Atheer.Services.UsersService.Exceptions;
 using Atheer.Utilities.Config.Models;
@@ -200,11 +201,17 @@ namespace Atheer.Controllers
         }
         
         [HttpPost("/Register")]
-        public async Task<IActionResult> Register([FromForm] RegisterViewModel registerView)
+        public async Task<IActionResult> Register([FromForm] RegisterViewModel registerView, [FromServices] IServiceScopeFactory serviceScopeFactory)
         {
             if (!ModelState.IsValid) return View("Register", registerView);
             
             if (User.Identity?.IsAuthenticated == true) return Redirect("/");
+
+            if (!(await ProceedAfterHandlingRecaptchaIfAppropriate(serviceScopeFactory, registerView.RecaptchaResponse).ConfigureAwait(false)))
+            {
+                await Task.Delay(2000).ConfigureAwait(false);
+                return View("Register", registerView);
+            }
 
             try
             {
@@ -222,6 +229,17 @@ namespace Atheer.Controllers
                 ViewData["EmailsExistsError"] = "Email registered already";
                 return View("Register", registerView);
             }
+        }
+
+        private async Task<bool> ProceedAfterHandlingRecaptchaIfAppropriate(IServiceScopeFactory serviceScopeFactory, string recaptchaUserResponse)
+        {
+            using var scope = serviceScopeFactory.CreateScope();
+            var recaptchaConfig = scope.ServiceProvider.GetService<IOptions<Recaptcha>>();
+
+            if (!recaptchaConfig.Value.Enabled) return true;
+
+            var recaptchaService = scope.ServiceProvider.GetService<IRecaptchaService>();
+            return await recaptchaService.IsValidClient(recaptchaUserResponse).ConfigureAwait(false);
         }
     }
 }

@@ -5,6 +5,7 @@ using Atheer.BackgroundServices;
 using Atheer.Repositories;
 using Atheer.Services.ArticlesService;
 using Atheer.Services.FileService;
+using Atheer.Services.RecaptchaService;
 using Atheer.Services.UsersService;
 using Atheer.Services.UserSessionsService;
 using Atheer.Utilities.Config.Models;
@@ -36,8 +37,10 @@ namespace Atheer
             services.Configure<Site>(Configuration.GetSection("Site"));
             services.Configure<S3>(Configuration.GetSection("S3"));
             services.Configure<SiteAnalytics>(Configuration.GetSection("SiteAnalytics"));
+            services.Configure<Recaptcha>(Configuration.GetSection("Recaptcha"));
 
             services.AddControllersWithViews();
+            services.AddHttpClient();
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
@@ -60,6 +63,7 @@ namespace Atheer
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserSessionsService, UserSessionsService>();
             services.AddTransient<IFileService, FileService>();
+            services.AddTransient<IRecaptchaService, RecaptchaService>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(opts =>
