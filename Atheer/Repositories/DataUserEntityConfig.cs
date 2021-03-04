@@ -16,15 +16,8 @@ namespace Atheer.Repositories
                 .HasIndex(x => x.Email)
                 .IsUnique();
 
-            modelBuilder.Entity<User>()
-                .HasIndex(x => x.Verified)
-                .HasFilter($"\"{nameof(Atheer.Models.User.Verified)}\" IS FALSE");
-            
             // Properties
             // - Booleans
-            modelBuilder.Entity<User>()
-                .Property(x => x.Verified)
-                .HasDefaultValue(false);
             // - Strings
             modelBuilder.Entity<User>()
                 .Property(x => x.Bio)
@@ -46,9 +39,6 @@ namespace Atheer.Repositories
                 .HasColumnType("varchar(20)");
             modelBuilder.Entity<User>()
                 .Property(x => x.DateLastLoggedIn)
-                .HasColumnType("varchar(20)");
-            modelBuilder.Entity<User>()
-                .Property(x => x.VerificationDate)
                 .HasColumnType("varchar(20)");
             modelBuilder.Entity<User>()
                 .Property(x => x.Id)

@@ -1,7 +1,7 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Integrate with Clicky for analytics
+- Go to top of page button
 - Verify user by Recaptcha at sign up
 - Verify user by Recaptcha when have not logged in for a week
 - Add VPC gateway endpoint for when accessing through VPC
