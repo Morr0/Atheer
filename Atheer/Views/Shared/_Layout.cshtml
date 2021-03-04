@@ -4,11 +4,14 @@
 @using Atheer.Controllers
 @using Atheer.Services.UsersService
 @inject IOptionsSnapshot<Site> Site
+@inject IOptions<SiteAnalytics> SiteAnalytics
 
 @{
     string fullTitle = $"{ViewData["Title"]} - {Site.Value.Title}";
 
     bool authenticated = User.Identity?.IsAuthenticated == true;
+
+    string trackingNum = SiteAnalytics.Value.SiteId;
 }
 
 <!DOCTYPE html>
@@ -93,5 +96,13 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+@if (SiteAnalytics.Value.EnableClicky)
+{
+    // Clicky Analytics clicky.com
+    <script>clicky_site_ids = Array(1).fill(@trackingNum);</script>
+    <script async src="https://static.getclicky.com/js"></script>
+}
+
 </body>
 </html>

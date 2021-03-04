@@ -10,5 +10,7 @@
 
         // In second
         public int ConfigReloadDuration { get; set; }
+        
+        
     }
 }

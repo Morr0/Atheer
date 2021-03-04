@@ -35,6 +35,7 @@ namespace Atheer
         {
             services.Configure<Site>(Configuration.GetSection("Site"));
             services.Configure<S3>(Configuration.GetSection("S3"));
+            services.Configure<SiteAnalytics>(Configuration.GetSection("SiteAnalytics"));
 
             services.AddControllersWithViews();
 
