@@ -71,25 +71,32 @@
 @await Component.InvokeAsync("Articles", Model.Articles).ConfigureAwait(false)
 
 
-  @section Scripts
+@section Scripts
+{
+  <script>
+    document.getElementById("userImage").addEventListener("error", (e) => {
+      console.log("error");
+      e.target.src = "@defaultImageUrl";
+    });
+  </script>
+  
+  @if (sameUserViewingIsSameAsThis)
   {
-    @if (sameUserViewingIsSameAsThis)
-    {
-    <script>
-    const fileDialog = document.getElementById("fileDialog");
-    const fileForm = document.getElementById("fileForm");
-    
-    const popupFileDialog = () => {
-        fileDialog.click();
+  <script>
+  const fileDialog = document.getElementById("fileDialog");
+  const fileForm = document.getElementById("fileForm");
+  
+  const popupFileDialog = () => {
+      fileDialog.click();
+  };
+  
+  const fileChanged = () => {
+      if (fileDialog.files.length > 0){
+          fileForm.submit();
+      }
     };
-    
-    const fileChanged = () => {
-        if (fileDialog.files.length > 0){
-            fileForm.submit();
-        }
-      };
-    
-    document.getElementById("userImage").addEventListener("dblclick", popupFileDialog);
-    </script>
-    }
+  
+  document.getElementById("userImage").addEventListener("dblclick", popupFileDialog);
+  </script>
   }
+}
