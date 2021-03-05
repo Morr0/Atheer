@@ -20,6 +20,21 @@
     bool scheduled = isAuthor && article.Scheduled && !string.IsNullOrEmpty(scheduledSince);
 }
 
+@section Head
+{
+    <style type="text/css">
+        .go-up-btn {
+            position: fixed;
+            bottom: 50px;
+            right: 50px;
+            width: 4rem;
+            height: 4rem;
+            overflow: hidden;
+            z-index: 999;
+        }
+    </style>
+}
+
 <div class="container">
     <div class="card-header">
         <h6 class="card-subtitle">@tags</h6>
@@ -75,3 +90,30 @@
         <span class="text-info" id="shareInfo"></span>
     </div>
 </div>
+
+<button type="button" class="btn btn-info rounded-circle go-up-btn" hidden id="go-up-btn">Up</button>
+
+@section Scripts
+{
+<script>
+const halfHeight = window.innerHeight / 5;
+const goUpBtn = document.getElementById("go-up-btn");
+window.addEventListener("scroll", (event) => {
+    goUpBtn.hidden = window.scrollY <= halfHeight;
+});
+
+window.scrollBy({
+   behavior: "smooth",
+   top: 0,
+   left: 250
+});
+
+goUpBtn.addEventListener("click", () => {
+    window.scrollTo({
+        top: 0,
+        left: window.screenX,
+        behavior: "smooth"
+    });
+});
+</script>
+}

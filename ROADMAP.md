@@ -1,8 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Go to top of page button
-- Verify user by Recaptcha when have not logged in for a week
 - Add VPC gateway endpoint for when accessing through VPC
 - Add Cloudfront in front of S3 for when accessing images from the public 
 - Add user last seen
