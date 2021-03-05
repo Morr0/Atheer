@@ -27,13 +27,13 @@ namespace Atheer.Services.FileService
                 Key = s3Key,
                 InputStream = stream,
                 ContentType = contentType,
-                CannedACL = S3CannedACL.PublicRead,
+                CannedACL = S3CannedACL.Private,
                 AutoCloseStream = false
             };
             
             await _s3Client.PutObjectAsync(putObjectRequest).ConfigureAwait(false);
             
-            return FileServiceUtilities.GetFileUrl(_s3Config.BucketName, ref s3Key);
+            return FileServiceUtilities.GetCdnFileUrl(_s3Config.CdnUrl, ref s3Key);
         }
 
         public Task Remove(FileUse fileUse, string fileId)

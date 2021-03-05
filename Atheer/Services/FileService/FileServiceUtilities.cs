@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("AtheerTests")]
 namespace Atheer.Services.FileService
@@ -18,10 +19,17 @@ namespace Atheer.Services.FileService
                     return $"{NoneDir}/{fileId}";
             }
         }
-
+        
+        [Obsolete]
         internal static string GetFileUrl(string bucketName, ref string key)
         {
             string endpoint = $"https://{bucketName}.s3.amazonaws.com/{key}";
+            return endpoint;
+        }
+
+        internal static string GetCdnFileUrl(string cdnUrl, ref string key)
+        {
+            string endpoint = $"{cdnUrl}/{key}";
             return endpoint;
         }
     }

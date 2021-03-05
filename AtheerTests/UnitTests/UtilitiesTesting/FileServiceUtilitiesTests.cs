@@ -39,6 +39,18 @@ namespace AtheerTests.UnitTests.UtilitiesTesting
             Assert.Contains(".s3.amazonaws.com/", url);
         }
 
+        [Fact]
+        public void GetCdnFileUrlShouldUseCorrectEndpoint()
+        {
+            string cdnUrl = "kfgjmhfgjhfgjf.somecdn.khtg.com";
+            string key = "pep/ii";
+
+            string url = FileServiceUtilities.GetCdnFileUrl(cdnUrl, ref key);
+
+            Assert.Contains(cdnUrl, url);
+            Assert.Contains(key, url);
+        }
+
         public static IEnumerable<object[]> GetUrlParameters()
         {
             yield return new object[]
