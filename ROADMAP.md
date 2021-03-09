@@ -1,10 +1,8 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Add VPC gateway endpoint for when accessing through VPC
 - Correct scheduled articles releaser to get articles older than today in a transaction
 - Add Polly to handle retries of errors with scheduling background service, recaptcha service, S3
-- Add user last seen
 - Migrate from FirstName and LastName to Name
 - Login and Register with Github
 - 
@@ -25,7 +23,6 @@
     - add images on the fly and automatically taken care of to S3
     - remove images and automatically removed from S3
     - no need to type Markdown but still can
-    - add <iframe>
     - ability to add audio to play
 #### Article pipeline after an article is updated which allows for:
     - making table of contents and attaching it to the beginning

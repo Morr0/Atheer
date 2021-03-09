@@ -204,11 +204,32 @@ Resources:
       Tags:
         - Key: !Ref ProjectTagKeyName
           Value: !Ref ProjectName
+  # So S3 Can be accessed from within the vpc directly than through internet
+  S3VPCEndpoint:
+    Type: 'AWS::EC2::VPCEndpoint'
+    Properties:
+      VpcEndpointType: Gateway
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal: '*'
+            Action: "*"
+            Resource:
+              Fn::Join:
+                - ""
+                - - !GetAtt Bucket.Arn
+                  - "/*"
+      RouteTableIds:
+        - !Ref PublicRouteTable
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"
+      VpcId: !Ref Network
   BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
       Bucket: !Ref Bucket
       PolicyDocument:
+        Version: 2012-10-17
         Statement:
           - Action:
               - "s3:GetObject"
