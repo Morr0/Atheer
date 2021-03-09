@@ -122,7 +122,6 @@ namespace Atheer.Controllers
         [Authorize(Roles = UserRoles.AdminRole)]
         public async Task<IActionResult> AdminChangeRoleOfUser([FromForm] ChangeRoleByAdmin form)
         {
-            Console.WriteLine(form.UserId + " " + form.NewRole);
             if (!ModelState.IsValid) return Redirect("/");
             
             string viewerUserId = this.GetViewerUserId();

@@ -30,7 +30,6 @@ namespace Atheer.Services.ArticlesService
             
             GetDate(articleViewModel.Schedule, out var releaseDate, out bool scheduled, out string scheduledSinceDate);
 
-            Console.WriteLine(releaseDate.GetString());
             article.CreatedYear = releaseDate.Year;
             article.TitleShrinked = GetShrinkedTitle(articleViewModel.Title);
             article.CreationDate = releaseDate.GetString();
@@ -79,7 +78,6 @@ namespace Atheer.Services.ArticlesService
         public void Unschedule(Article article, DateTime now)
         {
             var releaseDate = DateTime.Parse(article.CreationDate);
-            Console.WriteLine(article.ScheduledSinceDate);
             var scheduledSince = DateTime.Parse(article.ScheduledSinceDate);
             // Not Between
             if (!(scheduledSince <= now && now < releaseDate)) return;

@@ -77,8 +77,6 @@ namespace Atheer.Controllers
         public async Task<IActionResult> Post([FromForm] string button, [FromForm] ArticleEditViewModel articleViewModel, 
             [FromForm] ArticleEditChangeAuthorByAdmin changeAuthorByAdmin)
         {
-            if (string.IsNullOrEmpty(changeAuthorByAdmin.AuthorId) || string.IsNullOrEmpty(changeAuthorByAdmin.NewAuthorId)) 
-                _logger.LogInformation(" is null");
             var key = new ArticlePrimaryKey(articleViewModel.CreatedYear, articleViewModel.TitleShrinked);
             switch (button)
             {

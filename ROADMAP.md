@@ -2,6 +2,7 @@
 ## Roadmap:
 ### List of things to work on:
 - Correct scheduled articles releaser to get articles older than today in a transaction
+- Let client render current date in local time  
 - Add Polly to handle retries of errors with scheduling background service, recaptcha service, S3
 - Migrate from FirstName and LastName to Name
 - Login and Register with Github

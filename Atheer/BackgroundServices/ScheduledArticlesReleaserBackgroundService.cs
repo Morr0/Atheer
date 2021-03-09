@@ -22,28 +22,33 @@ namespace Atheer.BackgroundServices
         
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (true)
+            do
             {
+                using (var scope = _serviceScopeFactory.CreateScope())
+                {
+                    await using var context = scope.ServiceProvider.GetService<Data>();
+                    
+                    await ProcessJob(context).ConfigureAwait(false);
+                }
+
                 // This must run on midnight
                 await Task.Delay(DateTime.UtcNow.MillisecondsUntilNextDay(), stoppingToken).ConfigureAwait(false);
-                
-                using var scope = _serviceScopeFactory.CreateScope();
-                await using var context = scope.ServiceProvider.GetService<Data>();
-
-                await ProcessJob(context).ConfigureAwait(false);
-                // TODO add days before as well
-            }
+            } while (true);
         }
 
         private async Task ProcessJob(Data context)
         {
-            string todaysDate = DateTime.UtcNow.GetDateOnly();
+            // TODO Broken sync from UTC to local or other way around
+            var today = DateTime.UtcNow;
             var articles = await context.Article
-                .Where(x => x.Scheduled && x.CreationDate.Contains(todaysDate))
+                .Where(x => x.Scheduled)
                 .ToListAsync().ConfigureAwait(false);
 
             foreach (var article in articles)
             {
+                var releaseDate = DateTime.Parse(article.CreationDate).FirstTickOfDay();
+                if (!(today >= releaseDate)) continue;
+                
                 article.Scheduled = false;
                 article.Draft = false;
             }
