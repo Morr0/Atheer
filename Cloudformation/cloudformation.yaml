@@ -181,12 +181,18 @@ Resources:
           Value: !Ref ProjectName
       
   # S3
+  # - Public bucket for static files
+  BucketOAI:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: Allow Cloudfront to access S3 bucket
   Bucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
     Properties:
       BucketName: !Ref PublicS3BucketName
-      AccessControl: PublicRead
+      AccessControl: Private
       CorsConfiguration:
         CorsRules:
           - AllowedMethods:
@@ -195,6 +201,49 @@ Resources:
               - "*"
             AllowedHeaders:
               - "*"
+      Tags:
+        - Key: !Ref ProjectTagKeyName
+          Value: !Ref ProjectName
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref Bucket
+      PolicyDocument:
+        Statement:
+          - Action:
+              - "s3:GetObject"
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - !GetAtt Bucket.Arn
+                  - "/*"
+            Principal:
+              CanonicalUser: !GetAtt BucketOAI.S3CanonicalUserId
+  Cdn:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: !GetAtt Bucket.RegionalDomainName
+            Id: !Ref Bucket
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${BucketOAI}"
+        Enabled: true
+        Comment: Cloudfront in front of S3
+        DefaultRootObject: ""
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          Compress: true
+          TargetOriginId: !Ref Bucket
+          ViewerProtocolPolicy: allow-all
+          # Managed-CachingOptimized at https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html
+          CachePolicyId: "658327ea-f89d-4fab-a63d-7e88639e58f6"
+        PriceClass: PriceClass_All
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: true
       Tags:
         - Key: !Ref ProjectTagKeyName
           Value: !Ref ProjectName
@@ -301,3 +350,8 @@ Resources:
         cd Atheer
         # Create a detached tmux session and run the website in it
         tmux new-session -d -s server "dotnet run --environment Production"
+        
+Outputs: 
+  CdnDomainName:
+    Description: Domain name of the Cdn
+    Value: !GetAtt Cdn.DomainName

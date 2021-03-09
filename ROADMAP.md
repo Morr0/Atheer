@@ -2,8 +2,11 @@
 ## Roadmap:
 ### List of things to work on:
 - Add VPC gateway endpoint for when accessing through VPC
-- Add Cloudfront in front of S3 for when accessing images from the public 
+- Correct scheduled articles releaser to get articles older than today in a transaction
+- Add Polly to handle retries of errors with scheduling background service, recaptcha service, S3
 - Add user last seen
+- Migrate from FirstName and LastName to Name
+- Login and Register with Github
 - 
 
 ### List of things if have time:
