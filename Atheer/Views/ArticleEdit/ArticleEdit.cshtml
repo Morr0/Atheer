@@ -45,19 +45,19 @@
         <span asp-validation-for="Description" class="text-danger"></span>
         
         @* Scheduling *@
-        @if (isNew)
-        {
-            <label asp-for="Schedule">Schedule (yyyy-MM-dd in UTC time else is not going to be scheduled): </label>
-            <input type="text" class="form-control" id="Schedule" asp-for="Schedule" placeholder="yyyy-MM-dd"/>
-        }
-        else if (currentlyScheduled)
-        {
-            <span class="text-info">Scheduled for @DateTime.Parse(Model.CreationDate).ToLocalTime().GetDateOnly()</span>
-            <div class="form-check">
-                <input asp-for="Unschedule" type="checkbox" class="form-check-input"/>
-                <label class="form-check-label" asp-for="Unschedule">Release Now (Unschedule)</label>
-            </div>
-        }
+        @* @if (isNew) *@
+        @* { *@
+        @*     <label asp-for="Schedule">Schedule (yyyy-MM-dd in UTC time else is not going to be scheduled): </label> *@
+        @*     <input type="text" class="form-control" id="Schedule" asp-for="Schedule" placeholder="yyyy-MM-dd"/> *@
+        @* } *@
+        @* else if (currentlyScheduled) *@
+        @* { *@
+        @*     <span class="text-info">Scheduled for @DateTime.Parse(Model.CreationDate).ToLocalTime().GetDateOnly()</span> *@
+        @*     <div class="form-check"> *@
+        @*         <input asp-for="Unschedule" type="checkbox" class="form-check-input"/> *@
+        @*         <label class="form-check-label" asp-for="Unschedule">Release Now (Unschedule)</label> *@
+        @*     </div> *@
+        @* } *@
 
         <label for="Content">Content (Markdown):</label>
         <textarea type="text" name="Content" id="Content" class="form-control">@Model.Content</textarea>

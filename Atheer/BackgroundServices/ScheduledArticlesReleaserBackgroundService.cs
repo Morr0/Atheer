@@ -38,7 +38,6 @@ namespace Atheer.BackgroundServices
 
         private async Task ProcessJob(Data context)
         {
-            // TODO Broken sync from UTC to local or other way around
             var today = DateTime.UtcNow;
             var articles = await context.Article
                 .Where(x => x.Scheduled)

@@ -34,7 +34,7 @@ namespace Atheer.Services.ArticlesService
             article.TitleShrinked = GetShrinkedTitle(articleViewModel.Title);
             article.CreationDate = releaseDate.GetString();
             article.Scheduled = scheduled;
-            article.ScheduledSinceDate = scheduledSinceDate;
+            article.ScheduledSinceDate = scheduled ? scheduledSinceDate : string.Empty;
 
             return article;
         }
@@ -45,18 +45,20 @@ namespace Atheer.Services.ArticlesService
             scheduled = false;
             scheduledSinceDate = "";
             var now = DateTime.UtcNow;
+            releaseDate = now;
 
+            Console.WriteLine($"PRE: {releaseDate.GetString()}");
             bool parsedDate = DateTime.TryParseExact(proposedDate, "dd-MM-yyyy", CultureInfo.InvariantCulture,
                 DateTimeStyles.AssumeUniversal, out releaseDate);
 
-            if (!parsedDate)
+            Console.WriteLine($"POST: {releaseDate.GetString()}");
+            if (!parsedDate || releaseDate < now)
             {
                 releaseDate = now;
                 return;
             }
+            Console.WriteLine($"POSTPOST: {releaseDate.GetString()}");
 
-            if (releaseDate <= now) return;
-            
             releaseDate = releaseDate.FirstTickOfDay();
 
             scheduled = true;

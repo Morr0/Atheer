@@ -1,11 +1,14 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Correct scheduled articles releaser to get articles older than today in a transaction
-- Let client render current date in local time  
+- Let client render current date in local time 
+- Correct tag attachment to article UI
+- Correct tag attachment on backend  
 - Add Polly to handle retries of errors with scheduling background service, recaptcha service, S3
 - Migrate from FirstName and LastName to Name
 - Login and Register with Github
+- Benchmark performance in a Docker containers to simulate production server
+- Add health check endpoints
 - 
 
 ### List of things if have time:
@@ -14,6 +17,8 @@
 - Sort by most recent/oldest (done the backend just do the UI)
 - Word counter auto generated after each add/update of article
 - List top tags
+- Correct scheduled articles releaser to get articles older than today in a transaction
+- 
 
 ### List of longer term goals (not in order):
 
