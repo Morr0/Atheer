@@ -5,6 +5,7 @@ using Atheer.Exceptions;
 using Atheer.Extensions;
 using Atheer.Models;
 using Atheer.Services.ArticlesService;
+using Atheer.Services.TagService;
 using Atheer.Services.UsersService;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -61,7 +62,6 @@ namespace Atheer.Controllers.ArticleEdit
                 }
                 
                 article = vm.Article;
-                tagsAsString = Tag.TagsAsString(vm.Tags);
             }
 
             var dto = _mapper.Map<ArticleEditViewModel>(article);
@@ -97,28 +97,33 @@ namespace Atheer.Controllers.ArticleEdit
             {
                 return View("ArticleEdit", articleViewModel);
             }
-
+            
             using var scope = _serviceScopeFactory.CreateScope();
-            var userService = scope.ServiceProvider.GetService<IUserService>();
+            var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
 
-            // ADD
-            if (IsNewArticle(articleViewModel.TitleShrinked))
+            bool newArticle = IsNewArticle(articleViewModel.TitleShrinked);
+            if (newArticle)
             {
-                if (!(await userService.HasRole(viewerUserId, UserRoles.EditorRole).ConfigureAwait(false))) return Redirect("/");
+                // ADD
+                if (!(await userService.HasRole(viewerUserId, UserRoles.EditorRole).ConfigureAwait(false)))
+                    return Redirect("/");
                 
-                key = new ArticlePrimaryKey(articleViewModel.CreatedYear, articleViewModel.TitleShrinked);
-                await _articleService.Add(articleViewModel, viewerUserId).ConfigureAwait(false);
-                return RedirectToAction("Index", "Article", new ArticlePrimaryKey(
-                    articleViewModel.CreatedYear, articleViewModel.TitleShrinked));
+                key = await _articleService.Add(articleViewModel, viewerUserId).ConfigureAwait(false);
             }
+            else
+            {
+                // UPDATE
+                if (!(await AuthorizedFor(key, viewerUserId).ConfigureAwait(false))) return Forbid();
 
-            // UPDATE
-            if (!(await AuthorizedFor(key, viewerUserId).ConfigureAwait(false))) return Forbid();
+                await ChangeAuthorIfChangedByAdmin(userService, articleViewModel, authorChangeByAdmin).ConfigureAwait(false);
 
-            await ChangeAuthorIfChangedByAdmin(userService, articleViewModel, authorChangeByAdmin).ConfigureAwait(false);
+                await _articleService.Update(articleViewModel).ConfigureAwait(false);
+                TempData["Info"] = "Updated article successfully";
+            }
+            
+            var tagService = scope.ServiceProvider.GetRequiredService<ITagService>();
+            await tagService.AddOrUpdateTagsPerArticle(key, tags.Tags.Split(','));
 
-            await _articleService.Update(articleViewModel).ConfigureAwait(false);
-            TempData["Info"] = "Updated article successfully";
             return RedirectToAction("Index", "ArticleEdit", key);
         }
 

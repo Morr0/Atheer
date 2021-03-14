@@ -65,6 +65,7 @@ namespace Atheer
             services.AddScoped<IUserSessionsService, UserSessionsService>();
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<IRecaptchaService, RecaptchaService>();
+            services.AddTransient<ITagService, TagService>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(opts =>

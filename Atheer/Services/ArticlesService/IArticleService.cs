@@ -17,7 +17,7 @@ namespace Atheer.Services.ArticlesService
         Task Share(ArticlePrimaryKey primaryKey);
 
         Task Delete(ArticlePrimaryKey key);
-        Task Add(ArticleEditViewModel articleEditViewModel, string userId);
+        Task<ArticlePrimaryKey> Add(ArticleEditViewModel articleEditViewModel, string userId);
         Task Update(ArticleEditViewModel article);
 
         Task<bool> AuthorizedFor(ArticlePrimaryKey key, string userId);

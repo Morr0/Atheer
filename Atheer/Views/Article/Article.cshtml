@@ -10,7 +10,7 @@
     ViewData["Title"] = article.Title;
     string content = article.Content is null ? "" : Markdown.ToHtml(article.Content, MarkdownPipeline);
 
-    string tags = Tag.TagsAsString(Model.Tags);
+    string tags = string.Join(", ", Model.Tags);
     
     string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
     bool isAuthor = viewerUserId == Model.Article.AuthorId;

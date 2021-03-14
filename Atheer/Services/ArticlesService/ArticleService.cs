@@ -239,7 +239,7 @@ namespace Atheer.Services.ArticlesService
             }
         }
 
-        public async Task Add(ArticleEditViewModel articleEditViewModel, string userId)
+        public async Task<ArticlePrimaryKey> Add(ArticleEditViewModel articleEditViewModel, string userId)
         { 
             var article = _articleFactory.Create(ref articleEditViewModel, userId);
             string titleShrinked = article.TitleShrinked;
@@ -270,6 +270,8 @@ namespace Atheer.Services.ArticlesService
                 _logger.LogError(e.Message);
                 throw new FailedOperationException();
             }
+
+            return new ArticlePrimaryKey(article.CreatedYear, article.TitleShrinked);
         }
 
         private async Task CreateTagArticles(Article article, IList<Tag> tags)

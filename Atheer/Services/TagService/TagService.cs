@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Atheer.Repositories;
 using Atheer.Services.ArticlesService;
+using Microsoft.EntityFrameworkCore;
 
 namespace Atheer.Services.TagService
 {
@@ -18,7 +20,10 @@ namespace Atheer.Services.TagService
         
         public async Task AddOrUpdateTagsPerArticle(ArticlePrimaryKey articlePrimaryKey, IEnumerable<string> tags)
         {
-            throw new System.NotImplementedException();
+            var article = await _context.Article.Where(x => x.CreatedYear == articlePrimaryKey.CreatedYear &&
+                                                      x.TitleShrinked == articlePrimaryKey.TitleShrinked)
+                .Include(x => x.Tags)
+                .FirstOrDefaultAsync().ConfigureAwait(false);
         }
     }
 }

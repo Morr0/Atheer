@@ -23,7 +23,7 @@ namespace Atheer.Services.TagService
             };
         }
 
-        public void UpdateTag(ref Tag tag)
+        public void UpdateTag(Tag tag)
         {
             tag.DateLastAddedTo = DateTime.UtcNow.GetString();
         }

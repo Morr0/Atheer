@@ -22,10 +22,5 @@ namespace Atheer.Models
         {
             return Title;
         }
-
-        public static string TagsAsString(IEnumerable<Tag> tags)
-        {
-            return string.Join(", ", tags);
-        }
     }
 }

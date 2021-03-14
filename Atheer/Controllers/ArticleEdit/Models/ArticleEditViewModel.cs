@@ -15,6 +15,8 @@ namespace Atheer.Controllers.ArticleEdit.Models
         [Required]
         [MinLength(3)]
         public string Content { get; set; }
+        
+        [Required] public string TagsAsString { get; set; }
 
         public bool Likeable { get; set; }
         public bool Shareable { get; set; }
