@@ -18,16 +18,14 @@ namespace Atheer.Models
         [JsonIgnore] 
         public IList<TagArticle> Tags { get; set; }
 
+        public override string ToString()
+        {
+            return Title;
+        }
+
         public static string TagsAsString(IEnumerable<Tag> tags)
         {
-            var sb = new StringBuilder(tags.Count());
-
-            foreach (var tag in tags)
-            {
-                sb.Append($"{tag.Title} ");
-            }
-
-            return sb.ToString().TrimEnd();
+            return string.Join(", ", tags);
         }
     }
 }

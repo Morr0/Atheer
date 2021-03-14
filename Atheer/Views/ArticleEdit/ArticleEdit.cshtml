@@ -1,5 +1,4 @@
 ﻿@using Atheer.Services.UsersService
-@using Atheer.Extensions
 @model Atheer.Controllers.ViewModels.ArticleEditViewModel
 
 @{
@@ -36,9 +35,8 @@
         <input type="text" name="Title" id="Title" value="@Model.Title" class="form-control"/>
         <span asp-validation-for="Title" class="text-danger"></span>
         
-        <label for="Tags">Tags (Space Separated Values): </label>
-        <input type="text" name="TagsAsString" id="Tags" value="@Model.TagsAsString" class="form-control" />
-        <span asp-validation-for="TagsAsString" class="text-danger"></span>
+        @* <label for="Tags">Tags (Comma separated): </label> *@
+        @* <input type="text" name="Tags" id="Tags" value="@Model.TagsAsString" class="form-control" /> *@
 
         <label for="Description">Description: </label>
         <input type="text" name="Description" id="Description" value="@Model.Description" class="form-control"/>

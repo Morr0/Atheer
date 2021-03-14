@@ -1,7 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Let client render current date in local time 
 - Correct tag attachment to article UI
 - Correct tag attachment on backend  
 - Add Polly to handle retries of errors with scheduling background service, recaptcha service, S3

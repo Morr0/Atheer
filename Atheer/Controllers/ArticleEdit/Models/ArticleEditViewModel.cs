@@ -15,21 +15,15 @@ namespace Atheer.Controllers.ViewModels
         [Required]
         [MinLength(3)]
         public string Content { get; set; }
-        [Required] 
-        public string TagsAsString { get; set; }
 
         public bool Likeable { get; set; }
         public bool Shareable { get; set; }
         public bool Draft { get; set; }
         public bool Unlisted { get; set; }
-
-        // TODO refactor this to admin view only
-        // [Required, MinLength(1)]
-        public string AuthorId { get; set; }
-        // [Required, MinLength(1)]
         
+        public string AuthorId { get; set; }
+
         public string ScheduledSinceDate { get; set; }
-        // TODO separate reads from writes
         public string Schedule { get; set; }
         public string CreationDate { get; set; }
         public bool Unschedule { get; set; }

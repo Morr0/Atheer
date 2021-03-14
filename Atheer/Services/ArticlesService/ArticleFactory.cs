@@ -47,18 +47,15 @@ namespace Atheer.Services.ArticlesService
             var now = DateTime.UtcNow;
             releaseDate = now;
 
-            Console.WriteLine($"PRE: {releaseDate.GetString()}");
             bool parsedDate = DateTime.TryParseExact(proposedDate, "dd-MM-yyyy", CultureInfo.InvariantCulture,
                 DateTimeStyles.AssumeUniversal, out releaseDate);
 
-            Console.WriteLine($"POST: {releaseDate.GetString()}");
             if (!parsedDate || releaseDate < now)
             {
                 releaseDate = now;
                 return;
             }
-            Console.WriteLine($"POSTPOST: {releaseDate.GetString()}");
-
+            
             releaseDate = releaseDate.FirstTickOfDay();
 
             scheduled = true;

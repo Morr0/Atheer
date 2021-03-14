@@ -67,7 +67,6 @@ namespace Atheer.Controllers
             }
 
             var dto = _mapper.Map<ArticleEditViewModel>(article);
-            dto.TagsAsString = tagsAsString;
             dto.Schedule = DateTimeExtensions.GetDateOnly(article.ScheduledSinceDate);
             
             return View("ArticleEdit", dto);
@@ -75,13 +74,13 @@ namespace Atheer.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Post([FromForm] string button, [FromForm] ArticleEditViewModel articleViewModel, 
-            [FromForm] ArticleEditChangeAuthorByAdmin changeAuthorByAdmin)
+            [FromForm] ArticleEditChangeAuthorByAdmin changeAuthorByAdmin, [FromForm] ArticleEditTags tags)
         {
             var key = new ArticlePrimaryKey(articleViewModel.CreatedYear, articleViewModel.TitleShrinked);
             switch (button)
             {
                 case "Checkout":
-                    return await Checkout(key, articleViewModel, changeAuthorByAdmin).ConfigureAwait(false);
+                    return await Checkout(key, articleViewModel, changeAuthorByAdmin, tags).ConfigureAwait(false);
                 case "Page":
                     return VisitPage(ref key);
                 case "Delete":
@@ -92,7 +91,7 @@ namespace Atheer.Controllers
         }
 
         private async Task<IActionResult> Checkout(ArticlePrimaryKey key, ArticleEditViewModel articleViewModel, 
-            ArticleEditChangeAuthorByAdmin authorChangeByAdmin)
+            ArticleEditChangeAuthorByAdmin authorChangeByAdmin, ArticleEditTags tags)
         {
             // TODO handle FailedOperationException
             string viewerUserId = this.GetViewerUserId();
@@ -100,11 +99,9 @@ namespace Atheer.Controllers
             {
                 return View("ArticleEdit", articleViewModel);
             }
-            
+
             using var scope = _serviceScopeFactory.CreateScope();
             var userService = scope.ServiceProvider.GetService<IUserService>();
-
-            articleViewModel.TagsAsString = articleViewModel.TagsAsString.TrimEnd();
 
             // ADD
             if (IsNewArticle(articleViewModel.TitleShrinked))

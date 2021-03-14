@@ -17,15 +17,13 @@ namespace Atheer.Services.ArticlesService
         // private readonly ArticleRepository _repository;
         private readonly IMapper _mapper;
         private readonly ArticleFactory _articleFactory;
-        private readonly TagFactory _tagFactory;
         private readonly Data _context;
         private readonly ILogger<ArticleService> _logger;
 
-        public ArticleService(IMapper mapper, ArticleFactory articleFactory, TagFactory tagFactory, Data data, ILogger<ArticleService> logger)
+        public ArticleService(IMapper mapper, ArticleFactory articleFactory, Data data, ILogger<ArticleService> logger)
         {
             _mapper = mapper;
             _articleFactory = articleFactory;
-            _tagFactory = tagFactory;
             _context = data;
             _logger = logger;
         }
@@ -260,13 +258,6 @@ namespace Atheer.Services.ArticlesService
             // Article
             await _context.Article.AddAsync(article).ConfigureAwait(false);
 
-            // Tag
-            var tagsTitles = articleEditViewModel.TagsAsString.Split(',');
-            var tags = await AddTagsToContextIfDontExist(tagsTitles).ConfigureAwait(false);
-
-            // TagArticle
-            await CreateTagArticles(article, tags).ConfigureAwait(false);
-                
             try
             {
                 await _context.SaveChangesAsync().ConfigureAwait(false);
@@ -287,24 +278,24 @@ namespace Atheer.Services.ArticlesService
             }
         }
 
-        private async Task<IList<Tag>> AddTagsToContextIfDontExist(IList<string> tagsTitles)
-        {
-            var list = new List<Tag>(tagsTitles.Count);
-            foreach (var title in tagsTitles)
-            {
-                string id = _tagFactory.GetId(title);
-                var tag = await _context.Tag.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
-                if (tag is null)
-                {
-                    tag = _tagFactory.CreateTag(title);
-                    await _context.Tag.AddAsync(tag).ConfigureAwait(false);
-                }
-
-                list.Add(tag);
-            }
-
-            return list;
-        }
+        // private async Task<IList<Tag>> AddTagsToContextIfDontExist(IList<string> tagsTitles)
+        // {
+        //     var list = new List<Tag>(tagsTitles.Count);
+        //     foreach (var title in tagsTitles)
+        //     {
+        //         string id = _tagFactory.GetId(title);
+        //         var tag = await _context.Tag.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
+        //         if (tag is null)
+        //         {
+        //             tag = _tagFactory.CreateTag(title);
+        //             await _context.Tag.AddAsync(tag).ConfigureAwait(false);
+        //         }
+        //
+        //         list.Add(tag);
+        //     }
+        //
+        //     return list;
+        // }
 
         private string RandomiseExistingShrinkedTitle(ref string existingTitleShrinked)
         {
@@ -322,14 +313,7 @@ namespace Atheer.Services.ArticlesService
             _articleFactory.SetUpdated(ref article, articleEditViewModel.Unschedule);
 
             await using var transaction = await _context.Database.BeginTransactionAsync().ConfigureAwait(false);
-            
-            // Tag
-            var tagsTitles = articleEditViewModel.TagsAsString.Split();
-            var tags = await AddTagsToContextIfDontExist(tagsTitles).ConfigureAwait(false);
 
-            // TagArticle
-            await UpdateTagArticles(article, tags).ConfigureAwait(false);
-                
             try
             {
                 await _context.SaveChangesAsync().ConfigureAwait(false);
