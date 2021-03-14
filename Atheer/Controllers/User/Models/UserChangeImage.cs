@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
-namespace Atheer.Controllers.ViewModels
+namespace Atheer.Controllers.User.Models
 {
     public class UserChangeImage
     {

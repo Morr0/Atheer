@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Atheer.Controllers.ViewModels;
+using Atheer.Controllers.ArticleEdit.Models;
+using Atheer.Controllers.User.Models;
 using Atheer.Models;
 using AutoMapper;
 

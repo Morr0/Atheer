@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Atheer.Services.UsersService;
 
-namespace Atheer.Controllers.ViewModels
+namespace Atheer.Controllers.User.Models
 {
     public class ChangeRoleByAdmin : IValidatableObject
     {

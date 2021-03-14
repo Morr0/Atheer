@@ -6,6 +6,7 @@ using Atheer.Repositories;
 using Atheer.Services.ArticlesService;
 using Atheer.Services.FileService;
 using Atheer.Services.RecaptchaService;
+using Atheer.Services.TagService;
 using Atheer.Services.UsersService;
 using Atheer.Services.UserSessionsService;
 using Atheer.Utilities.Config.Models;

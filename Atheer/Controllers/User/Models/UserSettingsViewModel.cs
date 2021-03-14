@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Atheer.Controllers.ViewModels
+﻿namespace Atheer.Controllers.User.Models
 {
     public class UserSettingsViewModel
     {

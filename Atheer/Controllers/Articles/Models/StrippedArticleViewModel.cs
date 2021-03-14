@@ -1,4 +1,4 @@
-﻿namespace Atheer.Controllers.ViewModels
+﻿namespace Atheer.Controllers.Articles.Models
 {
     public class StrippedArticleViewModel
     {

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Atheer.Controllers
+namespace Atheer.Controllers.Admin
 {
     [Route("Admin")]
     [Authorize(Roles = UserRoles.AdminRole)]

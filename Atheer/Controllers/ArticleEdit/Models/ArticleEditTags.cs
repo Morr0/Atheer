@@ -1,4 +1,4 @@
-﻿namespace Atheer.Controllers.ViewModels
+﻿namespace Atheer.Controllers.ArticleEdit.Models
 {
     public class ArticleEditTags
     {

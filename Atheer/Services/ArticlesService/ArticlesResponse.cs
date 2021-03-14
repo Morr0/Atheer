@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Atheer.Controllers.ViewModels;
+using Atheer.Controllers.Articles.Models;
 using Atheer.Models;
 using Atheer.Services.ArticlesService;
 

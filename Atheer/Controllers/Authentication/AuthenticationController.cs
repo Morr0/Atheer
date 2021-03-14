@@ -1,22 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Atheer.Controllers.ViewModels;
-using Atheer.Models;
-using Atheer.Services.UsersService;
-using Atheer.Services.UsersService.Exceptions;
+using Atheer.Controllers.Authentication.Models;
 using Atheer.Services.UserSessionsService;
+using Atheer.Services.UsersService;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Logging;
 
-namespace Atheer.Controllers
+namespace Atheer.Controllers.Authentication
 {
     public class AuthenticationController : Controller
     {
@@ -74,7 +68,7 @@ namespace Atheer.Controllers
             return RedirectToAction("LoginView");
         }
 
-        private ClaimsPrincipal ClaimsPrincipal(ref string sessionId, ref User user)
+        private ClaimsPrincipal ClaimsPrincipal(ref string sessionId, ref Atheer.Models.User user)
         {
             var claims = new List<Claim>
             {

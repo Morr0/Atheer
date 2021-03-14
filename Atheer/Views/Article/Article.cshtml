@@ -1,9 +1,10 @@
 ﻿@using Markdig
 @using Atheer.ViewComponents
 @using Atheer.Controllers
+@using Atheer.Controllers.Authentication
 @using Atheer.Extensions
 @inject MarkdownPipeline MarkdownPipeline
-@model Atheer.Controllers.ViewModels.ArticleViewModel
+@model Atheer.Controllers.Article.Models.ArticleViewModel
 @{
     var article = Model.Article;
     ViewData["Title"] = article.Title;

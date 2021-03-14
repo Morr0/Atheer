@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Atheer.Controllers.ViewModels;
+using Atheer.Controllers.ArticleEdit.Models;
 using Atheer.Extensions;
 using Atheer.Models;
 using AutoMapper;

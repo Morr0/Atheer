@@ -1,4 +1,4 @@
-﻿using Atheer.Controllers.ViewModels;
+﻿using Atheer.Controllers.Articles.Models;
 using Atheer.Models;
 
 namespace Atheer.ViewComponents

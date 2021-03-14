@@ -1,6 +1,7 @@
 ﻿@using Atheer.Controllers
+@using Atheer.Controllers.Authentication
 @using Atheer.Services.UsersService
-@model Atheer.Controllers.ViewModels.UserPageViewModel
+@model Atheer.Controllers.User.Models.UserPageViewModel
 
 @{
     string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;

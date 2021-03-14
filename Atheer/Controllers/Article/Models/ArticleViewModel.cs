@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using Atheer.Models;
 
-namespace Atheer.Controllers.ViewModels
+namespace Atheer.Controllers.Article.Models
 {
     public class ArticleViewModel
     {
-        public ArticleViewModel(Article article, IList<Tag> tags, string authorFullName)
+        public ArticleViewModel(Atheer.Models.Article article, IList<Tag> tags, string authorFullName)
         {
             Article = article;
             Tags = tags;
             AuthorFullName = authorFullName;
         }
 
-        public Article Article { get; set; }
+        public Atheer.Models.Article Article { get; set; }
         public IList<Tag> Tags { get; set; }
         public string AuthorFullName { get; set; }
     }

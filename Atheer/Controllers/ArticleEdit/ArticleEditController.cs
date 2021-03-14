@@ -1,19 +1,17 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Atheer.Controllers.ViewModels;
+﻿using System.Threading.Tasks;
+using Atheer.Controllers.ArticleEdit.Models;
+using Atheer.Controllers.Authentication;
 using Atheer.Exceptions;
 using Atheer.Extensions;
 using Atheer.Models;
 using Atheer.Services.ArticlesService;
 using Atheer.Services.UsersService;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Atheer.Controllers
+namespace Atheer.Controllers.ArticleEdit
 {
     // Used for both editing/adding new articles
     [Route("Article/Edit")]
@@ -38,7 +36,7 @@ namespace Atheer.Controllers
         {
             string viewerUserId = this.GetViewerUserId();
             
-            Article article = null;
+            Atheer.Models.Article article = null;
             string tagsAsString = "";
             bool isNewArticle = IsNewArticle(key.TitleShrinked);
             
@@ -48,7 +46,7 @@ namespace Atheer.Controllers
                 var userService = scope.ServiceProvider.GetService<IUserService>();
                 if (!(await userService.HasRole(viewerUserId, UserRoles.EditorRole).ConfigureAwait(false))) return Redirect("/");
                 
-                article = new Article();
+                article = new Atheer.Models.Article();
             }
             else
             {

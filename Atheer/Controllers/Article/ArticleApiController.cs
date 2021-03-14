@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Atheer.Exceptions;
-using Atheer.Services;
 using Atheer.Services.ArticlesService;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Atheer.Controllers
+namespace Atheer.Controllers.Article
 {
     [Route("api/article")]
     [ApiController]

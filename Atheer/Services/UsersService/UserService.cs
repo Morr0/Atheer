@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Atheer.Controllers.ViewModels;
+using Atheer.Controllers.User.Models;
 using Atheer.Exceptions;
 using Atheer.Extensions;
 using Atheer.Models;

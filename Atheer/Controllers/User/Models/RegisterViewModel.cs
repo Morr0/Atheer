@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Atheer.Controllers.ViewModels
+namespace Atheer.Controllers.User.Models
 {
     public class RegisterViewModel : IValidatableObject
     {

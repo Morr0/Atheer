@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Atheer.Controllers.Queries
+namespace Atheer.Controllers.Articles.Queries
 {
     public class ArticlesQuery
     {

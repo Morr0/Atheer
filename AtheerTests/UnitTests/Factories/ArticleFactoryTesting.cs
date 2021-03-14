@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Globalization;
-using Atheer.Controllers.ViewModels;
+using Atheer.Controllers.ArticleEdit.Models;
 using Atheer.Extensions;
 using Atheer.Services.ArticlesService;
 using Atheer.Utilities;

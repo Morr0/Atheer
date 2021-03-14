@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Atheer.Controllers
+namespace Atheer.Controllers.Error
 {
     public class ErrorController : Controller
     {

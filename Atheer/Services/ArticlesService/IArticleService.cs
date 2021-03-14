@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Atheer.Controllers.ViewModels;
+using Atheer.Controllers.Article.Models;
+using Atheer.Controllers.ArticleEdit.Models;
 using Atheer.Models;
 
 namespace Atheer.Services.ArticlesService

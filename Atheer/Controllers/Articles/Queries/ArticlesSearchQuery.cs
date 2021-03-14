@@ -1,4 +1,4 @@
-﻿namespace Atheer.Controllers.Queries
+﻿namespace Atheer.Controllers.Articles.Queries
 {
     public class ArticlesSearchQuery
     {

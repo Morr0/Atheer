@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Atheer.Controllers.Queries;
-using Atheer.Controllers.ViewModels;
+using Atheer.Controllers.Articles;
+using Atheer.Controllers.User.Models;
 using Atheer.Exceptions;
 using Atheer.Extensions;
 using Atheer.Services.ArticlesService;
@@ -15,11 +15,10 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Atheer.Controllers
+namespace Atheer.Controllers.User
 {
     [Route("User")]
     public class UserController : Controller

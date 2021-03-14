@@ -2,7 +2,7 @@
 using Atheer.Extensions;
 using Atheer.Models;
 
-namespace Atheer.Services.ArticlesService
+namespace Atheer.Services.TagService
 {
     public class TagFactory
     {

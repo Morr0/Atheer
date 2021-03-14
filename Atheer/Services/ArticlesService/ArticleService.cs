@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Atheer.Controllers.ViewModels;
+using Atheer.Controllers.Article.Models;
+using Atheer.Controllers.ArticleEdit.Models;
+using Atheer.Controllers.Articles.Models;
 using Atheer.Exceptions;
 using Atheer.Models;
 using Atheer.Repositories;

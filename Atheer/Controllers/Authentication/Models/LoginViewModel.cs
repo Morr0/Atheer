@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Atheer.Controllers.ViewModels
+namespace Atheer.Controllers.Authentication.Models
 {
     public class LoginViewModel
     {

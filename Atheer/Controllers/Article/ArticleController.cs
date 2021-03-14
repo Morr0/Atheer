@@ -1,13 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Atheer.Extensions;
-using Atheer.Models;
-using Atheer.Services;
 using Atheer.Services.ArticlesService;
-using Atheer.Services.UsersService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Atheer.Controllers
+namespace Atheer.Controllers.Article
 {
     [Route("Article/{CreatedYear}/{TitleShrinked}")]
     public class ArticleController : Controller
