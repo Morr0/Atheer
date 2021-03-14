@@ -27,3 +27,13 @@ const share = (createdYear, titleShrinked) => {
         document.getElementById("share").disabled = true;
     });
 };
+
+// FOR LocalDate view component
+window.addEventListener("load", (e) => {
+    console.log("Hello worldss");
+    const dateElms = document.querySelectorAll(".x-utc-date");
+    dateElms.forEach(elm => {
+        const utcDate = elm.dataset.utcdate;
+        elm.innerText = (new Date(utcDate)).toLocaleDateString(window.navigator.language);
+    });
+});

@@ -14,7 +14,7 @@ namespace Atheer.Extensions
         }
 
         /// <summary>
-        /// From e.g. 2021-01-30T13:02:11 to 2021-01-30
+        /// ISO 8601
         /// </summary>
         public static string GetDateOnly(string datetime)
         {
@@ -23,6 +23,9 @@ namespace Atheer.Extensions
             return datetime.Substring(0, datetime.IndexOf('T'));
         }
 
+        /// <summary>
+        /// ISO 8601
+        /// </summary>
         public static string GetDateOnly(this DateTime dt)
         {
             return dt.ToString("yyyy-MM-dd");

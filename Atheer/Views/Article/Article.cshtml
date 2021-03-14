@@ -11,8 +11,6 @@
 
     string tags = Tag.TagsAsString(Model.Tags);
     
-    string dateStr = DateTimeExtensions.GetDateOnly(article.CreationDate);
-
     string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
     bool isAuthor = viewerUserId == Model.Article.AuthorId;
     
@@ -46,7 +44,7 @@
             </a>
             @if (!scheduled)
             {
-                <span>since @dateStr</span>
+                <span>since @await Component.InvokeAsync("LocalDate", article.CreationDate)</span>
             }
         </span>
 
@@ -65,7 +63,7 @@
         }
         @if (scheduled)
         {
-            <span class="text-info">Scheduled since @scheduledSince for @dateStr</span>
+            <span class="text-info">Scheduled since @scheduledSince for @await Component.InvokeAsync("LocalDate", article.CreationDate)</span>
         }
 
         @await Component.InvokeAsync("ArticleEdit", new ArticleEditLinkModel(article, viewerUserId))

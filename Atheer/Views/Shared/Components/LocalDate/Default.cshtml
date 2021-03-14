@@ -1,0 +1,8 @@
+﻿@* Utc date string *@
+@model string
+
+@{
+    string toJsDate = Model.PadRight(Model.Length + 1, 'Z');
+}
+
+<span class="x-utc-date" data-utcDate="@toJsDate">H</span>
