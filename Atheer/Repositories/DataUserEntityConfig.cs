@@ -32,6 +32,9 @@ namespace Atheer.Repositories
                 .Property(x => x.LastName)
                 .HasColumnType("varchar(32)");
             modelBuilder.Entity<User>()
+                .Property(x => x.Name)
+                .HasColumnType("varchar(64)");
+            modelBuilder.Entity<User>()
                 .Property(x => x.Roles)
                 .HasColumnType("text");
             modelBuilder.Entity<User>()
