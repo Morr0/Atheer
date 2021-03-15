@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Atheer.Controllers.ArticleEdit.Models;
 using Atheer.Controllers.Authentication;
 using Atheer.Exceptions;
@@ -38,7 +40,7 @@ namespace Atheer.Controllers.ArticleEdit
             string viewerUserId = this.GetViewerUserId();
             
             Atheer.Models.Article article = null;
-            string tagsAsString = "";
+            string tagsAsString = string.Empty;
             bool isNewArticle = IsNewArticle(key.TitleShrinked);
             
             if (isNewArticle)
@@ -62,10 +64,12 @@ namespace Atheer.Controllers.ArticleEdit
                 }
                 
                 article = vm.Article;
+                tagsAsString = string.Join(", ", vm.Tags.Select(x => x.Title));
             }
 
             var dto = _mapper.Map<ArticleEditViewModel>(article);
             dto.Schedule = DateTimeExtensions.GetDateOnly(article.ScheduledSinceDate);
+            dto.TagsAsString = tagsAsString;
             
             return View("ArticleEdit", dto);
         }
@@ -98,6 +102,8 @@ namespace Atheer.Controllers.ArticleEdit
                 return View("ArticleEdit", articleViewModel);
             }
             
+            Console.WriteLine($"TAGS: {tags.TagsAsString}");
+            
             using var scope = _serviceScopeFactory.CreateScope();
             var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
 
@@ -122,7 +128,8 @@ namespace Atheer.Controllers.ArticleEdit
             }
             
             var tagService = scope.ServiceProvider.GetRequiredService<ITagService>();
-            await tagService.AddOrUpdateTagsPerArticle(key, tags.Tags.Split(','));
+            var individualTags = tags.TagsAsString.Split(',').Where(x => x != ",");
+            await tagService.AddOrUpdateTagsPerArticle(key, individualTags).ConfigureAwait(false);
 
             return RedirectToAction("Index", "ArticleEdit", key);
         }

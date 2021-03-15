@@ -2,6 +2,6 @@
 {
     public class ArticleEditTags
     {
-        public string Tags { get; set; }
+        public string TagsAsString { get; set; }
     }
 }

@@ -6,6 +6,6 @@ namespace Atheer.Services.TagService
 {
     public interface ITagService
     {
-        Task AddOrUpdateTagsPerArticle(ArticlePrimaryKey articlePrimaryKey, IEnumerable<string> tags);
+        Task AddOrUpdateTagsPerArticle(ArticlePrimaryKey articlePrimaryKey, IEnumerable<string> titles);
     }
 }

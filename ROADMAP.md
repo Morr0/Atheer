@@ -1,8 +1,6 @@
 # Atheer
 ## Roadmap:
-### List of things to work on:
-- Correct tag attachment to article UI
-- Correct tag attachment on backend  
+### List of things to work on: 
 - Add Polly to handle retries of errors with scheduling background service, recaptcha service, S3
 - Migrate from FirstName and LastName to Name
 - Login and Register with Github

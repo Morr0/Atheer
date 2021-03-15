@@ -30,11 +30,7 @@ namespace Atheer.Services.TagService
 
         public string GetId(string title)
         {
-            int firstSpace = title.IndexOf(' ');
-            // If no space
-            if (firstSpace == -1) return title.ToLower();
-
-            return title.Substring(0, firstSpace).ToLower();
+            return title.Trim().ToLower().Replace(' ', '-');
         }
     }
 }
