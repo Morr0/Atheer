@@ -13,9 +13,7 @@ namespace Atheer.Controllers.User.Models
         public const string NameErrorMessage = "The name must be alphabet with ( ,.'-) only";
         
         [Required, RegularExpression(NamePattern, ErrorMessage = NameErrorMessage), MinLength(2), MaxLength(32)] 
-        public string FirstName { get; set; }
-        [Required, RegularExpression(NamePattern, ErrorMessage = NameErrorMessage), MinLength(2), MaxLength(32)] 
-        public string LastName { get; set; }
+        public string Name { get; set; }
         [MaxLength(256)]
         public string Bio { get; set; }
         [Required, EmailAddress, MaxLength(128)] 

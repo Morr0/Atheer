@@ -57,7 +57,8 @@ namespace Atheer
             {
                 opts.UseNpgsql(Configuration.GetConnectionString("MainPostgres"), dbOpts =>
                 {
-                    dbOpts.EnableRetryOnFailure(3);
+                    // TODO does not support user-initiated transactions. Use the execution strategy returned by 'DbContext.Database.CreateExecutionStrategy()' to execute all the operations in the transaction as a retriable unit.
+                    // dbOpts.EnableRetryOnFailure(3);
                 });
             });
             services.AddTransient<IAmazonS3, AmazonS3Client>();
