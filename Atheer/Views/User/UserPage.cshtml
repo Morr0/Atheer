@@ -5,8 +5,7 @@
 
 @{
     string userId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
-    string fullName = Model.User.FullName();
-    ViewData["Title"] = fullName;
+    ViewData["Title"] = Model.User.Name;
     bool sameUserViewingIsSameAsThis = userId == Model.User.Id;
 
     bool isAdminViewing = User.IsInRole(UserRoles.AdminRole);
@@ -29,11 +28,11 @@
         </form>
       }
       
-      <img src="@imageUrl" alt="@fullName" class="card-img" id="userImage">
+      <img src="@imageUrl" alt="@Model.User.Name" class="card-img" id="userImage">
     </div>
     <div class="col-md-8">
       <div class="card-body">
-        <h5 class="card-title">@fullName</h5>
+        <h5 class="card-title">@Model.User.Name</h5>
         @if (sameUserViewingIsSameAsThis || isAdminViewing)
         {
           <span class="text-info">Username: @Model.User.Id</span>

@@ -164,12 +164,11 @@ namespace Atheer.Services.ArticlesService
             if (article.Scheduled && article.AuthorId != viewerUserId) return null;
 
             // Get author full name
-            var authorFullName = await _context.User.AsNoTracking()
+            var author = await _context.User.AsNoTracking()
                 .Select(x => new
                 {
                     x.Id,
-                    x.FirstName,
-                    x.LastName
+                    x.Name
                 })
                 .FirstOrDefaultAsync(x => x.Id == article.AuthorId).ConfigureAwait(false);
 
@@ -182,7 +181,7 @@ namespace Atheer.Services.ArticlesService
                     select t
                 ).ToListAsync().ConfigureAwait(false);
 
-            return new ArticleViewModel(article, tags, $"{authorFullName.FirstName} {authorFullName.LastName}");
+            return new ArticleViewModel(article, tags, author.Name);
         }
 
         public async Task Like(ArticlePrimaryKey primaryKey)

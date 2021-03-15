@@ -74,7 +74,7 @@ namespace Atheer.Controllers.Authentication
             {
                 new Claim(CookieSessionId, sessionId),
                 new Claim(CookieUserId, user.Id),
-                new Claim(ClaimTypes.Name, user.FullName())
+                new Claim(ClaimTypes.Name, user.Name)
             };
             
             foreach (var role in user.Roles.Split(','))

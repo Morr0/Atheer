@@ -1,12 +1,10 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Migrate from FirstName and LastName to Name
 - Login and Register with Github
 - Benchmark performance in a Docker containers to simulate production server
 - Add health check endpoints
 - Limit size of image uploaded to 4MB
-- Don't cache name of author in article when the author changes name
 - 
 
 ### List of things if have time:

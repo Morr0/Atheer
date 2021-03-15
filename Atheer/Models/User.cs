@@ -3,8 +3,6 @@
     public class User
     {
         public string Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
         public string Name { get; set; }
         public string Bio { get; set; }
 
@@ -20,7 +18,5 @@
         public string Roles { get; set; }
 
         public string ImageUrl { get; set; }
-
-        public string FullName() => string.IsNullOrEmpty(Name) ? $"{FirstName} {LastName}" : Name;
     }
 }

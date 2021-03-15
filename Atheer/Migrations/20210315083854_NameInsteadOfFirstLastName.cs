@@ -14,7 +14,7 @@ namespace Atheer.Migrations
                 nullable: true);
 
             migrationBuilder.Sql(
-                $"UPDATE \"User\" SET \"{nameof(User.Name)}\" = (\"{nameof(User.FirstName)}\" || ' ' || \"{nameof(User.LastName)}\");");
+                $"UPDATE \"User\" SET \"{nameof(User.Name)}\" = (\"FirstName\" || ' ' || \"LastName\");");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
