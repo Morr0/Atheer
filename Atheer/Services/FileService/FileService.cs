@@ -4,18 +4,24 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using Atheer.Utilities.Config.Models;
 using Microsoft.Extensions.Options;
+using Polly;
+using Polly.Retry;
 
 namespace Atheer.Services.FileService
 {
     public class FileService : IFileService
     {
         private readonly IAmazonS3 _s3Client;
-        private S3 _s3Config;
+        private readonly S3 _s3Config;
+
+        private readonly AsyncRetryPolicy _retryPolicy;
 
         public FileService(IOptions<S3> s3Config, IAmazonS3 s3Client)
         {
             _s3Client = s3Client;
             _s3Config = s3Config.Value;
+
+            _retryPolicy = Policy.Handle<AmazonS3Exception>().RetryAsync(3);
         }
         
         public async Task<string> Add(FileUse fileUse, string fileId, string contentType, Stream stream)
@@ -30,9 +36,9 @@ namespace Atheer.Services.FileService
                 CannedACL = S3CannedACL.Private,
                 AutoCloseStream = false
             };
-            
-            await _s3Client.PutObjectAsync(putObjectRequest).ConfigureAwait(false);
-            
+
+            await _retryPolicy.ExecuteAsync(() => _s3Client.PutObjectAsync(putObjectRequest)).ConfigureAwait(false);
+
             return FileServiceUtilities.GetCdnFileUrl(_s3Config.CdnUrl, ref s3Key);
         }
 
@@ -45,7 +51,7 @@ namespace Atheer.Services.FileService
                 Key = s3Key
             };
 
-            return _s3Client.DeleteObjectAsync(deleteObjectRequest);
+            return _retryPolicy.ExecuteAsync(() => _s3Client.DeleteObjectAsync(deleteObjectRequest));
         }
     }
 }

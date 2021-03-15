@@ -7,7 +7,7 @@ namespace Atheer.Repositories
     {
         public Data(DbContextOptions<Data> options) : base(options)
         {
-            // TODO enforce limits of types in Db thru UI, e.g. description of an article should be <= 512 chars
+            
         }
         
         public DbSet<Article> Article { get; set; }

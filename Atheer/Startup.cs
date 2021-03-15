@@ -55,7 +55,10 @@ namespace Atheer
             // Repositories
             services.AddDbContext<Data>(opts =>
             {
-                opts.UseNpgsql(Configuration.GetConnectionString("MainPostgres"));
+                opts.UseNpgsql(Configuration.GetConnectionString("MainPostgres"), dbOpts =>
+                {
+                    dbOpts.EnableRetryOnFailure(3);
+                });
             });
             services.AddTransient<IAmazonS3, AmazonS3Client>();
 

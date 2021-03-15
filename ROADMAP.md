@@ -1,11 +1,11 @@
 # Atheer
 ## Roadmap:
-### List of things to work on: 
-- Add Polly to handle retries of errors with scheduling background service, recaptcha service, S3
+### List of things to work on:
 - Migrate from FirstName and LastName to Name
 - Login and Register with Github
 - Benchmark performance in a Docker containers to simulate production server
 - Add health check endpoints
+- Limit size of image uploaded to 4MB
 - 
 
 ### List of things if have time:

@@ -30,7 +30,6 @@ const share = (createdYear, titleShrinked) => {
 
 // FOR LocalDate view component
 window.addEventListener("load", (e) => {
-    console.log("Hello worldss");
     const dateElms = document.querySelectorAll(".x-utc-date");
     dateElms.forEach(elm => {
         const utcDate = elm.dataset.utcdate;

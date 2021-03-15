@@ -1,9 +1,12 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Atheer.Utilities.Config.Models;
 using Microsoft.Extensions.Options;
+using Polly;
+using Polly.Retry;
 
 namespace Atheer.Services.RecaptchaService
 {
@@ -13,6 +16,8 @@ namespace Atheer.Services.RecaptchaService
     {
         private readonly HttpClient _httpClient;
         private readonly Recaptcha _recaptcha;
+        
+        private readonly AsyncRetryPolicy _retryPolicy;
 
         private static string RecaptchaVerificationUrl = "https://www.google.com/recaptcha/api/siteverify"; 
 
@@ -20,19 +25,25 @@ namespace Atheer.Services.RecaptchaService
         {
             _httpClient = httpClient;
             _recaptcha = recaptcha.Value;
+
+            _retryPolicy = Policy.Handle<HttpRequestException>().RetryAsync(3);
         }
         
         public async Task<bool> IsValidClient(string reCaptchaUserResponse)
         {
             // refer to https://developers.google.com/recaptcha/docs/verify
             string url = $"{RecaptchaVerificationUrl}?secret={_recaptcha.SecretKey}&response={reCaptchaUserResponse}";
-            
-            var response = await _httpClient.PostAsync(url, new StringContent(string.Empty), CancellationToken.None).ConfigureAwait(false);
-            await using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-            var responseModel = await JsonSerializer.DeserializeAsync<RecaptchaV2Response>(stream)
-                .ConfigureAwait(false);
+            _httpClient.Timeout = TimeSpan.FromSeconds(5);
 
-            return responseModel.Success;
+            var responseModel = await _retryPolicy.ExecuteAsync(async () =>
+            {
+                var response = await _httpClient.PostAsync(url, new StringContent(string.Empty), CancellationToken.None).ConfigureAwait(false);
+                await using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                return await JsonSerializer.DeserializeAsync<RecaptchaV2Response>(stream)
+                    .ConfigureAwait(false);
+            }).ConfigureAwait(false);
+
+            return responseModel?.Success == true;
         }
     }
 }
