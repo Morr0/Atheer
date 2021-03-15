@@ -49,12 +49,6 @@ namespace Atheer.Repositories
             modelBuilder.Entity<User>()
                 .Property(x => x.ImageUrl)
                 .HasColumnType("text");
-            modelBuilder.Entity<User>()
-                .Property(x => x.Name)
-                .HasColumnType("varchar(64)")
-                .ValueGeneratedOnAddOrUpdate()
-                .HasComputedColumnSql($"\"{nameof(Atheer.Models.User.FirstName)}\" || ' ' || \"{nameof(Atheer.Models.User.LastName)}\"", 
-                    true);
         }
     }
 }

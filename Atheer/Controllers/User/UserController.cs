@@ -137,6 +137,9 @@ namespace Atheer.Controllers.User
         public async Task<IActionResult> UserSettingsPost([FromRoute] string userId,
             [FromForm] UserSettingsUpdate userSettingsUpdate)
         {
+            string viewingUserId = this.GetViewerUserId();
+            if (viewingUserId != userId) return Unauthorized();
+            
             if (!ModelState.IsValid)
             {
                 return View("UserSettings", new UserSettingsViewModel

@@ -164,11 +164,6 @@ namespace Atheer.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("varchar(32)");
 
-                    b.Property<string>("Name")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("varchar(64)")
-                        .HasComputedColumnSql("\"FirstName\" || ' ' || \"LastName\"", true);
-
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text");
 
