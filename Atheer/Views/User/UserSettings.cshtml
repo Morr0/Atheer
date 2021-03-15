@@ -23,19 +23,12 @@
             </h2>
             <div id="basicSettingsForm" class="accordion-collapse collapse show" aria-labelledby="basicSettings" data-bs-parent="#settingsAccordion">
                 <div class="form-group row">
-                    <label for="FirstName" class="col-sm-2 col-form-label">First Name: </label>
+                    <label for="Name" class="col-sm-2 col-form-label">Full Name: </label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" asp-for="FirstName" id="FirstName" maxlength="32" minlength="1">
+                        <input type="text" class="form-control" asp-for="Name" id="Name" maxlength="32" minlength="1">
                     </div>
                 </div>
-                <span asp-validation-for="FirstName" class="text-danger"></span>
-                <div class="form-group row">
-                    <label for="LastName" class="col-sm-2 col-form-label">Last Name: </label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" asp-for="LastName" id="LastName" maxlength="32" minlength="1">
-                    </div>
-                </div>
-                <span asp-validation-for="LastName" class="text-danger"></span>
+                <span asp-validation-for="Name" class="text-danger"></span>
                 <div class="form-group row">
                     <label for="Bio" class="col-sm-2 col-form-label">Bio: </label>
                     <div class="col-sm-10">

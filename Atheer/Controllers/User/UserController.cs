@@ -147,8 +147,7 @@ namespace Atheer.Controllers.User
                     Id = userId,
                     Bio = userSettingsUpdate.Bio,
                     DateCreated = userSettingsUpdate.DateCreated,
-                    FirstName = userSettingsUpdate.FirstName,
-                    LastName = userSettingsUpdate.LastName
+                    Name = userSettingsUpdate.Name
                 });
             }
             

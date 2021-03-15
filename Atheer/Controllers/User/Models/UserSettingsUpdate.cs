@@ -5,9 +5,7 @@ namespace Atheer.Controllers.User.Models
     public class UserSettingsUpdate
     {
         [Required, MinLength(2), MaxLength(32), RegularExpression(RegisterViewModel.NamePattern, ErrorMessage = RegisterViewModel.NameErrorMessage)] 
-        public string FirstName { get; set; }
-        [Required, MinLength(2), MaxLength(32), RegularExpression(RegisterViewModel.NamePattern, ErrorMessage = RegisterViewModel.NameErrorMessage)] 
-        public string LastName { get; set; }
+        public string Name { get; set; }
         [MaxLength(256)]
         public string Bio { get; set; }
 

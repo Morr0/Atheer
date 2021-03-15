@@ -6,6 +6,7 @@
 - Benchmark performance in a Docker containers to simulate production server
 - Add health check endpoints
 - Limit size of image uploaded to 4MB
+- Don't cache name of author in article when the author changes name
 - 
 
 ### List of things if have time:
