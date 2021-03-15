@@ -102,8 +102,6 @@ namespace Atheer.Controllers.ArticleEdit
                 return View("ArticleEdit", articleViewModel);
             }
             
-            Console.WriteLine($"TAGS: {tags.TagsAsString}");
-            
             using var scope = _serviceScopeFactory.CreateScope();
             var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
 
@@ -131,7 +129,7 @@ namespace Atheer.Controllers.ArticleEdit
             var individualTags = tags.TagsAsString.Split(',').Where(x => x != ",");
             await tagService.AddOrUpdateTagsPerArticle(key, individualTags).ConfigureAwait(false);
 
-            return RedirectToAction("Index", "ArticleEdit", key);
+            return newArticle ? RedirectToAction("Index", "Article", key) : RedirectToAction("Index", "ArticleEdit", key);
         }
 
         private async Task<bool> AuthorizedFor(ArticlePrimaryKey key, string viewerUserId)
