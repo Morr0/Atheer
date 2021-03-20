@@ -3,6 +3,7 @@ using System.Linq;
 using Atheer.Controllers.ArticleEdit.Models;
 using Atheer.Controllers.User.Models;
 using Atheer.Models;
+using Atheer.Services.OAuthService;
 using AutoMapper;
 
 namespace Atheer.Utilities
@@ -23,6 +24,7 @@ namespace Atheer.Utilities
             CreateMap<RegisterViewModel, User>();
             CreateMap<User, UserSettingsViewModel>();
             CreateMap<UserSettingsUpdate, User>();
+            CreateMap<OAuthUserInfo, User>();
         }
 
         private void TakeCareOfArticleToFromArticleEditVm()

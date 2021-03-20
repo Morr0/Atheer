@@ -124,9 +124,8 @@ namespace Atheer.Controllers.Authentication
             if (!githubOauthConfig.Value.Enabled) return Redirect("/");
             if (string.IsNullOrEmpty(query.Code)) return Redirect("/");
 
+            // TODO handle FailedOperationException
             var userInfo = await oAuthService.GetUserInfo(OAuthProvider.Github, query.Code).ConfigureAwait(false);
-            Console.WriteLine(userInfo.Name);
-            Console.WriteLine(userInfo.Email);
             // TODO login user
             return Redirect("/");
         }
