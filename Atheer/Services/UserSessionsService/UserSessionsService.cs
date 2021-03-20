@@ -36,6 +36,18 @@ namespace Atheer.Services.UserSessionsService
             return sessionId;
         }
 
+        public string Login(string userId)
+        {
+            string sessionId = Guid.NewGuid().ToString();
+            var session = new UserSession(sessionId, userId);
+            lock (_sessions)
+            {
+                _sessions.Add(sessionId, session);
+            }
+
+            return sessionId;
+        }
+
         public bool LoggedIn(string sessionId)
         {
             lock (_sessions)

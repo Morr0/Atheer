@@ -1,12 +1,14 @@
 ﻿using System.Threading.Tasks;
 using Atheer.Controllers.User.Models;
 using Atheer.Models;
+using Atheer.Services.OAuthService;
 
 namespace Atheer.Services.UsersService
 {
     public interface IUserService
     {
         Task<string> Add(RegisterViewModel registerViewModel);
+        Task<string> AddOrUpdateOAuthUser(OAuthUserInfo oAuthUserInfo);
         Task<bool> EmailRegistered(string email);
         Task<User> Get(string id);
         Task<User> GetFromEmailOrUsername(string emailOrUsername);

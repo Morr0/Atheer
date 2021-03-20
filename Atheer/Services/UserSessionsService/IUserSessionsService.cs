@@ -7,6 +7,7 @@ namespace Atheer.Services.UserSessionsService
     public interface IUserSessionsService
     {
         string Login(LoginViewModel loginViewModel, User user);
+        string Login(string userId);
         bool LoggedIn(string sessionId);
         void Logout(string sessionId);
     }

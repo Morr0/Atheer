@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Atheer.Controllers.Authentication.Models;
+using Atheer.Exceptions;
 using Atheer.Services.OAuthService;
 using Atheer.Services.UserSessionsService;
 using Atheer.Services.UsersService;
@@ -60,7 +61,7 @@ namespace Atheer.Controllers.Authentication
                     await _userService.SetLogin(user.Id).ConfigureAwait(false);
                     
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
-                        , ClaimsPrincipal(ref sessionId, ref user)).ConfigureAwait(false);
+                        , ClaimsPrincipal(sessionId, user.Id, user.Roles)).ConfigureAwait(false);
 
                     if (!Url.IsLocalUrl(returnUrl)) return Redirect("/");
                     
@@ -72,16 +73,15 @@ namespace Atheer.Controllers.Authentication
             return RedirectToAction("LoginView");
         }
 
-        private ClaimsPrincipal ClaimsPrincipal(ref string sessionId, ref Atheer.Models.User user)
+        private ClaimsPrincipal ClaimsPrincipal(string sessionId, string userId, string roles)
         {
             var claims = new List<Claim>
             {
                 new Claim(CookieSessionId, sessionId),
-                new Claim(CookieUserId, user.Id),
-                new Claim(ClaimTypes.Name, user.Name)
+                new Claim(CookieUserId, userId)
             };
             
-            foreach (var role in user.Roles.Split(','))
+            foreach (var role in roles.Split(','))
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
@@ -124,9 +124,22 @@ namespace Atheer.Controllers.Authentication
             if (!githubOauthConfig.Value.Enabled) return Redirect("/");
             if (string.IsNullOrEmpty(query.Code)) return Redirect("/");
 
-            // TODO handle FailedOperationException
-            var userInfo = await oAuthService.GetUserInfo(OAuthProvider.Github, query.Code).ConfigureAwait(false);
-            // TODO login user
+            OAuthUserInfo userInfo;
+            try
+            {
+                userInfo = await oAuthService.GetUserInfo(OAuthProvider.Github, query.Code).ConfigureAwait(false);
+            }
+            catch (FailedOperationException)
+            {
+                return Redirect("/");
+            }
+            string userId = await _userService.AddOrUpdateOAuthUser(userInfo).ConfigureAwait(false);
+
+            // TODO attach correct user roles
+            string sessionId = _sessionsService.Login(userId);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
+                , ClaimsPrincipal(sessionId, userId, UserRoles.BasicRole)).ConfigureAwait(false);
+            
             return Redirect("/");
         }
         

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Atheer.Controllers.User.Models;
@@ -7,9 +6,9 @@ using Atheer.Exceptions;
 using Atheer.Extensions;
 using Atheer.Models;
 using Atheer.Repositories;
+using Atheer.Services.OAuthService;
 using Atheer.Services.UsersService.Exceptions;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -42,6 +41,38 @@ namespace Atheer.Services.UsersService
             var user = _factory.Create(registerViewModel);
             user.Id = await GetIdUntilVacancyExists(user.Id).ConfigureAwait(false);
 
+            await AddUser(user).ConfigureAwait(false);
+
+            return user.Id;
+        }
+
+        public async Task<string> AddOrUpdateOAuthUser(OAuthUserInfo oAuthUserInfo)
+        {
+            var user = _factory.Create(oAuthUserInfo);
+            var potentialSameExistingUser = await Get(user.Id);
+            if (potentialSameExistingUser is null)
+            {
+                await AddUser(user).ConfigureAwait(false);
+            }
+            else if (potentialSameExistingUser.OAuthUser && potentialSameExistingUser.OAuthProvider == user.OAuthProvider)
+            {
+                // Update the user
+                user = _factory.UpdateOAuthUser(oAuthUserInfo, potentialSameExistingUser);
+                _context.Attach(user);
+                _context.Update(user);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+            }
+            else
+            {
+                user.Id = await GetIdUntilVacancyExists(user.Id).ConfigureAwait(false);
+                await AddUser(user).ConfigureAwait(false);
+            }
+
+            return user.Id;
+        }
+
+        private async Task AddUser(User user)
+        {
             await using var transaction = await _context.Database.BeginTransactionAsync().ConfigureAwait(false);
             try
             {
@@ -54,8 +85,6 @@ namespace Atheer.Services.UsersService
                 _logger.LogError(e.Message);
                 throw new FailedOperationException();
             }
-
-            return user.Id;
         }
 
         // Will generate a new id until one is non-already existent

@@ -3,6 +3,7 @@ using System.Linq;
 using Atheer.Controllers.User.Models;
 using Atheer.Extensions;
 using Atheer.Models;
+using Atheer.Services.OAuthService;
 using AutoMapper;
 using Crypt = BCrypt.Net.BCrypt;
 
@@ -33,6 +34,29 @@ namespace Atheer.Services.UsersService
             user.Roles = DefaultRole();
 
             return user;
+        }
+
+        public User Create(OAuthUserInfo oAuthUserInfo)
+        {
+            var user = _mapper.Map<User>(oAuthUserInfo);
+
+            user.Id = oAuthUserInfo.OAuthUsername;
+
+            user.DateCreated = DateTime.UtcNow.GetString();
+            user.PasswordHash = string.Empty;
+
+            user.Roles = DefaultRole();
+
+            return user;
+        }
+
+        public User UpdateOAuthUser(OAuthUserInfo oAuthUserInfo, User existingUser)
+        {
+            var updatedUser = _mapper.Map(oAuthUserInfo, existingUser);
+
+            updatedUser.DateLastLoggedIn = DateTime.UtcNow.GetString();
+            
+            return updatedUser;
         }
 
         internal string Id(string email)
