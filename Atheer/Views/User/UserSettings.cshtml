@@ -11,6 +11,7 @@
 <form method="post" asp-controller="User" asp-action="UserSettingsPost">
     <input type="hidden" name="userId" value="@Model.Id" />
     <input type="hidden" name="DateCreated" value="@Model.DateCreated" />
+    <input type="checkbox" hidden name="OAuth" checked="@Model.OAuth" />
 
     @* TODO prettify and make this accordion work *@
     <div class="accordion" id="settingsAccordion">
@@ -24,9 +25,18 @@
             <div id="basicSettingsForm" class="accordion-collapse collapse show" aria-labelledby="basicSettings" data-bs-parent="#settingsAccordion">
                 <div class="form-group row">
                     <label for="Name" class="col-sm-2 col-form-label">Full Name: </label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" asp-for="Name" id="Name" maxlength="32" minlength="1">
-                    </div>
+                    @if (Model.OAuth)
+                    {
+                        <div class="col-sm-10">
+                            <label>@Model.Name</label>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" asp-for="Name" id="Name" maxlength="32" minlength="1">
+                        </div>
+                    }
                 </div>
                 <span asp-validation-for="Name" class="text-danger"></span>
                 <div class="form-group row">
@@ -48,15 +58,18 @@
                 Security settings
             </h2>
             <div class="accordion-collapse collapse show" aria-labelledby="securitySettings" data-bs-parent="#securitySettings">
-                <div class="form-group row">
-                    <label for="changePassword" class="col-sm-2 col-from-label">Password: </label>
-                    <div class="col-sm-10">
-                        <a type="button" asp-controller="User" asp-action="ChangePasswordView" asp-route-userId="@Model.Id" 
-                                class="btn-danger btn">
-                            Change password
-                        </a>
+                @if (!Model.OAuth)
+                {
+                    <div class="form-group row">
+                        <label for="changePassword" class="col-sm-2 col-from-label">Password: </label>
+                        <div class="col-sm-10">
+                            <a type="button" asp-controller="User" asp-action="ChangePasswordView" asp-route-userId="@Model.Id"
+                               class="btn-danger btn">
+                                Change password
+                            </a>
+                        </div>
                     </div>
-                </div>
+                }
             </div>
         </div>
     </div>

@@ -1,7 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Login and Register with Github
 - Benchmark performance in a Docker containers to simulate production server
 - Add health check endpoints
 - Limit size of image uploaded to 4MB

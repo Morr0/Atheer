@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Atheer.Controllers.Articles;
+using Atheer.Controllers.Authentication;
 using Atheer.Controllers.User.Models;
 using Atheer.Exceptions;
 using Atheer.Extensions;
@@ -161,6 +162,7 @@ namespace Atheer.Controllers.User
         {
             string viewingUserId = this.GetViewerUserId();
             if (viewingUserId != userId) return Unauthorized();
+            if (User.HasClaim(AuthenticationController.CookieOAuthUser, "true")) return Unauthorized();
 
             return View("ChangePassword", userId);
         }

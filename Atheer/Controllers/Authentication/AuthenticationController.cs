@@ -21,6 +21,7 @@ namespace Atheer.Controllers.Authentication
     {
         private const string CookieSessionId = "sessionId";
         public static string CookieUserId = "userId";
+        public static readonly string CookieOAuthUser = "OAuth";
         
         private readonly IUserService _userService;
         private readonly IUserSessionsService _sessionsService;
@@ -73,7 +74,7 @@ namespace Atheer.Controllers.Authentication
             return RedirectToAction("LoginView");
         }
 
-        private ClaimsPrincipal ClaimsPrincipal(string sessionId, string userId, string roles)
+        private ClaimsPrincipal ClaimsPrincipal(string sessionId, string userId, string roles, bool oAuthUser = false)
         {
             var claims = new List<Claim>
             {
@@ -84,6 +85,11 @@ namespace Atheer.Controllers.Authentication
             foreach (var role in roles.Split(','))
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            if (oAuthUser)
+            {
+                claims.Add(new Claim(CookieOAuthUser, "true"));
             }
             
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -138,7 +144,7 @@ namespace Atheer.Controllers.Authentication
             // TODO attach correct user roles
             string sessionId = _sessionsService.Login(userId);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
-                , ClaimsPrincipal(sessionId, userId, UserRoles.BasicRole)).ConfigureAwait(false);
+                , ClaimsPrincipal(sessionId, userId, UserRoles.BasicRole, oAuthUser: true)).ConfigureAwait(false);
             
             return Redirect("/");
         }
