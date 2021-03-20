@@ -43,6 +43,9 @@ namespace Atheer.Repositories
             modelBuilder.Entity<User>()
                 .Property(x => x.ImageUrl)
                 .HasColumnType("text");
+            modelBuilder.Entity<User>()
+                .Property(x => x.OAuthProvider)
+                .HasColumnType("varchar(16)");
         }
     }
 }
