@@ -5,6 +5,7 @@ using Atheer.BackgroundServices;
 using Atheer.Repositories;
 using Atheer.Services.ArticlesService;
 using Atheer.Services.FileService;
+using Atheer.Services.OAuthService;
 using Atheer.Services.RecaptchaService;
 using Atheer.Services.TagService;
 using Atheer.Services.UsersService;
@@ -39,6 +40,7 @@ namespace Atheer
             services.Configure<S3>(Configuration.GetSection("S3"));
             services.Configure<SiteAnalytics>(Configuration.GetSection("SiteAnalytics"));
             services.Configure<Recaptcha>(Configuration.GetSection("Recaptcha"));
+            services.Configure<GithubOAuth>(Configuration.GetSection("GithubOAuth"));
 
             services.AddControllersWithViews();
             services.AddHttpClient();
@@ -70,6 +72,7 @@ namespace Atheer
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<IRecaptchaService, RecaptchaService>();
             services.AddTransient<ITagService, TagService>();
+            services.AddScoped<IOAuthService, OAuthService>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(opts =>

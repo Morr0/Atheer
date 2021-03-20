@@ -5,7 +5,7 @@
 - Benchmark performance in a Docker containers to simulate production server
 - Add health check endpoints
 - Limit size of image uploaded to 4MB
-- 
+- Integrate with some kind of a feed (Json feed or RSS), publish api for it
 
 ### List of things if have time:
 - Extract all string constants referenced both in razor and C# into their respective classes

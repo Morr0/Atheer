@@ -1,14 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Atheer.Controllers.Authentication.Models;
+using Atheer.Services.OAuthService;
 using Atheer.Services.UserSessionsService;
 using Atheer.Services.UsersService;
+using Atheer.Utilities.Config.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Atheer.Controllers.Authentication
 {
@@ -110,5 +114,22 @@ namespace Atheer.Controllers.Authentication
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
             return Redirect("/");
         }
+
+        [HttpGet("/Auth/Callback/Github")]
+        [ResponseCache(Duration = 0, NoStore = true, Location = ResponseCacheLocation.None)]
+        public async Task<IActionResult> GithubRedirect([FromQuery] GithubOAuthRedirectQuery query, [FromServices] IOAuthService oAuthService, 
+            [FromServices] IOptions<GithubOAuth> githubOauthConfig)
+        {
+            if (User.Identity?.IsAuthenticated == true) return Redirect("/");
+            if (!githubOauthConfig.Value.Enabled) return Redirect("/");
+            if (string.IsNullOrEmpty(query.Code)) return Redirect("/");
+
+            var userInfo = await oAuthService.GetUserInfo(OAuthProvider.Github, query.Code).ConfigureAwait(false);
+            Console.WriteLine(userInfo.Name);
+            Console.WriteLine(userInfo.Email);
+            // TODO login user
+            return Redirect("/");
+        }
+        
     }
 }

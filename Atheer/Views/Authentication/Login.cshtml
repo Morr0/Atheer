@@ -2,6 +2,7 @@
 @using Atheer.Utilities.Config.Models
 @model Atheer.Controllers.Authentication.Models.LoginViewModel
 @inject IOptionsSnapshot<Site> Site
+@inject IOptions<GithubOAuth> GithubOAuth
 
 @{
     ViewData["Title"] = "Login";
@@ -32,6 +33,13 @@
 
     <button class="btn btn-outline-primary">Login</button>
 </form>
+
+@if (GithubOAuth.Value.Enabled)
+{
+    <a class="text-info btn-link" href="https://github.com/login/oauth/authorize?scope=read:user&client_id=@GithubOAuth.Value.ClientId">
+        Login with Github
+    </a>
+}
 
 @if (Site.Value.CanRegister)
 {
