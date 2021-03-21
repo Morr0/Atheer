@@ -41,12 +41,14 @@ namespace Atheer.Services.UsersService
             var user = _mapper.Map<User>(oAuthUserInfo);
 
             user.Id = oAuthUserInfo.OAuthUsername;
+            user.Email = user.Email.ToLowerInvariant();
 
             user.DateCreated = DateTime.UtcNow.GetString();
             user.PasswordHash = string.Empty;
 
             user.Roles = DefaultRole();
 
+            user.OAuthUser = true;
             user.OAuthLogicalId = OAuthLogicalId(oAuthUserInfo.OAuthProvider, oAuthUserInfo.OAuthProviderId);
 
             return user;

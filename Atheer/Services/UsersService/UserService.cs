@@ -32,8 +32,12 @@ namespace Atheer.Services.UsersService
 
         public async Task<string> Add(RegisterViewModel registerViewModel)
         {
+            // Allow OAuth users with same email to register if exists or vice versa
             string lowerCaseEmail = registerViewModel.Email.ToLowerInvariant();
-            if (await EmailRegistered(lowerCaseEmail).ConfigureAwait(false))
+            var userEmail = await _context.User.AsNoTracking()
+                .Where(x => x.Email == lowerCaseEmail && !x.OAuthUser)
+                .Select(x => new { x.Email} ).FirstOrDefaultAsync().ConfigureAwait(false);
+            if (userEmail?.Email == lowerCaseEmail)
             {
                 throw new UserWithThisEmailAlreadyExistsException();
             }
