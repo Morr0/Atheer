@@ -56,11 +56,11 @@ namespace Atheer.Services.UsersService
 
         public User UpdateOAuthUser(OAuthUserInfo oAuthUserInfo, User existingUser)
         {
-            var updatedUser = _mapper.Map(oAuthUserInfo, existingUser);
-
-            updatedUser.DateLastLoggedIn = DateTime.UtcNow.GetString();
+            existingUser.DateLastLoggedIn = DateTime.UtcNow.GetString();
+         
+            // HERE GOES ANYTHING YOU WANT TO PULL FROM OAUTH PROVIDER TO UPDATE USER DETAILS IF NEEDED
             
-            return updatedUser;
+            return existingUser;
         }
 
         internal string Id(string email)
