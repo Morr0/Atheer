@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Atheer.Exceptions;
 using Atheer.Utilities.Config.Models;
 using Microsoft.Extensions.Options;
+using Polly;
+using Polly.Retry;
 
 namespace Atheer.Services.OAuthService
 {
@@ -14,12 +16,15 @@ namespace Atheer.Services.OAuthService
         private readonly HttpClient _httpClient;
         private readonly IOptions<GithubOAuth> _config;
 
-        // TODO add retry
+        private readonly AsyncRetryPolicy _retryPolicy;
+        
         public OAuthService(HttpClient httpClient, IOptions<GithubOAuth> config)
         {
             _httpClient = httpClient;
             _config = config;
             _httpClient.Timeout = TimeSpan.FromSeconds(5);
+
+            _retryPolicy = Policy.Handle<HttpRequestException>().RetryAsync(3);
         }
         
         public async Task<OAuthUserInfo> GetUserInfo(OAuthProvider provider, string authCode)
@@ -45,8 +50,8 @@ namespace Atheer.Services.OAuthService
             httpRequest.Headers.Add("Accept", "application/json");
             httpRequest.Headers.Add("Authorization", $"token {accessToken}");
             httpRequest.Headers.Add("User-Agent", "Atheer");
-
-            var httpResponse = await _httpClient.SendAsync(httpRequest).ConfigureAwait(false);
+            
+            var httpResponse = await _retryPolicy.ExecuteAsync(() => _httpClient.SendAsync(httpRequest)).ConfigureAwait(false);
             await using var stream = await httpResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
             var githubUserModel = await JsonSerializer.DeserializeAsync<GithubUserResponse>(stream).ConfigureAwait(false);
 
@@ -64,7 +69,7 @@ namespace Atheer.Services.OAuthService
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, sb.ToString());
             httpRequest.Headers.Add("Accept", "application/json");
 
-            var httpResponse = await _httpClient.SendAsync(httpRequest).ConfigureAwait(false);
+            var httpResponse = await _retryPolicy.ExecuteAsync(() => _httpClient.SendAsync(httpRequest)).ConfigureAwait(false);
             await using var stream = await httpResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
             var json = await JsonDocument.ParseAsync(stream).ConfigureAwait(false);
             

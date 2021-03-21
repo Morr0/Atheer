@@ -1,6 +1,7 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
+- Handle case when OAuth user is in DB but revoked access from OAuth provider
 - Benchmark performance in a Docker containers to simulate production server
 - Add health check endpoints
 - Limit size of image uploaded to 4MB
