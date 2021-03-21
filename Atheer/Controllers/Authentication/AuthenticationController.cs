@@ -139,12 +139,11 @@ namespace Atheer.Controllers.Authentication
             {
                 return Redirect("/");
             }
-            string userId = await _userService.AddOrUpdateOAuthUser(userInfo).ConfigureAwait(false);
+            (string userId, string roles) = await _userService.AddOrUpdateOAuthUser(userInfo).ConfigureAwait(false);
 
-            // TODO attach correct user roles
             string sessionId = _sessionsService.Login(userId);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
-                , ClaimsPrincipal(sessionId, userId, UserRoles.BasicRole, oAuthUser: true)).ConfigureAwait(false);
+                , ClaimsPrincipal(sessionId, userId, roles, oAuthUser: true)).ConfigureAwait(false);
             await _userService.SetLogin(userId).ConfigureAwait(false);
             
             return Redirect("/");

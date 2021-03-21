@@ -50,14 +50,14 @@ namespace Atheer.Services.UsersService
             return user.Id;
         }
 
-        public async Task<string> AddOrUpdateOAuthUser(OAuthUserInfo oAuthUserInfo)
+        public async Task<(string userId, string roles)> AddOrUpdateOAuthUser(OAuthUserInfo oAuthUserInfo)
         {
             var user = _factory.Create(oAuthUserInfo);
             var potentialSameExistingUser = await Get(user.Id);
             if (potentialSameExistingUser is null)
             {
                 await AddUser(user).ConfigureAwait(false);
-                return user.Id;
+                return (user.Id, user.Roles);
             }
             
             // Same OAuth user then update
@@ -75,7 +75,7 @@ namespace Atheer.Services.UsersService
                 await AddUser(user).ConfigureAwait(false);
             }
 
-            return user.Id;
+            return (user.Id, user.Roles);
         }
 
         private async Task AddUser(User user)

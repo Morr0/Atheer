@@ -8,7 +8,7 @@ namespace Atheer.Services.UsersService
     public interface IUserService
     {
         Task<string> Add(RegisterViewModel registerViewModel);
-        Task<string> AddOrUpdateOAuthUser(OAuthUserInfo oAuthUserInfo);
+        Task<(string userId, string roles)> AddOrUpdateOAuthUser(OAuthUserInfo oAuthUserInfo);
         Task<bool> EmailRegistered(string email);
         Task<User> Get(string id);
         Task<User> GetFromEmailOrUsernameForLogin(string emailOrUsername);
@@ -20,6 +20,6 @@ namespace Atheer.Services.UsersService
         Task SetImage(string id, string imageUrl);
 
         Task<bool> HasRole(string id, string role);
-        Task ChangeRole(string id, string role);
+        Task ChangeRole(string id, string role); 
     }
 }
