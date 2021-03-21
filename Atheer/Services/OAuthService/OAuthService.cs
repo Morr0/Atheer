@@ -32,7 +32,8 @@ namespace Atheer.Services.OAuthService
                 Name = userInfo.name,
                 Email = userInfo.email,
                 OAuthProvider = provider.ToString(),
-                OAuthUsername = userInfo.login
+                OAuthUsername = userInfo.login,
+                OAuthProviderId = userInfo.id.ToString()
             };
         }
 

@@ -6,6 +6,16 @@ namespace Atheer.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropIndex(
+                name: "IX_User_Email",
+                table: "User");
+
+            migrationBuilder.AddColumn<string>(
+                name: "OAuthLogicalId",
+                table: "User",
+                type: "varchar(48)",
+                nullable: true);
+
             migrationBuilder.AddColumn<string>(
                 name: "OAuthProvider",
                 table: "User",
@@ -18,10 +28,23 @@ namespace Atheer.Migrations
                 type: "boolean",
                 nullable: false,
                 defaultValue: false);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_Email",
+                table: "User",
+                column: "Email");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropIndex(
+                name: "IX_User_Email",
+                table: "User");
+
+            migrationBuilder.DropColumn(
+                name: "OAuthLogicalId",
+                table: "User");
+
             migrationBuilder.DropColumn(
                 name: "OAuthProvider",
                 table: "User");
@@ -29,6 +52,12 @@ namespace Atheer.Migrations
             migrationBuilder.DropColumn(
                 name: "OAuthUser",
                 table: "User");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_Email",
+                table: "User",
+                column: "Email",
+                unique: true);
         }
     }
 }

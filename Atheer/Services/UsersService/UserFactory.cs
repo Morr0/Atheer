@@ -47,6 +47,8 @@ namespace Atheer.Services.UsersService
 
             user.Roles = DefaultRole();
 
+            user.OAuthLogicalId = OAuthLogicalId(oAuthUserInfo.OAuthProvider, oAuthUserInfo.OAuthProviderId);
+
             return user;
         }
 
@@ -65,6 +67,11 @@ namespace Atheer.Services.UsersService
             return email.Split('@')[0];
         }
 
+        internal string OAuthLogicalId(string provider, string oAuthId)
+        {
+            return $"{provider}-{oAuthId}";
+        }
+
         internal string HashPassword(string textPassword)
         {
             return Crypt.HashPassword(textPassword, HashRounds);
@@ -80,9 +87,9 @@ namespace Atheer.Services.UsersService
             return UserRoles.BasicRole;
         }
 
-        public string AnotherId(string id)
+        public string AnotherId(string id, string oAuthProvider = null)
         {
-            return $"{id}-{DateTime.UtcNow.Minute.ToString()}";
+            return string.IsNullOrEmpty(oAuthProvider) ? $"{id}-{DateTime.UtcNow.Minute.ToString()}" : $"{oAuthProvider}-{id}";
         }
 
         public void TakeRole(ref User user, string role)

@@ -22,5 +22,8 @@
 
         public bool OAuthUser { get; set; }
         public string OAuthProvider { get; set; }
+
+        // <OAuthProvider>-<Id>
+        public string OAuthLogicalId { get; set; }
     }
 }

@@ -13,8 +13,7 @@ namespace Atheer.Repositories
             
             // Indexes
             modelBuilder.Entity<User>()
-                .HasIndex(x => x.Email)
-                .IsUnique();
+                .HasIndex(x => x.Email);
 
             // Properties
             // - Booleans
@@ -46,6 +45,9 @@ namespace Atheer.Repositories
             modelBuilder.Entity<User>()
                 .Property(x => x.OAuthProvider)
                 .HasColumnType("varchar(16)");
+            modelBuilder.Entity<User>()
+                .Property(x => x.OAuthLogicalId)
+                .HasColumnType("varchar(48)");
         }
     }
 }

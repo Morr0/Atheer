@@ -11,7 +11,7 @@ using NpgsqlTypes;
 namespace Atheer.Migrations
 {
     [DbContext(typeof(Data))]
-    [Migration("20210320070843_OAuthUser")]
+    [Migration("20210321023423_OAuthUser")]
     partial class OAuthUser
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -163,6 +163,9 @@ namespace Atheer.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<string>("OAuthLogicalId")
+                        .HasColumnType("varchar(48)");
+
                     b.Property<string>("OAuthProvider")
                         .HasColumnType("varchar(16)");
 
@@ -177,8 +180,7 @@ namespace Atheer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
+                    b.HasIndex("Email");
 
                     b.ToTable("User");
                 });

@@ -53,18 +53,21 @@ namespace Atheer.Services.UsersService
             if (potentialSameExistingUser is null)
             {
                 await AddUser(user).ConfigureAwait(false);
+                return user.Id;
             }
-            else if (potentialSameExistingUser.OAuthUser && potentialSameExistingUser.OAuthProvider == user.OAuthProvider)
+            
+            // Same OAuth user then update
+            if (potentialSameExistingUser.OAuthLogicalId == user.OAuthLogicalId)
             {
-                // Update the user
                 user = _factory.UpdateOAuthUser(oAuthUserInfo, potentialSameExistingUser);
                 _context.Attach(user);
                 _context.Update(user);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
             }
+            // Different OAuth user with same Id, resolve to different id
             else
             {
-                user.Id = await GetIdUntilVacancyExists(user.Id).ConfigureAwait(false);
+                user.Id = _factory.AnotherId(user.Id, user.OAuthProvider);
                 await AddUser(user).ConfigureAwait(false);
             }
 

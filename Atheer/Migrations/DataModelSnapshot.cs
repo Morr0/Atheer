@@ -161,6 +161,9 @@ namespace Atheer.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<string>("OAuthLogicalId")
+                        .HasColumnType("varchar(48)");
+
                     b.Property<string>("OAuthProvider")
                         .HasColumnType("varchar(16)");
 
@@ -175,8 +178,7 @@ namespace Atheer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
+                    b.HasIndex("Email");
 
                     b.ToTable("User");
                 });
