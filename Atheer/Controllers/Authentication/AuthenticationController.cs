@@ -53,7 +53,7 @@ namespace Atheer.Controllers.Authentication
         {
             if (!ModelState.IsValid) return View("Login", loginView);
             
-            var user = await _userService.GetFromEmailOrUsername(loginView.EmailOrUsername).ConfigureAwait(false);
+            var user = await _userService.GetFromEmailOrUsernameForLogin(loginView.EmailOrUsername).ConfigureAwait(false);
             if (user is not null)
             {
                 string sessionId = _sessionsService.Login(loginView, user);
@@ -145,6 +145,7 @@ namespace Atheer.Controllers.Authentication
             string sessionId = _sessionsService.Login(userId);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
                 , ClaimsPrincipal(sessionId, userId, UserRoles.BasicRole, oAuthUser: true)).ConfigureAwait(false);
+            await _userService.SetLogin(userId).ConfigureAwait(false);
             
             return Redirect("/");
         }

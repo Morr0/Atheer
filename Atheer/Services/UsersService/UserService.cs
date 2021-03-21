@@ -113,20 +113,28 @@ namespace Atheer.Services.UsersService
         public Task<User> Get(string id)
         {
             return _context.User.AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .Where(x => x.Id == id)
+                .FirstOrDefaultAsync();
         }
 
-        public Task<User> GetFromEmailOrUsername(string emailOrUsername)
+        public Task<User> GetFromEmailOrUsernameForLogin(string emailOrUsername)
         {
             string lowerCasedEmailOrUsername = emailOrUsername.ToLowerInvariant();
-            return Get(IsEmail(lowerCasedEmailOrUsername) ? _factory.Id(lowerCasedEmailOrUsername) : lowerCasedEmailOrUsername);
+            return GetForLogin(IsEmail(lowerCasedEmailOrUsername) ? _factory.Id(lowerCasedEmailOrUsername) : lowerCasedEmailOrUsername);
+        }
+
+        private Task<User> GetForLogin(string id)
+        {
+            return _context.User.AsNoTracking()
+                .Where(x => x.Id == id && !x.OAuthUser)
+                .FirstOrDefaultAsync();
         }
 
         public async Task SetLogin(string id)
         {
-            var time = DateTime.UtcNow.GetString();
-
             var user = await _context.User.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
+            user.DateLastLoggedIn = DateTime.UtcNow.GetString();
+            
             _context.Entry(user).Property(x => x.DateLastLoggedIn).IsModified = true;
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }
