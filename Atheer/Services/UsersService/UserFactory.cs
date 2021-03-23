@@ -96,6 +96,8 @@ namespace Atheer.Services.UsersService
 
         public void TakeRole(ref User user, string role)
         {
+            if (role == UserRoles.BasicRole) return;
+            
             var roles = user.Roles.Split(',').Where(x => x != role);
             user.Roles = string.Join(',', roles);
         }
