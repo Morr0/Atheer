@@ -197,8 +197,8 @@ namespace Atheer.Services.UsersService
             var user = await _context.User.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             
             // Downgrade from editor to basic
-            if (role == UserRoles.BasicRole) _factory.TakeRole(ref user, UserRoles.EditorRole);
-            else if (role == UserRoles.EditorRole) _factory.AddRole(ref user, UserRoles.EditorRole);
+            if (role == UserRoles.BasicRole) _factory.TakeRole(user, UserRoles.EditorRole);
+            else if (role == UserRoles.EditorRole) _factory.AddRole(user, UserRoles.EditorRole);
 
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }

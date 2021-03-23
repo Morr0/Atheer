@@ -1,7 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Add unit tests to UserFactory
 - Add health check endpoints
 - Add unit tests to ArticleFactory
 - Add unit tests to TagFactory

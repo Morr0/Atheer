@@ -95,7 +95,7 @@ namespace AtheerTests.UnitTests.Factories
             };
             string role = UserRoles.EditorRole;
             
-            _factory.AddRole(ref user, role);
+            _factory.AddRole(user, role);
 
             Assert.Contains(UserRoles.BasicRole, user.Roles);
             Assert.Contains(role, user.Roles);
@@ -109,7 +109,7 @@ namespace AtheerTests.UnitTests.Factories
                 Roles = UserRoles.BasicRole
             };
             
-            _factory.AddRole(ref user, UserRoles.BasicRole);
+            _factory.AddRole(user, UserRoles.BasicRole);
 
             Assert.True(user.Roles.Split(',').Count() == 1);
             Assert.Contains(UserRoles.BasicRole, user.Roles);
@@ -123,7 +123,7 @@ namespace AtheerTests.UnitTests.Factories
                 Roles = $"{UserRoles.BasicRole},{UserRoles.EditorRole}"
             };
             
-            _factory.TakeRole(ref user, UserRoles.EditorRole);
+            _factory.TakeRole(user, UserRoles.EditorRole);
             
             Assert.DoesNotContain(UserRoles.EditorRole, user.Roles);
             Assert.Contains(UserRoles.BasicRole, user.Roles);
@@ -137,7 +137,7 @@ namespace AtheerTests.UnitTests.Factories
                 Roles = UserRoles.BasicRole
             };
             
-            _factory.TakeRole(ref user, UserRoles.BasicRole);
+            _factory.TakeRole(user, UserRoles.BasicRole);
             
             Assert.Contains(UserRoles.BasicRole, user.Roles);
         }

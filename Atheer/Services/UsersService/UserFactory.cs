@@ -94,7 +94,7 @@ namespace Atheer.Services.UsersService
             return string.IsNullOrEmpty(oAuthProvider) ? $"{id}-{DateTime.UtcNow.Minute.ToString()}" : $"{oAuthProvider}-{id}";
         }
 
-        public void TakeRole(ref User user, string role)
+        public void TakeRole(User user, string role)
         {
             if (role == UserRoles.BasicRole) return;
             
@@ -102,7 +102,7 @@ namespace Atheer.Services.UsersService
             user.Roles = string.Join(',', roles);
         }
 
-        public void AddRole(ref User user, string role)
+        public void AddRole(User user, string role)
         {
             if (user.Roles.Contains(role)) return;
 
