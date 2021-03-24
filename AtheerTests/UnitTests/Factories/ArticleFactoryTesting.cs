@@ -2,6 +2,7 @@
 using System.Globalization;
 using Atheer.Controllers.ArticleEdit.Models;
 using Atheer.Extensions;
+using Atheer.Models;
 using Atheer.Services.ArticlesService;
 using Atheer.Utilities;
 using AutoMapper;
@@ -105,6 +106,43 @@ namespace AtheerTests.UnitTests.Factories
             Assert.True(article.Scheduled);
             Assert.NotEqual(article.ScheduledSinceDate, article.CreationDate);
             Assert.True(creationDate > scheduledSinceDate);
+        }
+
+        [Fact]
+        public void ScheduledArticleShouldBeUnscheduled()
+        {
+            var now = DateTime.UtcNow;
+            string scheduledSince = now.AddMinutes(-1).GetString();
+            var article = new Article
+            {
+                Scheduled = true,
+                ScheduledSinceDate = scheduledSince,
+                CreationDate = now.AddMinutes(1).GetString()
+            };
+            
+            _factory.Unschedule(article, now);
+            
+            Assert.False(article.Scheduled);
+            Assert.Equal(now.GetString(), article.CreationDate);
+        }
+
+        [Fact]
+        public void ScheduledArticleAlreadyReleasedShouldNotAffectAnythingIfUnscheduled()
+        {
+            var releaseDatetime = DateTime.UtcNow;
+            string scheduledSince = releaseDatetime.AddMinutes(-1).GetString();
+            var article = new Article
+            {
+                Scheduled = false,
+                ScheduledSinceDate = scheduledSince,
+                CreationDate = releaseDatetime.GetString()
+            };
+
+            var proposedReleaseDatetime = releaseDatetime.AddMinutes(1);
+            _factory.Unschedule(article, proposedReleaseDatetime);
+            
+            Assert.False(article.Scheduled);
+            Assert.Equal(releaseDatetime.GetString(), article.CreationDate);
         }
     }
 }

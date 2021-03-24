@@ -1,7 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Add unit tests to ArticleFactory
 - Add unit tests to TagFactory
 - Add ability to persist Navbar items
 - Allow application on startup to fetch nav bar items from database

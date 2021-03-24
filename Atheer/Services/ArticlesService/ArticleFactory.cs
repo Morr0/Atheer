@@ -62,7 +62,7 @@ namespace Atheer.Services.ArticlesService
             scheduledSinceDate = now.GetString();
         }
 
-        public void SetUpdated(ref Article article, bool unschedule)
+        public void SetUpdated(Article article, bool unschedule)
         {
             var now = DateTime.UtcNow;
             article.LastUpdatedDate = now.GetString();
