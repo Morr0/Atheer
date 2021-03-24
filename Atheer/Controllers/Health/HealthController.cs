@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 using Atheer.Controllers.Health.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Atheer.Controllers.Utilities.Filters;
 
 namespace Atheer.Controllers.Health
 {
     [Route("/Health")]
     [ApiController]
-    // TODO allow certain endpoints to only be accessed from within the same network
     public class HealthController : ControllerBase
     {
         [HttpGet]
@@ -18,6 +18,7 @@ namespace Atheer.Controllers.Health
             return Ok();
         }
 
+        [OnlyVisibleToNetwork]
         [HttpGet("internal/metrics")]
         public async Task<IActionResult> HealthyInternalComprehensive([FromServices] IServiceScopeFactory serviceScopeFactory)
         {
