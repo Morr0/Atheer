@@ -1,22 +1,41 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Atheer.Models;
+using Atheer.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Atheer.Services.NavItemsService
 {
     public class NavItemService : INavItemsService
     {
-        private static readonly List<NavItem> NavItems = new()
+        private readonly IServiceScopeFactory _serviceScopeFactory;
+        
+        private static List<NavItem> _navItems = new(1);
+
+        public NavItemService(IServiceScopeFactory serviceScopeFactory)
         {
-            new NavItem
+            _serviceScopeFactory = serviceScopeFactory;
+
+            LoadNavItemsFromDb();
+        }
+
+        private void LoadNavItemsFromDb()
+        {
+            Task.Run(() =>
             {
-                Name = "Hello",
-                Url = "https://github.com/morr0"
-            }
-        };
-        
-        
-        public Task Add(string name, string url)
+                using var scope = _serviceScopeFactory.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<Data>();
+
+                var items = context.NavItems.ToList();
+                lock (_navItems)
+                {
+                    _navItems = items;
+                }
+            });
+        }
+
+        public async Task Add(string name, string url)
         {
             var item = new NavItem
             {
@@ -24,19 +43,23 @@ namespace Atheer.Services.NavItemsService
                 Url = url
             };
             
-            lock (NavItems)
+            lock (_navItems)
             {
-                NavItems.Add(item);
+                _navItems.Add(item);
             }
-            
-            return Task.CompletedTask;
+
+            using var scope = _serviceScopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<Data>();
+
+            await context.AddAsync(item).ConfigureAwait(false);
+            await context.SaveChangesAsync().ConfigureAwait(false);
         }
 
         public IList<NavItem> Get()
         {
-            lock (NavItems)
+            lock (_navItems)
             {
-                return NavItems;
+                return _navItems;
             }
         }
     }
