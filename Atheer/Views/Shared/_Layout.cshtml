@@ -3,9 +3,11 @@
 @using Microsoft.Extensions.Options
 @using Atheer.Controllers
 @using Atheer.Controllers.Authentication
+@using Atheer.Services.NavItemsService
 @using Atheer.Services.UsersService
 @inject IOptionsSnapshot<Site> Site
 @inject IOptions<SiteAnalytics> SiteAnalytics
+@inject INavItemsService NavItemsService
 
 @{
     string fullTitle = $"{ViewData["Title"]} - {Site.Value.Title}";
@@ -13,6 +15,7 @@
     bool authenticated = User.Identity?.IsAuthenticated == true;
 
     string trackingNum = SiteAnalytics.Value.SiteId;
+    var navItems = authenticated ? null : NavItemsService.Get();
 }
 
 <!DOCTYPE html>
@@ -44,6 +47,18 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-0 ml-auto">
+                        @if (!authenticated)
+                        {
+                            foreach (var navItem in navItems)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" href="@navItem.Url" target="_blank" title="@navItem.Url">
+                                        @navItem.Name
+                                    </a>
+                                </li>
+                            }
+                        }
+                        
                         @if (Site.Value.ShowLoginButton && !authenticated)
                         {
                             <li class="nav-item">
@@ -58,7 +73,7 @@
                                     <a class="nav-link text-dark" asp-controller="ArticleEdit" asp-action="Index">Write</a>
                                 </li>
                             }
-                            
+
                             @if (User.IsInRole(UserRoles.AdminRole))
                             {
                                 <li class="nav-item">
@@ -67,9 +82,9 @@
                                     </a>
                                 </li>
                             }
-                            
+
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="User" asp-action="UserView" 
+                                <a class="nav-link text-dark" asp-controller="User" asp-action="UserView"
                                    asp-route-userId="@User.FindFirst(AuthenticationController.CookieUserId)?.Value">
                                     Profile
                                 </a>

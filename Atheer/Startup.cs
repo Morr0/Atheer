@@ -5,6 +5,7 @@ using Atheer.BackgroundServices;
 using Atheer.Repositories;
 using Atheer.Services.ArticlesService;
 using Atheer.Services.FileService;
+using Atheer.Services.NavItemsService;
 using Atheer.Services.OAuthService;
 using Atheer.Services.RecaptchaService;
 using Atheer.Services.TagService;
@@ -73,6 +74,7 @@ namespace Atheer
             services.AddTransient<IRecaptchaService, RecaptchaService>();
             services.AddTransient<ITagService, TagService>();
             services.AddScoped<IOAuthService, OAuthService>();
+            services.AddSingleton<INavItemsService, NavItemService>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(opts =>
