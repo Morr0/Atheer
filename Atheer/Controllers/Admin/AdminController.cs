@@ -1,4 +1,7 @@
-﻿using Atheer.Services.UsersService;
+﻿using System.Threading.Tasks;
+using Atheer.Controllers.Admin.Models;
+using Atheer.Services.NavItemsService;
+using Atheer.Services.UsersService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,9 +11,31 @@ namespace Atheer.Controllers.Admin
     [Authorize(Roles = UserRoles.AdminRole)]
     public class AdminController : Controller
     {
-        public IActionResult Index()
+        [HttpGet]
+        public IActionResult AdminPage()
         {
-            return Redirect("/");
+            return View("AdminPage");
+        }
+
+        [HttpGet("Navbar")]
+        public IActionResult NavbarItemsPage([FromServices] INavItemsService navItemsService)
+        {
+            var navItems = navItemsService.Get();
+            return View("NavbarItemsPage", navItems);
+        }
+
+        [HttpPost("Navbar/Add")]
+        public async Task<IActionResult> AddNavItem([FromServices] INavItemsService navItemsService, [FromForm] NavItemAdd form)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["Model"] = "Please provide the Name and Url";
+                return RedirectToAction("NavbarItemsPage");
+            }
+
+            await navItemsService.Add(form.Name, form.Url).ConfigureAwait(false);
+
+            return RedirectToAction("NavbarItemsPage");
         }
     }
 }

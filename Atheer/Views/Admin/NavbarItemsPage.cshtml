@@ -1,0 +1,50 @@
+﻿@model IList<NavItem>
+
+@{
+    ViewData["Title"] = "Navbar items settings";
+}
+
+
+<span class="text-danger">@TempData["Model"]</span>
+<button class="btn btn-outline-primary" id="addButton" type="button">Add</button>
+<form asp-controller="Admin" asp-action="AddNavItem" method="post" hidden id="form">
+    <div class="form-group">
+        <label for="Name">Name: </label>
+        <input type="text" name="Name" class="form-control" required/>
+        <label for="Url">Url: </label>
+        <input type="url" name="Url" class="form-control" required/>
+        <button type="submit" class="btn btn-primary">Add</button>
+        <button type="button" id="closeButton" class="btn btn-secondary">Close</button>
+    </div>
+</form>
+
+<ul class="list-group">
+    @foreach (var item in Model)
+    {
+        <li class="list-group-item">
+            <span class="text-info">Name: </span>
+            @item.Name
+            <span class="text-info"> Url: </span>
+            <span class="text-wrap">@item.Url</span>
+        </li>
+    }
+</ul>
+
+@section Scripts
+{
+    <script>
+    const addButton = document.getElementById("addButton");
+    const form = document.getElementById("form");
+    const closeButton = document.getElementById("closeButton");
+    
+    addButton.addEventListener("click", () => {
+       form.hidden = false;
+       addButton.hidden = true;
+    });
+    
+    closeButton.addEventListener("click", () => {
+       addButton.hidden = false;
+       form.hidden = true;
+    });
+    </script>
+}
