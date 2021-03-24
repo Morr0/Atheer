@@ -1,11 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Add ability to persist Navbar items
-- Allow application on startup to fetch nav bar items from database
-- Allow admin to add/remove navbar items
-- Limit size of image uploaded to 4MB
-- Integrate with some kind of a feed (Json feed or RSS), publish api for it
 - Design internals of ArticleSeries
 - Add UI to create a new article series
 - Allow in the article editor to link this article to an article series
@@ -20,6 +15,8 @@
 ### List of things if have time:
 - Extract all string constants referenced both in razor and C# into their respective classes
 - Extract all words to an international word class (basically add very basic internationalizing support)
+- Limit size of image uploaded to 4MB
+- Complete the JSON feed to full specs
 - 
 
 ### List of longer term goals (not in order):
