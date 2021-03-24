@@ -21,6 +21,8 @@ namespace Atheer.Repositories
             ConfigureArticleModel(modelBuilder);
             ConfigureUserModel(modelBuilder);
             ConfigureTagsModels(modelBuilder);
+
+            ConfigureViews(modelBuilder);
         }
     }
 }

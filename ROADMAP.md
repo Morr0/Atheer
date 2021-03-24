@@ -1,7 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Add metric health check endpoint to get memory/cpu usage and is connected to DB
 - Add unit tests to ArticleFactory
 - Add unit tests to TagFactory
 - Add ability to persist Navbar items
