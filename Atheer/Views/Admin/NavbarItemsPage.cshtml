@@ -26,6 +26,11 @@
             @item.Name
             <span class="text-info"> Url: </span>
             <span class="text-wrap">@item.Url</span>
+            
+            <form asp-controller="Admin" asp-action="RemoveNavItem" method="post">
+                <input hidden name="Id" type="hidden" value="@item.Id" />
+                <button type="submit" class="btn btn-danger">Remove</button>
+            </form>
         </li>
     }
 </ul>

@@ -8,5 +8,6 @@ namespace Atheer.Services.NavItemsService
     {
         Task Add(string name, string url);
         IList<NavItem> Get();
+        Task Remove(int id);
     }
 }

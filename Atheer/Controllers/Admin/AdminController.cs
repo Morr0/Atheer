@@ -37,5 +37,13 @@ namespace Atheer.Controllers.Admin
 
             return RedirectToAction("NavbarItemsPage");
         }
+
+        [HttpPost("Navbar/Remove")]
+        public async Task<IActionResult> RemoveNavItem([FromServices] INavItemsService navItemsService, [FromForm] NavItemRemove form)
+        {
+            await navItemsService.Remove(form.Id).ConfigureAwait(false);
+            
+            return RedirectToAction("NavbarItemsPage");
+        }
     }
 }

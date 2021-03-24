@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Atheer.Models;
 using Atheer.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Atheer.Services.NavItemsService
@@ -61,6 +63,24 @@ namespace Atheer.Services.NavItemsService
             {
                 return _navItems;
             }
+        }
+
+        public async Task Remove(int id)
+        {
+            using var scope = _serviceScopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<Data>();
+
+            var item = await context.NavItems.Where(x => x.Id == id)
+                .FirstOrDefaultAsync().ConfigureAwait(false);
+            if (item is null) return;
+
+            lock (_navItems)
+            {
+                _navItems = _navItems.Where(x => x.Id != id).ToList();
+            }
+
+            context.Remove(item);
+            await context.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }
