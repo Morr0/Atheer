@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("AtheerTests")]
 namespace Atheer.Services.FileService
 {
     public static class FileServiceUtilities

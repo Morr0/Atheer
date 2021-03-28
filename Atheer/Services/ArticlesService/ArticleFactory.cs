@@ -7,7 +7,6 @@ using Atheer.Extensions;
 using Atheer.Models;
 using AutoMapper;
 
-[assembly: InternalsVisibleTo("AtheerTests")]
 namespace Atheer.Services.ArticlesService
 {
     public sealed class ArticleFactory
