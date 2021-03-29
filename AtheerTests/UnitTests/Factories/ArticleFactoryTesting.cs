@@ -144,5 +144,28 @@ namespace AtheerTests.UnitTests.Factories
             Assert.False(article.Scheduled);
             Assert.Equal(releaseDatetime.GetString(), article.CreationDate);
         }
+
+        [Fact]
+        public void ShouldCreateASeries()
+        {
+            string title = "Some title";
+            string description = "Some des";
+
+            var series = _factory.CreateSeries(title, description);
+            
+            Assert.Equal(title, series.Title);
+            Assert.Equal(description, series.Description);
+            Assert.False(series.Finished);
+        }
+
+        [Fact]
+        public void ShouldSetSeriesFinished()
+        {
+            var series = new ArticleSeries();
+
+            _factory.FinishSeries(series);
+
+            Assert.True(series.Finished);
+        }
     }
 }

@@ -99,5 +99,20 @@ namespace Atheer.Services.ArticlesService
 
             return sb.ToString();
         }
+
+        public ArticleSeries CreateSeries(string title, string description)
+        {
+            return new ArticleSeries
+            {
+                Title = title,
+                Description = description,
+                DateCreated = DateTime.UtcNow.GetString()
+            };
+        }
+
+        public void FinishSeries(ArticleSeries series)
+        {
+            series.Finished = true;
+        }
     }
 }
