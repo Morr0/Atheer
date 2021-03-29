@@ -1,4 +1,6 @@
-﻿namespace Atheer.Models
+﻿using Atheer.Models;
+
+namespace Atheer.Repositories.Junctions
 {
     public class TagArticle
     {

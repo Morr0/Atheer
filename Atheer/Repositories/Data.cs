@@ -1,4 +1,5 @@
 ﻿using Atheer.Models;
+using Atheer.Repositories.Junctions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Atheer.Repositories
@@ -13,7 +14,6 @@ namespace Atheer.Repositories
         public DbSet<Article> Article { get; set; }
         public DbSet<Tag> Tag { get; set; }
         public DbSet<TagArticle> TagArticle { get; set; }
-        
         public DbSet<User> User { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

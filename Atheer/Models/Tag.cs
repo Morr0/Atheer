@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
+using Atheer.Repositories.Junctions;
 
 namespace Atheer.Models
 {

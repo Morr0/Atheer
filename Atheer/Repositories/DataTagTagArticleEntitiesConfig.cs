@@ -1,4 +1,5 @@
 ﻿using Atheer.Models;
+using Atheer.Repositories.Junctions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Atheer.Repositories
@@ -19,7 +20,7 @@ namespace Atheer.Repositories
             modelBuilder.Entity<TagArticle>()
                 .HasOne(tt => tt.Tag)
                 .WithMany(t => t.Tags)
-                .HasForeignKey(nameof(Models.TagArticle.TagId));
+                .HasForeignKey(nameof(Junctions.TagArticle.TagId));
             modelBuilder.Entity<TagArticle>()
                 .HasOne(ta => ta.Article)
                 .WithMany(a => a.Tags)
