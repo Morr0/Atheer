@@ -8,9 +8,11 @@ namespace Atheer.Migrations
         {
             migrationBuilder.Sql(@"
             CREATE OR REPLACE VIEW popular_tags_view AS
-            SELECT ""Id"", ""Title"", count(""TagId"") AS ""Count""
+            SELECT T.""Id"", T.""Title"", count(""TagId"") AS ""Count""
             FROM ""TagArticle"" TA
             INNER JOIN ""Tag"" T on TA.""TagId"" = T.""Id""
+            INNER JOIN ""Article"" A on TA.""ArticleCreatedYear"" = A.""CreatedYear"" AND TA.""ArticleTitleShrinked"" = A.""TitleShrinked""
+            WHERE A.""Unlisted"" IS false AND A.""Draft"" IS false
             GROUP BY T.""Id""
             ORDER BY count(""TagId"") DESC
             ");
