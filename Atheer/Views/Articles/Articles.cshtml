@@ -9,4 +9,26 @@
     <h5 class="text-danger">@TempData["Error"]</h5>
 }
 
+@if (string.IsNullOrEmpty(Model.TagId))
+{
+    <span class="text-dark">Tags: </span>
+    @foreach (var tag in Model.MostPopularTags)
+    {
+        <ul class="list-group list-group-horizontal">
+            <li class="list-group-item">
+            
+                <a class="list-group-item-action" asp-controller="Articles" asp-action="Index" asp-route-tag="@tag.Id">
+                    @tag.Title (@tag.Count.ToString())
+                </a>
+            </li>
+        </ul>
+    }
+}
+else
+{
+    <li class="list-group-item">
+        <a class="list-group-item-action" href="/">All tags</a>
+    </li>
+}
+
 @await Component.InvokeAsync("Articles", Model).ConfigureAwait(false)

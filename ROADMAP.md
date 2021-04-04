@@ -7,7 +7,6 @@
 - Allow an article series to be in a state of finished once you don't want any more articles in it
 - Sort by most recent/oldest (done the backend just do the UI)
 - Word counter auto generated after each add/update of article
-- List top tags
 - Correct scheduled articles releaser to get articles older than today in a transaction
 - Commenting system
 - Implement OnlyVisibleToNetwork filter to only allow traffic from same network

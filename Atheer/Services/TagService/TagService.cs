@@ -57,5 +57,17 @@ namespace Atheer.Services.TagService
 
             return AddTags(article, tags, true);
         }
+        
+        public Task<List<BareTag>> GetTopTags(int amount, int page = 0)
+        {
+            var queryable = _context.PopularTag.Select(x => new BareTag
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Count = x.Count
+            });
+
+            return queryable.ToListAsync();
+        }
     }
 }

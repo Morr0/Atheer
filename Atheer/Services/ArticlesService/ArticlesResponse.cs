@@ -2,6 +2,7 @@
 using Atheer.Controllers.Articles.Models;
 using Atheer.Models;
 using Atheer.Services.ArticlesService;
+using Atheer.Services.TagService;
 
 namespace Atheer.Services.ArticlesService
 {
@@ -18,5 +19,6 @@ namespace Atheer.Services.ArticlesService
         public int Year { get; set; }
         public bool SpecificYear => Year != 0;
         public string UserId { get; set; }
+        public List<BareTag> MostPopularTags { get; set; }
     }
 }
