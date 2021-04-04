@@ -41,7 +41,9 @@ namespace Atheer.Services.ArticlesService
 
             return new ArticlesResponse
             {
-                Articles = articles
+                Articles = articles,
+                Search = true,
+                SearchQuery = searchQuery
             };
         }
 

@@ -20,5 +20,7 @@ namespace Atheer.Services.ArticlesService
         public bool SpecificYear => Year != 0;
         public string UserId { get; set; }
         public List<BareTag> MostPopularTags { get; set; }
+        public bool Search { get; set; }
+        public string SearchQuery { get; set; }
     }
 }

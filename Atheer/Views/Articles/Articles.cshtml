@@ -21,13 +21,17 @@
         @Model.Year.ToString()
         @Html.Raw(" Articles")
     }
+    @if (Model.Search)
+    {
+        @Html.Raw($"Searched for: {Model.SearchQuery}")
+    }
     else
     {
         @Html.Raw("Latest Articles")
     }
 </h5>
 
-@if (string.IsNullOrEmpty(Model.TagId))
+@if (string.IsNullOrEmpty(Model.TagId) && !Model.Search)
 {
     <h5 class="text-dark">Tags: </h5>
     <ul class="list-group list-group-horizontal flex-fill">
