@@ -53,7 +53,7 @@ namespace Atheer
             services.AddSingleton<TagFactory>();
             
             services.AddSingleton<MarkdownPipeline>(
-                provider => new MarkdownPipelineBuilder().UseAdvancedExtensions().UseBootstrap().Use<CodeStyleExtension>().Build());
+                provider => new MarkdownPipelineBuilder().UseAdvancedExtensions().UseBootstrap().Use<MarkdownExtension>().Build());
 
             // Repositories
             services.AddDbContext<Data>(opts =>

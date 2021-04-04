@@ -71,6 +71,11 @@
         <p class="card-text">@article.Description</p>
     </div>
     <div class="card-body">
+        <div class="text-dark" hidden id="tocOuter">
+            <h3>Table of Contents</h3>
+            <div id="toc"></div>
+            <br>
+        </div>
         <div class="h-di"></div>
         @Html.Raw(content)
     </div>
@@ -94,7 +99,7 @@
 
 @section Scripts
 {
-<script>
+    <script>
 const halfHeight = window.innerHeight / 5;
 const goUpBtn = document.getElementById("go-up-btn");
 window.addEventListener("scroll", (event) => {
@@ -114,5 +119,18 @@ goUpBtn.addEventListener("click", () => {
         behavior: "smooth"
     });
 });
+
+const jumpableHeaders = document.querySelectorAll(".jumpableHeader");
+if (jumpableHeaders.length > 0){
+    let string = [`<ul class="list-group flex-grow-0">`];
+    for (let header of jumpableHeaders) {
+        const name = header.innerText.replace(":", "");
+        string.push(`<li class="list-group-item"><a href="#${header.id}">${name}</a></li>`);
+    }
+    string.push("</ul>");
+    
+    const tableOfContentsDiv = document.getElementById("toc").innerHTML = string.join("");
+    document.getElementById("tocOuter").hidden = false;
+}  
 </script>
 }

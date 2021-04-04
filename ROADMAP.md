@@ -9,6 +9,8 @@
 - Correct scheduled articles releaser to get articles older than today in a transaction
 - Commenting system
 - Implement OnlyVisibleToNetwork filter to only allow traffic from same network
+- Make most popular tags viewed to also show most popular tags including the user's Draft and Unlisted articles
+- 
 
 ### List of things if have time:
 - Extract all string constants referenced both in razor and C# into their respective classes
