@@ -11,24 +11,6 @@
     int nextPage = Model.CurrentPage + 1;
 }
 
-<h6 class="text-dark">
-    @if (!string.IsNullOrEmpty(Model.TagTitle))
-    {
-        @Html.Raw("Tag: ")
-        @Model.TagTitle
-        <br/>
-    }
-    @if (Model.SpecificYear)
-    {
-        @Model.Year.ToString()
-        @Html.Raw(" Articles")
-    }
-    else
-    {
-        @Html.Raw("Latest Articles")
-    }
-</h6>
-
 @if (!Model.Articles.Any())
 {
     <span class="text-info">No articles exist...</span>

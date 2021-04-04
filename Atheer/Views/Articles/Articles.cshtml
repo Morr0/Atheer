@@ -9,26 +9,45 @@
     <h5 class="text-danger">@TempData["Error"]</h5>
 }
 
+<h5 class="text-dark">
+    @if (!string.IsNullOrEmpty(Model.TagTitle))
+    {
+        @Html.Raw("Tag: ")
+        @Model.TagTitle
+        <br/>
+    }
+    @if (Model.SpecificYear)
+    {
+        @Model.Year.ToString()
+        @Html.Raw(" Articles")
+    }
+    else
+    {
+        @Html.Raw("Latest Articles")
+    }
+</h5>
+
 @if (string.IsNullOrEmpty(Model.TagId))
 {
-    <span class="text-dark">Tags: </span>
+    <h5 class="text-dark">Tags: </h5>
+    <ul class="list-group list-group-horizontal flex-fill">
     @foreach (var tag in Model.MostPopularTags)
     {
-        <ul class="list-group list-group-horizontal">
-            <li class="list-group-item">
-            
-                <a class="list-group-item-action" asp-controller="Articles" asp-action="Index" asp-route-tag="@tag.Id">
-                    @tag.Title (@tag.Count.ToString())
-                </a>
-            </li>
-        </ul>
+        <li class="list-group-item">
+            <a asp-controller="Articles" asp-action="Index" asp-route-tag="@tag.Id">@tag.Title (@tag.Count.ToString())</a>
+        </li>
     }
+    </ul>
 }
 else
 {
-    <li class="list-group-item">
-        <a class="list-group-item-action" href="/">All tags</a>
-    </li>
+    <ul class="list-group list-group-horizontal flex-fill">
+        <li class="list-group-item">
+            <a href="/">All tags</a>
+        </li>
+    </ul>
 }
+
+<div class="mt-3"></div>
 
 @await Component.InvokeAsync("Articles", Model).ConfigureAwait(false)
