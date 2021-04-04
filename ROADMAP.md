@@ -5,7 +5,6 @@
 - Add UI to create a new article series
 - Allow in the article editor to link this article to an article series
 - Allow an article series to be in a state of finished once you don't want any more articles in it
-- Sort by most recent/oldest (done the backend just do the UI)
 - Word counter auto generated after each add/update of article
 - Correct scheduled articles releaser to get articles older than today in a transaction
 - Commenting system
@@ -16,6 +15,7 @@
 - Extract all words to an international word class (basically add very basic internationalizing support)
 - Limit size of image uploaded to 4MB
 - Complete the JSON feed to full specs
+- Sort by most recent/oldest (done the backend just do the UI)
 - 
 
 ### List of longer term goals (not in order):

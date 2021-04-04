@@ -106,7 +106,8 @@ namespace Atheer.Services.ArticlesService
                 CurrentPage = page,
                 TagId = tagId,
                 TagTitle = tagTitle,
-                UserId = specificUserId
+                UserId = specificUserId,
+                OldestArticles = oldest
             };
         }
 

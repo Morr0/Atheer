@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Articles";
+
+    string oldestOrLatestArticlesString = Model.OldestArticles ? "Oldest" : "Latest";
 }
 
 @if (TempData.ContainsKey("Error"))
@@ -27,7 +29,7 @@
     }
     else
     {
-        @Html.Raw("Latest Articles")
+        @Html.Raw($"{oldestOrLatestArticlesString} Articles")
     }
 </h5>
 

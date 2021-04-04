@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using Atheer.Controllers.Articles.Models;
-using Atheer.Models;
-using Atheer.Services.ArticlesService;
 using Atheer.Services.TagService;
 
 namespace Atheer.Services.ArticlesService
@@ -22,5 +20,6 @@ namespace Atheer.Services.ArticlesService
         public List<BareTag> MostPopularTags { get; set; }
         public bool Search { get; set; }
         public string SearchQuery { get; set; }
+        public bool OldestArticles { get; set; }
     }
 }
