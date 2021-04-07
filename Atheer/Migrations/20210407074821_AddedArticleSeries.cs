@@ -22,7 +22,8 @@ namespace Atheer.Migrations
                     Title = table.Column<string>(type: "text", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
                     Finished = table.Column<bool>(type: "boolean", nullable: false),
-                    DateCreated = table.Column<string>(type: "varchar(20)", nullable: true)
+                    DateCreated = table.Column<string>(type: "varchar(20)", nullable: true),
+                    AuthorId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {

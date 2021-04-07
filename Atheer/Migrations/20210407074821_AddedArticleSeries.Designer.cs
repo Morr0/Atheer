@@ -11,7 +11,7 @@ using NpgsqlTypes;
 namespace Atheer.Migrations
 {
     [DbContext(typeof(Data))]
-    [Migration("20210407031128_AddedArticleSeries")]
+    [Migration("20210407074821_AddedArticleSeries")]
     partial class AddedArticleSeries
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -114,6 +114,9 @@ namespace Atheer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn();
+
+                    b.Property<string>("AuthorId")
+                        .HasColumnType("text");
 
                     b.Property<string>("DateCreated")
                         .HasColumnType("varchar(20)");

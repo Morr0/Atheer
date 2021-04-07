@@ -106,6 +106,8 @@ namespace Atheer.Repositories
                 
                 o.HasIndex(x => x.Finished)
                     .HasFilter($"\"{nameof(Atheer.Models.ArticleSeries.Finished)}\" IS FALSE");
+
+                o.Ignore(x => x.ArticlesCount);
             });
         }
     }

@@ -113,6 +113,9 @@ namespace Atheer.Migrations
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn();
 
+                    b.Property<string>("AuthorId")
+                        .HasColumnType("text");
+
                     b.Property<string>("DateCreated")
                         .HasColumnType("varchar(20)");
 
