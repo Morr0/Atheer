@@ -1,12 +1,13 @@
 ﻿using System.Threading.Tasks;
 using Atheer.Extensions;
 using Atheer.Services.ArticlesService;
+using Atheer.Services.UsersService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Atheer.Controllers.Article
 {
-    [Route("Article/{CreatedYear}/{TitleShrinked}")]
     public class ArticleController : Controller
     {
         private readonly ILogger<ArticleController> _logger;
@@ -18,7 +19,7 @@ namespace Atheer.Controllers.Article
             _service = service;
         }
 
-        [HttpGet]
+        [HttpGet("Article/{CreatedYear}/{TitleShrinked}")]
         public async Task<IActionResult> Index([FromRoute] ArticlePrimaryKey key)
         {
             string viewerUserId = this.GetViewerUserId();
@@ -27,6 +28,13 @@ namespace Atheer.Controllers.Article
             if (article is null) return Redirect("/");
             
             return View("Article", article);
+        }
+        
+        [Authorize(Roles = UserRoles.EditorRole)]
+        [HttpGet("Article/Series")]
+        public async Task<IActionResult> SeriesView()
+        {
+            return View("Series");
         }
     }
 }
