@@ -47,5 +47,8 @@ namespace Atheer.Models
         // Postgresql specific
         [JsonIgnore]
         public NpgsqlTsVector SearchVector { get; set; }
+
+        public int? SeriesId { get; set; }
+        public ArticleSeries Series { get; set; }
     }
 }

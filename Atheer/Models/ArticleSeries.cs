@@ -1,4 +1,6 @@
-﻿namespace Atheer.Models
+﻿using System.Collections.Generic;
+
+namespace Atheer.Models
 {
     public class ArticleSeries
     {
@@ -7,5 +9,7 @@
         public string Description { get; set; }
         public bool Finished { get; set; }
         public string DateCreated { get; set; }
+
+        public IList<Article> Articles { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Atheer.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Atheer.Repositories
 {
@@ -82,6 +83,30 @@ namespace Atheer.Repositories
                 })
                 .HasIndex(x => x.SearchVector)
                 .HasMethod("GIN");
+
+            modelBuilder.Entity<Article>(o =>
+            {
+                o.HasOne(x => x.Series)
+                    .WithMany(x => x.Articles)
+                    .HasForeignKey(x => x.SeriesId)
+                    .IsRequired(false);
+            });
+        }
+
+        private void ConfigureArticleSeries(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ArticleSeries>(o =>
+            {
+                o.HasKey(x => x.Id);
+                o.Property(x => x.Id)
+                    .ValueGeneratedOnAdd();
+
+                o.Property(x => x.DateCreated)
+                    .HasColumnType("varchar(20)");
+                
+                o.HasIndex(x => x.Finished)
+                    .HasFilter($"\"{nameof(Atheer.Models.ArticleSeries.Finished)}\" IS FALSE");
+            });
         }
     }
 }

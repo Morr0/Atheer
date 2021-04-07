@@ -15,6 +15,7 @@ namespace Atheer.Repositories
         public DbSet<Tag> Tag { get; set; }
         public DbSet<TagArticle> TagArticle { get; set; }
         public DbSet<User> User { get; set; }
+        public DbSet<ArticleSeries> ArticleSeries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -22,6 +23,7 @@ namespace Atheer.Repositories
             ConfigureUserModel(modelBuilder);
             ConfigureTagsModels(modelBuilder);
             ConfigureNavItems(modelBuilder);
+            ConfigureArticleSeries(modelBuilder);
 
             ConfigureViews(modelBuilder);
         }
