@@ -1,1 +1,27 @@
-﻿Series view
+﻿@model IList<ArticleSeries>
+
+<h3 class="text-dark">Article Series</h3>
+
+<div class="text-danger" asp-validation-summary="All"></div>
+
+<button class="btn btn-outline-primary" id="addButton" type="button">Add</button>
+<form asp-controller="Article" asp-action="AddSeries" method="post" hidden id="form">
+    <div class="form-group">
+        <label for="Title">Title: </label>
+        <input type="text" name="Title" class="form-control" required/>
+        <label for="Description">Description: </label>
+        <textarea class="form-control" name="Description" required></textarea>
+        <button type="submit" class="btn btn-primary">Add</button>
+        <button type="button" id="closeButton" class="btn btn-secondary">Close</button>
+    </div>
+</form>
+
+<ul class="list-group">
+    @foreach (var series in Model)
+    {
+        <li class="list-group-item">
+            <span class="text-info">Title: @series.Title</span>
+            <p class="text-body">@series.Description</p>
+        </li>
+    }
+</ul>

@@ -357,5 +357,13 @@ namespace Atheer.Services.ArticlesService
 
             return article.Article.AuthorId == userId;
         }
+
+        public async Task<IList<ArticleSeries>> GetSeries(string userId, ArticleSeriesType articleSeriesType)
+        {
+            var queryable = _context.ArticleSeries.AsNoTracking()
+                .Where(x => x.AuthorId == userId);
+
+            return await queryable.ToListAsync().ConfigureAwait(false);
+        }
     }
 }

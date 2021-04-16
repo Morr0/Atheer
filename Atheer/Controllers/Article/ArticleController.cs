@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
+using Atheer.Controllers.Article.Models;
 using Atheer.Extensions;
+using Atheer.Models;
 using Atheer.Services.ArticlesService;
 using Atheer.Services.UsersService;
 using Microsoft.AspNetCore.Authorization;
@@ -30,11 +32,21 @@ namespace Atheer.Controllers.Article
             return View("Article", article);
         }
         
-        [Authorize(Roles = UserRoles.EditorRole)]
+        
         [HttpGet("Article/Series")]
         public async Task<IActionResult> SeriesView()
         {
-            return View("Series");
+            string viewerUserId = this.GetViewerUserId();
+            var series = await _service.GetSeries(viewerUserId, ArticleSeriesType.ALL).ConfigureAwait(false);
+            
+            return View("Series", series);
+        }
+
+        [Authorize(Roles = UserRoles.EditorRole)]
+        [HttpPost("Article/Series")]
+        public async Task<IActionResult> AddSeries([FromForm] )
+        {
+            
         }
     }
 }
