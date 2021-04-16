@@ -1,12 +1,14 @@
 using System;
 using System.Reflection;
 using Amazon.S3;
+using Amazon.SQS;
 using Atheer.BackgroundServices;
 using Atheer.Repositories;
 using Atheer.Services.ArticlesService;
 using Atheer.Services.FileService;
 using Atheer.Services.NavItemsService;
 using Atheer.Services.OAuthService;
+using Atheer.Services.QueueService;
 using Atheer.Services.RecaptchaService;
 using Atheer.Services.TagService;
 using Atheer.Services.UsersService;
@@ -42,6 +44,7 @@ namespace Atheer
             services.Configure<SiteAnalytics>(Configuration.GetSection("SiteAnalytics"));
             services.Configure<Recaptcha>(Configuration.GetSection("Recaptcha"));
             services.Configure<GithubOAuth>(Configuration.GetSection("GithubOAuth"));
+            services.Configure<SQS>(Configuration.GetSection("SQS"));
 
             services.AddControllersWithViews();
             services.AddHttpClient();
@@ -75,6 +78,7 @@ namespace Atheer
             services.AddTransient<ITagService, TagService>();
             services.AddScoped<IOAuthService, OAuthService>();
             services.AddSingleton<INavItemsService, NavItemService>();
+            services.AddTransient<IQueueService, QueueService>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(opts =>
