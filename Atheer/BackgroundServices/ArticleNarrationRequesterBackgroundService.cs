@@ -41,9 +41,6 @@ namespace Atheer.BackgroundServices
             var fileService = scope.ServiceProvider.GetRequiredService<IFileService>();
             var queueService = scope.ServiceProvider.GetRequiredService<IQueueService>();
 
-            string toStoreUrl = await fileService.GetDirectoryUrl(FileUse.ArticleNarration).ConfigureAwait(false);
-            request.S3NarrationDir = toStoreUrl;
-            
             string messageText = await Task.Run(() => JsonSerializer.Serialize(request)).ConfigureAwait(false);
             
             await queueService.Queue(QueueType.ArticleVoice, new QueueMessage
