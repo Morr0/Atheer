@@ -7,6 +7,7 @@ namespace Atheer.Services.FileService
     {
         internal static readonly string NoneDir = "None";
         internal static readonly string UserImageDir = "UserImage";
+        internal static readonly string ArticleNarrationDir = "ArticleNarration";
         
         internal static string GetKey(FileUse fileUse, string fileId)
         {
@@ -14,13 +15,14 @@ namespace Atheer.Services.FileService
             {
                 case FileUse.UserImage:
                     return $"{UserImageDir}/{fileId}";
+                case FileUse.ArticleNarration:
+                    return ArticleNarrationDir;
                 default:
                     return $"{NoneDir}/{fileId}";
             }
         }
         
-        [Obsolete]
-        internal static string GetFileUrl(string bucketName, ref string key)
+        internal static string GetFileUrl(string bucketName, string key)
         {
             string endpoint = $"https://{bucketName}.s3.amazonaws.com/{key}";
             return endpoint;

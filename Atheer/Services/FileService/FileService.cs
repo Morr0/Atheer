@@ -53,5 +53,10 @@ namespace Atheer.Services.FileService
 
             return _retryPolicy.ExecuteAsync(() => _s3Client.DeleteObjectAsync(deleteObjectRequest));
         }
+
+        public async ValueTask<string> GetDirectoryUrl(FileUse fileUse)
+        {
+            return FileServiceUtilities.GetFileUrl(_s3Config.BucketName, string.Empty);
+        }
     }
 }
