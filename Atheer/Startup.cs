@@ -1,10 +1,12 @@
 using System;
 using System.Reflection;
+using System.Threading.Channels;
 using Amazon.S3;
 using Amazon.SQS;
 using Atheer.BackgroundServices;
 using Atheer.Repositories;
 using Atheer.Services.ArticlesService;
+using Atheer.Services.ArticlesService.Models;
 using Atheer.Services.FileService;
 using Atheer.Services.NavItemsService;
 using Atheer.Services.OAuthService;
@@ -79,6 +81,7 @@ namespace Atheer
             services.AddScoped<IOAuthService, OAuthService>();
             services.AddSingleton<INavItemsService, NavItemService>();
             services.AddTransient<IQueueService, QueueService>();
+            
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(opts =>
@@ -98,8 +101,11 @@ namespace Atheer
                     opts.Validate();
                 });
 
+            services.AddSingleton<Channel<ArticleNarrationRequest>>(x => Channel.CreateUnbounded<ArticleNarrationRequest>());
             // Background services
             services.AddHostedService<ScheduledArticlesReleaserBackgroundService>();
+            services.AddHostedService<ArticleNarrationRequesterBackgroundService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

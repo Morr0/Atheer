@@ -31,5 +31,7 @@ namespace Atheer.Controllers.ArticleEdit.Models
         public bool Unschedule { get; set; }
         public bool Scheduled { get; set; }
 
+        public bool Narratable { get; set; }
+
     }
 }
