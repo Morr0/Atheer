@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Atheer.Controllers.Article.Requests;
 using Atheer.Exceptions;
 using Atheer.Services.ArticlesService;
 using Microsoft.AspNetCore.Mvc;
@@ -42,6 +43,13 @@ namespace Atheer.Controllers.Article
             {
                 return BadRequest();
             }
+        }
+
+        [HttpPatch("narration/complete")]
+        public async Task<IActionResult> CompleteNarrationWebhook([FromBody] CompletedArticleNarrationRequest request)
+        {
+            await _service.CompletedNarration(request).ConfigureAwait(false);
+            return Ok();
         }
     }
 }

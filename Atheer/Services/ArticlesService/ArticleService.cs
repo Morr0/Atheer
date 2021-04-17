@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using Atheer.Controllers.Article.Models;
+using Atheer.Controllers.Article.Requests;
 using Atheer.Controllers.ArticleEdit.Models;
 using Atheer.Controllers.Articles.Models;
 using Atheer.Exceptions;
@@ -347,6 +348,19 @@ namespace Atheer.Services.ArticlesService
             if (article is null) return false;
 
             return article.Article.AuthorId == userId;
+        }
+
+        public async Task CompletedNarration(CompletedArticleNarrationRequest request)
+        {
+            var article = await _context.Article.FirstOrDefaultAsync(x => x.CreatedYear == request.CreatedYear &&
+                                                                          x.TitleShrinked == request.TitleShrinked)
+                .ConfigureAwait(false);
+            if (article is null || !article.Narratable) return;
+
+            article.NarrationMp3Url = request.S3Url;
+
+            _context.Attach(article).Property(x => x.NarrationMp3Url).IsModified = true;
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }
