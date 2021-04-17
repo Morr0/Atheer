@@ -7,5 +7,6 @@ namespace Atheer.Services.FileService
     {
         Task<string> Add(FileUse fileUse, string fileId, string contentType, Stream stream);
         Task Remove(FileUse fileUse, string fileId);
+        string GetCdnUrlFromFileKey(string fileKey);
     }
 }

@@ -6,6 +6,6 @@ namespace Atheer.Controllers.Article.Requests
     {
         [Required] public int CreatedYear { get; set; }
         [Required] public string TitleShrinked { get; set; }
-        [Required] public string S3Url { get; set; }
+        [Required] public string S3BucketKey { get; set; }
     }
 }

@@ -39,7 +39,7 @@ namespace Atheer.Services.FileService
 
             await _retryPolicy.ExecuteAsync(() => _s3Client.PutObjectAsync(putObjectRequest)).ConfigureAwait(false);
 
-            return FileServiceUtilities.GetCdnFileUrl(_s3Config.CdnUrl, ref s3Key);
+            return FileServiceUtilities.GetCdnFileUrl(_s3Config.CdnUrl, s3Key);
         }
 
         public Task Remove(FileUse fileUse, string fileId)
@@ -52,6 +52,11 @@ namespace Atheer.Services.FileService
             };
 
             return _retryPolicy.ExecuteAsync(() => _s3Client.DeleteObjectAsync(deleteObjectRequest));
+        }
+
+        public string GetCdnUrlFromFileKey(string fileKey)
+        {
+            return FileServiceUtilities.GetCdnFileUrl(_s3Config.CdnUrl, fileKey);
         }
     }
 }

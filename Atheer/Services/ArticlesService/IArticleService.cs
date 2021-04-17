@@ -22,6 +22,6 @@ namespace Atheer.Services.ArticlesService
         Task Update(ArticleEditViewModel article);
 
         Task<bool> AuthorizedFor(ArticlePrimaryKey key, string userId);
-        Task CompletedNarration(CompletedArticleNarrationRequest request);
+        Task CompletedNarration(ArticlePrimaryKey key, string cdnUrl);
     }
 }

@@ -350,14 +350,14 @@ namespace Atheer.Services.ArticlesService
             return article.Article.AuthorId == userId;
         }
 
-        public async Task CompletedNarration(CompletedArticleNarrationRequest request)
+        public async Task CompletedNarration(ArticlePrimaryKey key, string cdnUrl)
         {
-            var article = await _context.Article.FirstOrDefaultAsync(x => x.CreatedYear == request.CreatedYear &&
-                                                                          x.TitleShrinked == request.TitleShrinked)
+            var article = await _context.Article.FirstOrDefaultAsync(x => x.CreatedYear == key.CreatedYear &&
+                                                                          x.TitleShrinked == key.TitleShrinked)
                 .ConfigureAwait(false);
             if (article is null || !article.Narratable) return;
 
-            article.NarrationMp3Url = request.S3Url;
+            article.NarrationMp3Url = cdnUrl;
 
             _context.Attach(article).Property(x => x.NarrationMp3Url).IsModified = true;
             await _context.SaveChangesAsync().ConfigureAwait(false);

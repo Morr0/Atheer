@@ -28,7 +28,7 @@ namespace Atheer.Services.FileService
             return endpoint;
         }
 
-        internal static string GetCdnFileUrl(string cdnUrl, ref string key)
+        internal static string GetCdnFileUrl(string cdnUrl, string key)
         {
             string endpoint = $"{cdnUrl}/{key}";
             return endpoint;
