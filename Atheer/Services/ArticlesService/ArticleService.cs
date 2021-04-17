@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using Atheer.Controllers.Article.Models;
@@ -13,6 +14,7 @@ using Atheer.Repositories.Junctions;
 using Atheer.Services.ArticlesService.Models;
 using Atheer.Services.FileService;
 using Atheer.Services.QueueService;
+using Atheer.Utilities;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -304,12 +306,12 @@ namespace Atheer.Services.ArticlesService
             
             var article = await _context.Article.FirstOrDefaultAsync(x =>
                 x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked).ConfigureAwait(false);
-            
+            string contentChecksumPreUpdate = ChecksumAlgorithm.ComputeMD5Checksum(article.Content);
+
             _mapper.Map(articleEditViewModel, article);
             _articleFactory.SetUpdated(article, articleEditViewModel.Unschedule);
 
-            // TODO do not just request narration for every update
-            await EnsureRequestOfNarrationIfNarratable(article).ConfigureAwait(false);
+            await EnsureRequestOfNarrationIfNarratable(article, contentChecksumPreUpdate).ConfigureAwait(false);
 
             await using var transaction = await _context.Database.BeginTransactionAsync().ConfigureAwait(false);
 
@@ -325,9 +327,12 @@ namespace Atheer.Services.ArticlesService
             }
         }
 
-        private async ValueTask EnsureRequestOfNarrationIfNarratable(Article article)
+        private async ValueTask EnsureRequestOfNarrationIfNarratable(Article article, string contentChecksumPreUpdate)
         {
             if (!article.Narratable) return;
+            
+            string contentChecksumPostUpdate = ChecksumAlgorithm.ComputeMD5Checksum(article.Content);
+            if (contentChecksumPreUpdate == contentChecksumPostUpdate) return;
 
             var narrationRequest = _articleFactory.CreateNarrationRequest(article);
 
