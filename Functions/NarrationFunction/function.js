@@ -51,7 +51,8 @@ const addToBucket = async (fileName, audioStream) => {
     const params = {
         Bucket: S3BucketName,
         Key: s3Key,
-        Body: audioStream
+        Body: audioStream,
+        ACL: "public-read"
     };
     await s3Client.putObject(params).promise();
 
