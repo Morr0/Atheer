@@ -17,6 +17,8 @@
     
     string scheduledSince = DateTimeExtensions.GetDateOnly(@Model.Article.ScheduledSinceDate);
     bool scheduled = isAuthor && article.Scheduled && !string.IsNullOrEmpty(scheduledSince);
+
+    bool narrated = Model.Article.Narratable && !string.IsNullOrEmpty(Model.Article.NarrationMp3Url);
 }
 
 @section Head
@@ -69,6 +71,11 @@
 
         @await Component.InvokeAsync("ArticleEdit", new ArticleEditLinkModel(article, viewerUserId))
         <p class="card-text">@article.Description</p>
+        
+        @if (narrated)
+        {
+            <a href="@Model.Article.NarrationMp3Url" target="_blank" class="link-info">Click here to listen to article</a>
+        }
     </div>
     <div class="card-body">
         <div class="text-dark" hidden id="tocOuter">
