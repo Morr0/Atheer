@@ -1,6 +1,8 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
+- Add to Cloudformation template the narration Lambda function, Lambda's roles and SQS queue
+- Implement OnlyVisibleToNetwork filter to only allow traffic from same network
 - Design internals of ArticleSeries
 - Add UI to create a new article series
 - Allow in the article editor to link this article to an article series
@@ -8,7 +10,6 @@
 - Word counter auto generated after each add/update of article
 - Correct scheduled articles releaser to get articles older than today in a transaction
 - Commenting system
-- Implement OnlyVisibleToNetwork filter to only allow traffic from same network
 - Make most popular tags viewed to also show most popular tags including the user's Draft and Unlisted articles
 - 
 
