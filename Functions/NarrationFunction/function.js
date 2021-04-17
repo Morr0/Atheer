@@ -1,5 +1,5 @@
 const awsSdk = require("aws-sdk");
-// const fetch = require("node-fetch");
+const https = require("https");
 
 const {
     S3BucketName,
@@ -7,6 +7,7 @@ const {
 } = process.env;
 
 exports.handler = async (event) => {
+    console.log(DomainNameToNotify)
     const record = event.Records[0];
     const {createdYear, titleShrinked, content} = JSON.parse(record.body);
 
@@ -19,13 +20,11 @@ exports.handler = async (event) => {
 
     const fileName = `${createdYear}-${titleShrinked}`;
     console.log("Saving to S3");
-    const audioUrl = await addToBucket(fileName, audioStream);
+    const fileKey = await addToBucket(fileName, audioStream);
     console.log("Saved to S3");
 
-    // TODO notify webhook using no package other than nodejs ones
-    // console.log("Notifying Webhook");
-    // await notifyWebhook(createdYear, titleShrinked, audioUrl);
-    // console.log("Notified Webhook");
+    console.log("Notifying Webhook");
+    await notifyWebhook(createdYear, titleShrinked, fileKey);
 };
 
 const cleanAllHtml = (htmlText) => {
@@ -58,25 +57,43 @@ const addToBucket = async (fileName, audioStream) => {
 
     const url = `https://${S3BucketName}.s3.amazonaws.com/${s3Key}`;
     console.log(`S3 url: ${url}`);
-    return url;
+    return s3Key;
 };
 
-// const notifyWebhook = async (createdYear, titleShrinked, audioUrl) => {
-//     const endpoint = `https://${DomainNameToNotify}/api/article/narration/complete`;
-//     const body = {
-//         "CreatedYear": createdYear,
-//         "TitleShrinked": titleShrinked,
-//         "S3Url": audioUrl
-//     };
-//     try {
-//         await fetch(endpoint, {
-//             method: "PATCH",
-//             body: JSON.stringify(body),
-//             headers: {
-//                 "Content-Type": "application/json"
-//             }
-//         });
-//     } catch (e){
-//         console.log(`The url: ${endpoint} was not found`);
-//     }
-// }
+const notifyWebhook = async (createdYear, titleShrinked, s3BucketKey) => {
+    const body = {
+        "CreatedYear": createdYear,
+        "TitleShrinked": titleShrinked,
+        "S3BucketKey": s3BucketKey
+    };
+    const bodyString = JSON.stringify(body);
+
+    try {
+        const options = {
+            hostname: DomainNameToNotify,
+            port: 443,
+            path: "/api/article/narration/complete",
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Content-Length": bodyString.length
+            }
+        };
+        await sendRequest(options, bodyString);
+        console.log("Notified Webhook");
+    } catch (e){
+        console.log(`Could not send webhook since it was not found`);
+        console.log(e);
+    }
+}
+
+const sendRequest = (options, data) => {
+    return new Promise((resolve, reject) => {
+         const req = https.request(options);
+
+         req.on("error", (e) => reject(e));
+
+         req.write(data);
+         req.end();
+    });
+};
