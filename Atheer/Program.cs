@@ -15,7 +15,9 @@ namespace Atheer
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder
+                        .UseKestrel(opts => opts.AddServerHeader = false)
+                        .UseStartup<Startup>();
                 })
                 .ConfigureAppConfiguration((hostingContext, config)  =>
                 {
