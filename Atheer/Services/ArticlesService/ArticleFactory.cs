@@ -5,17 +5,21 @@ using System.Text;
 using Atheer.Controllers.ArticleEdit.Models;
 using Atheer.Extensions;
 using Atheer.Models;
+using Atheer.Services.ArticlesService.Models;
 using AutoMapper;
+using Markdig;
 
 namespace Atheer.Services.ArticlesService
 {
     public sealed class ArticleFactory
     {
         private readonly IMapper _mapper;
+        private readonly MarkdownPipeline _markdownPipeline;
 
-        public ArticleFactory(IMapper mapper)
+        public ArticleFactory(IMapper mapper, MarkdownPipeline markdownPipeline)
         {
             _mapper = mapper;
+            _markdownPipeline = markdownPipeline;
         }
 
         public Article Create(ref ArticleEditViewModel articleViewModel, string userId)
@@ -113,6 +117,17 @@ namespace Atheer.Services.ArticlesService
         public void FinishSeries(ArticleSeries series)
         {
             series.Finished = true;
+        }
+
+        public ArticleNarrationRequest CreateNarrationRequest(Article article)
+        {
+            string htmlContent = article.Content is null ? "" : Markdown.ToHtml(article.Content, _markdownPipeline);
+            return new ArticleNarrationRequest
+            {
+                CreatedYear = article.CreatedYear,
+                TitleShrinked = article.TitleShrinked,
+                Content = htmlContent
+            };
         }
     }
 }

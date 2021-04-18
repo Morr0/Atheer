@@ -9,8 +9,13 @@ using Atheer.Exceptions;
 using Atheer.Models;
 using Atheer.Repositories;
 using Atheer.Repositories.Junctions;
+using Atheer.Services.ArticlesService.Models;
+using Atheer.Services.FileService;
+using Atheer.Services.QueueService;
+using Atheer.Utilities;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Atheer.Services.ArticlesService
@@ -22,13 +27,16 @@ namespace Atheer.Services.ArticlesService
         private readonly ArticleFactory _articleFactory;
         private readonly Data _context;
         private readonly ILogger<ArticleService> _logger;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public ArticleService(IMapper mapper, ArticleFactory articleFactory, Data data, ILogger<ArticleService> logger)
+        public ArticleService(IMapper mapper, ArticleFactory articleFactory, Data data, ILogger<ArticleService> logger,
+            IServiceScopeFactory serviceScopeFactory)
         {
             _mapper = mapper;
             _articleFactory = articleFactory;
             _context = data;
             _logger = logger;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         public async Task<ArticlesResponse> Get(int amount, string searchQuery)
@@ -285,25 +293,6 @@ namespace Atheer.Services.ArticlesService
             }
         }
 
-        // private async Task<IList<Tag>> AddTagsToContextIfDontExist(IList<string> tagsTitles)
-        // {
-        //     var list = new List<Tag>(tagsTitles.Count);
-        //     foreach (var title in tagsTitles)
-        //     {
-        //         string id = _tagFactory.GetId(title);
-        //         var tag = await _context.Tag.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
-        //         if (tag is null)
-        //         {
-        //             tag = _tagFactory.CreateTag(title);
-        //             await _context.Tag.AddAsync(tag).ConfigureAwait(false);
-        //         }
-        //
-        //         list.Add(tag);
-        //     }
-        //
-        //     return list;
-        // }
-
         private string RandomiseExistingShrinkedTitle(ref string existingTitleShrinked)
         {
             return $"{existingTitleShrinked}-";
@@ -315,9 +304,12 @@ namespace Atheer.Services.ArticlesService
             
             var article = await _context.Article.FirstOrDefaultAsync(x =>
                 x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked).ConfigureAwait(false);
-            
+            string contentChecksumPreUpdate = ChecksumAlgorithm.ComputeMD5Checksum(article.Content);
+
             _mapper.Map(articleEditViewModel, article);
             _articleFactory.SetUpdated(article, articleEditViewModel.Unschedule);
+
+            await EnsureRequestOfNarrationIfNarratable(article, contentChecksumPreUpdate).ConfigureAwait(false);
 
             await using var transaction = await _context.Database.BeginTransactionAsync().ConfigureAwait(false);
 
@@ -333,21 +325,18 @@ namespace Atheer.Services.ArticlesService
             }
         }
 
-        private async Task UpdateTagArticles(Article article, IList<Tag> tags)
+        private async ValueTask EnsureRequestOfNarrationIfNarratable(Article article, string contentChecksumPreUpdate)
         {
-            // Remove existing ones
-            var existingTagArticles = await _context.TagArticle
-                .Where(x => x.ArticleCreatedYear == article.CreatedYear &&
-                            x.ArticleTitleShrinked == article.TitleShrinked)
-                .ToListAsync().ConfigureAwait(false);
+            if (!article.Narratable) return;
             
-            _context.TagArticle.RemoveRange(existingTagArticles);
+            string contentChecksumPostUpdate = ChecksumAlgorithm.ComputeMD5Checksum(article.Content);
+            if (contentChecksumPreUpdate == contentChecksumPostUpdate) return;
 
-            // Add new ones
-            foreach (var tag in tags)
-            {
-                await _context.TagArticle.AddAsync(new TagArticle(tag, article)).ConfigureAwait(false);
-            }
+            var narrationRequest = _articleFactory.CreateNarrationRequest(article);
+
+            using var scope = _serviceScopeFactory.CreateScope();
+            var channel = scope.ServiceProvider.GetRequiredService<Channel<ArticleNarrationRequest>>();
+            await channel.Writer.WriteAsync(narrationRequest).ConfigureAwait(false);
         }
 
         public async Task<bool> AuthorizedFor(ArticlePrimaryKey key, string userId)
@@ -356,6 +345,19 @@ namespace Atheer.Services.ArticlesService
             if (article is null) return false;
 
             return article.Article.AuthorId == userId;
+        }
+
+        public async Task CompletedNarration(ArticlePrimaryKey key, string cdnUrl)
+        {
+            var article = await _context.Article.FirstOrDefaultAsync(x => x.CreatedYear == key.CreatedYear &&
+                                                                          x.TitleShrinked == key.TitleShrinked)
+                .ConfigureAwait(false);
+            if (article is null || !article.Narratable) return;
+
+            article.NarrationMp3Url = cdnUrl;
+
+            _context.Attach(article).Property(x => x.NarrationMp3Url).IsModified = true;
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
         public async Task<IList<ArticleSeries>> GetSeries(string userId, ArticleSeriesType articleSeriesType)

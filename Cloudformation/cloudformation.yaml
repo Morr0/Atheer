@@ -27,9 +27,18 @@
     Description: The root password of the DB
     MinLength: "8"
     MaxLength: "63"
+  DBInstanceType:
+    Type: String
+    Description: The type of the underlying EC2 instance e.g. db.t3.micro
+    Default: "db.t3.micro"
+  DBBaseStorage:
+    Type: Number
+    Description: The minimum GiBs for the entire DB instance
+    Default: 12
   ServerInstanceType:
     Type: String
-    Description: The type of the EC2 instance e.g. t2.micro
+    Description: The type of the EC2 instance e.g. t3.nano
+    Default: "t3.nano"
   ServerImage:
     Type: String
     Description: The AMI
@@ -47,6 +56,9 @@
     Type: String
     Description: The name of the S3 bucket to deploy
     AllowedPattern: "[a-z-]*"
+  WebsiteDomainName:
+    Type: String
+    Description: "The domain name excluding https:// and / at the end. That is, just the pure name."
 
 # TODO find an efficient way to refactor the availability zone used
 Resources:
@@ -155,12 +167,12 @@ Resources:
   Database:
     Type: AWS::RDS::DBInstance
     Properties:
-      AllocatedStorage: 24
+      AllocatedStorage: !Ref DBBaseStorage
       AllowMajorVersionUpgrade: false
       AutoMinorVersionUpgrade: false
       AvailabilityZone: !Select [ 0, !GetAZs ""]
       BackupRetentionPeriod: 7
-      DBInstanceClass: db.t3.micro
+      DBInstanceClass: !Ref DBInstanceType
       DeleteAutomatedBackups: false
       DeletionProtection: true
       Engine: postgres
@@ -371,7 +383,198 @@ Resources:
         cd Atheer
         # Create a detached tmux session and run the website in it
         tmux new-session -d -s server "dotnet run --environment Production"
+
+  NarrationQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: 301
+      Tags:
+        - Key: !Ref ProjectTagKeyName
+          Value: !Ref ProjectName
+  NarrationLambdaFunctionExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Tags:
+        - Key: !Ref ProjectTagKeyName
+          Value: !Ref ProjectName
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: NarrationLambdaFunctionPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "s3:PutObject"
+                Resource: !GetAtt Bucket.Arn
+              - Effect: Allow
+                Action:
+                  - "polly:SynthesizeSpeech"
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - "sqs:ReceiveMessage"
+                  - "sqs:DeleteMessage"
+                  - "sqs:GetQueueAttributes"
+                Resource: !GetAtt NarrationQueue.Arn
+              - Effect: Allow
+                Action:
+                  - ec2:DescribeNetworkInterfaces
+                  - ec2:CreateNetworkInterface
+                  - ec2:DeleteNetworkInterface
+                  - ec2:DescribeInstances
+                  - ec2:AttachNetworkInterface
+                Resource: "*"
+  NarrationLambdaSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref Network
+      GroupDescription: Only allow VPC in
+      Tags:
+        - Key: !Ref ProjectTagKeyName
+          Value: !Ref ProjectName 
+  NarrationLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties: 
+      Runtime: "nodejs12.x"
+      Role: !GetAtt NarrationLambdaFunctionExecutionRole.Arn
+      Handler: "index.handler"
+      Code:
+        ZipFile: |
+          const awsSdk = require("aws-sdk");
+          const https = require("https");
+
+          const {
+              S3BucketName,
+              DomainNameToNotify
+          } = process.env;
+
+          exports.handler = async (event) => {
+              console.log(DomainNameToNotify)
+              const record = event.Records[0];
+              const {createdYear, titleShrinked, content} = JSON.parse(record.body);
+
+              const cleanedArticleContent = cleanAllHtml(content);
+              console.log(`Cleaned Article Content:\n${cleanedArticleContent}\n`);
+
+              console.log("Beginning audio narration");
+              const audioStream = await narrate(cleanedArticleContent);
+              console.log("Finished audio narration");
+
+              const fileName = `${createdYear}-${titleShrinked}`;
+              console.log("Saving to S3");
+              const fileKey = await addToBucket(fileName, audioStream);
+              console.log("Saved to S3");
+
+              console.log("Notifying Webhook");
+              await notifyWebhook(createdYear, titleShrinked, fileKey);
+          };
+
+          const cleanAllHtml = (htmlText) => {
+              const pattern = /<.*?>/g;
+              return htmlText.replace(pattern, "");
+          };
+
+          const narrate = async (content) => {
+              const pollyClient = new awsSdk.Polly();
+
+              const params = {
+                  OutputFormat: "mp3",
+                  Text: content,
+                  VoiceId: "Matthew"
+              };
+              const response = await pollyClient.synthesizeSpeech(params).promise();
+              return response.AudioStream;
+          };
+
+          const addToBucket = async (fileName, audioStream) => {
+              const s3Client = new awsSdk.S3();
+
+              const s3Key = `ArticleNarration/${fileName}.mp3`;
+              const params = {
+                  Bucket: S3BucketName,
+                  Key: s3Key,
+                  Body: audioStream,
+                  ACL: "public-read"
+              };
+              await s3Client.putObject(params).promise();
+
+              const url = `https://${S3BucketName}.s3.amazonaws.com/${s3Key}`;
+              console.log(`S3 url: ${url}`);
+              return s3Key;
+          };
+
+          const notifyWebhook = async (createdYear, titleShrinked, s3BucketKey) => {
+              const body = {
+                  "CreatedYear": createdYear,
+                  "TitleShrinked": titleShrinked,
+                  "S3BucketKey": s3BucketKey
+              };
+              const bodyString = JSON.stringify(body);
+
+              try {
+                  const options = {
+                      hostname: DomainNameToNotify,
+                      port: 443,
+                      path: "/api/article/narration/complete",
+                      method: "PATCH",
+                      headers: {
+                          "Content-Type": "application/json",
+                          "Content-Length": bodyString.length
+                      }
+                  };
+                  await sendRequest(options, bodyString);
+                  console.log("Notified Webhook");
+              } catch (e){
+                  console.log(`Could not send webhook since it was not found`);
+                  console.log(e);
+              }
+          }
+
+          const sendRequest = (options, data) => {
+              return new Promise((resolve, reject) => {
+                   const req = https.request(options);
+
+                   req.on("error", (e) => reject(e));
+
+                   req.write(data);
+                   req.end();
+              });
+          };
         
+    
+    
+      Description: "The narration function that picks up from the queue"
+      Timeout: 300
+      MemorySize: 128
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref NarrationLambdaSecurityGroup
+        SubnetIds:
+          - !Ref PublicSubnet
+      Tags:
+        - Key: !Ref ProjectTagKeyName
+          Value: !Ref ProjectName
+      Environment: 
+        Variables:
+          S3BucketName: !Ref Bucket
+          DomainNameToNotify: !Ref WebsiteDomainName
+  NarrationLambdaFunctionTrigger:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties: 
+      FunctionName: !GetAtt NarrationLambdaFunction.Arn
+      EventSourceArn: !GetAtt NarrationQueue.Arn
+      BatchSize: 1
+      Enabled: true
 Outputs: 
   CdnDomainName:
     Description: Domain name of the Cdn

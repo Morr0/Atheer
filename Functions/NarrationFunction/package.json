@@ -1,0 +1,8 @@
+{
+  "name": "TranscriptionFunction",
+  "version": "1.0.0",
+  "dependencies": {
+    "aws-sdk": "^2.888.0",
+    "node-fetch": "^2.6.1"
+  }
+}

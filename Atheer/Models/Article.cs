@@ -41,7 +41,7 @@ namespace Atheer.Models
         public bool Scheduled { get; set; }
         public string ScheduledSinceDate { get; set; }
         
-        [JsonIgnore] 
+        [JsonIgnore]
         public IList<TagArticle> Tags { get; set; }
         
         // Postgresql specific
@@ -50,5 +50,8 @@ namespace Atheer.Models
 
         public int? SeriesId { get; set; }
         public ArticleSeries Series { get; set; }
+
+        public bool Narratable { get; set; }
+        public string NarrationMp3Url { get; set; }
     }
 }

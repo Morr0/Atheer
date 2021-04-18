@@ -3,6 +3,7 @@
     public enum FileUse : byte
     {
         None,
-        UserImage
+        UserImage,
+        ArticleNarration
     }
 }

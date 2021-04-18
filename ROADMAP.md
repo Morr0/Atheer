@@ -1,18 +1,16 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Put most popular tags in it's own component
+- Implement OnlyVisibleToNetwork filter to only allow traffic from same network
+- Design internals of ArticleSeries
 - Add UI to create a new article series
 - Allow in the article editor to link this article to an article series
 - Allow an article series to be in a state of finished once you don't want any more articles in it
-- Ability for admin to change tag title  
 - Word counter auto generated after each add/update of article
 - Correct scheduled articles releaser to get articles older than today in a transaction
 - Commenting system
 - Implement OnlyVisibleToNetwork filter to only allow traffic from same network
 - Make most popular tags viewed to also show most popular tags including the user's Draft and Unlisted articles
-- Default page for when the database can't be reached (when it is on maintenance for example)
-- Minimize table of contents
 - 
 
 ### List of things if have time:

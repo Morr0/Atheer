@@ -1,6 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Atheer.Controllers.Article.Requests;
 using Atheer.Exceptions;
 using Atheer.Services.ArticlesService;
+using Atheer.Services.FileService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Atheer.Controllers.Article
@@ -42,6 +45,17 @@ namespace Atheer.Controllers.Article
             {
                 return BadRequest();
             }
+        }
+
+        [HttpPatch("narration/complete")]
+        public async Task<IActionResult> CompleteNarrationWebhook([FromBody] CompletedArticleNarrationRequest request, 
+            [FromServices] IFileService fileService)
+        {
+            string cdnUrl = fileService.GetCdnUrlFromFileKey(request.S3BucketKey);
+            var key = new ArticlePrimaryKey(request.CreatedYear, request.TitleShrinked);
+            await _service.CompletedNarration(key, cdnUrl).ConfigureAwait(false);
+            
+            return Ok();
         }
     }
 }
