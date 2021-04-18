@@ -42,11 +42,11 @@ namespace Atheer.Controllers.Article
             return View("Series", series);
         }
 
-        [Authorize(Roles = UserRoles.EditorRole)]
-        [HttpPost("Article/Series")]
-        public async Task<IActionResult> AddSeries([FromForm] )
-        {
-            
-        }
+        // [Authorize(Roles = UserRoles.EditorRole)]
+        // [HttpPost("Article/Series")]
+        // public async Task<IActionResult> AddSeries([FromForm] )
+        // {
+        //     
+        // }
     }
 }

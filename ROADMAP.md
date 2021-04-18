@@ -1,11 +1,11 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Implement OnlyVisibleToNetwork filter to only allow traffic from same network
 - Design internals of ArticleSeries
 - Add UI to create a new article series
 - Allow in the article editor to link this article to an article series
 - Allow an article series to be in a state of finished once you don't want any more articles in it
+- Implement OnlyVisibleToNetwork filter to only allow traffic from same network
 - Word counter auto generated after each add/update of article
 - Correct scheduled articles releaser to get articles older than today in a transaction
 - Commenting system

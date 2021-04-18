@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Atheer.Controllers.Article.Models;
 using Atheer.Controllers.Article.Requests;
 using Atheer.Controllers.ArticleEdit.Models;
@@ -23,5 +24,6 @@ namespace Atheer.Services.ArticlesService
 
         Task<bool> AuthorizedFor(ArticlePrimaryKey key, string userId);
         Task CompletedNarration(ArticlePrimaryKey key, string cdnUrl);
+        Task<IList<ArticleSeries>> GetSeries(string userId, ArticleSeriesType articleSeriesType);
     }
 }
