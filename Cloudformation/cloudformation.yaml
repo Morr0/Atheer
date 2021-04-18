@@ -27,9 +27,18 @@
     Description: The root password of the DB
     MinLength: "8"
     MaxLength: "63"
+  DBInstanceType:
+    Type: String
+    Description: The type of the underlying EC2 instance e.g. db.t3.micro
+    Default: "db.t3.micro"
+  DBBaseStorage:
+    Type: Number
+    Description: The minimum GiBs for the entire DB instance
+    Default: 12
   ServerInstanceType:
     Type: String
-    Description: The type of the EC2 instance e.g. t2.micro
+    Description: The type of the EC2 instance e.g. t3.nano
+    Default: "t3.nano"
   ServerImage:
     Type: String
     Description: The AMI
@@ -158,12 +167,12 @@ Resources:
   Database:
     Type: AWS::RDS::DBInstance
     Properties:
-      AllocatedStorage: 24
+      AllocatedStorage: !Ref DBBaseStorage
       AllowMajorVersionUpgrade: false
       AutoMinorVersionUpgrade: false
       AvailabilityZone: !Select [ 0, !GetAZs ""]
       BackupRetentionPeriod: 7
-      DBInstanceClass: db.t3.micro
+      DBInstanceClass: !Ref DBInstanceType
       DeleteAutomatedBackups: false
       DeletionProtection: true
       Engine: postgres
@@ -406,7 +415,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - "s3:PutObject"
-                Resource: !GetAtt PublicS3BucketName.Arn
+                Resource: !GetAtt Bucket.Arn
               - Effect: Allow
                 Action:
                   - "polly:SynthesizeSpeech"
@@ -417,6 +426,14 @@ Resources:
                   - "sqs:DeleteMessage"
                   - "sqs:GetQueueAttributes"
                 Resource: !GetAtt NarrationQueue.Arn
+              - Effect: Allow
+                Action:
+                  - ec2:DescribeNetworkInterfaces
+                  - ec2:CreateNetworkInterface
+                  - ec2:DeleteNetworkInterface
+                  - ec2:DescribeInstances
+                  - ec2:AttachNetworkInterface
+                Resource: "*"
   NarrationLambdaSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -549,7 +566,7 @@ Resources:
           Value: !Ref ProjectName
       Environment: 
         Variables:
-          S3BucketName: !Ref PublicS3BucketName
+          S3BucketName: !Ref Bucket
           DomainNameToNotify: !Ref WebsiteDomainName
   NarrationLambdaFunctionTrigger:
     Type: AWS::Lambda::EventSourceMapping
