@@ -1,7 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Add to Cloudformation template the narration Lambda function, Lambda's roles and SQS queue
 - Implement OnlyVisibleToNetwork filter to only allow traffic from same network
 - Design internals of ArticleSeries
 - Add UI to create a new article series
