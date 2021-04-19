@@ -387,6 +387,15 @@ namespace Atheer.Services.ArticlesService
             var queryable = _context.ArticleSeries.AsNoTracking()
                 .Where(x => x.AuthorId == userId);
 
+            if (articleSeriesType == ArticleSeriesType.Finished)
+            {
+                queryable = queryable.Where(x => x.Finished);
+            } 
+            else if (articleSeriesType == ArticleSeriesType.Unfinished)
+            {
+                queryable = queryable.Where(x => !x.Finished);
+            }
+
             return await queryable.ToListAsync().ConfigureAwait(false);
         }
 
