@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
-using Atheer.Controllers.Article.Models;
+﻿using System;
+using System.Threading.Tasks;
+using Atheer.Controllers.Article.Queries;
 using Atheer.Controllers.Article.Requests;
 using Atheer.Extensions;
-using Atheer.Models;
 using Atheer.Services.ArticlesService;
 using Atheer.Services.UsersService;
 using Microsoft.AspNetCore.Authorization;
@@ -32,13 +32,15 @@ namespace Atheer.Controllers.Article
             
             return View("Article", article);
         }
-        
-        
+
         [HttpGet("Article/Series")]
-        public async Task<IActionResult> SeriesView()
+        public async Task<IActionResult> SeriesView([FromQuery] ArticleSeriesQuery query)
         {
+            Enum.TryParse(query.SeriesType, true, out ArticleSeriesType seriesType);
+            ViewData["SeriesType"] = seriesType.ToString();
+
             string viewerUserId = this.GetViewerUserId();
-            var series = await _service.GetSeries(viewerUserId, ArticleSeriesType.ALL).ConfigureAwait(false);
+            var series = await _service.GetSeries(viewerUserId, seriesType).ConfigureAwait(false);
             
             return View("Series", series);
         }
@@ -50,7 +52,7 @@ namespace Atheer.Controllers.Article
             string viewerUserId = this.GetViewerUserId();
             if (!ModelState.IsValid)
             {
-                var series = await _service.GetSeries(viewerUserId, ArticleSeriesType.ALL).ConfigureAwait(false);
+                var series = await _service.GetSeries(viewerUserId, ArticleSeriesType.All).ConfigureAwait(false);
                 return View("Series", series);
             }
 

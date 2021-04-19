@@ -2,8 +2,8 @@
 {
     public enum ArticleSeriesType : byte
     {
-        ALL,
-        FINISHED,
-        UNFINISHED
+        Unfinished,
+        All,
+        Finished
     }
 }

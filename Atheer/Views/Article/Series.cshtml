@@ -1,7 +1,15 @@
-﻿@model IList<ArticleSeries>
+﻿@using Atheer.Controllers.Article
+@model IList<ArticleSeries>
 
 @{
     ViewData["Title"] = "Series";
+
+    var items = new SelectList(new List<string>()
+    {
+        "Unfinished",
+        "Finished",
+        "All"
+    });
 }
 
 <h3 class="text-dark">Article Series</h3>
@@ -18,6 +26,12 @@
         <button type="submit" class="btn btn-primary">Add</button>
         <button type="button" id="closeButton" class="btn btn-secondary">Close</button>
     </div>
+</form>
+
+<form method="get" asp-controller="Article" asp-action="SeriesView" id="showSeriesTypeForm">
+    <select class="form-select-sm" id="showSeriesTypeSelect" name="SeriesType" asp-items="items">
+        <option>@ViewData["SeriesType"]</option>
+    </select>
 </form>
 
 <ul class="list-group">
@@ -52,5 +66,9 @@
     addSeriesForm.addEventListener("submit", () => addSeriesForm.hidden = true);
     const closeButton = document.getElementById("closeButton");
     closeButton.addEventListener("click", () => addSeriesForm.hidden = true);
+    
+    const showSeriesTypeForm = document.getElementById("showSeriesTypeForm");
+    const showSeriesTypeSelect = document.getElementById("showSeriesTypeSelect");
+    showSeriesTypeSelect.addEventListener("change", () => showSeriesTypeForm.submit());
     </script>
 }
