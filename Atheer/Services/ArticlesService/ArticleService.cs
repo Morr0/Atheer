@@ -169,6 +169,7 @@ namespace Atheer.Services.ArticlesService
         public async Task<ArticleViewModel> Get(ArticlePrimaryKey key, string viewerUserId = null)
         {
             var article = await _context.Article.AsNoTracking()
+                .Include(x => x.Series)
                 .FirstOrDefaultAsync(x => x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked)
                 .ConfigureAwait(false);
             
@@ -195,7 +196,26 @@ namespace Atheer.Services.ArticlesService
                     select t
                 ).ToListAsync().ConfigureAwait(false);
 
-            return new ArticleViewModel(article, tags, author.Name);
+            ArticleSeriesArticles articleSeriesArticles = new ArticleSeriesArticles();
+            if (article.Series is not null)
+            {
+                var lightArticleViews = await _context.Article.AsNoTracking()
+                    .Where(x => x.SeriesId == article.SeriesId)
+                    .OrderBy(x => x.CreationDate)
+                    .Select(x => new LightArticleView
+                    {
+                        Title = x.Title,
+                        TitleShrinked = x.TitleShrinked,
+                        CreatedYear = x.CreatedYear
+                    })
+                    .ToListAsync().ConfigureAwait(false);
+
+                articleSeriesArticles.SeriesId = article.Series.Id;
+                articleSeriesArticles.SeriesTitle = article.Series.Title;
+                articleSeriesArticles.Articles = lightArticleViews;
+            }
+
+            return new ArticleViewModel(article, tags, author.Name, articleSeriesArticles);
         }
 
         public async Task Like(ArticlePrimaryKey primaryKey)
@@ -311,8 +331,6 @@ namespace Atheer.Services.ArticlesService
             _mapper.Map(articleEditViewModel, article);
             _articleFactory.SetUpdated(article, articleEditViewModel.Unschedule);
             
-            Console.WriteLine(article.SeriesId);
-
             await EnsureRequestOfNarrationIfNarratable(article, contentChecksumPreUpdate).ConfigureAwait(false);
 
             await using var transaction = await _context.Database.BeginTransactionAsync().ConfigureAwait(false);

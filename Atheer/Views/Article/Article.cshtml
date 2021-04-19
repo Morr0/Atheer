@@ -19,6 +19,8 @@
     bool scheduled = isAuthor && article.Scheduled && !string.IsNullOrEmpty(scheduledSince);
 
     bool narrated = Model.Article.Narratable && !string.IsNullOrEmpty(Model.Article.NarrationMp3Url);
+    
+    bool isPartOfSeries = (Model.SeriesArticles is not null) && (Model.SeriesArticles.SeriesId is not null);
 }
 
 @section Head
@@ -78,6 +80,32 @@
         }
     </div>
     <div class="card-body">
+        @if (isPartOfSeries)
+        {
+            <div>
+                <h5 class="text-dark">Series: @Model.SeriesArticles.SeriesTitle</h5>
+                <ul class="list-group">
+                    @foreach (var seriesArticle in Model.SeriesArticles.Articles)
+                    {
+                        <li class="list-group-item">
+                            @if (Model.Article.CreatedYear == seriesArticle.CreatedYear && 
+                                 Model.Article.TitleShrinked == seriesArticle.TitleShrinked)
+                            {
+                                @seriesArticle.Title
+                            }
+                            else
+                            {
+                                <a asp-controller="Article" asp-action="Index"
+                                   asp-route-CreatedYear="@seriesArticle.CreatedYear" asp-route-TitleShrinked="@seriesArticle.TitleShrinked">
+                                    @seriesArticle.Title
+                                </a>
+                            }
+                        </li>
+                    }
+                    </ul>
+                </div>
+                <br>
+            }
         <div class="text-dark" hidden id="tocOuter">
             <h3>Table of Contents</h3>
             <div id="toc"></div>

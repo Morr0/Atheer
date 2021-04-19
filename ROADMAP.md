@@ -1,7 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Allow in the article editor to link this article to an article series
 - Allow an article series to be in a state of finished once you don't want any more articles in it
 - Implement OnlyVisibleToNetwork filter to only allow traffic from same network
 - Word counter auto generated after each add/update of article
