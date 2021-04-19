@@ -58,5 +58,15 @@ namespace Atheer.Controllers.Article
 
             return RedirectToAction("SeriesView");
         }
+
+        [Authorize(Roles = UserRoles.EditorRole)]
+        [HttpPost("Article/Series/Finish/{id:int}")]
+        public async Task<IActionResult> FinishSeries([FromRoute] int id)
+        {
+            string viewerUserId = this.GetViewerUserId();
+            await _service.FinishArticleSeries(viewerUserId, id).ConfigureAwait(false);
+
+            return RedirectToAction("SeriesView");
+        }
     }
 }

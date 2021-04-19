@@ -1,13 +1,13 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Allow an article series to be in a state of finished once you don't want any more articles in it
+- Show all/finished/unfinished article series for user
 - Implement OnlyVisibleToNetwork filter to only allow traffic from same network
 - Word counter auto generated after each add/update of article
+- Revamp the article add/edit editor and make it cleaner
+- Revamp the controllers for article/series  
 - Correct scheduled articles releaser to get articles older than today in a transaction
 - Commenting system
-- Implement OnlyVisibleToNetwork filter to only allow traffic from same network
-- Make most popular tags viewed to also show most popular tags including the user's Draft and Unlisted articles
 - 
 
 ### List of things if have time:
@@ -26,7 +26,3 @@
     - remove images and automatically removed from S3
     - no need to type Markdown but still can
     - ability to add audio to play
-#### Article pipeline after an article is updated which allows for:
-    - making table of contents and attaching it to the beginning
-    - narrating an article where 70% or more is text
-    - ability to play narrated article

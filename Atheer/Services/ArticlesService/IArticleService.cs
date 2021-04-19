@@ -26,5 +26,6 @@ namespace Atheer.Services.ArticlesService
         Task CompletedNarration(ArticlePrimaryKey key, string cdnUrl);
         Task<IList<ArticleSeries>> GetSeries(string userId, ArticleSeriesType articleSeriesType);
         Task AddSeries(string author, AddArticleSeries request);
+        Task FinishArticleSeries(string userId, int id);
     }
 }

@@ -397,5 +397,16 @@ namespace Atheer.Services.ArticlesService
             await _context.ArticleSeries.AddAsync(series).ConfigureAwait(false);
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }
+
+        public async Task FinishArticleSeries(string userId, int id)
+        {
+            var series = await _context.ArticleSeries.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
+            if (series is null && series.AuthorId != userId) return;
+            
+            _articleFactory.FinishSeries(series);
+
+            _context.Update(series);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+        }
     }
 }

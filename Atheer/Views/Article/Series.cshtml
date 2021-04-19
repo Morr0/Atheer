@@ -27,6 +27,16 @@
             <span class="text-danger">Id: @series.Id.ToString()</span>
             <h4 class="text-dark">Title: @series.Title</h4>
             <p class="text-body">@series.Description</p>
+            @if (series.Finished)
+            {
+                <span class="text-danger">Finished series</span>
+            }
+            else
+            {
+                <form method="post" asp-controller="Article" asp-action="FinishSeries" asp-route-id="@series.Id.ToString()">
+                    <button type="submit" class="btn btn-outline-danger">Finish</button>
+                </form>
+            }
         </li>
     }
 </ul>
