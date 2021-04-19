@@ -33,5 +33,7 @@ namespace Atheer.Controllers.ArticleEdit.Models
 
         public bool Narratable { get; set; }
 
+        public int? SeriesId { get; set; }
+
     }
 }

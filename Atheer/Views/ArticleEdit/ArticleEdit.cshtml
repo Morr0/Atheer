@@ -10,6 +10,8 @@
     bool wasScheduledBefore = !string.IsNullOrEmpty(Model.ScheduledSinceDate);
     bool currentlyScheduled = wasScheduledBefore && Model.Scheduled;
 }
+<div asp-validation-summary="All" class="text-danger"></div>
+
 <form method="post">
     <span class="text-info">@TempData["Info"]</span>
     <span class="text-danger">@TempData["Err"]</span>
@@ -42,6 +44,9 @@
         <label for="Description">Description: </label>
         <input type="text" name="Description" id="Description" value="@Model.Description" class="form-control"/>
         <span asp-validation-for="Description" class="text-danger"></span>
+        
+        <label for="SeriesId">Series Id: </label>
+        <input type="text" name="SeriesId" id="SeriesId" value="@Model.SeriesId" class="form-control" />
         
         @* Scheduling *@
         @* @if (isNew) *@

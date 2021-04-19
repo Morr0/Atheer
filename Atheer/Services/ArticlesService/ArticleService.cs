@@ -310,6 +310,8 @@ namespace Atheer.Services.ArticlesService
 
             _mapper.Map(articleEditViewModel, article);
             _articleFactory.SetUpdated(article, articleEditViewModel.Unschedule);
+            
+            Console.WriteLine(article.SeriesId);
 
             await EnsureRequestOfNarrationIfNarratable(article, contentChecksumPreUpdate).ConfigureAwait(false);
 

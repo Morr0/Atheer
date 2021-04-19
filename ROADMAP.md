@@ -1,8 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Design internals of ArticleSeries
-- Add UI to create a new article series
 - Allow in the article editor to link this article to an article series
 - Allow an article series to be in a state of finished once you don't want any more articles in it
 - Implement OnlyVisibleToNetwork filter to only allow traffic from same network
@@ -15,7 +13,6 @@
 
 ### List of things if have time:
 - Extract all string constants referenced both in razor and C# into their respective classes
-- Extract all words to an international word class (basically add very basic internationalizing support)
 - Limit size of image uploaded to 4MB
 - Complete the JSON feed to full specs
 - Sort by most recent/oldest (done the backend just do the UI)
