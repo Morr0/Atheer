@@ -5,7 +5,9 @@ using Atheer.Extensions;
 using Atheer.Models;
 using Atheer.Services.ArticlesService;
 using Atheer.Utilities;
+using Atheer.Utilities.Markdown;
 using AutoMapper;
+using Markdig;
 using Xunit;
 
 namespace AtheerTests.UnitTests.Factories
@@ -23,7 +25,8 @@ namespace AtheerTests.UnitTests.Factories
 
         public ArticleFactoryTesting()
         {
-            _factory = new ArticleFactory(_mapper);
+            _factory = new ArticleFactory(_mapper, new MarkdownPipelineBuilder().UseAdvancedExtensions()
+                .UseBootstrap().Use<MarkdownExtension>().Build());
         }
         
         [Fact]
@@ -150,9 +153,11 @@ namespace AtheerTests.UnitTests.Factories
         {
             string title = "Some title";
             string description = "Some des";
+            string userId = "kk";
 
-            var series = _factory.CreateSeries(title, description);
-            
+            var series = _factory.CreateSeries(userId, title, description);
+
+            Assert.Equal(userId, series.AuthorId);
             Assert.Equal(title, series.Title);
             Assert.Equal(description, series.Description);
             Assert.False(series.Finished);

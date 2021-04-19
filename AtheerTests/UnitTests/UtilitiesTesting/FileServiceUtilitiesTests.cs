@@ -33,7 +33,7 @@ namespace AtheerTests.UnitTests.UtilitiesTesting
             string bucketName = "someBucket";
             string key = "somKey/hello";
 
-            string url = FileServiceUtilities.GetFileUrl(bucketName, ref key);
+            string url = FileServiceUtilities.GetFileUrl(bucketName, key);
             
             Assert.Contains("https://", url);
             Assert.Contains(".s3.amazonaws.com/", url);
@@ -45,7 +45,7 @@ namespace AtheerTests.UnitTests.UtilitiesTesting
             string cdnUrl = "kfgjmhfgjhfgjf.somecdn.khtg.com";
             string key = "pep/ii";
 
-            string url = FileServiceUtilities.GetCdnFileUrl(cdnUrl, ref key);
+            string url = FileServiceUtilities.GetCdnFileUrl(cdnUrl, key);
 
             Assert.Contains(cdnUrl, url);
             Assert.Contains(key, url);
@@ -64,7 +64,7 @@ namespace AtheerTests.UnitTests.UtilitiesTesting
         public void GetFileUrlShouldGetCorrectUrl(string bucketName, string key, string expectedUrl)
         {
             string k = key;
-            string url = FileServiceUtilities.GetFileUrl(bucketName, ref key);
+            string url = FileServiceUtilities.GetFileUrl(bucketName, key);
 
             Assert.Equal(expectedUrl, url);
         }
