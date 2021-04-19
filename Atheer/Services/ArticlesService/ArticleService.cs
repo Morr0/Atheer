@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using Atheer.Controllers.Article.Models;
+using Atheer.Controllers.Article.Requests;
 using Atheer.Controllers.ArticleEdit.Models;
 using Atheer.Controllers.Articles.Models;
 using Atheer.Exceptions;
@@ -367,6 +368,14 @@ namespace Atheer.Services.ArticlesService
                 .Where(x => x.AuthorId == userId);
 
             return await queryable.ToListAsync().ConfigureAwait(false);
+        }
+
+        public async Task AddSeries(string authorId, AddArticleSeries request)
+        {
+            var series = _articleFactory.CreateSeries(authorId, request.Title, request.Description);
+
+            await _context.ArticleSeries.AddAsync(series).ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

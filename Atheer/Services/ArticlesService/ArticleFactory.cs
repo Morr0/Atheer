@@ -104,13 +104,14 @@ namespace Atheer.Services.ArticlesService
             return sb.ToString();
         }
 
-        public ArticleSeries CreateSeries(string title, string description)
+        public ArticleSeries CreateSeries(string author, string title, string description)
         {
             return new ArticleSeries
             {
                 Title = title,
                 Description = description,
-                DateCreated = DateTime.UtcNow.GetString()
+                DateCreated = DateTime.UtcNow.GetString(),
+                AuthorId = author
             };
         }
 

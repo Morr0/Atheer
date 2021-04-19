@@ -25,5 +25,6 @@ namespace Atheer.Services.ArticlesService
         Task<bool> AuthorizedFor(ArticlePrimaryKey key, string userId);
         Task CompletedNarration(ArticlePrimaryKey key, string cdnUrl);
         Task<IList<ArticleSeries>> GetSeries(string userId, ArticleSeriesType articleSeriesType);
+        Task AddSeries(string author, AddArticleSeries request);
     }
 }
