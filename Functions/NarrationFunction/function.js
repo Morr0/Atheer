@@ -7,7 +7,6 @@ const {
 } = process.env;
 
 exports.handler = async (event) => {
-    console.log(DomainNameToNotify)
     const record = event.Records[0];
     const {createdYear, titleShrinked, content} = JSON.parse(record.body);
 

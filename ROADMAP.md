@@ -1,6 +1,7 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
+- Fix "Edit" not showing on drafted articles 
 - Implement OnlyVisibleToNetwork filter to only allow traffic from same network
 - Word counter auto generated after each add/update of article
 - Revamp the article add/edit editor and make it cleaner

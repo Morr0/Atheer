@@ -244,7 +244,7 @@ Resources:
         Version: 2012-10-17
         Statement:
           - Action:
-              - "s3:GetObject"
+              - s3:GetObject
             Effect: Allow
             Resource:
               Fn::Join:
@@ -304,10 +304,18 @@ Resources:
             Statement:
               - Effect: Allow
                 Action: 
-                  - "ssm:Describe*"
-                  - "ssm:Get*"
-                  - "ssm:List*"
+                  - ssm:Describe*
+                  - ssm:Get*
+                  - ssm:List*
                 Resource: "*"
+              - Effect: Allow
+                Action:
+                  - sqs:SendMessage
+                Resource: !GetAtt NarrationQueue.Arn
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                Resource: !GetAtt Bucket.Arn
       Tags:
         - Key: !Ref ProjectTagKeyName
           Value: !Ref ProjectName
@@ -414,17 +422,17 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - "s3:PutObject"
+                  - s3:PutObject
                 Resource: !GetAtt Bucket.Arn
               - Effect: Allow
                 Action:
-                  - "polly:SynthesizeSpeech"
+                  - polly:SynthesizeSpeech
                 Resource: "*"
               - Effect: Allow
                 Action:
-                  - "sqs:ReceiveMessage"
-                  - "sqs:DeleteMessage"
-                  - "sqs:GetQueueAttributes"
+                  - sqs:ReceiveMessage
+                  - sqs:DeleteMessage
+                  - sqs:GetQueueAttributes
                 Resource: !GetAtt NarrationQueue.Arn
               - Effect: Allow
                 Action:
@@ -433,6 +441,12 @@ Resources:
                   - ec2:DeleteNetworkInterface
                   - ec2:DescribeInstances
                   - ec2:AttachNetworkInterface
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
                 Resource: "*"
   NarrationLambdaSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -459,7 +473,6 @@ Resources:
           } = process.env;
 
           exports.handler = async (event) => {
-              console.log(DomainNameToNotify)
               const record = event.Records[0];
               const {createdYear, titleShrinked, content} = JSON.parse(record.body);
 
