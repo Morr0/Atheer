@@ -363,10 +363,12 @@ namespace Atheer.Services.ArticlesService
 
         public async Task<bool> AuthorizedFor(ArticlePrimaryKey key, string userId)
         {
-            var article = await Get(key).ConfigureAwait(false);
-            if (article is null) return false;
+            string articleAuthorId = await _context.Article.AsNoTracking()
+                .Where(x => x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked)
+                .Select(x => x.AuthorId)
+                .FirstOrDefaultAsync().ConfigureAwait(false);
 
-            return article.Article.AuthorId == userId;
+            return articleAuthorId == userId;
         }
 
         public async Task CompletedNarration(ArticlePrimaryKey key, string cdnUrl)

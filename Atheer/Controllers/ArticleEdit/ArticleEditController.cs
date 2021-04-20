@@ -134,12 +134,8 @@ namespace Atheer.Controllers.ArticleEdit
 
         private async Task<bool> AuthorizedFor(ArticlePrimaryKey key, string viewerUserId)
         {
-            if (!(await _articleService.AuthorizedFor(key, viewerUserId).ConfigureAwait(false)))
-            {
-                if (!User.IsInRole(UserRoles.AdminRole)) return false;
-            }
-
-            return true;
+            return await _articleService.AuthorizedFor(key, viewerUserId).ConfigureAwait(false) || 
+                   User.IsInRole(UserRoles.AdminRole);
         }
 
         private async Task ChangeAuthorIfChangedByAdmin(IUserService userService, ArticleEditViewModel articleViewModel,
