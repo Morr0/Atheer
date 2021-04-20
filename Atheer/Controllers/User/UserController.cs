@@ -164,7 +164,7 @@ namespace Atheer.Controllers.User
             if (viewingUserId != userId) return Unauthorized();
             if (User.HasClaim(AuthenticationController.CookieOAuthUser, "true")) return Unauthorized();
 
-            return View("ChangePassword", userId);
+            return View("ChangePassword");
         }
 
         [HttpPost("ChangePassword/{userId}")]
@@ -173,21 +173,11 @@ namespace Atheer.Controllers.User
             [FromForm] UserChangePassword userChangePassword, [FromForm] string button)
         {
             if (button != "change") return RedirectToAction("UserView", new {userId});
-            
-            if (!ModelState.IsValid)
-            {
-                return RedirectToAction("ChangePasswordView", new {userId});
-            }
+            if (!ModelState.IsValid) return View("ChangePassword");
             
             string viewingUserId = this.GetViewerUserId();
             if (viewingUserId != userId) return Unauthorized();
-            
-            // TODO Let user know confirmed new password does not match
-            if (userChangePassword.NewPassword != userChangePassword.NewPasswordSecondTime)
-            {
-                return RedirectToAction("ChangePasswordView", new {userId});
-            }
-            
+
             await _userService.UpdatePassword(userId, userChangePassword.OldPassword, userChangePassword.NewPassword).ConfigureAwait(false);
             return RedirectToAction("UserView", new {userId});
         }
