@@ -22,4 +22,8 @@
       <PackageReference Include="Polly" Version="7.2.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\Shared\Components\ArticleEdit\Default.cshtml" />
+    </ItemGroup>
+
 </Project>

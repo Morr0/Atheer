@@ -43,6 +43,12 @@
         <h6 class="card-subtitle">@tags</h6>
         
         <h2 class="text-dark">@article.Title</h2>
+        @if (isAuthor)
+        {
+            <span class="text-info">Mine</span>
+            <a asp-controller="ArticleEdit" asp-action="Index" asp-route-CreatedYear="@Model.Article.CreatedYear.ToString()" 
+               asp-route-TitleShrinked="@Model.Article.TitleShrinked">Edit</a>
+        }
         <span class="card-subtitle">
             By <a asp-controller="User" asp-action="UserView" asp-route-userId="@Model.Article.AuthorId" class="card-link">
                 @Model.AuthorFullName
@@ -52,11 +58,6 @@
                 <span>since @await Component.InvokeAsync("LocalDate", article.CreationDate)</span>
             }
         </span>
-
-        @if (isAuthor)
-        {
-            <span class="text-info">Mine</span>
-        }
 
         @if (article.Draft)
         {
@@ -70,8 +71,7 @@
         {
             <span class="text-info">Scheduled since @scheduledSince for @await Component.InvokeAsync("LocalDate", article.CreationDate)</span>
         }
-
-        @await Component.InvokeAsync("ArticleEdit", new ArticleEditLinkModel(article, viewerUserId))
+        
         <p class="card-text">@article.Description</p>
         
         @if (narrated)
