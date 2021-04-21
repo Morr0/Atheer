@@ -588,6 +588,17 @@ Resources:
       EventSourceArn: !GetAtt NarrationQueue.Arn
       BatchSize: 1
       Enabled: true
+      
+      
+  # Configuration (stored in parameter store)
+  SQSTranscriptionQueueUrlConfig:
+    Type: AWS::SSM::Parameter
+    Properties: 
+      Type: String
+      Value: !Ref NarrationQueue
+      Name: "/Atheer/SQS/TranscriptionQueueUrl"
+  
+  
 Outputs: 
   CdnDomainName:
     Description: Domain name of the Cdn
