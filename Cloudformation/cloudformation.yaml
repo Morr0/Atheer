@@ -395,7 +395,7 @@ Resources:
   NarrationQueue:
     Type: AWS::SQS::Queue
     Properties:
-      VisibilityTimeout: 301
+      VisibilityTimeout: 21
       Tags:
         - Key: !Ref ProjectTagKeyName
           Value: !Ref ProjectName
@@ -567,7 +567,7 @@ Resources:
     
     
       Description: "The narration function that picks up from the queue"
-      Timeout: 300
+      Timeout: 20
       MemorySize: 128
       VpcConfig:
         SecurityGroupIds:
