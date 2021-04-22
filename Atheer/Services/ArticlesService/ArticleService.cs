@@ -8,6 +8,7 @@ using Atheer.Controllers.Article.Requests;
 using Atheer.Controllers.ArticleEdit.Models;
 using Atheer.Controllers.Articles.Models;
 using Atheer.Exceptions;
+using Atheer.Extensions;
 using Atheer.Models;
 using Atheer.Repositories;
 using Atheer.Repositories.Junctions;
@@ -305,6 +306,36 @@ namespace Atheer.Services.ArticlesService
             }
 
             return new ArticlePrimaryKey(article.CreatedYear, article.TitleShrinked);
+        }
+
+        public async Task<ArticlePrimaryKey> Add(string userId, AddArticleRequest request)
+        {
+            var article = _articleFactory.Create(request, userId);
+            string titleShrinked = article.TitleShrinked;
+            
+            // Check that no other article has same titleShrinked, else generate a new titleShrinked
+            var key = new ArticlePrimaryKey(article.CreatedYear, titleShrinked);
+            while (await Exists(key).CAF())
+            {
+                titleShrinked = RandomiseExistingShrinkedTitle(ref titleShrinked);
+                key.TitleShrinked = titleShrinked;
+                article.TitleShrinked = titleShrinked;
+            }
+
+            await using var transaction = await _context.Database.BeginTransactionAsync().CAF();
+            await _context.Article.AddAsync(article).CAF();
+            try
+            {
+                await _context.SaveChangesAsync().CAF();
+                await transaction.CommitAsync().CAF();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw new FailedOperationException();
+            }
+
+            return key;
         }
 
         private async Task CreateTagArticles(Article article, IList<Tag> tags)

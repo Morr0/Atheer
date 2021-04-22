@@ -31,6 +31,7 @@ namespace Atheer.Utilities
         {
             CreateMap<ArticleEditViewModel, Article>();
             CreateMap<Article, ArticleEditViewModel>();
+            CreateMap<AddArticleRequest, Article>();
         }
     }
 }

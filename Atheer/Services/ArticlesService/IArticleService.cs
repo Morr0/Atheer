@@ -20,6 +20,7 @@ namespace Atheer.Services.ArticlesService
 
         Task Delete(ArticlePrimaryKey key);
         Task<ArticlePrimaryKey> Add(ArticleEditViewModel articleEditViewModel, string userId);
+        Task<ArticlePrimaryKey> Add(string userId, AddArticleRequest request);
         Task Update(ArticleEditViewModel article);
 
         Task<bool> AuthorizedFor(ArticlePrimaryKey key, string userId);

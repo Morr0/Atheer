@@ -41,6 +41,20 @@ namespace Atheer.Services.ArticlesService
 
             return article;
         }
+        
+        public Article Create(AddArticleRequest request, string userId)
+        {
+            var article = _mapper.Map<Article>(request);
+
+            article.AuthorId = userId;
+            
+            var currDate = DateTime.UtcNow;
+            article.CreatedYear = currDate.Year;
+            article.TitleShrinked = GetShrinkedTitle(request.Title);
+            article.CreationDate = currDate.GetString();
+
+            return article;
+        }
 
         internal void GetDate(string proposedDate, out DateTime releaseDate, out bool scheduled,
             out string scheduledSinceDate)

@@ -2,7 +2,10 @@
 ## Roadmap:
 ### List of things to work on:
 - Revamp the article add/edit editor and make it cleaner
+- List all series for user when add/editing article
+- Use DateTime for all datetime strings in codebase and `TIMESTAMP` for Postgresql
 - Correct scheduled articles releaser to get articles older than today in a transaction
+- Reconsider client side validation and do it with Bootstrap 5
 - Revamp the UI of series
 - Revamp the controllers for article/series
 - Commenting system

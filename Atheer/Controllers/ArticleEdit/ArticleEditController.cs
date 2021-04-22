@@ -10,6 +10,7 @@ using Atheer.Services.ArticlesService;
 using Atheer.Services.TagService;
 using Atheer.Services.UsersService;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -180,6 +181,28 @@ namespace Atheer.Controllers.ArticleEdit
         private bool IsNewArticle(string titleShrinked)
         {
             return string.IsNullOrEmpty(titleShrinked);
+        }
+
+
+        [HttpGet("Add")]
+        [Authorize(Roles = UserRoles.EditorRole)]
+        public async Task<IActionResult> AddArticleView()
+        {
+            return View("AddArticle");
+        }
+        
+        [HttpPost("Add")]
+        [Authorize(Roles = UserRoles.EditorRole)]
+        public async Task<IActionResult> AddArticlePost([FromForm] AddArticleRequest request, [FromServices] ITagService tagService)
+        {
+            if (!ModelState.IsValid) return View("AddArticle", request);
+
+            string userId = this.GetViewerUserId();
+            var key = await _articleService.Add(userId, request).CAF();
+            var individualTags = request.TagsAsString.Split(',').Where(x => x != ",");
+            await tagService.AddOrUpdateTagsPerArticle(key, individualTags).ConfigureAwait(false);
+
+            return RedirectToAction("Index", "Article", key);
         }
     }
 }
