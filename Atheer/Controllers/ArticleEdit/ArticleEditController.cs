@@ -198,8 +198,7 @@ namespace Atheer.Controllers.ArticleEdit
 
             string userId = this.GetViewerUserId();
             var key = await _articleService.Add(userId, request).CAF();
-            var individualTags = request.TagsAsString.Split(',').Where(x => x != ",");
-            await tagService.AddOrUpdateTagsPerArticle(key, individualTags).ConfigureAwait(false);
+            await tagService.AddOrUpdateTagsPerArticle(key, request.TagsAsString).ConfigureAwait(false);
 
             return RedirectToAction("Index", "Article", key);
         }
@@ -229,8 +228,7 @@ namespace Atheer.Controllers.ArticleEdit
             if (!authorizedFor) return Forbid();
 
             await _articleService.Update(userId, key, viewModel).CAF();
-            var individualTags = viewModel.TagsAsString.Split(',').Where(x => x != ",");
-            await tagService.AddOrUpdateTagsPerArticle(key, individualTags).CAF();
+            await tagService.AddOrUpdateTagsPerArticle(key, viewModel.TagsAsString).CAF();
 
             return RedirectToAction("UpdateArticleView", key);
         }
