@@ -1,4 +1,6 @@
-﻿namespace Atheer.Models
+﻿using System;
+
+namespace Atheer.Models
 {
     public class User
     {
@@ -25,5 +27,8 @@
 
         // <OAuthProvider>-<Id>
         public string OAuthLogicalId { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime? LastLoggedInAt { get; set; }
     }
 }

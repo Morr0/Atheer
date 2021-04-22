@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Atheer.Repositories.Junctions;
 using Newtonsoft.Json;
 using NpgsqlTypes;
@@ -53,5 +54,8 @@ namespace Atheer.Models
 
         public bool Narratable { get; set; }
         public string NarrationMp3Url { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 }

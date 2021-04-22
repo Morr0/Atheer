@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Atheer.Models
 {
@@ -13,5 +14,7 @@ namespace Atheer.Models
 
         public IList<Article> Articles { get; set; }
         public int ArticlesCount { get; set; }
+
+        public DateTime CreatedAt { get; set; }
     }
 }

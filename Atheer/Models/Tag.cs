@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -15,6 +16,9 @@ namespace Atheer.Models
         /// When is the last time this tag had an article linked to
         /// </summary>
         public string DateLastAddedTo { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime? LastUpdatedAt { get; set; }
         
         [JsonIgnore] 
         public IList<TagArticle> Tags { get; set; }
