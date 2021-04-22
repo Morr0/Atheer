@@ -7,7 +7,6 @@
     var series = ViewBag.Series as List<LightArticleSeries>;
     var seriesSelectItems = series.Select(x => new SelectListItem
     {
-        Selected = Model?.SeriesId == x.Id,
         Text = x.Title,
         Value = x.Id.ToString()
     });
@@ -30,7 +29,7 @@
     else
     {
         <select class="form-select" asp-items="seriesSelectItems" name="SeriesId" id="SeriesId">
-            <option value="">Choose a series</option>
+            <option value="" selected>Choose a series</option>
         </select>
     }
     <label asp-for="Description">Description</label>
