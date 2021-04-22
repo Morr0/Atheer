@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Atheer.Controllers.ArticleEdit.Models;
 using Atheer.Extensions;
+using Atheer.Models;
 using Atheer.Services.ArticlesService;
 using Atheer.Services.ArticlesService.Exceptions;
 using Atheer.Services.TagService;
@@ -74,6 +76,16 @@ namespace Atheer.Controllers.ArticleEdit
             var vm = _mapper.Map<UpdateArticleViewModel>(articleVm.Article);
             vm.TagsAsString = ITagService.TagsToString(articleVm.Tags);
 
+            var series = await _articleService.GetSeriesFor(userId).CAF();
+            // A finished series will not be included in the list above
+            bool currSeriesIsFinished = articleVm.Article.SeriesId is not null && 
+                                        series.All(x => x.Id != articleVm.Article.SeriesId);
+            if (currSeriesIsFinished)
+            {
+                ViewBag.CurrentSeries = await _articleService.GetSeries(articleVm.Article.SeriesId).CAF();
+            }
+
+            ViewBag.Series = series;
             ViewBag.Key = key;
             return View("UpdateArticle", vm);
         }

@@ -1,10 +1,21 @@
 ﻿@using Atheer.Services.ArticlesService
+@using Atheer.Services.ArticlesService.Models
 @model Atheer.Controllers.ArticleEdit.Models.UpdateArticleViewModel
 
 @{
     ViewData["Title"] = "Update Article";
 
     var key = ViewBag.Key as ArticlePrimaryKey;
+    
+    var series = ViewBag.Series as List<LightArticleSeries>;
+    var seriesSelectItems = series.Select(x => new SelectListItem
+    {
+        Text = x.Title,
+        Value = x.Id.ToString(),
+        Selected = x.Id == Model.SeriesId
+    });
+
+    var currentSeries = ViewBag.CurrentSeries as ArticleSeries;
 }
 
 <a class="card-link" asp-controller="Article" asp-action="Index" asp-route-CreatedYear="@key.CreatedYear.ToString()" 
@@ -18,6 +29,22 @@
     <input type="text" asp-for="Title" class="form-control"/>
     <label asp-for="TagsAsString">Tags (<span class="text-danger">separated by comma</span>)</label>
     <input type="text" asp-for="TagsAsString" class="form-control"/>
+    
+    @* SPEC: Not allow to change series once it is finished *@
+    <label for="SeriesId">Series</label>
+    @if (currentSeries?.Finished is true)
+    {
+        <span class="text-info">&MediumSpace;@currentSeries.Title</span>
+        <input type="hidden" asp-for="SeriesId" />
+        <br>
+    }
+    else
+    {
+        <select class="form-select" asp-items="seriesSelectItems" name="SeriesId" id="SeriesId">
+            <option value="" selected>Choose a series</option>
+        </select>
+    }
+    
     <label asp-for="Description">Description</label>
     <input type="text" asp-for="Description" class="form-control"/>
     <label asp-for="Content">Content (<span class="text-danger">Markdown</span>)</label>

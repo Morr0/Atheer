@@ -8,6 +8,7 @@
 - Revamp the UI of series
 - Revamp the controllers for article/series
 - Add better NotFound and Forbidden Handling
+- Series view
 - Commenting system
 - 
 

@@ -29,5 +29,6 @@ namespace Atheer.Services.ArticlesService
         Task AddSeries(string author, AddArticleSeries request);
         Task FinishArticleSeries(string userId, int id);
         Task<List<LightArticleSeries>> GetSeriesFor(string userId);
+        Task<ArticleSeries> GetSeries(int? id);
     }
 }

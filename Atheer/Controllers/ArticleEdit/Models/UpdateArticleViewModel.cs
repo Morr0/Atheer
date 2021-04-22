@@ -8,6 +8,7 @@ namespace Atheer.Controllers.ArticleEdit.Models
         [Required] public string Description { get; set; }
         [Required] public string Content { get; set; }
         [Required] public string TagsAsString { get; set; }
+        public int? SeriesId { get; set; }
         
         public bool Likeable { get; set; }
         public bool Shareable { get; set; }

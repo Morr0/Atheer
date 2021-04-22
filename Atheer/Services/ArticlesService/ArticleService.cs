@@ -489,5 +489,10 @@ namespace Atheer.Services.ArticlesService
                 })
                 .ToListAsync();
         }
+
+        public Task<ArticleSeries> GetSeries(int? id)
+        {
+            return _context.ArticleSeries.FirstOrDefaultAsync(x => x.Id == id);
+        }
     }
 }
