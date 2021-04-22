@@ -378,6 +378,31 @@ namespace Atheer.Services.ArticlesService
             }
         }
 
+        public async Task Update(string userId, ArticlePrimaryKey key, UpdateArticleViewModel request)
+        {
+            var article = await _context.Article.FirstOrDefaultAsync(x =>
+                x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked).CAF();
+            string contentChecksumPreUpdate = ChecksumAlgorithm.ComputeMD5Checksum(article.Content);
+
+            _mapper.Map(request, article);
+            _articleFactory.SetUpdated(article);
+            
+            await EnsureRequestOfNarrationIfNarratable(article, contentChecksumPreUpdate).CAF();
+
+            await using var transaction = await _context.Database.BeginTransactionAsync().CAF();
+
+            try
+            {
+                await _context.SaveChangesAsync().CAF();
+                await transaction.CommitAsync().CAF();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw new FailedOperationException();
+            }
+        }
+
         private async ValueTask EnsureRequestOfNarrationIfNarratable(Article article, string contentChecksumPreUpdate)
         {
             if (!article.Narratable) return;

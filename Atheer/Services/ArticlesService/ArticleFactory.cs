@@ -91,6 +91,12 @@ namespace Atheer.Services.ArticlesService
             }
         }
 
+        public void SetUpdated(Article article)
+        {
+            var now = DateTime.UtcNow;
+            article.LastUpdatedDate = now.GetString();
+        }
+
         public void Unschedule(Article article, DateTime now)
         {
             var releaseDate = DateTime.Parse(article.CreationDate);

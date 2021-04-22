@@ -5,7 +5,6 @@ using Atheer.Controllers.ArticleEdit.Models;
 using Atheer.Controllers.Authentication;
 using Atheer.Exceptions;
 using Atheer.Extensions;
-using Atheer.Models;
 using Atheer.Services.ArticlesService;
 using Atheer.Services.TagService;
 using Atheer.Services.UsersService;
@@ -186,7 +185,7 @@ namespace Atheer.Controllers.ArticleEdit
 
         [HttpGet("Add")]
         [Authorize(Roles = UserRoles.EditorRole)]
-        public async Task<IActionResult> AddArticleView()
+        public async ValueTask<IActionResult> AddArticleView()
         {
             return View("AddArticle");
         }
@@ -203,6 +202,37 @@ namespace Atheer.Controllers.ArticleEdit
             await tagService.AddOrUpdateTagsPerArticle(key, individualTags).ConfigureAwait(false);
 
             return RedirectToAction("Index", "Article", key);
+        }
+
+        [HttpGet("Update/{CreatedYear:int}/{TitleShrinked}")]
+        public async Task<IActionResult> UpdateArticleView([FromRoute] ArticlePrimaryKey key)
+        {
+            string userId = this.GetViewerUserId();
+            bool authorizedFor = await AuthorizedFor(key, userId).CAF();
+            if (!authorizedFor) return Forbid();
+
+            var articleVm = await _articleService.Get(key, userId).CAF();
+            var vm = _mapper.Map<UpdateArticleViewModel>(articleVm.Article);
+            vm.TagsAsString = ITagService.TagsToString(articleVm.Tags);
+
+            return View("UpdateArticle", vm);
+        }
+
+        [HttpPost("Update/{CreatedYear:int}/{TitleShrinked}")]
+        public async ValueTask<IActionResult> UpdateArticlePost([FromRoute] ArticlePrimaryKey key,
+            [FromForm] UpdateArticleViewModel viewModel, [FromServices] ITagService tagService)
+        {
+            if (!ModelState.IsValid) return View("UpdateArticle", viewModel);
+            
+            string userId = this.GetViewerUserId();
+            bool authorizedFor = await AuthorizedFor(key, userId).CAF();
+            if (!authorizedFor) return Forbid();
+
+            await _articleService.Update(userId, key, viewModel).CAF();
+            var individualTags = viewModel.TagsAsString.Split(',').Where(x => x != ",");
+            await tagService.AddOrUpdateTagsPerArticle(key, individualTags).CAF();
+
+            return RedirectToAction("UpdateArticleView", key);
         }
     }
 }

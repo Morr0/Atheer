@@ -32,6 +32,8 @@ namespace Atheer.Utilities
             CreateMap<ArticleEditViewModel, Article>();
             CreateMap<Article, ArticleEditViewModel>();
             CreateMap<AddArticleRequest, Article>();
+            CreateMap<UpdateArticleViewModel, Article>()
+                .ReverseMap();
         }
     }
 }

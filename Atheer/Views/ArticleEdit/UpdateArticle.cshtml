@@ -1,0 +1,33 @@
+﻿@model Atheer.Controllers.ArticleEdit.Models.UpdateArticleViewModel
+
+@{
+    ViewData["Title"] = "Update Article";
+}
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form method="post" asp-controller="ArticleEdit" asp-action="UpdateArticlePost">
+    <label asp-for="Title">Title</label>
+    <input type="text" asp-for="Title" class="form-control"/>
+    <label asp-for="TagsAsString">Tags (<span class="text-danger">separated by comma</span>)</label>
+    <input type="text" asp-for="TagsAsString" class="form-control"/>
+    <label asp-for="Description">Description</label>
+    <input type="text" asp-for="Description" class="form-control"/>
+    <label asp-for="Content">Content (<span class="text-danger">Markdown</span>)</label>
+    <textarea asp-for="Content" class="form-control" rows="16"></textarea>
+    <br>
+    <input type="checkbox" class="btn-check" asp-for="Draft" autocomplete="off">
+    <label class="btn btn-primary" asp-for="Draft">Draft</label>
+    <input type="checkbox" class="btn-check" asp-for="Unlisted" autocomplete="off">
+    <label class="btn btn-primary" asp-for="Unlisted">Unlisted</label>
+    <input type="checkbox" class="btn-check" asp-for="Likeable" autocomplete="off">
+    <label class="btn btn-primary" asp-for="Likeable">Likeable</label>
+    <input type="checkbox" class="btn-check" asp-for="Shareable" autocomplete="off">
+    <label class="btn btn-primary" asp-for="Shareable">Shareable</label>
+    <input type="checkbox" class="btn-check" asp-for="Narratable" autocomplete="off">
+    <label class="btn btn-primary" asp-for="Narratable">Narratable</label>
+    <br>
+    <div class="mt-3">
+        <input class="btn btn-dark" type="submit" value="Update" />
+    </div>
+</form>
