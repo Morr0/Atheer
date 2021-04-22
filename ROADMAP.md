@@ -1,10 +1,10 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Word counter auto generated after each add/update of article
 - Revamp the article add/edit editor and make it cleaner
-- Revamp the controllers for article/series  
 - Correct scheduled articles releaser to get articles older than today in a transaction
+- Revamp the UI of series
+- Revamp the controllers for article/series
 - Commenting system
 - 
 
