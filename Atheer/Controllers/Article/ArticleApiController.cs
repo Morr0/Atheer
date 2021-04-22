@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Atheer.Controllers.Article.Requests;
+using Atheer.Controllers.Utilities.Filters;
 using Atheer.Exceptions;
 using Atheer.Services.ArticlesService;
 using Atheer.Services.FileService;
@@ -47,6 +48,7 @@ namespace Atheer.Controllers.Article
             }
         }
 
+        [RestrictToInternalNetwork]
         [HttpPatch("narration/complete")]
         public async Task<IActionResult> CompleteNarrationWebhook([FromBody] CompletedArticleNarrationRequest request, 
             [FromServices] IFileService fileService)

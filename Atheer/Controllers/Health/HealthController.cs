@@ -18,7 +18,7 @@ namespace Atheer.Controllers.Health
             return Ok();
         }
 
-        [OnlyVisibleToNetwork]
+        [RestrictToInternalNetwork]
         [HttpGet("internal/metrics")]
         public async Task<IActionResult> HealthyInternalComprehensive([FromServices] IServiceScopeFactory serviceScopeFactory)
         {

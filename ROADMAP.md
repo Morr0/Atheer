@@ -1,7 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Implement OnlyVisibleToNetwork filter to only allow traffic from same network
 - Word counter auto generated after each add/update of article
 - Revamp the article add/edit editor and make it cleaner
 - Revamp the controllers for article/series  
