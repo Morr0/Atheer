@@ -35,9 +35,9 @@ namespace Atheer.Services.ArticlesService
 
             article.CreatedYear = releaseDate.Year;
             article.TitleShrinked = GetShrinkedTitle(articleViewModel.Title);
-            article.CreationDate = releaseDate.GetString();
+            article.CreatedAt = releaseDate;
             article.Scheduled = scheduled;
-            article.ScheduledSinceDate = scheduled ? scheduledSinceDate : string.Empty;
+            // article.ScheduledSinceDate = scheduled ? scheduledSinceDate : string.Empty;
 
             return article;
         }
@@ -51,7 +51,7 @@ namespace Atheer.Services.ArticlesService
             var currDate = DateTime.UtcNow;
             article.CreatedYear = currDate.Year;
             article.TitleShrinked = GetShrinkedTitle(request.Title);
-            article.CreationDate = currDate.GetString();
+            article.CreatedAt = currDate;
 
             return article;
         }
@@ -79,35 +79,35 @@ namespace Atheer.Services.ArticlesService
             scheduledSinceDate = now.GetString();
         }
 
-        public void SetUpdated(Article article, bool unschedule)
-        {
-            var now = DateTime.UtcNow;
-            article.LastUpdatedDate = now.GetString();
-            
-            // If is scheduled and still not yet released
-            if (unschedule && article.Scheduled)
-            {
-                Unschedule(article, now);
-            }
-        }
+        // public void SetUpdated(Article article, bool unschedule)
+        // {
+        //     var now = DateTime.UtcNow;
+        //     article.LastUpdatedDate = now.GetString();
+        //     
+        //     // If is scheduled and still not yet released
+        //     if (unschedule && article.Scheduled)
+        //     {
+        //         Unschedule(article, now);
+        //     }
+        // }
 
         public void SetUpdated(Article article)
         {
             var now = DateTime.UtcNow;
-            article.LastUpdatedDate = now.GetString();
+            article.UpdatedAt = now;
         }
-
-        public void Unschedule(Article article, DateTime now)
-        {
-            var releaseDate = DateTime.Parse(article.CreationDate);
-            var scheduledSince = DateTime.Parse(article.ScheduledSinceDate);
-            // Not Between
-            if (!(scheduledSince <= now && now < releaseDate)) return;
-
-            article.CreationDate = now.GetString();
-            article.Scheduled = false;
-            // Now it is released of scheduling
-        }
+        //
+        // public void Unschedule(Article article, DateTime now)
+        // {
+        //     var releaseDate = DateTime.Parse(article.CreationDate);
+        //     var scheduledSince = DateTime.Parse(article.ScheduledSinceDate);
+        //     // Not Between
+        //     if (!(scheduledSince <= now && now < releaseDate)) return;
+        //
+        //     article.CreationDate = now.GetString();
+        //     article.Scheduled = false;
+        //     // Now it is released of scheduling
+        // }
 
         private string GetShrinkedTitle(string title)
         {
@@ -130,7 +130,7 @@ namespace Atheer.Services.ArticlesService
             {
                 Title = title,
                 Description = description,
-                DateCreated = DateTime.UtcNow.GetString(),
+                CreatedAt = DateTime.UtcNow,
                 AuthorId = author
             };
         }

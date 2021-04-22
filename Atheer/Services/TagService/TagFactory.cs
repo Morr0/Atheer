@@ -18,14 +18,14 @@ namespace Atheer.Services.TagService
             {
                 Id = id,
                 Title = title,
-                DateCreated = date.GetString(),
-                DateLastAddedTo = date.GetString()
+                CreatedAt = date,
+                LastUpdatedAt = date
             };
         }
 
         public void UpdateTag(Tag tag)
         {
-            tag.DateLastAddedTo = DateTime.UtcNow.GetString();
+            tag.LastUpdatedAt = DateTime.UtcNow;
         }
 
         public string GetId(string title)

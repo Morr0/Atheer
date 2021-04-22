@@ -1,7 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Use DateTime for all datetime strings in codebase and `TIMESTAMP` for Postgresql
 - Correct scheduled articles releaser to get articles older than today in a transaction
 - Reconsider client side validation and do it with Bootstrap 5
 - Revamp the UI of series

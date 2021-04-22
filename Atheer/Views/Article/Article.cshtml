@@ -15,8 +15,8 @@
     string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
     bool isAuthor = viewerUserId == Model.Article.AuthorId;
     
-    string scheduledSince = DateTimeExtensions.GetDateOnly(@Model.Article.ScheduledSinceDate);
-    bool scheduled = isAuthor && article.Scheduled && !string.IsNullOrEmpty(scheduledSince);
+    // string scheduledSince = DateTimeExtensions.GetDateOnly(@Model.Article.ScheduledSinceDate);
+    // bool scheduled = isAuthor && article.Scheduled && !string.IsNullOrEmpty(scheduledSince);
 
     bool narrated = Model.Article.Narratable && !string.IsNullOrEmpty(Model.Article.NarrationMp3Url);
     
@@ -53,10 +53,10 @@
             By <a asp-controller="User" asp-action="UserView" asp-route-userId="@Model.Article.AuthorId" class="card-link">
                 @Model.AuthorFullName
             </a>
-            @if (!scheduled)
-            {
-                <span>since @await Component.InvokeAsync("LocalDate", article.CreationDate)</span>
-            }
+            @* @if (!scheduled) *@
+            @* { *@
+            @*     <span>since @await Component.InvokeAsync("LocalDate", article.CreatedAt)</span> *@
+            @* } *@
         </span>
 
         @if (article.Draft)
@@ -67,10 +67,10 @@
         {
             <span class="text-info">Unlisted</span>
         }
-        @if (scheduled)
-        {
-            <span class="text-info">Scheduled since @scheduledSince for @await Component.InvokeAsync("LocalDate", article.CreationDate)</span>
-        }
+        @* @if (scheduled) *@
+        @* { *@
+        @*     <span class="text-info">Scheduled since @scheduledSince for @await Component.InvokeAsync("LocalDate", article.CreatedAt)</span> *@
+        @* } *@
         
         <p class="card-text">@article.Description</p>
         

@@ -1,4 +1,6 @@
-﻿namespace Atheer.Controllers.Articles.Models
+﻿using System;
+
+namespace Atheer.Controllers.Articles.Models
 {
     public class StrippedArticleViewModel
     {
@@ -9,6 +11,6 @@
         public bool Draft { get; set; }
         public bool Unlisted { get; set; }
         public string AuthorId { get; set; }
-        public string CreationDate { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

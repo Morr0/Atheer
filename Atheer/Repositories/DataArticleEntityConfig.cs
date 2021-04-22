@@ -55,15 +55,6 @@ namespace Atheer.Repositories
             modelBuilder.Entity<Article>()
                 .Property(x => x.TitleShrinked)
                 .HasColumnType("text");
-            modelBuilder.Entity<Article>()
-                .Property(x => x.ScheduledSinceDate)
-                .HasColumnType("varchar(20)");
-            modelBuilder.Entity<Article>()
-                .Property(x => x.CreationDate)
-                .HasColumnType("varchar(20)");
-            modelBuilder.Entity<Article>()
-                .Property(x => x.LastUpdatedDate)
-                .HasColumnType("varchar(20)");
             // - Numbers
             modelBuilder.Entity<Article>()
                 .Property(x => x.Likes)
@@ -101,9 +92,6 @@ namespace Atheer.Repositories
                 o.Property(x => x.Id)
                     .ValueGeneratedOnAdd();
 
-                o.Property(x => x.DateCreated)
-                    .HasColumnType("varchar(20)");
-                
                 o.HasIndex(x => x.Finished)
                     .HasFilter($"\"{nameof(Atheer.Models.ArticleSeries.Finished)}\" IS FALSE");
 

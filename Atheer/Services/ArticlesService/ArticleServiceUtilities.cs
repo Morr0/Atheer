@@ -16,7 +16,7 @@ namespace Atheer.Services.ArticlesService
                 Title = x.Title,
                 Unlisted = x.Unlisted,
                 AuthorId = x.AuthorId,
-                CreationDate = x.CreationDate,
+                CreatedAt = x.CreatedAt,
                 TitleShrinked = x.TitleShrinked
             });
         }

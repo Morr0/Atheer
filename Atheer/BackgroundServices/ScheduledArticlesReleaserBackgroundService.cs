@@ -45,7 +45,7 @@ namespace Atheer.BackgroundServices
 
             foreach (var article in articles)
             {
-                var releaseDate = DateTime.Parse(article.CreationDate).FirstTickOfDay();
+                var releaseDate = article.CreatedAt.FirstTickOfDay();
                 if (!(today >= releaseDate)) continue;
                 
                 article.Scheduled = false;

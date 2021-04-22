@@ -41,12 +41,6 @@ namespace Atheer.Repositories
             modelBuilder.Entity<Tag>()
                 .Property(x => x.Title)
                 .HasColumnType("varchar(64)");
-            modelBuilder.Entity<Tag>()
-                .Property(x => x.DateCreated)
-                .HasColumnType("varchar(20)");
-            modelBuilder.Entity<Tag>()
-                .Property(x => x.DateLastAddedTo)
-                .HasColumnType("varchar(20)");
         }
     }
 }

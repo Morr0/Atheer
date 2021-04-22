@@ -133,9 +133,9 @@ namespace Atheer.Services.UsersService
         public async Task SetLogin(string id)
         {
             var user = await _context.User.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
-            user.DateLastLoggedIn = DateTime.UtcNow.GetString();
+            user.LastLoggedInAt = DateTime.UtcNow;
             
-            _context.Entry(user).Property(x => x.DateLastLoggedIn).IsModified = true;
+            _context.Entry(user).Property(x => x.LastLoggedInAt).IsModified = true;
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 

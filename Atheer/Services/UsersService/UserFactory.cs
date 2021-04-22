@@ -27,7 +27,7 @@ namespace Atheer.Services.UsersService
             user.Email = user.Email.ToLowerInvariant();
             user.Id = Id(user.Email);
 
-            user.DateCreated = DateTime.UtcNow.GetString();
+            user.CreatedAt = DateTime.UtcNow;
 
             user.PasswordHash = HashPassword(registerViewModel.Password);
 
@@ -43,7 +43,7 @@ namespace Atheer.Services.UsersService
             user.Id = oAuthUserInfo.OAuthUsername;
             user.Email = user.Email.ToLowerInvariant();
 
-            user.DateCreated = DateTime.UtcNow.GetString();
+            user.CreatedAt = DateTime.UtcNow;
             user.PasswordHash = string.Empty;
 
             user.Roles = DefaultRole();
@@ -56,7 +56,7 @@ namespace Atheer.Services.UsersService
 
         public User UpdateOAuthUser(OAuthUserInfo oAuthUserInfo, User existingUser)
         {
-            existingUser.DateLastLoggedIn = DateTime.UtcNow.GetString();
+            existingUser.LastLoggedInAt = DateTime.UtcNow;
          
             // HERE GOES ANYTHING YOU WANT TO PULL FROM OAUTH PROVIDER TO UPDATE USER DETAILS IF NEEDED
             

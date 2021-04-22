@@ -12,10 +12,6 @@ namespace Atheer.Models
         public string Email { get; set; }
         
         public string PasswordHash { get; set; }
-        
-        public string DateCreated { get; set; }
-        
-        public string DateLastLoggedIn { get; set; }
 
         // Separated by comma
         public string Roles { get; set; }

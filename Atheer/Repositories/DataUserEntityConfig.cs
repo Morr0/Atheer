@@ -28,12 +28,6 @@ namespace Atheer.Repositories
                 .Property(x => x.Roles)
                 .HasColumnType("text");
             modelBuilder.Entity<User>()
-                .Property(x => x.DateCreated)
-                .HasColumnType("varchar(20)");
-            modelBuilder.Entity<User>()
-                .Property(x => x.DateLastLoggedIn)
-                .HasColumnType("varchar(20)");
-            modelBuilder.Entity<User>()
                 .Property(x => x.Id)
                 .HasColumnType("text");
             modelBuilder.Entity<User>()

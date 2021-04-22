@@ -15,6 +15,7 @@ using Atheer.Services.RecaptchaService;
 using Atheer.Services.TagService;
 using Atheer.Services.UsersService;
 using Atheer.Services.UserSessionsService;
+using Atheer.Services.Utilities.TimeService;
 using Atheer.Utilities.Config.Models;
 using Atheer.Utilities.Markdown;
 using AutoMapper;
@@ -56,6 +57,7 @@ namespace Atheer
             services.AddSingleton<ArticleFactory>();
             services.AddSingleton<UserFactory>();
             services.AddSingleton<TagFactory>();
+            services.AddSingleton<ITimeService, TimeService>();
             
             services.AddSingleton<MarkdownPipeline>(
                 provider => new MarkdownPipelineBuilder().UseAdvancedExtensions().UseBootstrap().Use<MarkdownExtension>().Build());

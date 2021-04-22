@@ -46,7 +46,7 @@ namespace Atheer.Services.ArticlesService
         public async Task<ArticlesResponse> Get(int amount, string searchQuery)
         {
             var articles = await _context.Article.AsNoTracking().Where(x => x.SearchVector.Matches(searchQuery))
-                .OrderByDescending(x => x.CreationDate)
+                .OrderByDescending(x => x.CreatedAt)
                 .Take(amount)
                 .ToStrippedArticles()
                 .ToListAsync().ConfigureAwait(false);
@@ -98,8 +98,8 @@ namespace Atheer.Services.ArticlesService
 
             // Order by ASC or DESC depending on the user
             queryable = (oldest
-                    ? queryable.OrderBy(x => x.CreationDate)
-                    : queryable.OrderByDescending(x => x.CreationDate))
+                    ? queryable.OrderBy(x => x.CreatedAt)
+                    : queryable.OrderByDescending(x => x.CreatedAt))
                 .Skip(skip)
                 .Take(amount);
 
@@ -203,7 +203,7 @@ namespace Atheer.Services.ArticlesService
             {
                 var lightArticleViews = await _context.Article.AsNoTracking()
                     .Where(x => x.SeriesId == article.SeriesId)
-                    .OrderBy(x => x.CreationDate)
+                    .OrderBy(x => x.CreatedAt)
                     .Select(x => new LightArticleView
                     {
                         Title = x.Title,
@@ -350,33 +350,6 @@ namespace Atheer.Services.ArticlesService
         private string RandomiseExistingShrinkedTitle(ref string existingTitleShrinked)
         {
             return $"{existingTitleShrinked}-";
-        }
-
-        public async Task Update(ArticleEditViewModel articleEditViewModel)
-        {
-            var key = new ArticlePrimaryKey(articleEditViewModel.CreatedYear, articleEditViewModel.TitleShrinked);
-            
-            var article = await _context.Article.FirstOrDefaultAsync(x =>
-                x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked).ConfigureAwait(false);
-            string contentChecksumPreUpdate = ChecksumAlgorithm.ComputeMD5Checksum(article.Content);
-
-            _mapper.Map(articleEditViewModel, article);
-            _articleFactory.SetUpdated(article, articleEditViewModel.Unschedule);
-            
-            await EnsureRequestOfNarrationIfNarratable(article, contentChecksumPreUpdate).ConfigureAwait(false);
-
-            await using var transaction = await _context.Database.BeginTransactionAsync().ConfigureAwait(false);
-
-            try
-            {
-                await _context.SaveChangesAsync().ConfigureAwait(false);
-                await transaction.CommitAsync().ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-                throw new FailedOperationException();
-            }
         }
 
         public async Task Update(string userId, ArticlePrimaryKey key, UpdateArticleViewModel request)

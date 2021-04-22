@@ -19,12 +19,7 @@ namespace Atheer.Models
         public string Description { get; set; }
 
         public string Content { get; set; }
-
-        // This and update date, are seperate from the key above. These are for info only.
-        public string CreationDate { get; set; }
-
-        public string LastUpdatedDate { get; set; }
-
+        
         public bool Likeable { get; set; }
 
         public int Likes { get; set; }
@@ -40,8 +35,7 @@ namespace Atheer.Models
         public bool Unlisted { get; set; }
 
         public bool Scheduled { get; set; }
-        public string ScheduledSinceDate { get; set; }
-        
+
         [JsonIgnore]
         public IList<TagArticle> Tags { get; set; }
         
