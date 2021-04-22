@@ -4,6 +4,7 @@ using Atheer.Controllers.User.Models;
 using Atheer.Models;
 using Atheer.Services.OAuthService;
 using Atheer.Services.UsersService;
+using Atheer.Services.Utilities.TimeService;
 using Atheer.Utilities;
 using AutoMapper;
 using Xunit;
@@ -17,7 +18,7 @@ namespace AtheerTests.UnitTests.Factories
 
         public UserFactoryTesting()
         {
-            _factory = new UserFactory(_mapper);
+            _factory = new UserFactory(_mapper, new TimeService());
         }
 
         [Fact]

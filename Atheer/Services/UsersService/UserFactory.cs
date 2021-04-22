@@ -4,6 +4,7 @@ using Atheer.Controllers.User.Models;
 using Atheer.Extensions;
 using Atheer.Models;
 using Atheer.Services.OAuthService;
+using Atheer.Services.Utilities.TimeService;
 using AutoMapper;
 using Crypt = BCrypt.Net.BCrypt;
 
@@ -14,10 +15,12 @@ namespace Atheer.Services.UsersService
         private const int HashRounds = 11;
         
         private readonly IMapper _mapper;
+        private readonly ITimeService _timeService;
 
-        public UserFactory(IMapper mapper)
+        public UserFactory(IMapper mapper, ITimeService timeService)
         {
             _mapper = mapper;
+            _timeService = timeService;
         }
         
         public User Create(RegisterViewModel registerViewModel)
@@ -27,7 +30,7 @@ namespace Atheer.Services.UsersService
             user.Email = user.Email.ToLowerInvariant();
             user.Id = Id(user.Email);
 
-            user.CreatedAt = DateTime.UtcNow;
+            user.CreatedAt = _timeService.Get();
 
             user.PasswordHash = HashPassword(registerViewModel.Password);
 
@@ -43,7 +46,7 @@ namespace Atheer.Services.UsersService
             user.Id = oAuthUserInfo.OAuthUsername;
             user.Email = user.Email.ToLowerInvariant();
 
-            user.CreatedAt = DateTime.UtcNow;
+            user.CreatedAt = _timeService.Get();
             user.PasswordHash = string.Empty;
 
             user.Roles = DefaultRole();
@@ -56,7 +59,7 @@ namespace Atheer.Services.UsersService
 
         public User UpdateOAuthUser(OAuthUserInfo oAuthUserInfo, User existingUser)
         {
-            existingUser.LastLoggedInAt = DateTime.UtcNow;
+            existingUser.LastLoggedInAt = _timeService.Get();
          
             // HERE GOES ANYTHING YOU WANT TO PULL FROM OAUTH PROVIDER TO UPDATE USER DETAILS IF NEEDED
             
@@ -91,7 +94,7 @@ namespace Atheer.Services.UsersService
 
         public string AnotherId(string id, string oAuthProvider = null)
         {
-            return string.IsNullOrEmpty(oAuthProvider) ? $"{id}-{DateTime.UtcNow.Minute.ToString()}" : $"{oAuthProvider}-{id}";
+            return string.IsNullOrEmpty(oAuthProvider) ? $"{id}-{_timeService.Get().Minute.ToString()}" : $"{oAuthProvider}-{id}";
         }
 
         public void TakeRole(User user, string role)

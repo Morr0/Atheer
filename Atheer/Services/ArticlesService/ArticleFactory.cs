@@ -6,20 +6,24 @@ using Atheer.Controllers.ArticleEdit.Models;
 using Atheer.Extensions;
 using Atheer.Models;
 using Atheer.Services.ArticlesService.Models;
+using Atheer.Services.Utilities.TimeService;
 using AutoMapper;
 using Markdig;
 
+// TODO Fully use ITimeService
 namespace Atheer.Services.ArticlesService
 {
     public sealed class ArticleFactory
     {
         private readonly IMapper _mapper;
         private readonly MarkdownPipeline _markdownPipeline;
+        private readonly ITimeService _timeService;
 
-        public ArticleFactory(IMapper mapper, MarkdownPipeline markdownPipeline)
+        public ArticleFactory(IMapper mapper, MarkdownPipeline markdownPipeline, ITimeService timeService)
         {
             _mapper = mapper;
             _markdownPipeline = markdownPipeline;
+            _timeService = timeService;
         }
 
         public Article Create(ref ArticleEditViewModel articleViewModel, string userId)
@@ -48,7 +52,7 @@ namespace Atheer.Services.ArticlesService
 
             article.AuthorId = userId;
             
-            var currDate = DateTime.UtcNow;
+            var currDate = _timeService.Get();
             article.CreatedYear = currDate.Year;
             article.TitleShrinked = GetShrinkedTitle(request.Title);
             article.CreatedAt = currDate;
@@ -93,8 +97,7 @@ namespace Atheer.Services.ArticlesService
 
         public void SetUpdated(Article article)
         {
-            var now = DateTime.UtcNow;
-            article.UpdatedAt = now;
+            article.UpdatedAt = _timeService.Get();
         }
         //
         // public void Unschedule(Article article, DateTime now)
@@ -130,7 +133,7 @@ namespace Atheer.Services.ArticlesService
             {
                 Title = title,
                 Description = description,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = _timeService.Get(),
                 AuthorId = author
             };
         }

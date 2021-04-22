@@ -4,6 +4,7 @@ using Atheer.Controllers.ArticleEdit.Models;
 using Atheer.Extensions;
 using Atheer.Models;
 using Atheer.Services.ArticlesService;
+using Atheer.Services.Utilities.TimeService;
 using Atheer.Utilities;
 using Atheer.Utilities.Markdown;
 using AutoMapper;
@@ -26,7 +27,7 @@ namespace AtheerTests.UnitTests.Factories
         public ArticleFactoryTesting()
         {
             _factory = new ArticleFactory(_mapper, new MarkdownPipelineBuilder().UseAdvancedExtensions()
-                .UseBootstrap().Use<MarkdownExtension>().Build());
+                .UseBootstrap().Use<MarkdownExtension>().Build(), new TimeService());
         }
         
         [Fact]

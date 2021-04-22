@@ -1,11 +1,12 @@
 ﻿using Atheer.Services.TagService;
+using Atheer.Services.Utilities.TimeService;
 using Xunit;
 
 namespace AtheerTests.UnitTests.Factories
 {
     public class TagFactoryTesting
     {
-        private TagFactory _factory = new TagFactory();
+        private TagFactory _factory = new TagFactory(new TimeService());
         
         [Theory]
         [InlineData("This", "this")]

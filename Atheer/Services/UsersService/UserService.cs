@@ -8,6 +8,7 @@ using Atheer.Models;
 using Atheer.Repositories;
 using Atheer.Services.OAuthService;
 using Atheer.Services.UsersService.Exceptions;
+using Atheer.Services.Utilities.TimeService;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,13 +22,16 @@ namespace Atheer.Services.UsersService
         private readonly Data _context;
         private readonly ILogger<UserService> _logger;
         private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly ITimeService _timeService;
 
-        public UserService(UserFactory factory, Data data, ILogger<UserService> logger, IServiceScopeFactory serviceScopeFactory)
+        public UserService(UserFactory factory, Data data, ILogger<UserService> logger, IServiceScopeFactory serviceScopeFactory,
+            ITimeService timeService)
         {
             _factory = factory;
             _context = data;
             _logger = logger;
             _serviceScopeFactory = serviceScopeFactory;
+            _timeService = timeService;
         }
 
         public async Task<string> Add(RegisterViewModel registerViewModel)
@@ -133,7 +137,7 @@ namespace Atheer.Services.UsersService
         public async Task SetLogin(string id)
         {
             var user = await _context.User.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
-            user.LastLoggedInAt = DateTime.UtcNow;
+            user.LastLoggedInAt = _timeService.Get();
             
             _context.Entry(user).Property(x => x.LastLoggedInAt).IsModified = true;
             await _context.SaveChangesAsync().ConfigureAwait(false);
