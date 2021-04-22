@@ -33,8 +33,11 @@ namespace Atheer.Controllers.ArticleEdit
 
         [HttpGet("Add")]
         [Authorize(Roles = UserRoles.EditorRole)]
-        public async ValueTask<IActionResult> AddArticleView()
+        public async Task<IActionResult> AddArticleView()
         {
+            string userId = this.GetViewerUserId();
+
+            ViewBag.Series = await _articleService.GetSeriesFor(userId).CAF();
             return View("AddArticle");
         }
         

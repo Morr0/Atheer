@@ -4,6 +4,7 @@ using Atheer.Controllers.Article.Models;
 using Atheer.Controllers.Article.Requests;
 using Atheer.Controllers.ArticleEdit.Models;
 using Atheer.Models;
+using Atheer.Services.ArticlesService.Models;
 
 namespace Atheer.Services.ArticlesService
 {
@@ -27,5 +28,6 @@ namespace Atheer.Services.ArticlesService
         Task<IList<ArticleSeries>> GetSeries(string userId, ArticleSeriesType articleSeriesType);
         Task AddSeries(string author, AddArticleSeries request);
         Task FinishArticleSeries(string userId, int id);
+        Task<List<LightArticleSeries>> GetSeriesFor(string userId);
     }
 }

@@ -477,5 +477,17 @@ namespace Atheer.Services.ArticlesService
             _context.Update(series);
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }
+
+        public Task<List<LightArticleSeries>> GetSeriesFor(string userId)
+        {
+            return _context.ArticleSeries.AsNoTracking()
+                .Where(x => !x.Finished && x.AuthorId == userId)
+                .Select(x => new LightArticleSeries
+                {
+                    Id = x.Id,
+                    Title = x.Title
+                })
+                .ToListAsync();
+        }
     }
 }
