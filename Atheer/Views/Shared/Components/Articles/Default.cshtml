@@ -29,7 +29,7 @@
                     
                     @if (userId == article.AuthorId)
                     {
-                        <a asp-controller="ArticleEdit" asp-action="Index" asp-route-CreatedYear="@article.CreatedYear.ToString()"
+                        <a asp-controller="ArticleEdit" asp-action="UpdateArticleView" asp-route-CreatedYear="@article.CreatedYear.ToString()"
                            asp-route-TitleShrinked="@article.TitleShrinked">Edit</a>
                     }
                 </h5>
