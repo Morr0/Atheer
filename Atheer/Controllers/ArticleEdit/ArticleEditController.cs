@@ -2,6 +2,7 @@
 using Atheer.Controllers.ArticleEdit.Models;
 using Atheer.Extensions;
 using Atheer.Services.ArticlesService;
+using Atheer.Services.ArticlesService.Exceptions;
 using Atheer.Services.TagService;
 using Atheer.Services.UsersService;
 using AutoMapper;
@@ -54,10 +55,19 @@ namespace Atheer.Controllers.ArticleEdit
         public async Task<IActionResult> UpdateArticleView([FromRoute] ArticlePrimaryKey key)
         {
             string userId = this.GetViewerUserId();
-            bool authorizedFor = await AuthorizedFor(key, userId).CAF();
-            if (!authorizedFor) return Forbid();
+            try
+            {
+                bool authorizedFor = await AuthorizedFor(key, userId).CAF();
+                if (!authorizedFor) return Forbid();
+            }
+            catch (ArticleNotFoundException)
+            {
+                return NotFound();
+            }
 
             var articleVm = await _articleService.Get(key, userId).CAF();
+            if (articleVm is null) return NotFound();
+                
             var vm = _mapper.Map<UpdateArticleViewModel>(articleVm.Article);
             vm.TagsAsString = ITagService.TagsToString(articleVm.Tags);
 
@@ -72,12 +82,19 @@ namespace Atheer.Controllers.ArticleEdit
             if (!ModelState.IsValid) return View("UpdateArticle", viewModel);
             
             string userId = this.GetViewerUserId();
-            bool authorizedFor = await AuthorizedFor(key, userId).CAF();
-            if (!authorizedFor) return Forbid();
-
+            try
+            {
+                bool authorizedFor = await AuthorizedFor(key, userId).CAF();
+                if (!authorizedFor) return Forbid();
+            }
+            catch (ArticleNotFoundException)
+            {
+                return NotFound();
+            }
+            
             await _articleService.Update(userId, key, viewModel).CAF();
             await tagService.AddOrUpdateTagsPerArticle(key, viewModel.TagsAsString).CAF();
-            
+
             return RedirectToAction("UpdateArticleView", key);
         }
     }

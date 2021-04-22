@@ -7,6 +7,7 @@
 - Reconsider client side validation and do it with Bootstrap 5
 - Revamp the UI of series
 - Revamp the controllers for article/series
+- Add better NotFound and Forbidden Handling
 - Commenting system
 - 
 

@@ -12,6 +12,7 @@ using Atheer.Extensions;
 using Atheer.Models;
 using Atheer.Repositories;
 using Atheer.Repositories.Junctions;
+using Atheer.Services.ArticlesService.Exceptions;
 using Atheer.Services.ArticlesService.Models;
 using Atheer.Services.FileService;
 using Atheer.Services.QueueService;
@@ -422,7 +423,8 @@ namespace Atheer.Services.ArticlesService
             string articleAuthorId = await _context.Article.AsNoTracking()
                 .Where(x => x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked)
                 .Select(x => x.AuthorId)
-                .FirstOrDefaultAsync().ConfigureAwait(false);
+                .FirstOrDefaultAsync().CAF();
+            if (string.IsNullOrEmpty(articleAuthorId)) throw new ArticleNotFoundException(); 
 
             return articleAuthorId == userId;
         }
