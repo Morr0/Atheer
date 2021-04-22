@@ -1,9 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Atheer.Controllers.ArticleEdit.Models;
-using Atheer.Controllers.Authentication;
-using Atheer.Exceptions;
 using Atheer.Extensions;
 using Atheer.Services.ArticlesService;
 using Atheer.Services.TagService;
@@ -16,45 +12,22 @@ using Microsoft.Extensions.Logging;
 
 namespace Atheer.Controllers.ArticleEdit
 {
-    // Used for both editing/adding new articles
-    [Route("Article/Edit")]
+    [Route("Article")]
     public class ArticleEditController : Controller
     {
-        private ILogger<ArticleEditController> _logger;
         private IArticleService _articleService;
         private readonly IMapper _mapper;
-        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public ArticleEditController(ILogger<ArticleEditController> logger, IArticleService articleService
-        , IMapper mapper, IServiceScopeFactory serviceScopeFactory)
+        public ArticleEditController(IArticleService articleService, IMapper mapper)
         {
-            _logger = logger;
             _articleService = articleService;
             _mapper = mapper;
-            _serviceScopeFactory = serviceScopeFactory;
         }
 
         private async Task<bool> AuthorizedFor(ArticlePrimaryKey key, string viewerUserId)
         {
             return await _articleService.AuthorizedFor(key, viewerUserId).ConfigureAwait(false) || 
                    User.IsInRole(UserRoles.AdminRole);
-        }
-
-        private async Task ChangeAuthorIfChangedByAdmin(IUserService userService, ArticleEditViewModel articleViewModel,
-            ArticleEditChangeAuthorByAdmin changeAuthorByAdmin)
-        {
-            if (string.IsNullOrEmpty(articleViewModel.AuthorId) || !User.IsInRole(UserRoles.AdminRole)) return;
-            if (!changeAuthorByAdmin.IsValid()) return;
-            if (articleViewModel.AuthorId == changeAuthorByAdmin.NewAuthorId) return;
-
-            if (await userService.Exists(changeAuthorByAdmin.NewAuthorId).ConfigureAwait(false))
-            {
-                articleViewModel.AuthorId = changeAuthorByAdmin.NewAuthorId;
-            }
-            else
-            {
-                TempData["Err"] = "Author id was not updated due to selected user non-existent";
-            }
         }
 
         [HttpGet("Add")]
@@ -88,6 +61,7 @@ namespace Atheer.Controllers.ArticleEdit
             var vm = _mapper.Map<UpdateArticleViewModel>(articleVm.Article);
             vm.TagsAsString = ITagService.TagsToString(articleVm.Tags);
 
+            ViewBag.Key = key;
             return View("UpdateArticle", vm);
         }
 
@@ -103,7 +77,7 @@ namespace Atheer.Controllers.ArticleEdit
 
             await _articleService.Update(userId, key, viewModel).CAF();
             await tagService.AddOrUpdateTagsPerArticle(key, viewModel.TagsAsString).CAF();
-
+            
             return RedirectToAction("UpdateArticleView", key);
         }
     }

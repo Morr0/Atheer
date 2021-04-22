@@ -1,8 +1,15 @@
-﻿@model Atheer.Controllers.ArticleEdit.Models.UpdateArticleViewModel
+﻿@using Atheer.Services.ArticlesService
+@model Atheer.Controllers.ArticleEdit.Models.UpdateArticleViewModel
 
 @{
     ViewData["Title"] = "Update Article";
+
+    var key = ViewBag.Key as ArticlePrimaryKey;
 }
+
+<a class="card-link" asp-controller="Article" asp-action="Index" asp-route-CreatedYear="@key.CreatedYear.ToString()" 
+ asp-route-TitleShrinked="@key.TitleShrinked">Visit article page
+</a>
 
 <div asp-validation-summary="All" class="text-danger"></div>
 
