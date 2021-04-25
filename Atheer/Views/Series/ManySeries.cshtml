@@ -17,7 +17,7 @@
 }
 
 <h3 class="text-dark">Article Series</h3>
-<form method="get" asp-controller="Article" asp-action="Index" id="showSeriesTypeForm">
+<form method="get" asp-controller="Series" asp-action="Index" id="showSeriesTypeForm">
     <select class="form-select-sm" id="showSeriesTypeSelect" name="SeriesType" asp-items="items">
         <option>@ViewData["SeriesType"]</option>
     </select>
@@ -47,3 +47,11 @@
         </li>
     }
 </ul>
+
+@section Scripts
+{
+    <script>
+    document.getElementById("showSeriesTypeSelect")
+        .addEventListener("change", () => document.getElementById("showSeriesTypeForm").submit());
+    </script>
+}
