@@ -1,0 +1,27 @@
+﻿@using Atheer.Extensions
+@model Atheer.Controllers.Series.ViewModels.SingleSeriesViewModel
+
+@{
+    ViewData["Title"] = Model.Series.Title;
+}
+
+@section Button1
+{
+    <a class="nav-link text-dark" asp-controller="Series" asp-action="AddSeriesView">Add Series</a>
+}
+
+<div class="container">
+    <div class="card-header">
+        <h2 class="text-dark">@Model.Series.Title</h2>
+        <div class="card-subtitle">
+            @if (Model.Series.Finished)
+            {
+                <span class="text-danger">Finished</span>
+            }
+        </div>
+        <h6 class="card-subtitle">@await Component.InvokeAsync("LocalDate", Model.Series.CreatedAt.GetString()).CAF()</h6>
+    </div>
+    <div class="card-body">
+        @Model.Series.Description
+    </div>
+</div>

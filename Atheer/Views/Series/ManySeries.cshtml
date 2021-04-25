@@ -28,7 +28,11 @@
     {
         <li class="list-group-item">
             <span class="text-danger">Id: @series.Id.ToString()</span>
-            <h4 class="text-dark">Title: @series.Title</h4>
+            <h4 class="text-dark">
+                <a asp-controller="Series" asp-action="SingleSeriesView" asp-route-seriesId="@series.Id.ToString()" class="text-dark">
+                    @series.Title
+                </a>
+            </h4>
             <p class="text-body">@series.Description</p>
             @if (series.Finished)
             {

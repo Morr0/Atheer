@@ -62,5 +62,15 @@ namespace Atheer.Controllers.Series
 
             return RedirectToAction("Index");
         }
+
+        [HttpGet("{seriesId:int}")]
+        public async Task<IActionResult> SingleSeriesView([FromRoute] int seriesId)
+        {
+            var series = await _articleService.GetSeries(seriesId).CAF();
+            return View("SingleSeries", new SingleSeriesViewModel
+            {
+                Series = series
+            });
+        }
     }
 }
