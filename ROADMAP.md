@@ -1,7 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Reconsider client side validation and do it with Bootstrap 5
 - Revamp the UI of series
 - Revamp the controllers for article/series
 - Add better NotFound and Forbidden Handling
@@ -16,7 +15,8 @@
 ### List of things if have time:
 - Extract all string constants referenced both in razor and C# into their respective classes
 - Limit size of image uploaded to acceptable size and dimensions
-- 
+- Reconsider client side validation and do it with Bootstrap 5
+-
 
 ### List of longer term goals (not in order):
 

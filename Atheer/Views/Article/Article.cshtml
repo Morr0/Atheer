@@ -1,8 +1,6 @@
 ﻿@using Markdig
-@using Atheer.ViewComponents
-@using Atheer.Controllers
 @using Atheer.Controllers.Authentication
-@using Atheer.Extensions
+@using Atheer.Services.ArticlesService.Models
 @inject MarkdownPipeline MarkdownPipeline
 @model Atheer.Controllers.Article.Models.ArticleViewModel
 @{
@@ -14,13 +12,21 @@
     
     string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
     bool isAuthor = viewerUserId == Model.Article.AuthorId;
-    
-    // string scheduledSince = DateTimeExtensions.GetDateOnly(@Model.Article.ScheduledSinceDate);
-    // bool scheduled = isAuthor && article.Scheduled && !string.IsNullOrEmpty(scheduledSince);
 
     bool narrated = Model.Article.Narratable && !string.IsNullOrEmpty(Model.Article.NarrationMp3Url);
     
-    bool isPartOfSeries = (Model.SeriesArticles is not null) && (Model.SeriesArticles.SeriesId is not null);
+    bool isPartOfSeries = Model.SeriesArticles?.SeriesId is not null;
+    int? seriesPosInList = Model.SeriesArticles?.Articles.FindIndex(x => x.CreatedYear == Model.Article.CreatedYear 
+                                                                         && x.TitleShrinked == Model.Article.TitleShrinked);
+    LightArticleView prevArticleInSeries = null, nextArticleInSeries = null;
+    if ((seriesPosInList + 1) < Model.SeriesArticles?.Articles.Count)
+    {
+        nextArticleInSeries = Model.SeriesArticles.Articles[seriesPosInList.Value + 1];
+    }
+    if (isPartOfSeries && seriesPosInList > 0)
+    {
+        prevArticleInSeries = Model.SeriesArticles.Articles[seriesPosInList.Value - 1];
+    }
 }
 
 @section Head
@@ -53,10 +59,6 @@
             By <a asp-controller="User" asp-action="UserView" asp-route-userId="@Model.Article.AuthorId" class="card-link">
                 @Model.AuthorFullName
             </a>
-            @* @if (!scheduled) *@
-            @* { *@
-            @*     <span>since @await Component.InvokeAsync("LocalDate", article.CreatedAt)</span> *@
-            @* } *@
         </span>
 
         @if (article.Draft)
@@ -67,11 +69,7 @@
         {
             <span class="text-info">Unlisted</span>
         }
-        @* @if (scheduled) *@
-        @* { *@
-        @*     <span class="text-info">Scheduled since @scheduledSince for @await Component.InvokeAsync("LocalDate", article.CreatedAt)</span> *@
-        @* } *@
-        
+
         <p class="card-text">@article.Description</p>
         
         @if (narrated)
@@ -98,15 +96,15 @@
                             else
                             {
                                 <a asp-controller="Article" asp-action="Index"
-                                   asp-route-CreatedYear="@seriesArticle.CreatedYear" asp-route-TitleShrinked="@seriesArticle.TitleShrinked">
+                                   asp-route-CreatedYear="@seriesArticle.CreatedYear.ToString()" asp-route-TitleShrinked="@seriesArticle.TitleShrinked">
                                     @seriesArticle.Title
                                 </a>
                             }
                         </li>
                     }
-                    </ul>
-                </div>
-                <br>
+                </ul>
+            </div>
+            <br>
             }
         <div class="text-dark" hidden id="tocOuter">
             <h3>Table of Contents</h3>
@@ -115,6 +113,32 @@
         </div>
         <div class="h-di"></div>
         <span id="articleContent">@Html.Raw(content)</span>
+        <div class="h-di"></div>
+        @if (isPartOfSeries)
+        {
+            <div class="row">
+                <div class="col-6 text-start">
+                    @if (prevArticleInSeries is not null)
+                    {
+                        <b class="text-dark">Previous: </b>
+                        <a class="link-dark text-decoration-underline" asp-controller="Article" asp-action="Index" 
+                           asp-route-CreatedYear="@prevArticleInSeries.CreatedYear.ToString()" asp-route-TitleShrinked="@prevArticleInSeries.TitleShrinked">
+                            @prevArticleInSeries.Title
+                        </a>
+                    }
+                </div>
+                <div class="col-6 text-end">
+                    @if (nextArticleInSeries is not null)
+                    {
+                        <b class="text-dark">Next: </b>
+                        <a class="link-dark text-decoration-underline" asp-controller="Article" asp-action="Index"
+                           asp-route-CreatedYear="@nextArticleInSeries.CreatedYear.ToString()" asp-route-TitleShrinked="@nextArticleInSeries.TitleShrinked">
+                            @nextArticleInSeries.Title
+                        </a>
+                    }
+                </div>
+            </div>
+        }
     </div>
     <div class="card-footer">
         @if (article.Likeable)

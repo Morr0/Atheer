@@ -6,6 +6,6 @@ namespace Atheer.Services.ArticlesService.Models
     {
         public int? SeriesId { get; set; }
         public string SeriesTitle { get; set; }
-        public ICollection<LightArticleView> Articles { get; set; }
+        public List<LightArticleView> Articles { get; set; }
     }
 }
