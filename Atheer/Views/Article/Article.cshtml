@@ -1,5 +1,6 @@
 ﻿@using Markdig
 @using Atheer.Controllers.Authentication
+@using Atheer.Extensions
 @using Atheer.Services.ArticlesService.Models
 @inject MarkdownPipeline MarkdownPipeline
 @model Atheer.Controllers.Article.Models.ArticleViewModel
@@ -76,6 +77,8 @@
         {
             <a href="@Model.Article.NarrationMp3Url" target="_blank" class="link-info">Click here to listen to article</a>
         }
+        
+        <h6 class="card-subtitle">@await Component.InvokeAsync("LocalDate", article.CreatedAt.GetString()).CAF()</h6>
         
         <div class="text-info" id="wpm" title="According to the average words per minute read of 240 words"></div>
     </div>
