@@ -80,11 +80,11 @@ namespace Atheer.Services.ArticlesService
 
             queryable = string.IsNullOrEmpty(viewerUserId)
                 // Public viewing all articles
-                ? queryable.Where(x => x.Unlisted == false && x.Draft == false && x.Scheduled == false)
+                ? queryable.Where(x => x.Unlisted == false && x.Draft == false)
                 // Registered user viewing all articles
                 : queryable.Where(x =>
                     (x.AuthorId == viewerUserId) ||
-                    (x.AuthorId != viewerUserId && x.Unlisted == false && x.Draft == false && x.Scheduled == false));
+                    (x.AuthorId != viewerUserId && x.Unlisted == false && x.Draft == false));
 
             // Viewing specific user's articles
             if (!string.IsNullOrEmpty(specificUserId))
@@ -177,9 +177,7 @@ namespace Atheer.Services.ArticlesService
             
             if (article is null) return null;
             if (article.Draft && article.AuthorId != viewerUserId) return null;
-
-            if (article.Scheduled && article.AuthorId != viewerUserId) return null;
-
+            
             // Get author full name
             var author = await _context.User.AsNoTracking()
                 .Select(x => new

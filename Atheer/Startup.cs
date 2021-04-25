@@ -105,7 +105,6 @@ namespace Atheer
 
             services.AddSingleton<Channel<ArticleNarrationRequest>>(x => Channel.CreateUnbounded<ArticleNarrationRequest>());
             // Background services
-            services.AddHostedService<ScheduledArticlesReleaserBackgroundService>();
             services.AddHostedService<ArticleNarrationRequesterBackgroundService>();
 
         }
