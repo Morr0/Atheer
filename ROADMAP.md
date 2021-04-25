@@ -1,26 +1,27 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Correct scheduled articles releaser to get articles older than today in a transaction
 - Reconsider client side validation and do it with Bootstrap 5
 - Revamp the UI of series
 - Revamp the controllers for article/series
 - Add better NotFound and Forbidden Handling
+- Add indexes for commonly searched columns and remove current article scheduling code and column/s
 - Series view
+- Complete the JSON feed to full specs
+- Sort by most recent/oldest (done the backend just do the UI)
+- Logo
 - Commenting system
 - 
 
 ### List of things if have time:
 - Extract all string constants referenced both in razor and C# into their respective classes
-- Limit size of image uploaded to 4MB
-- Complete the JSON feed to full specs
-- Sort by most recent/oldest (done the backend just do the UI)
-- Logo
+- Limit size of image uploaded to acceptable size and dimensions
 - 
 
 ### List of longer term goals (not in order):
 
 #### Analytics dashboard for admin
+#### Article scheduler (rethink system)
 #### Improved text editor includes:
     - live preview
     - add images on the fly and automatically taken care of to S3
