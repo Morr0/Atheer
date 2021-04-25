@@ -1,11 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
-using Atheer.Controllers.Article.Queries;
-using Atheer.Controllers.Article.Requests;
+﻿using System.Threading.Tasks;
 using Atheer.Extensions;
 using Atheer.Services.ArticlesService;
-using Atheer.Services.UsersService;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 

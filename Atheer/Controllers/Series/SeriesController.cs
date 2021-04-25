@@ -36,20 +36,19 @@ namespace Atheer.Controllers.Series
                 Series = series
             });
         }
+
+        [HttpGet("Add")]
+        public IActionResult AddSeriesView()
+        {
+            return View("AddSeries");
+        }
         
-        [HttpPost("")]
+        [HttpPost("Add")]
         public async Task<IActionResult> AddSeries([FromForm] AddSeriesRequest request)
         {
-            string viewerUserId = this.GetViewerUserId();
-            if (!ModelState.IsValid)
-            {
-                var series = await _articleService.GetSeries(viewerUserId, ArticleSeriesType.All).CAF();
-                return View("ManySeries", new ManySeriesViewModel
-                {
-                    Series = series
-                });
-            }
+            if (!ModelState.IsValid) return View("AddSeries", request);
 
+            string viewerUserId = this.GetViewerUserId();
             await _articleService.AddSeries(viewerUserId, request).CAF();
 
             return RedirectToAction("Index");

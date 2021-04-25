@@ -1,0 +1,15 @@
+﻿@model Atheer.Controllers.Series.Requests.AddSeriesRequest
+
+<div class="text-danger" asp-validation-summary="All"></div>
+
+<form asp-controller="Series" asp-action="AddSeries" method="post">
+    <div class="form-group">
+        <label asp-for="Title">Title: </label>
+        <input type="text" asp-for="Title" class="form-control" required/>
+        <label asp-for="Description">Description: </label>
+        <textarea class="form-control" asp-for="Description" required></textarea>
+        
+        <button type="submit" class="btn btn-primary">Add</button>
+        <button type="button" id="closeButton" class="btn btn-secondary">Close</button>
+    </div>
+</form>
