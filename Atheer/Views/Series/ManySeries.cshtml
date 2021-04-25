@@ -1,5 +1,4 @@
-﻿@using Atheer.Controllers.Article
-@model IList<ArticleSeries>
+﻿@model Atheer.Controllers.Series.ViewModels.ManySeriesViewModel
 
 @{
     ViewData["Title"] = "Series";
@@ -17,7 +16,7 @@
 <div class="text-danger" asp-validation-summary="All"></div>
 
 <button class="btn btn-outline-primary" id="addButton" type="button">Add</button>
-<form asp-controller="Article" asp-action="AddSeries" method="post" hidden id="form">
+<form asp-controller="Series" asp-action="AddSeries" method="post" hidden id="form">
     <div class="form-group">
         <label for="Title">Title: </label>
         <input type="text" name="Title" class="form-control" required/>
@@ -28,14 +27,14 @@
     </div>
 </form>
 
-<form method="get" asp-controller="Article" asp-action="SeriesView" id="showSeriesTypeForm">
+<form method="get" asp-controller="Article" asp-action="Index" id="showSeriesTypeForm">
     <select class="form-select-sm" id="showSeriesTypeSelect" name="SeriesType" asp-items="items">
         <option>@ViewData["SeriesType"]</option>
     </select>
 </form>
 
 <ul class="list-group">
-    @foreach (var series in Model)
+    @foreach (var series in Model.Series)
     {
         <li class="list-group-item">
             <span class="text-danger">Id: @series.Id.ToString()</span>
@@ -47,7 +46,7 @@
             }
             else
             {
-                <form method="post" asp-controller="Article" asp-action="FinishSeries" asp-route-id="@series.Id.ToString()">
+                <form method="post" asp-controller="Series" asp-action="FinishSeries" asp-route-id="@series.Id.ToString()">
                     <button type="submit" class="btn btn-outline-danger">Finish</button>
                 </form>
             }

@@ -1,7 +1,10 @@
-﻿@model Atheer.Services.ArticlesService.ArticlesResponse
+﻿@using Atheer.Services.UsersService
+@model Atheer.Services.ArticlesService.ArticlesResponse
 
 @{
     ViewData["Title"] = "Articles";
+    
+    bool authenticated = User.Identity?.IsAuthenticated == true;
 
     string oldestOrLatestArticlesString = Model.OldestArticles ? "Oldest" : "Latest";
 }
@@ -9,6 +12,14 @@
 @if (TempData.ContainsKey("Error"))
 {
     <h5 class="text-danger">@TempData["Error"]</h5>
+}
+
+@if (User.IsInRole(UserRoles.EditorRole))
+{
+    @section Button1
+    {
+        <a class="nav-link text-dark" asp-controller="ArticleEdit" asp-action="AddArticleView">Write Article</a>
+    }
 }
 
 <h5 class="text-dark">

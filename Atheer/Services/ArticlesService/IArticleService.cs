@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Atheer.Controllers.Article.Models;
 using Atheer.Controllers.Article.Requests;
 using Atheer.Controllers.ArticleEdit.Models;
+using Atheer.Controllers.Series.Requests;
 using Atheer.Models;
 using Atheer.Services.ArticlesService.Models;
 
@@ -26,7 +27,7 @@ namespace Atheer.Services.ArticlesService
         Task<bool> AuthorizedFor(ArticlePrimaryKey key, string userId);
         Task CompletedNarration(ArticlePrimaryKey key, string cdnUrl);
         Task<IList<ArticleSeries>> GetSeries(string userId, ArticleSeriesType articleSeriesType);
-        Task AddSeries(string author, AddArticleSeries request);
+        Task AddSeries(string author, AddSeriesRequest request);
         Task FinishArticleSeries(string userId, int id);
         Task<List<LightArticleSeries>> GetSeriesFor(string userId);
         Task<ArticleSeries> GetSeries(int? id);

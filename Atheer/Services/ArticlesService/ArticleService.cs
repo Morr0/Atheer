@@ -7,6 +7,7 @@ using Atheer.Controllers.Article.Models;
 using Atheer.Controllers.Article.Requests;
 using Atheer.Controllers.ArticleEdit.Models;
 using Atheer.Controllers.Articles.Models;
+using Atheer.Controllers.Series.Requests;
 using Atheer.Exceptions;
 using Atheer.Extensions;
 using Atheer.Models;
@@ -430,7 +431,7 @@ namespace Atheer.Services.ArticlesService
             return await queryable.ToListAsync().ConfigureAwait(false);
         }
 
-        public async Task AddSeries(string authorId, AddArticleSeries request)
+        public async Task AddSeries(string authorId, AddSeriesRequest request)
         {
             var series = _articleFactory.CreateSeries(authorId, request.Title, request.Description);
 

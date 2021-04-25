@@ -32,43 +32,5 @@ namespace Atheer.Controllers.Article
             
             return View("Article", article);
         }
-
-        [HttpGet("Article/Series")]
-        public async Task<IActionResult> SeriesView([FromQuery] ArticleSeriesQuery query)
-        {
-            Enum.TryParse(query.SeriesType, true, out ArticleSeriesType seriesType);
-            ViewData["SeriesType"] = seriesType.ToString();
-
-            string viewerUserId = this.GetViewerUserId();
-            var series = await _service.GetSeries(viewerUserId, seriesType).ConfigureAwait(false);
-            
-            return View("Series", series);
-        }
-
-        [Authorize(Roles = UserRoles.EditorRole)]
-        [HttpPost("Article/Series")]
-        public async Task<IActionResult> AddSeries([FromForm] AddArticleSeries request)
-        {
-            string viewerUserId = this.GetViewerUserId();
-            if (!ModelState.IsValid)
-            {
-                var series = await _service.GetSeries(viewerUserId, ArticleSeriesType.All).ConfigureAwait(false);
-                return View("Series", series);
-            }
-
-            await _service.AddSeries(viewerUserId, request).ConfigureAwait(false);
-
-            return RedirectToAction("SeriesView");
-        }
-
-        [Authorize(Roles = UserRoles.EditorRole)]
-        [HttpPost("Article/Series/Finish/{id:int}")]
-        public async Task<IActionResult> FinishSeries([FromRoute] int id)
-        {
-            string viewerUserId = this.GetViewerUserId();
-            await _service.FinishArticleSeries(viewerUserId, id).ConfigureAwait(false);
-
-            return RedirectToAction("SeriesView");
-        }
     }
 }

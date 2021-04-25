@@ -3,6 +3,7 @@
 @using Microsoft.Extensions.Options
 @using Atheer.Controllers
 @using Atheer.Controllers.Authentication
+@using Atheer.Extensions
 @using Atheer.Services.NavItemsService
 @using Atheer.Services.UsersService
 @inject IOptionsSnapshot<Site> Site
@@ -53,6 +54,10 @@
                     </form>
                     
                     <ul class="navbar-nav flex-grow-0 ms-auto">
+                        <li class="nav-item">
+                            @await RenderSectionAsync("Button1", false).CAF()
+                        </li>
+                        
                         @if (!authenticated)
                         {
                             foreach (var navItem in navItems)
@@ -73,23 +78,6 @@
                         }
                         @if (authenticated)
                         {
-                            @if (User.IsInRole(UserRoles.EditorRole))
-                            {
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle text-dark" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
-                                        Create
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li class="nav-item">
-                                            <a class="nav-link text-dark" asp-controller="ArticleEdit" asp-action="AddArticleView">Write Article</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link text-dark" asp-controller="Article" asp-action="SeriesView">Create Series</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            }
-
                             @if (User.IsInRole(UserRoles.AdminRole))
                             {
                                 <li class="nav-item">
@@ -114,11 +102,26 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+<div class="container">
+    @if (authenticated)
+    {
+        <ul class="list-group list-group-horizontal">
+            <li class="list-group-item">
+                <a asp-controller="Articles" asp-action="Index">Articles</a>
+            </li>
+            @if (User.IsInRole(UserRoles.EditorRole))
+            {
+                <li class="list-group-item">
+                    <a asp-controller="Series" asp-action="Index">Series</a>
+                </li>
+            }
+        </ul>    
+    }
+    
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+</div>
 
     <footer class="border-top footer text-muted">
         <div class="container">
