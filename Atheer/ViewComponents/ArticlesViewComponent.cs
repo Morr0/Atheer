@@ -1,12 +1,11 @@
-﻿using System.Threading.Tasks;
-using Atheer.Services.ArticlesService;
+﻿using Atheer.Services.ArticlesService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Atheer.ViewComponents
 {
     public class ArticlesViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(ArticlesResponse model)
+        public IViewComponentResult Invoke(ArticlesResponse model)
         {
             return View("Default", model);
         }
