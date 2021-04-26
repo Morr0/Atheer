@@ -60,7 +60,7 @@
         @if (Model.AnyPrevious)
         {
             <li class="page-item"><a class="page-link" asp-controller="Articles" asp-action="Index" 
-                                     asp-route-userId="@Model.UserId" asp-route-page="@prevPage">
+                                     asp-route-userId="@Model.UserId" asp-route-page="@prevPage.ToString()">
                 Previous
             </a></li>
         }
@@ -71,7 +71,7 @@
         @if (Model.AnyNext)
         {
             <li class="page-item"><a class="page-link" asp-controller="Articles" asp-action="Index" 
-                                     asp-route-userId="@Model.UserId" asp-route-page="@nextPage">
+                                     asp-route-userId="@Model.UserId" asp-route-page="@nextPage.ToString()">
                 Next
             </a></li>
         }

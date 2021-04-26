@@ -165,7 +165,7 @@ namespace Atheer.Services.ArticlesService
 
         private static async Task<bool> HasAnyMoreArticles<T>(int amount, List<T> list, IQueryable<Article> queryable, int skip)
         {
-            return list.Count >= amount && await queryable.Skip(skip).AnyAsync().ConfigureAwait(false);
+            return list.Count == amount && await queryable.AnyAsync().CAF();
         }
 
         public async Task<bool> Exists(ArticlePrimaryKey key, string userId = null)
