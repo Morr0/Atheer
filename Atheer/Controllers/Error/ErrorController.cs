@@ -19,8 +19,7 @@ namespace Atheer.Controllers.Error
         [HttpGet("/NotFound")]
         public IActionResult NotFoundHandler()
         {
-            TempData["Error"] = "The page you asked for does not exist.";
-            return Redirect("/");
+            return View("NotFound");
         }
     }
 }

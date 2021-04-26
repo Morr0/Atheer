@@ -1,7 +1,7 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Add better NotFound and Forbidden Handling
+- Add better Forbidden Handling
 - Add indexes for commonly searched columns and remove current article scheduling code and column/s
 - Complete the JSON feed to full specs
 - Sort by most recent/oldest (done the backend just do the UI)

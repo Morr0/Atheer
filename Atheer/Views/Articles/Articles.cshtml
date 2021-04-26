@@ -9,11 +9,6 @@
     string oldestOrLatestArticlesString = Model.OldestArticles ? "Oldest" : "Latest";
 }
 
-@if (TempData.ContainsKey("Error"))
-{
-    <h5 class="text-danger">@TempData["Error"]</h5>
-}
-
 @if (User.IsInRole(UserRoles.EditorRole))
 {
     @section Button1
