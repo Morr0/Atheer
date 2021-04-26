@@ -1,13 +1,14 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Add better Forbidden Handling
-- Add indexes for commonly searched columns and remove current article scheduling code and column/s
 - Complete the JSON feed to full specs
 - Sort by most recent/oldest (done the backend just do the UI)
 - Logo
 - Allow admin to forcefully unlist an article
+- Hook up logging
+- Hook up logging with NotFound and Forbidden endpoints 
 - Commenting system
+- Rate limiting system on authentication endpoints and locking (let client cache results)
 - 
 
 ### List of things if have time:

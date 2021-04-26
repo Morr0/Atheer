@@ -10,10 +10,7 @@ namespace Atheer.Models
         public string Description { get; set; }
         public bool Finished { get; set; }
         public string AuthorId { get; set; }
-
         public IList<Article> Articles { get; set; }
-        public int ArticlesCount { get; set; }
-
         public DateTime CreatedAt { get; set; }
     }
 }

@@ -11,31 +11,17 @@ namespace Atheer.Models
     {
         public int CreatedYear { get; set; }
         public string TitleShrinked { get; set; }
-
         public string AuthorId { get; set; }
-
         public string Title { get; set; }
-
         public string Description { get; set; }
-
         public string Content { get; set; }
-        
         public bool Likeable { get; set; }
-
         public int Likes { get; set; }
-
         public bool Shareable { get; set; }
-        
         public int Shares { get; set; }
-
-        // The article is not done
         public bool Draft { get; set; }
-
-        // Not to be listed however can be accessed
         public bool Unlisted { get; set; }
-
-        public bool Scheduled { get; set; }
-
+        public bool ForceFullyUnlisted { get; set; }
         [JsonIgnore]
         public IList<TagArticle> Tags { get; set; }
         
@@ -45,10 +31,8 @@ namespace Atheer.Models
 
         public int? SeriesId { get; set; }
         public ArticleSeries Series { get; set; }
-
         public bool Narratable { get; set; }
         public string NarrationMp3Url { get; set; }
-
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }

@@ -8,22 +8,15 @@ namespace Atheer.Models
         public string Id { get; set; }
         public string Name { get; set; }
         public string Bio { get; set; }
-
         public string Email { get; set; }
-        
         public string PasswordHash { get; set; }
-
         // Separated by comma
         public string Roles { get; set; }
-
         public string ImageUrl { get; set; }
-
         public bool OAuthUser { get; set; }
         public string OAuthProvider { get; set; }
-
         // <OAuthProvider>-<Id>
         public string OAuthLogicalId { get; set; }
-
         public DateTime CreatedAt { get; set; }
         public DateTime? LastLoggedInAt { get; set; }
     }

@@ -16,11 +16,6 @@ namespace Atheer.Repositories
                     x.TitleShrinked
                 });
 
-            // Indexes
-            modelBuilder.Entity<Article>()
-                .HasIndex(x => x.Scheduled)
-                .HasFilter($"\"{nameof(Atheer.Models.Article.Scheduled)}\" IS TRUE");
-            
             // Properties
             // - Booleans
             modelBuilder.Entity<Article>()
@@ -35,10 +30,7 @@ namespace Atheer.Repositories
             modelBuilder.Entity<Article>()
                 .Property(x => x.Draft)
                 .HasDefaultValue(false);
-            modelBuilder.Entity<Article>()
-                .Property(x => x.Scheduled)
-                .HasDefaultValue(false);
-            
+
             // - Strings
             modelBuilder.Entity<Article>()
                 .Property(x => x.Content)
@@ -94,8 +86,6 @@ namespace Atheer.Repositories
 
                 o.HasIndex(x => x.Finished)
                     .HasFilter($"\"{nameof(Atheer.Models.ArticleSeries.Finished)}\" IS FALSE");
-
-                o.Ignore(x => x.ArticlesCount);
             });
         }
     }
