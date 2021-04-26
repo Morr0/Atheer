@@ -16,6 +16,7 @@ using Atheer.Services.TagService;
 using Atheer.Services.UsersService;
 using Atheer.Services.UserSessionsService;
 using Atheer.Services.Utilities.TimeService;
+using Atheer.Utilities;
 using Atheer.Utilities.Config.Models;
 using Atheer.Utilities.Markdown;
 using AutoMapper;
@@ -49,7 +50,10 @@ namespace Atheer
             services.Configure<GithubOAuth>(Configuration.GetSection("GithubOAuth"));
             services.Configure<SQS>(Configuration.GetSection("SQS"));
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews(opts =>
+            {
+                opts.ReturnHttpNotAcceptable = true;
+            });
             services.AddHttpClient();
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
@@ -60,7 +64,7 @@ namespace Atheer
             services.AddSingleton<ITimeService, TimeService>();
             
             services.AddSingleton<MarkdownPipeline>(
-                provider => new MarkdownPipelineBuilder().UseAdvancedExtensions().UseBootstrap().Use<MarkdownExtension>().Build());
+                provider => Singletons.MarkdownPipeline);
 
             // Repositories
             services.AddDbContext<Data>(opts =>

@@ -17,10 +17,10 @@
     bool narrated = Model.Article.Narratable && !string.IsNullOrEmpty(Model.Article.NarrationMp3Url);
     
     bool isPartOfSeries = Model.SeriesArticles?.SeriesId is not null;
-    int? seriesPosInList = Model.SeriesArticles?.Articles.FindIndex(x => x.CreatedYear == Model.Article.CreatedYear 
+    int? seriesPosInList = Model.SeriesArticles?.Articles?.FindIndex(x => x.CreatedYear == Model.Article.CreatedYear 
                                                                          && x.TitleShrinked == Model.Article.TitleShrinked);
     LightArticleView prevArticleInSeries = null, nextArticleInSeries = null;
-    if ((seriesPosInList + 1) < Model.SeriesArticles?.Articles.Count)
+    if ((seriesPosInList + 1) < Model.SeriesArticles?.Articles?.Count)
     {
         nextArticleInSeries = Model.SeriesArticles.Articles[seriesPosInList.Value + 1];
     }

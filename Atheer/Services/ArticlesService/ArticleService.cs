@@ -120,6 +120,24 @@ namespace Atheer.Services.ArticlesService
             };
         }
 
+        public async Task<JsonFeedArticleResponse> Get(int amount, int page)
+        {
+            int skip = amount * page;
+            var queryable = _context.Article.AsNoTracking()
+                .Where(x => x.Unlisted == false && x.Draft == false)
+                .OrderByDescending(x => x.CreatedAt)
+                .Skip(skip)
+                .Take(amount);
+            var articles = await queryable.ToListAsync().CAF();
+            bool hasNext = await HasAnyMoreArticles(amount, articles, queryable, skip);
+
+            return new JsonFeedArticleResponse
+            {
+                Articles = articles,
+                AnyNext = hasNext
+            };
+        }
+        
         private async Task<string> GetTagTitle(string tagId)
         {
             return await _context.Tag.Where(x => x.Id == tagId)
@@ -145,7 +163,7 @@ namespace Atheer.Services.ArticlesService
                 select a;
         }
 
-        private static async Task<bool> HasAnyMoreArticles(int amount, List<StrippedArticleViewModel> list, IQueryable<Article> queryable, int skip)
+        private static async Task<bool> HasAnyMoreArticles<T>(int amount, List<T> list, IQueryable<Article> queryable, int skip)
         {
             return list.Count >= amount && await queryable.Skip(skip).AnyAsync().ConfigureAwait(false);
         }

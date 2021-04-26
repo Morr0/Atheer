@@ -35,5 +35,7 @@ namespace Atheer.Models
         public string NarrationMp3Url { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+
+        public string GetId() => $"{CreatedYear.ToString()}-{TitleShrinked}";
     }
 }

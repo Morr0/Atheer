@@ -1,7 +1,7 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Complete the JSON feed to full specs
+- Handle HTTP 406  
 - Sort by most recent/oldest (done the backend just do the UI)
 - Logo
 - Allow admin to forcefully unlist an article

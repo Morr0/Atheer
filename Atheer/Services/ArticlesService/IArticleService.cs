@@ -15,7 +15,8 @@ namespace Atheer.Services.ArticlesService
         Task<ArticlesResponse> Get(int amount, string searchQuery);
         Task<ArticlesResponse> Get(int amount, int page, int createdYear = 0, string tagId = null,
             string viewerUserId = null, string specificUserId = null, bool oldest = false);
-        
+        Task<JsonFeedArticleResponse> Get(int amount, int page);
+
         Task Like(ArticlePrimaryKey primaryKey);
         Task Share(ArticlePrimaryKey primaryKey);
 
