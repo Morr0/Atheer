@@ -55,6 +55,7 @@ namespace Atheer.Controllers.Article
             }
             
             if (blogResponse is null) return Redirect("/");
+            if (blogResponse.Articles.Count == 0 && blogResponse.CurrentPage > 0) return Redirect("/");
             
             blogResponse.MostPopularTags = await _tagService.GetTopTags(10).ConfigureAwait(false);
 
