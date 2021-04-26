@@ -24,7 +24,7 @@ namespace Atheer.Controllers.Article
         public async Task<IActionResult> Get([FromServices] IOptions<Site> siteConfig, [FromServices] IArticleService articleService, 
             [FromServices] IMapper mapper, [FromQuery] JsonFeedPageQuery query)
         {
-            string baseUrl = Request.Host.ToString();
+            string baseUrl = $"{Request.Scheme}://{Request.Host.ToString()}";
 
             var articlesResponse = await articleService.Get(ArticlesController.PageSize, query.Page);
             var jsonFeedItems = mapper.Map<List<JsonFeedItem>>(articlesResponse.Articles);
