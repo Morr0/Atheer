@@ -1,13 +1,12 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Revamp the controllers for article/series
 - Add better NotFound and Forbidden Handling
 - Add indexes for commonly searched columns and remove current article scheduling code and column/s
-- Series view
 - Complete the JSON feed to full specs
 - Sort by most recent/oldest (done the backend just do the UI)
 - Logo
+- Allow admin to forcefully unlist an article
 - Commenting system
 - 
 

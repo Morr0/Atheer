@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Atheer.Controllers.Articles.Models;
+using Atheer.Controllers.Article.Models;
 using Atheer.Models;
 
 namespace Atheer.Services.ArticlesService

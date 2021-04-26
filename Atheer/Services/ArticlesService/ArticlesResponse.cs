@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Atheer.Controllers.Articles.Models;
+using Atheer.Controllers.Article.Models;
 using Atheer.Services.TagService;
 
 namespace Atheer.Services.ArticlesService

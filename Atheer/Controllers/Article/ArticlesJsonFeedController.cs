@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Atheer.Utilities.Config.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Options;
 
-namespace Atheer.Controllers.Articles
+namespace Atheer.Controllers.Article
 {
     [ApiController]
     public class ArticlesJsonFeedController : ControllerBase

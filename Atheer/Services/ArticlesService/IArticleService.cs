@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Atheer.Controllers.Article.Models;
 using Atheer.Controllers.Article.Requests;
-using Atheer.Controllers.ArticleEdit.Models;
 using Atheer.Controllers.Series.Requests;
 using Atheer.Models;
 using Atheer.Services.ArticlesService.Models;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Atheer.Controllers.Articles;
+using Atheer.Controllers.Article;
 using Atheer.Controllers.Authentication;
 using Atheer.Controllers.User.Models;
 using Atheer.Exceptions;

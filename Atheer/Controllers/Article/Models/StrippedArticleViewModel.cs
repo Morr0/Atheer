@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Atheer.Controllers.Articles.Models
+namespace Atheer.Controllers.Article.Models
 {
     public class StrippedArticleViewModel
     {

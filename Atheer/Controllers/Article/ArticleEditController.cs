@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Atheer.Controllers.ArticleEdit.Models;
+using Atheer.Controllers.Article.Models;
+using Atheer.Controllers.Article.Requests;
 using Atheer.Extensions;
-using Atheer.Models;
 using Atheer.Services.ArticlesService;
 using Atheer.Services.ArticlesService.Exceptions;
 using Atheer.Services.TagService;
@@ -10,10 +10,8 @@ using Atheer.Services.UsersService;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
-namespace Atheer.Controllers.ArticleEdit
+namespace Atheer.Controllers.Article
 {
     [Route("Article")]
     public class ArticleEditController : Controller

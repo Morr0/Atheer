@@ -5,8 +5,6 @@ using System.Threading.Channels;
 using System.Threading.Tasks;
 using Atheer.Controllers.Article.Models;
 using Atheer.Controllers.Article.Requests;
-using Atheer.Controllers.ArticleEdit.Models;
-using Atheer.Controllers.Articles.Models;
 using Atheer.Controllers.Series.Requests;
 using Atheer.Exceptions;
 using Atheer.Extensions;
@@ -15,8 +13,6 @@ using Atheer.Repositories;
 using Atheer.Repositories.Junctions;
 using Atheer.Services.ArticlesService.Exceptions;
 using Atheer.Services.ArticlesService.Models;
-using Atheer.Services.FileService;
-using Atheer.Services.QueueService;
 using Atheer.Utilities;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -273,41 +269,6 @@ namespace Atheer.Services.ArticlesService
             }
         }
 
-        public async Task<ArticlePrimaryKey> Add(ArticleEditViewModel articleEditViewModel, string userId)
-        { 
-            var article = _articleFactory.Create(ref articleEditViewModel, userId);
-            string titleShrinked = article.TitleShrinked;
-            
-            // Check that no other article has same titleShrinked, else generate a new titleShrinked
-            var key = new ArticlePrimaryKey(article.CreatedYear, titleShrinked);
-            while (await Exists(key).ConfigureAwait(false))
-            {
-                titleShrinked = RandomiseExistingShrinkedTitle(ref titleShrinked);
-                key.TitleShrinked = titleShrinked;
-            }
-
-            articleEditViewModel.CreatedYear = article.CreatedYear;
-            articleEditViewModel.TitleShrinked = article.TitleShrinked = titleShrinked;
-
-            await using var transaction = await _context.Database.BeginTransactionAsync().ConfigureAwait(false);
-            
-            // Article
-            await _context.Article.AddAsync(article).ConfigureAwait(false);
-
-            try
-            {
-                await _context.SaveChangesAsync().ConfigureAwait(false);
-                await transaction.CommitAsync().ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-                throw new FailedOperationException();
-            }
-
-            return new ArticlePrimaryKey(article.CreatedYear, article.TitleShrinked);
-        }
-
         public async Task<ArticlePrimaryKey> Add(string userId, AddArticleRequest request)
         {
             var article = _articleFactory.Create(request, userId);
@@ -336,14 +297,6 @@ namespace Atheer.Services.ArticlesService
             }
 
             return key;
-        }
-
-        private async Task CreateTagArticles(Article article, IList<Tag> tags)
-        {
-            foreach (var tag in tags)
-            {
-                await _context.TagArticle.AddAsync(new TagArticle(tag, article)).ConfigureAwait(false);
-            }
         }
 
         private string RandomiseExistingShrinkedTitle(ref string existingTitleShrinked)

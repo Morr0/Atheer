@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Globalization;
-using Atheer.Controllers.ArticleEdit.Models;
+using Atheer.Controllers.Article.Requests;
 using Atheer.Extensions;
 using Atheer.Models;
 using Atheer.Services.ArticlesService;
@@ -34,21 +34,20 @@ namespace AtheerTests.UnitTests.Factories
         public void ShouldCreateAnArticle()
         {
             // Arrange
-            var dto = new ArticleEditViewModel
+            var request = new AddArticleRequest
             {
                 Content = Content,
                 Description = Description,
-                Title = Title,
-                AuthorId = UserId,
+                Title = Title
             };
 
             // Act
-            var article = _factory.Create(ref dto, UserId);
+            var article = _factory.Create(request, UserId);
 
             // Assert
-            Assert.Equal(dto.Content, article.Content);
-            Assert.Equal(dto.Title, article.Title);
-            Assert.Equal(dto.Description, article.Description);
+            Assert.Equal(request.Content, article.Content);
+            Assert.Equal(request.Title, article.Title);
+            Assert.Equal(request.Description, article.Description);
             Assert.Equal(UserId, article.AuthorId);
         }
 

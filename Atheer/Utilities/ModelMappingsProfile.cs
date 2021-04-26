@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Atheer.Controllers.ArticleEdit.Models;
+using Atheer.Controllers.Article.Models;
+using Atheer.Controllers.Article.Requests;
 using Atheer.Controllers.User.Models;
 using Atheer.Models;
 using Atheer.Services.OAuthService;
@@ -29,8 +30,6 @@ namespace Atheer.Utilities
 
         private void TakeCareOfArticleToFromArticleEditVm()
         {
-            CreateMap<ArticleEditViewModel, Article>();
-            CreateMap<Article, ArticleEditViewModel>();
             CreateMap<AddArticleRequest, Article>();
             CreateMap<UpdateArticleViewModel, Article>()
                 .ReverseMap();

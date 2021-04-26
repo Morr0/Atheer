@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Atheer.Controllers.Articles
+namespace Atheer.Controllers.Article
 {
     // https://jsonfeed.org/version/1.1
     public class JsonFeed

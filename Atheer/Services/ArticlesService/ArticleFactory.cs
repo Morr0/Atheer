@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using Atheer.Controllers.ArticleEdit.Models;
+using Atheer.Controllers.Article.Requests;
 using Atheer.Models;
 using Atheer.Services.ArticlesService.Models;
 using Atheer.Services.Utilities.TimeService;
@@ -21,20 +21,6 @@ namespace Atheer.Services.ArticlesService
             _timeService = timeService;
         }
 
-        public Article Create(ref ArticleEditViewModel articleViewModel, string userId)
-        {
-            var article = _mapper.Map<Article>(articleViewModel);
-
-            article.AuthorId = userId;
-
-            var now = _timeService.Get();
-            article.CreatedYear = now.Year;
-            article.TitleShrinked = GetShrinkedTitle(articleViewModel.Title);
-            article.CreatedAt = now;
-            
-            return article;
-        }
-        
         public Article Create(AddArticleRequest request, string userId)
         {
             var article = _mapper.Map<Article>(request);

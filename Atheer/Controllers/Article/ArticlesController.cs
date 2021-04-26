@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Atheer.Controllers.Articles.Queries;
+using Atheer.Controllers.Article.Queries;
 using Atheer.Extensions;
 using Atheer.Services.ArticlesService;
 using Atheer.Services.TagService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Atheer.Controllers.Articles
+namespace Atheer.Controllers.Article
 {
     [Route("")]
     [Route("Articles")]
