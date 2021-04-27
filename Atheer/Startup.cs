@@ -2,7 +2,6 @@ using System;
 using System.Reflection;
 using System.Threading.Channels;
 using Amazon.S3;
-using Amazon.SQS;
 using Atheer.BackgroundServices;
 using Atheer.Repositories;
 using Atheer.Services.ArticlesService;
@@ -14,11 +13,9 @@ using Atheer.Services.QueueService;
 using Atheer.Services.RecaptchaService;
 using Atheer.Services.TagService;
 using Atheer.Services.UsersService;
-using Atheer.Services.UserSessionsService;
 using Atheer.Services.Utilities.TimeService;
 using Atheer.Utilities;
 using Atheer.Utilities.Config.Models;
-using Atheer.Utilities.Markdown;
 using AutoMapper;
 using Markdig;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -80,7 +77,6 @@ namespace Atheer
             // Services
             services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IUserSessionsService, UserSessionsService>();
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<IRecaptchaService, RecaptchaService>();
             services.AddTransient<ITagService, TagService>();

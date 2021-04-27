@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Atheer.Controllers.Authentication.Models;
 using Atheer.Exceptions;
 using Atheer.Extensions;
 using Atheer.Services.OAuthService;
-using Atheer.Services.UserSessionsService;
 using Atheer.Services.UsersService;
 using Atheer.Utilities.Config.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -25,14 +23,11 @@ namespace Atheer.Controllers.Authentication
         public static readonly string CookieOAuthUser = "OAuth";
         
         private readonly IUserService _userService;
-        private readonly IUserSessionsService _sessionsService;
         private readonly ILogger<AuthenticationController> _logger;
 
-        public AuthenticationController(IUserService userService, IUserSessionsService sessionsService, 
-            ILogger<AuthenticationController> logger)
+        public AuthenticationController(IUserService userService, ILogger<AuthenticationController> logger)
         {
             _userService = userService;
-            _sessionsService = sessionsService;
             _logger = logger;
         }
         
@@ -59,29 +54,23 @@ namespace Atheer.Controllers.Authentication
             var user = await _userService.GetFromEmailOrUsernameForLogin(loginView.EmailOrUsername).ConfigureAwait(false);
             if (user is not null)
             {
-                string sessionId = _sessionsService.Login(loginView, user);
-                if (sessionId is not null)
-                {
-                    await _userService.SetLogin(user.Id).ConfigureAwait(false);
-                    
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
-                        , ClaimsPrincipal(sessionId, user.Id, user.Roles)).ConfigureAwait(false);
+                await _userService.SetLogin(user.Id).ConfigureAwait(false);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
+                    , ClaimsPrincipal(user.Id, user.Roles)).CAF();
 
-                    if (!Url.IsLocalUrl(returnUrl)) return Redirect("/");
-                    
-                    return LocalRedirect(returnUrl);
-                }
+                if (!Url.IsLocalUrl(returnUrl)) return Redirect("/");
+
+                return LocalRedirect(returnUrl);
             }
 
             TempData["Info"] = "Inputted email/password is not correct";
             return RedirectToAction("LoginView");
         }
 
-        private ClaimsPrincipal ClaimsPrincipal(string sessionId, string userId, string roles, bool oAuthUser = false)
+        private ClaimsPrincipal ClaimsPrincipal(string userId, string roles, bool oAuthUser = false)
         {
             var claims = new List<Claim>
             {
-                new Claim(CookieSessionId, sessionId),
                 new Claim(CookieUserId, userId)
             };
             
@@ -128,9 +117,8 @@ namespace Atheer.Controllers.Authentication
             }
             (string userId, string roles) = await _userService.AddOrUpdateOAuthUser(userInfo).ConfigureAwait(false);
 
-            string sessionId = _sessionsService.Login(userId);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
-                , ClaimsPrincipal(sessionId, userId, roles, oAuthUser: true)).ConfigureAwait(false);
+                , ClaimsPrincipal(userId, roles, oAuthUser: true)).CAF();
             await _userService.SetLogin(userId).ConfigureAwait(false);
             
             return Redirect("/");
