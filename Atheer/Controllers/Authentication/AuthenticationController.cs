@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Atheer.Controllers.Authentication.Models;
 using Atheer.Exceptions;
+using Atheer.Extensions;
 using Atheer.Services.OAuthService;
 using Atheer.Services.UserSessionsService;
 using Atheer.Services.UsersService;
@@ -40,7 +41,7 @@ namespace Atheer.Controllers.Authentication
         public IActionResult LoginView([FromQuery] string emailOrUsername)
         {
             if (User.Identity?.IsAuthenticated == true) return Redirect("/");
-            
+
             return View("Login", new LoginViewModel
             {
                 EmailOrUsername =  emailOrUsername
@@ -51,6 +52,8 @@ namespace Atheer.Controllers.Authentication
         [ResponseCache(Duration = 0, NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<IActionResult> Login([FromForm] LoginViewModel loginView, [FromQuery] string returnUrl = "/")
         {
+            await Task.Delay(1000).CAF();
+            
             if (!ModelState.IsValid) return View("Login", loginView);
             
             var user = await _userService.GetFromEmailOrUsernameForLogin(loginView.EmailOrUsername).ConfigureAwait(false);
