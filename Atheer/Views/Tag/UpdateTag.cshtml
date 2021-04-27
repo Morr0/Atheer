@@ -1,0 +1,31 @@
+﻿@model string
+
+@{
+    ViewData["Title"] = $"Update {Model} Tag";
+}
+
+<div class="text-danger" asp-validation-summary="All"></div>
+
+<div class="text-dark">Original title: @Model</div>
+
+<form method="post" asp-controller="Tag" asp-action="UpdateTagPost">
+    <input type="hidden" name="OriginalTitle" value="@Model" id="OriginalTitle">
+    
+    <label for="NewTitle">Title: </label>
+    <input type="text" class="form-control" name="NewTitle" id="NewTitle" >
+    <button class="btn btn-dark" ype="submit" id="updateBtn" disabled>Update</button>
+</form>
+
+@section Scripts
+{
+    <script>
+    const originalTitleValue = document.getElementById("OriginalTitle").value;
+    const NewTitle = document.getElementById("NewTitle");
+    const updateBtn = document.getElementById("updateBtn");
+    NewTitle.addEventListener("input", () => {
+        const newTitle = NewTitle.value.trim();
+        const enableBtn = newTitle && newTitle !== originalTitleValue;
+        updateBtn.disabled = !enableBtn;
+    });
+    </script>
+}

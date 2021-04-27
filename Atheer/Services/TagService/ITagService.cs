@@ -21,5 +21,8 @@ namespace Atheer.Services.TagService
         {
             return string.Join(", ", tags.Select(x => x.Title));
         }
+
+        Task<Tag> Get(string id);
+        Task Update(string id, string title);
     }
 }

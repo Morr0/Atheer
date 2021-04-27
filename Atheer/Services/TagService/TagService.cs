@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Atheer.Extensions;
 using Atheer.Models;
 using Atheer.Repositories;
 using Atheer.Repositories.Junctions;
@@ -68,6 +69,24 @@ namespace Atheer.Services.TagService
             });
 
             return queryable.ToListAsync();
+        }
+
+        public Task<Tag> Get(string id)
+        {
+            return _context.Tag.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task Update(string id, string title)
+        {
+            var tag = await _context.Tag
+                .FirstOrDefaultAsync(x => x.Id == id).CAF();
+
+            tag.Title = title;
+            _tagFactory.UpdateTag(tag);
+
+            _context.Update(tag);
+            await _context.SaveChangesAsync().CAF();
         }
     }
 }

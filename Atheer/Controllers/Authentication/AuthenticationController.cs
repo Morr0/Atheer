@@ -18,7 +18,6 @@ namespace Atheer.Controllers.Authentication
 {
     public class AuthenticationController : Controller
     {
-        private const string CookieSessionId = "sessionId";
         public static string CookieUserId = "userId";
         public static readonly string CookieOAuthUser = "OAuth";
         
