@@ -102,25 +102,9 @@ namespace Atheer.Controllers.Authentication
         [Authorize]
         [HttpGet("Logout")]
         [ResponseCache(Duration = 0, NoStore = true, Location = ResponseCacheLocation.None)]
-        public IActionResult LogoutView()
+        public async Task<IActionResult> Logout()
         {
-            return View("Logout");
-        }
-
-        [Authorize]
-        [HttpPost("Logout")]
-        [ResponseCache(Duration = 0, NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<IActionResult> LogoutPost()
-        {
-            string sessionId = Request.HttpContext.User.FindFirst(CookieSessionId)?.Value;
-
-            if (_sessionsService.LoggedIn(sessionId))
-            {
-                _sessionsService.Logout(sessionId);
-                // Take the cookie out even if was not actually logged in as below
-            }
-            
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).CAF();
             return Redirect("/");
         }
 
