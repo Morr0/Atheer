@@ -11,9 +11,8 @@ namespace Atheer.Controllers.Error
         {
             var exceptionHandlerPath = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
             // TODO do something with exception
-            
-            TempData["Error"] = "An error has occured.";
-            return Redirect("/");
+
+            return View("Error");
         }
 
         [HttpGet("/HandleCode")]
