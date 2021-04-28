@@ -5,7 +5,7 @@
 @using Atheer.Extensions
 @using Atheer.Services.NavItemsService
 @using Atheer.Services.UsersService
-@inject IOptionsSnapshot<Site> Site
+@inject IOptions<Site> Site
 @inject IOptions<SiteAnalytics> SiteAnalytics
 @inject INavItemsService NavItemsService
 
@@ -33,6 +33,11 @@
 
     <meta name="description" content="@Site.Value.Description"/>
     @await RenderSectionAsync("Head", false)
+    
+    <link rel="icon" href="favicon.ico" />
+    <environment names="Production">
+        <link rel="icon" type="image/svg" href="@Site.Value.IconUrl"/>
+    </environment>
 </head>
 <body>
     <header>

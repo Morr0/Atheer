@@ -1,7 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Logo
 - Allow admin to forcefully unlist an article
 - Hook up logging
 - Hook up logging with NotFound and Forbidden endpoints 
