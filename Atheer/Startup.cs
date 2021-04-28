@@ -126,7 +126,8 @@ namespace Atheer
             
             // app.UseHttpsRedirection();
 
-            app.UseStatusCodePagesWithRedirects("/NotFound");
+            app.UseStatusCodePagesWithReExecute("/HandleCode", "?code={0}");
+            // app.UseStatusCodePagesWithRedirects("/HandleCode/{0}");
             
             app.UseStaticFiles();
 
