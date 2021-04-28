@@ -24,6 +24,8 @@ namespace Atheer.Controllers.Article
             
             var article = await _service.Get(key, viewerUserId).ConfigureAwait(false);
             if (article is null) return Redirect("/");
+
+            if (article.Article.ForceFullyUnlisted && string.IsNullOrEmpty(viewerUserId)) return NotFound();
             
             return View("Article", article);
         }

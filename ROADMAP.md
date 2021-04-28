@@ -1,7 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Not view any force-fully unlisted to public or non-author
 - Ask to load articles from user profile
 - Add Cloudformation resource to add link to icon
 - Hook up logging

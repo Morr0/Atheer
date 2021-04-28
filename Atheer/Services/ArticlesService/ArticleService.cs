@@ -10,7 +10,6 @@ using Atheer.Exceptions;
 using Atheer.Extensions;
 using Atheer.Models;
 using Atheer.Repositories;
-using Atheer.Repositories.Junctions;
 using Atheer.Services.ArticlesService.Exceptions;
 using Atheer.Services.ArticlesService.Models;
 using Atheer.Utilities;
@@ -77,11 +76,11 @@ namespace Atheer.Services.ArticlesService
 
             queryable = string.IsNullOrEmpty(viewerUserId)
                 // Public viewing all articles
-                ? queryable.Where(x => x.Unlisted == false && x.Draft == false)
+                ? queryable.Where(x => !x.Unlisted && !x.Draft && !x.ForceFullyUnlisted)
                 // Registered user viewing all articles
                 : queryable.Where(x =>
                     (x.AuthorId == viewerUserId) ||
-                    (x.AuthorId != viewerUserId && x.Unlisted == false && x.Draft == false));
+                    (x.AuthorId != viewerUserId && !x.Draft));
 
             // Viewing specific user's articles
             if (!string.IsNullOrEmpty(specificUserId))
@@ -124,7 +123,7 @@ namespace Atheer.Services.ArticlesService
         {
             int skip = amount * page;
             var queryable = _context.Article.AsNoTracking()
-                .Where(x => x.Unlisted == false && x.Draft == false)
+                .Where(x => !x.Unlisted && !x.Draft && !x.ForceFullyUnlisted)
                 .OrderByDescending(x => x.CreatedAt)
                 .Skip(skip)
                 .Take(amount);
