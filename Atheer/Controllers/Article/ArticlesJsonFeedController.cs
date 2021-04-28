@@ -15,7 +15,6 @@ namespace Atheer.Controllers.Article
     public class ArticlesJsonFeedController : ControllerBase
     {
         // TODO attach narration url if narratable
-        // TODO attach icon of site
         // TODO ability to subscribe to hubs
         
         [Produces("application/feed+json", "application/json")]
@@ -28,6 +27,8 @@ namespace Atheer.Controllers.Article
 
             var articlesResponse = await articleService.Get(ArticlesController.PageSize, query.Page);
             var jsonFeedItems = mapper.Map<List<JsonFeedItem>>(articlesResponse.Articles);
+            string icon = string.IsNullOrEmpty(siteConfig.Value.IconUrl) ? $"{baseUrl}/favicon.ico"
+                : siteConfig.Value.IconUrl;
 
             var jsonFeed = new JsonFeed
             {
@@ -37,8 +38,8 @@ namespace Atheer.Controllers.Article
                 NextUrl = articlesResponse.AnyNext ? $"{baseUrl}/feed.json?page={(query.Page + 1).ToString()}" : null,
                 HomePageUrl = baseUrl,
                 Items = jsonFeedItems,
-                Favicon = null,
-                Icon = null
+                Favicon = icon,
+                Icon = icon
             };
 
             return Ok(jsonFeed);
