@@ -1,9 +1,12 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Allow admin to forcefully unlist an article
+- Not view any force-fully unlisted to public or non-author
+- Ask to load articles from user profile
+- Add Cloudformation resource to add link to icon
 - Hook up logging
-- Hook up logging with NotFound and Forbidden endpoints 
+- Hook up logging with NotFound and Forbidden endpoints
+- Minify Html, Css and Javascript
 - Commenting system
 - Rate limiting system on authentication endpoints and locking (let client cache results)
 - 

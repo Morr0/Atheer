@@ -12,5 +12,6 @@ namespace Atheer.Controllers.Article.Models
         public bool Unlisted { get; set; }
         public string AuthorId { get; set; }
         public DateTime CreatedAt { get; set; }
+        public bool ForceFullyUnlisted { get; set; }
     }
 }

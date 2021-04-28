@@ -347,6 +347,19 @@ namespace Atheer.Services.ArticlesService
             }
         }
 
+        public async Task UpdateForcefullUnlist(ArticlePrimaryKey key, bool forcefullyUnlisted)
+        {
+            var article = await _context.Article
+                .FirstOrDefaultAsync(x => x.CreatedYear == key.CreatedYear && 
+                                          x.TitleShrinked == key.TitleShrinked).CAF();
+            if (article is null) return;
+
+            article.ForceFullyUnlisted = forcefullyUnlisted;
+
+            _context.Update(article);
+            await _context.SaveChangesAsync().CAF();
+        }
+
         private async ValueTask EnsureRequestOfNarrationIfNarratable(Article article, string contentChecksumPreUpdate)
         {
             if (!article.Narratable) return;

@@ -2,6 +2,7 @@
 @using Atheer.Controllers.Authentication
 @using Atheer.Extensions
 @using Atheer.Services.ArticlesService.Models
+@using Atheer.Services.UsersService
 @inject MarkdownPipeline MarkdownPipeline
 @model Atheer.Controllers.Article.Models.ArticleViewModel
 @{
@@ -12,7 +13,7 @@
     string tags = string.Join(", ", Model.Tags);
     
     string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
-    bool isAuthor = viewerUserId == Model.Article.AuthorId;
+    bool canEdit = viewerUserId == Model.Article.AuthorId || User.IsInRole(UserRoles.AdminRole);
 
     bool narrated = Model.Article.Narratable && !string.IsNullOrEmpty(Model.Article.NarrationMp3Url);
     
@@ -50,7 +51,7 @@
         <h6 class="card-subtitle">@tags</h6>
         
         <h2 class="text-dark">@article.Title</h2>
-        @if (isAuthor)
+        @if (canEdit)
         {
             <span class="text-info">Mine</span>
             <a asp-controller="ArticleEdit" asp-action="UpdateArticleView" asp-route-CreatedYear="@Model.Article.CreatedYear.ToString()" 
@@ -69,6 +70,10 @@
         @if (article.Unlisted)
         {
             <span class="text-info">Unlisted</span>
+        }
+        @if ((viewerUserId == article.AuthorId || User.IsInRole(UserRoles.AdminRole)) && article.ForceFullyUnlisted)
+        {
+            <span class="text-danger">Unlisted by Admin</span>
         }
 
         <p class="card-text">@article.Description</p>

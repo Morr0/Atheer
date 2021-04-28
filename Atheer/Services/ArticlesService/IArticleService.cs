@@ -23,6 +23,7 @@ namespace Atheer.Services.ArticlesService
         Task Delete(ArticlePrimaryKey key);
         Task<ArticlePrimaryKey> Add(string userId, AddArticleRequest request);
         Task Update(string userId, ArticlePrimaryKey key, UpdateArticleViewModel request);
+        Task UpdateForcefullUnlist(ArticlePrimaryKey key, bool forcefullyUnlisted);
 
         Task<bool> AuthorizedFor(ArticlePrimaryKey key, string userId);
         Task CompletedNarration(ArticlePrimaryKey key, string cdnUrl);

@@ -70,6 +70,17 @@ namespace Atheer.Controllers.Article
 
             var articleVm = await _articleService.Get(key, userId).CAF();
             if (articleVm is null) return NotFound();
+
+            ViewBag.Key = key;
+            
+            if (articleVm.Article.AuthorId != userId && User.IsInRole(UserRoles.AdminRole))
+            {
+                var adminVm = new UpdateArticleByAdminDifferentAuthorViewModel
+                {
+                    ForceFullyUnlisted = articleVm.Article.ForceFullyUnlisted
+                };
+                return View("UpdateArticleByAdminDifferentAuthor", adminVm);
+            }
                 
             var vm = _mapper.Map<UpdateArticleViewModel>(articleVm.Article);
             vm.TagsAsString = ITagService.TagsToString(articleVm.Tags);
@@ -84,7 +95,6 @@ namespace Atheer.Controllers.Article
             }
 
             ViewBag.Series = series;
-            ViewBag.Key = key;
             return View("UpdateArticle", vm);
         }
 
@@ -109,6 +119,18 @@ namespace Atheer.Controllers.Article
             await tagService.AddOrUpdateTagsPerArticle(key, viewModel.TagsAsString).CAF();
 
             return RedirectToAction("UpdateArticleView", key);
+        }
+
+        [Authorize(Roles = UserRoles.AdminRole)]
+        [HttpPost("Update/Admin/{CreatedYear:int}/{TitleShrinked}")]
+        public async ValueTask<IActionResult> UpdateArticleByAdminPost([FromRoute] ArticlePrimaryKey key,
+            [FromForm] UpdateArticleByAdminDifferentAuthorViewModel vm)
+        {
+            if (!ModelState.IsValid) return View("UpdateArticleByAdminDifferentAuthor", vm);
+
+            await _articleService.UpdateForcefullUnlist(key, vm.ForceFullyUnlisted).CAF();
+
+            return Redirect("/");
         }
     }
 }
