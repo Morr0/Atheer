@@ -41,7 +41,8 @@ namespace Atheer.Services.ArticlesService
 
         public async Task<ArticlesResponse> Get(int amount, string searchQuery)
         {
-            var articles = await _context.Article.AsNoTracking().Where(x => x.SearchVector.Matches(searchQuery))
+            var articles = await _context.Article.AsNoTracking()
+                .Where(x => x.SearchVector.Matches(searchQuery) && !x.Draft && !x.Unlisted && !x.ForceFullyUnlisted)
                 .OrderByDescending(x => x.CreatedAt)
                 .Take(amount)
                 .ToStrippedArticles()
