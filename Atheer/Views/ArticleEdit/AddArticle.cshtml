@@ -5,11 +5,15 @@
     ViewData["Title"] = "Add Article";
 
     var series = ViewBag.Series as List<LightArticleSeries>;
-    var seriesSelectItems = series.Select(x => new SelectListItem
+    IEnumerable<SelectListItem> seriesSelectItems = new List<SelectListItem>();
+    if (series is not null)
     {
-        Text = x.Title,
-        Value = x.Id.ToString()
-    });
+        seriesSelectItems = series.Select(x => new SelectListItem
+        {
+            Text = x.Title,
+            Value = x.Id.ToString()
+        });
+    }
 }
 
 <div asp-validation-summary="All" class="text-danger"></div>
@@ -21,7 +25,7 @@
     <input type="text" asp-for="TagsAsString" class="form-control"/>
     
     <label for="SeriesId">Series</label>
-    @if (series.Count == 0)
+    @if (series?.Count == 0)
     {
         <span class="text-info">&MediumSpace;No article series to select from</span>
         <br>

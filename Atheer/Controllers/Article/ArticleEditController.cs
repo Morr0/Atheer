@@ -49,11 +49,8 @@ namespace Atheer.Controllers.Article
             if (!ModelState.IsValid) return View("AddArticle", request);
 
             string userId = this.GetViewerUserId();
-            Console.WriteLine("HERE0");
             var key = await _articleService.Add(userId, request).CAF();
-            Console.WriteLine("HERE1");
             await tagService.AddOrUpdateTagsPerArticle(key, request.TagsAsString).ConfigureAwait(false);
-            Console.WriteLine("HERE2");
 
             return RedirectToAction("Index", "Article", key);
         }
