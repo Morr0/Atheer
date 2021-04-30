@@ -7,6 +7,7 @@
 - Hook up logging with NotFound and Forbidden endpoints
 - Minify Html, Css and Javascript
 - Commenting system
+- Upload Markdown file to editor when creating new one  
 - Rate limiting system on authentication endpoints and locking (let client cache results)
 - 
 

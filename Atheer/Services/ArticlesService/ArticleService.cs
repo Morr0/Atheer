@@ -311,6 +311,7 @@ namespace Atheer.Services.ArticlesService
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
+                _logger.LogError(e.StackTrace);
                 throw new FailedOperationException();
             }
 
