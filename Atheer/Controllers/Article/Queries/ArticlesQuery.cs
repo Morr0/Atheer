@@ -4,12 +4,10 @@ namespace Atheer.Controllers.Article.Queries
 {
     public class ArticlesQuery
     {
-        [Range(1, int.MaxValue)]
-        public int Year { get; set; }
-
-        [MinLength(1)]
-        public string Tag { get; set; }
-        
+        [Range(1, int.MaxValue)] public int Year { get; set; }
+        [MinLength(1)] public string Tag { get; set; }
         public bool Oldest { get; set; }
+        public string UserId { get; set; }
+        public string Q { get; set; }
     }
 }

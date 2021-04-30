@@ -1,12 +1,9 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
-using Atheer.Controllers.Article;
 using Atheer.Controllers.Authentication;
 using Atheer.Controllers.User.Models;
 using Atheer.Exceptions;
 using Atheer.Extensions;
-using Atheer.Services.ArticlesService;
 using Atheer.Services.FileService;
 using Atheer.Services.RecaptchaService;
 using Atheer.Services.UsersService;
@@ -36,22 +33,13 @@ namespace Atheer.Controllers.User
         }
 
         [HttpGet("{userId}")]
-        [HttpGet("{userId}/{page}")]
-        public async Task<IActionResult> UserView([FromRoute] string userId, [FromServices] IArticleService articleService, 
-            [FromRoute] int page = 0)
+        public async Task<IActionResult> UserView([FromRoute] string userId)
         {
-            page = Math.Max(0, page);
-            string viewingUserId = this.GetViewerUserId();
             var user = await _userService.Get(userId).ConfigureAwait(false);
             if (user is null) return NotFound();
-            
-            var articlesResponse =
-                await articleService.Get(ArticlesController.PageSize, page, viewerUserId: viewingUserId, 
-                    specificUserId: userId).ConfigureAwait(false);
 
             var viewModel = new UserPageViewModel
             {
-                Articles = articlesResponse,
                 User = user
             };
             return View("UserPage", viewModel);

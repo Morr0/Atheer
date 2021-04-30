@@ -103,6 +103,13 @@ namespace Atheer.Services.ArticlesService
             var list = await queryable.ToStrippedArticles()
                 .ToListAsync().ConfigureAwait(false);
 
+            string userName = list.Count > 0
+                ? await _context.User
+                    .Where(x => x.Id == specificUserId)
+                    .Select(x => x.Name)
+                    .FirstOrDefaultAsync().CAF()
+                : null;
+
             bool hasNext = await HasAnyMoreArticles(amount, list, queryable, skip);
             bool hasPrevious = skip > 0;
 
@@ -116,6 +123,7 @@ namespace Atheer.Services.ArticlesService
                 TagId = tagId,
                 TagTitle = tagTitle,
                 UserId = specificUserId,
+                UserName = userName,
                 OldestArticles = oldest
             };
         }

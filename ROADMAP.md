@@ -1,15 +1,15 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Ask to load articles from user profile
 - Add Cloudfront distribution on top of EC2 in Cloudformation
 - Add Cloudformation resource to add link to icon
 - Hook up logging
 - Hook up logging with NotFound and Forbidden endpoints
 - Minify Html, Css and Javascript
+- Update popular tags view to not display any private (forcefully unlisted && unlisted && draft)
 - Commenting system
-- Upload Markdown file to editor when creating new one  
 - Rate limiting system on authentication endpoints and locking (let client cache results)
+- Upload Markdown file to editor when creating new one
 - Ability to download article as Markdown by reader
 - 
 

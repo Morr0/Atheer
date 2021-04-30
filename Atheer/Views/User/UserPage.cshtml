@@ -63,6 +63,10 @@
           </form>
         }
         <p class="card-text">@Model.User.Bio</p>
+        
+        <a asp-controller="Articles" asp-action="Index" asp-route-userId="@Model.User.Id" class="card-link">
+            View my articles
+        </a>
       </div>
     </div>
   </div>

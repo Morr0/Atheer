@@ -28,30 +28,21 @@ namespace Atheer.Controllers.Article
 
         [HttpGet]
         [HttpGet("{page}")]
-        public async Task<IActionResult> Index([FromQuery] ArticlesQuery query, [FromQuery] ArticlesSearchQuery searchQuery,
-            [FromRoute] int page = 0, string userId = null)
+        public async Task<IActionResult> Index([FromQuery] ArticlesQuery query, [FromRoute] int page = 0)
         {
             page = Math.Max(0, page);
-            if (!string.IsNullOrEmpty(userId))
-            {
-                return RedirectToAction("UserView", "User", new
-                {
-                    userId,
-                    page
-                });
-            }
 
             string viewerUserId = this.GetViewerUserId();
 
             ArticlesResponse blogResponse = null;
-            if (string.IsNullOrEmpty(searchQuery.Q))
+            if (string.IsNullOrEmpty(query.Q))
             {
-                blogResponse = await _articleService.Get(PageSize, page, query.Year, query.Tag, viewerUserId, oldest: query.Oldest)
-                    .ConfigureAwait(false);
+                blogResponse = await _articleService.Get(PageSize, page, query.Year, query.Tag, specificUserId: query.UserId,
+                        viewerUserId: viewerUserId, oldest: query.Oldest).CAF();
             }
             else
             {
-                blogResponse = await _articleService.Get(PageSize, searchQuery.Q);
+                blogResponse = await _articleService.Get(PageSize, query.Q).CAF();
             }
             
             if (blogResponse is null) return Redirect("/");

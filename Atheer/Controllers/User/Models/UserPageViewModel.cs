@@ -5,6 +5,5 @@ namespace Atheer.Controllers.User.Models
     public class UserPageViewModel
     {
         public Atheer.Models.User User { get; set; }
-        public ArticlesResponse Articles { get; set; }
     }
 }
