@@ -2,6 +2,7 @@
 ## Roadmap:
 ### List of things to work on:
 - Ask to load articles from user profile
+- Add Cloudfront distribution on top of EC2 in Cloudformation
 - Add Cloudformation resource to add link to icon
 - Hook up logging
 - Hook up logging with NotFound and Forbidden endpoints
@@ -9,6 +10,7 @@
 - Commenting system
 - Upload Markdown file to editor when creating new one  
 - Rate limiting system on authentication endpoints and locking (let client cache results)
+- Ability to download article as Markdown by reader
 - 
 
 ### List of things if have time:

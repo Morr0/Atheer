@@ -9,8 +9,6 @@
     var article = Model.Article;
     ViewData["Title"] = article.Title;
     string content = article.Content is null ? "" : Markdown.ToHtml(article.Content, MarkdownPipeline);
-
-    string tags = string.Join(", ", Model.Tags);
     
     string viewerUserId = User.FindFirst(AuthenticationController.CookieUserId)?.Value;
     bool canEdit = viewerUserId == Model.Article.AuthorId || User.IsInRole(UserRoles.AdminRole);
@@ -56,7 +54,15 @@
 
 <div class="container">
     <div class="card-header">
-        <h6 class="card-subtitle">@tags</h6>
+        <h6 class="card-subtitle">
+            @foreach (var tag in Model.Tags)
+            {
+                <a asp-controller="Articles" asp-action="Index" asp-route-Tag="@tag.Id" class="card-link">
+                    @tag.Title&ThinSpace;
+                </a>
+            }
+        </h6>
+        @* <h6 class="card-subtitle">@tags</h6> *@
         
         <h2 class="text-dark">@article.Title</h2>
         @if (canEdit)
