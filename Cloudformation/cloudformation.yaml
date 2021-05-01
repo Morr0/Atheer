@@ -597,8 +597,26 @@ Resources:
       Type: String
       Value: !Ref NarrationQueue
       Name: "/Atheer/SQS/TranscriptionQueueUrl"
-  
-  
+  ServerPostgresqlConnectionString:
+    Type: AWS::SSM::Parameter
+    Properties: 
+      Type: String
+      Name: "/Atheer/ConnectionStrings/MainPostgres"
+      Value: !Join
+        - ""
+        - - "Host="
+          - !GetAtt Database.Endpoint.Address
+          - ";Port="
+          - !GetAtt Database.Endpoint.Port
+          - ";Database="
+          - !Ref DBDatabaseName
+          - ";Username="
+          - !Ref DBRootUser
+          - ";Password="
+          - !Ref DBRootPassword
+          - ";"
+
+
 Outputs:
   ServerDns:
     Description: DNS of server
