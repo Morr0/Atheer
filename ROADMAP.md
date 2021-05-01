@@ -1,9 +1,9 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Add Cloudformation resource to add link to icon
 - Hook up logging
 - Hook up logging with NotFound and Forbidden endpoints
+- Refresh config every 5 mins
 - Minify Html, Css and Javascript
 - Update popular tags view to not display any private (forcefully unlisted && unlisted && draft)
 - Commenting system

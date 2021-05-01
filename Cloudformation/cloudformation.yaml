@@ -59,6 +59,74 @@
   WebsiteDomainName:
     Type: String
     Description: "The domain name excluding https:// and / at the end. That is, just the pure name."
+  WebsiteTitle:
+    Type: String
+    Description: Title of website
+    MinLength: 1
+  WebsiteDescription:
+    Type: String
+    Description: Description of website
+    MinLength: 1
+  WebsiteCanRegisterUsers:
+    Type: String
+    Description: Either true or false
+    AllowedValues:
+      - "true"
+      - "false"
+    Default: "false"
+  WebsiteShowLoginButton:
+    Type: String
+    Description: Either true or false
+    AllowedValues:
+      - "true"
+      - "false"
+    Default: "false"
+  WebsiteEnableClicky:
+    Type: String
+    Description: "Either true or false, Clicky (https://clicky.com/)"
+    AllowedValues:
+      - "true"
+      - "false"
+    Default: "false"
+  WebsiteClickySiteId:
+    Type: String
+    Description: "The site Id given by Clicky (https://clicky.com/)"
+    Default: "null"
+  WebsiteClickySiteKey:
+    Type: String
+    Description: "The site Key given by Clicky (https://clicky.com/)"
+    Default: "null"
+  WebsiteRecaptchaEnabled:
+    Type: String
+    Description: "On Recaptcha V2, Either true or false"
+    AllowedValues:
+      - "true"
+      - "false"
+    Default: "false"
+  WebsiteRecaptchaSiteKey:
+    Type: String
+    Description: "Recaptcha V2 Site Key"
+    Default: "null"
+  WebsiteRecaptchaSecretKey:
+    Type: String
+    Description: "Recaptcha V2 Secret Key"
+    Default: "null"
+  WebsiteGithubOAuthEnabled:
+    Type: String
+    Description: "Either true or false"
+    AllowedValues:
+      - "true"
+      - "false"
+    Default: "false"
+  WebsiteGithubOAuthClientId:
+    Type: String
+    Description: "Github Client Id"
+    Default: "null"
+  WebsiteGithubOAuthClientSecret:
+    Type: String
+    Description: "Github Secret Key"
+    Default: "null"
+  
 
 # TODO find an efficient way to refactor the availability zone used
 Resources:
@@ -588,20 +656,27 @@ Resources:
       EventSourceArn: !GetAtt NarrationQueue.Arn
       BatchSize: 1
       Enabled: true
-      
-      
-  # Configuration (stored in parameter store)
+
+# Configuration (stored in parameter store)
   SQSTranscriptionQueueUrlConfig:
     Type: AWS::SSM::Parameter
     Properties: 
       Type: String
       Value: !Ref NarrationQueue
-      Name: "/Atheer/SQS/TranscriptionQueueUrl"
-  ServerPostgresqlConnectionString:
+      Name: !Join
+        - ""
+#        - - "/"
+#          - !Ref ProjectName
+        - - "/Atheer/SQS/TranscriptionQueueUrl"
+  ServerPostgresqlConnectionStringConfig:
     Type: AWS::SSM::Parameter
     Properties: 
       Type: String
-      Name: "/Atheer/ConnectionStrings/MainPostgres"
+      Name: !Join
+        - ""
+#        - - "/"
+#          - !Ref ProjectName
+        - - "/Atheer/ConnectionStrings/MainPostgres"
       Value: !Join
         - ""
         - - "Host="
@@ -615,7 +690,160 @@ Resources:
           - ";Password="
           - !Ref DBRootPassword
           - ";"
-
+  S3BucketConfig:
+    Type: AWS::SSM::Parameter
+    Properties: 
+      Type: String
+      Name: !Join
+        - ""
+#        - - "/"
+#          - !Ref ProjectName
+        - - "/Atheer/S3/BucketName"
+      Value: !Ref PublicS3BucketName
+  S3BucketCDNConfig:
+    Type: AWS::SSM::Parameter
+    Properties: 
+      Type: String
+      Name: !Join
+        - ""
+#        - - "/"
+#          - !Ref ProjectName
+        - - "/Atheer/S3/CdnUrl"
+      Value: !Join
+        - ""
+        - - "https://"
+          - !GetAtt Cdn.DomainName
+  WebsiteTitleConfig:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Type: String
+      Name: !Join
+        - ""
+#        - - "/"
+#          - !Ref ProjectName
+        - - "/Atheer/Site/Title"
+      Value: !Ref WebsiteTitle
+  WebsiteDescriptionConfig:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Type: String
+      Name: !Join
+        - ""
+#        - - "/"
+#          - !Ref ProjectName
+        - - "/Atheer/Site/Description"
+      Value: !Ref WebsiteDescription
+  WebsiteCanRegisterUsersConfig:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Type: String
+      Name: !Join
+        - ""
+#        - - "/"
+#          - !Ref ProjectName
+        - - "/Atheer/Site/CanRegister"
+      Value: !Ref WebsiteCanRegisterUsers
+  WebsiteShowLoginButtonConfig:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Type: String
+      Name: !Join
+        - ""
+#        - - "/"
+#          - !Ref ProjectName
+        - - "/Atheer/Site/ShowLoginButton"
+      Value: !Ref WebsiteShowLoginButton
+  WebsiteEnableClickyConfig:
+    Type: AWS::SSM::Parameter
+    Properties: 
+      Type: String
+      Name: !Join
+        - ""
+#        - - "/"
+#          - !Ref ProjectName
+        - - "/Atheer/SiteAnalytics/EnableClicky"
+      Value: !Ref WebsiteEnableClicky
+  WebsiteClickySiteIdConfig:
+    Type: AWS::SSM::Parameter
+    Properties: 
+      Type: String
+      Name: !Join
+        - ""
+#        - - "/"
+#          - !Ref ProjectName
+        - - "/Atheer/SiteAnalytics/SiteId"
+      Value: !Ref WebsiteClickySiteId
+  WebsiteClickySiteKeyConfig:
+    Type: AWS::SSM::Parameter
+    Properties: 
+      Type: String
+      Name: !Join
+        - ""
+#        - - "/"
+#          - !Ref ProjectName
+        - - "/Atheer/SiteAnalytics/SiteKey"
+      Value: !Ref WebsiteClickySiteKey
+  WebsiteRecaptchaEnabledConfig:
+    Type: AWS::SSM::Parameter
+    Properties: 
+      Type: String
+      Name: !Join
+        - ""
+#        - - "/"
+#          - !Ref ProjectName
+        - - "/Atheer/Recaptcha/Enabled"
+      Value: !Ref WebsiteRecaptchaEnabled
+  WebsiteRecaptchaSiteKeyConfig:
+    Type: AWS::SSM::Parameter
+    Properties: 
+      Type: String
+      Name: !Join
+        - ""
+#        - - "/"
+#          - !Ref ProjectName
+        - - "/Atheer/Recaptcha/SiteKey"
+      Value: !Ref WebsiteRecaptchaSiteKey
+  WebsiteRecaptchaSecretKeyConfig:
+    Type: AWS::SSM::Parameter
+    Properties: 
+      Type: String
+      Name: !Join
+        - ""
+#        - - "/"
+#          - !Ref ProjectName
+        - - "/Atheer/Recaptcha/SecretKey"
+      Value: !Ref WebsiteRecaptchaSecretKey
+  WebsiteGithubOAuthEnabledConfig:
+    Type: AWS::SSM::Parameter
+    Properties: 
+      Type: String
+      Name: !Join
+        - ""
+#        - - "/"
+#          - !Ref ProjectName
+        - - "/Atheer/GithubOAuth/Enabled"
+      Value: !Ref WebsiteGithubOAuthEnabled
+  WebsiteGithubOAuthClientIdConfig:
+    Type: AWS::SSM::Parameter
+    Properties: 
+      Type: String
+      Name: !Join
+        - ""
+#        - - "/"
+#          - !Ref ProjectName
+        - - "/Atheer/GithubOAuth/ClientId"
+      Value: !Ref WebsiteGithubOAuthClientId
+  WebsiteGithubOAuthClientSecretConfig:
+    Type: AWS::SSM::Parameter
+    Properties: 
+      Type: String
+      Name: !Join
+        - ""
+#        - - "/"
+#          - !Ref ProjectName
+        - - "/Atheer/GithubOAuth/ClientSecret"
+      Value: !Ref WebsiteGithubOAuthClientSecret
+  
 
 Outputs:
   ServerDns:

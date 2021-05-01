@@ -4,5 +4,6 @@
     {
         public bool EnableClicky { get; set; }
         public string SiteId { get; set; }
+        public string SiteKey { get; set; }
     }
 }
