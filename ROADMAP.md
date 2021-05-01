@@ -1,7 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Add Cloudfront distribution on top of EC2 in Cloudformation
 - Add Cloudformation resource to add link to icon
 - Hook up logging
 - Hook up logging with NotFound and Forbidden endpoints

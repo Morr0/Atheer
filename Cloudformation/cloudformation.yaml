@@ -599,7 +599,13 @@ Resources:
       Name: "/Atheer/SQS/TranscriptionQueueUrl"
   
   
-Outputs: 
+Outputs:
+  ServerDns:
+    Description: DNS of server
+    Value: !GetAtt Server.PublicDnsName
+  ServerIp:
+    Description: Ip of server
+    Value: !GetAtt Server.PublicIp
   CdnDomainName:
     Description: Domain name of the Cdn
     Value: !GetAtt Cdn.DomainName
