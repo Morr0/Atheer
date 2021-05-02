@@ -5,6 +5,7 @@
 - Hook up logging with NotFound and Forbidden endpoints
 - Refresh config every 5 mins
 - Minify Html, Css and Javascript
+- Equalize Header elements in article view
 - Update popular tags view to not display any private (forcefully unlisted && unlisted && draft)
 - Commenting system
 - Rate limiting system on authentication endpoints and locking (let client cache results)

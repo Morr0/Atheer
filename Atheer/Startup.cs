@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Threading.Channels;
 using Amazon.S3;
 using Atheer.BackgroundServices;
+using Atheer.Middlewares;
 using Atheer.Repositories;
 using Atheer.Services.ArticlesService;
 using Atheer.Services.ArticlesService.Models;
@@ -127,9 +128,10 @@ namespace Atheer
             // app.UseHttpsRedirection();
 
             app.UseStatusCodePagesWithReExecute("/HandleCode", "?code={0}");
-            // app.UseStatusCodePagesWithRedirects("/HandleCode/{0}");
             
             app.UseStaticFiles();
+            
+            app.UseMiddleware<UrlRewritingMiddleware>();
 
             app.UseRouting();
 
