@@ -15,6 +15,7 @@
 
 ### List of things if have time:
 - Extract all string constants referenced both in razor and C# into their respective classes
+- Check using anti-virus for any uploaded file
 - Limit size of image uploaded to acceptable size and dimensions
 - Reconsider client side validation and do it with Bootstrap 5
 -

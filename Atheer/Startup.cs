@@ -118,11 +118,9 @@ namespace Atheer
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-            }
 
+            app.UseExceptionHandler("/Error");
+            
             UpdateDatabase(serviceScopeFactory);
             
             // app.UseHttpsRedirection();
