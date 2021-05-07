@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Atheer.Utilities.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Atheer.Controllers.Utilities.Filters
 {
@@ -10,15 +13,30 @@ namespace Atheer.Controllers.Utilities.Filters
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            // TODO handle IPV6
-            string ipAddress = context.HttpContext.Connection.RemoteIpAddress.ToString();
-            bool isInternal = InternalIpv4Address(ipAddress);
+            var loggerFactory = context.HttpContext.RequestServices.GetRequiredService<ILoggerFactory>();
+            var logger = loggerFactory.CreateLogger(LoggingConstants.RestrictToInternalNetworkCategory);
 
-            if (isInternal) await next().ConfigureAwait(false);
-            else context.Result = new NotFoundResult();
+            string ipAddress = context.HttpContext.Connection.RemoteIpAddress?.ToString();
+            logger.LogInformation("Requesting a restricted action from IP: {Ip} for {RequestPath}",
+                ipAddress, context.HttpContext.Request.Path.Value);
+
+            bool isInternal = InternalIpAddress(ipAddress);
+            if (isInternal)
+            {
+                logger.LogInformation("Successfully let internal IP {Ip} in for {RequestPath}",
+                    ipAddress, context.HttpContext.Request.Path.Value);
+                await next().ConfigureAwait(false);
+            }
+            else
+            {
+                logger.LogWarning("Denied IP {Ip} access to {RequestPath}",
+                    ipAddress, context.HttpContext.Request.Path.Value);
+                context.Result = new NotFoundResult();
+            }
         }
         
-        internal static bool InternalIpv4Address(string address)
+        // TODO handle IPV6
+        internal static bool InternalIpAddress(string address)
         {
             if (address == "127.0.0.1") return true;
             
@@ -32,6 +50,5 @@ namespace Atheer.Controllers.Utilities.Filters
 
             return splitAddr[0] == "192" && splitAddr[1] == "168";
         }
-
     }
 }

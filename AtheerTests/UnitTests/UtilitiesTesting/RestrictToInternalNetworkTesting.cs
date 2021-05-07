@@ -16,7 +16,7 @@ namespace AtheerTests.UnitTests.UtilitiesTesting
         [InlineData("191.168.0.1", false)]
         public void TestInternalIpv4Address(string ipAddress, bool expectedResult)
         {
-            bool actualResult = RestrictToInternalNetwork.InternalIpv4Address(ipAddress);
+            bool actualResult = RestrictToInternalNetwork.InternalIpAddress(ipAddress);
 
             Assert.Equal(expectedResult, actualResult);
         }
