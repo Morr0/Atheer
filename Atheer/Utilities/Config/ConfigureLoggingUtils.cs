@@ -21,26 +21,25 @@ namespace Atheer.Utilities.Config
 
             if (string.IsNullOrEmpty(awsLogGroupName)) return;
             
-            string logGroupName = $"{awsLogGroupName}-Atheer-Server-App";
             using var cloudwatchLogsClient = new AmazonCloudWatchLogsClient();
                 
-            bool logGroupExists = LogGroupExists(cloudwatchLogsClient, logGroupName);
+            bool logGroupExists = LogGroupExists(cloudwatchLogsClient, awsLogGroupName);
             if (!logGroupExists)
             {
                 int days = isProduction ? 30 : 1;
-                CreateLogGroup(cloudwatchLogsClient, logGroupName, days);
+                CreateLogGroup(cloudwatchLogsClient, awsLogGroupName, days);
             }
 
             var awsLoggerConfig = new AWSLoggerConfig
             {
-                LogGroup = logGroupName,
+                LogGroup = awsLogGroupName,
                 BatchPushInterval = isProduction ? TimeSpan.FromMinutes(1) : TimeSpan.FromSeconds(2),
                 DisableLogGroupCreation = true,
                 LogStreamNamePrefix = string.Empty
             };
 
             builder.AddAWSProvider(awsLoggerConfig, LogLevel.Information);
-            Console.WriteLine($"Will write logs to: {logGroupName}");
+            Console.WriteLine($"Will write logs to: {awsLogGroupName}");
         }
 
         private static bool LogGroupExists(IAmazonCloudWatchLogs client, string logGroupName)
