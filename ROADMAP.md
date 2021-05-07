@@ -1,8 +1,7 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Hook up logging
-- Hook up logging with NotFound and Forbidden endpoints
+- Hook up logging with Forbidden/Unauthorized endpoints
 - Refresh config every 5 mins
 - Minify Html, Css and Javascript
 - Equalize Header elements in article view
@@ -18,7 +17,7 @@
 - Check using anti-virus for any uploaded file
 - Limit size of image uploaded to acceptable size and dimensions
 - Reconsider client side validation and do it with Bootstrap 5
--
+- Log external service abstractions
 
 ### List of longer term goals (not in order):
 

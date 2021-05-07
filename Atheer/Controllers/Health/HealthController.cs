@@ -5,6 +5,7 @@ using Atheer.Controllers.Health.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Atheer.Controllers.Utilities.Filters;
+using Microsoft.Extensions.Logging;
 
 namespace Atheer.Controllers.Health
 {
@@ -12,9 +13,19 @@ namespace Atheer.Controllers.Health
     [ApiController]
     public class HealthController : ControllerBase
     {
+        private readonly ILogger<HealthController> _logger;
+
+        public HealthController(ILogger<HealthController> logger)
+        {
+            _logger = logger;
+        }
+        
         [HttpGet]
         public IActionResult HealthyPublic()
         {
+            string ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+            _logger.LogInformation("Health check probe from IP: {Ip}", ipAddress);
+            
             return Ok();
         }
 
@@ -42,6 +53,9 @@ namespace Atheer.Controllers.Health
                 CanReachDatabase = canConnectToDb,
                 CurrentDatabaseConnections = currentDbConnections,
             };
+            
+            string ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+            _logger.LogInformation("Internal health check probe");
 
             return Ok(result);
         }

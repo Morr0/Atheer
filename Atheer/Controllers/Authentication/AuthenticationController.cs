@@ -51,17 +51,24 @@ namespace Atheer.Controllers.Authentication
             
             if (!ModelState.IsValid) return View("Login", loginView);
             
-            var user = await _userService.GetFromEmailOrUsernameForLogin(loginView.EmailOrUsername).ConfigureAwait(false);
+            _logger.LogInformation("Trying to login for EmailOrUsername: {user}", loginView.EmailOrUsername);
+            
+            var user = await _userService.GetFromEmailOrUsernameForLogin(loginView.EmailOrUsername).CAF();
             if (user is not null)
             {
-                await _userService.SetLogin(user.Id).ConfigureAwait(false);
+                await _userService.SetLogin(user.Id).CAF();
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
                     , ClaimsPrincipal(user.Id, user.Roles)).CAF();
 
                 if (!Url.IsLocalUrl(returnUrl)) return Redirect("/");
+                
+                _logger.LogInformation("Successfully logged in for EmailOrUsername: {user}", loginView.EmailOrUsername);
 
                 return LocalRedirect(returnUrl);
             }
+            
+            _logger.LogInformation("Denied login to EmailOrUsername: {user} due to incorrect credentials",
+                loginView.EmailOrUsername);
 
             TempData["Info"] = "Inputted email/password is not correct";
             return RedirectToAction("LoginView");
@@ -94,6 +101,9 @@ namespace Atheer.Controllers.Authentication
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).CAF();
+            string loggedInUserId = this.GetViewerUserId();
+            _logger.LogInformation("User id: {userId} successfully logged out", loggedInUserId);
+
             return Redirect("/");
         }
 
@@ -109,17 +119,21 @@ namespace Atheer.Controllers.Authentication
             OAuthUserInfo userInfo;
             try
             {
-                userInfo = await oAuthService.GetUserInfo(OAuthProvider.Github, query.Code).ConfigureAwait(false);
+                userInfo = await oAuthService.GetUserInfo(OAuthProvider.Github, query.Code).CAF();
             }
             catch (FailedOperationException)
             {
+                _logger.LogWarning("Bounced OAuth attempt from OAuth provider: {Provider}", OAuthProvider.Github.ToString());
                 return Redirect("/");
             }
-            (string userId, string roles) = await _userService.AddOrUpdateOAuthUser(userInfo).ConfigureAwait(false);
+            (string userId, string roles) = await _userService.AddOrUpdateOAuthUser(userInfo).CAF();
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
                 , ClaimsPrincipal(userId, roles, oAuthUser: true)).CAF();
-            await _userService.SetLogin(userId).ConfigureAwait(false);
+            await _userService.SetLogin(userId).CAF();
+            
+            _logger.LogInformation("Successfully logged in for User id: {UserId} from OAuth Provider: {Provider}", 
+                userId, OAuthProvider.Github.ToString());
             
             return Redirect("/");
         }

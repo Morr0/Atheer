@@ -54,6 +54,8 @@ namespace Atheer.Controllers.User
 
             var user = await _userService.Get(userId).ConfigureAwait(false);
             if (user is null) return Redirect("/");
+            
+            _logger.LogInformation("User: {UserId} is accessing user settings page", viewingUserId);
 
             var userSettingsVm = _mapper.Map<UserSettingsViewModel>(user);
             return View("UserSettings", userSettingsVm);
@@ -81,6 +83,8 @@ namespace Atheer.Controllers.User
             }
             
             await _userService.SetImage(form.UserId, imageUrl);
+            
+            _logger.LogInformation("User: {UserId} has changed their image", viewerUserId);
 
             return RedirectToAction("UserView", new {userId = form.UserId});
         }
@@ -102,6 +106,8 @@ namespace Atheer.Controllers.User
 
             // For S3 to update their clusters
             await Task.Delay(1000).ConfigureAwait(false);
+            
+            _logger.LogInformation("User: {UserId} has removed their image", viewerUserId);
 
             return RedirectToAction("UserView", new {userId = form.UserId});
         }
@@ -112,11 +118,13 @@ namespace Atheer.Controllers.User
         {
             if (!ModelState.IsValid) return Redirect("/");
             
-            string viewerUserId = this.GetViewerUserId();
+            string adminUserId = this.GetViewerUserId();
             // Don't allow an admin to play with self roles
-            if (form.UserId == viewerUserId) return Redirect("/");
+            if (form.UserId == adminUserId) return Redirect("/");
             
             await _userService.ChangeRole(form.UserId, form.NewRole).ConfigureAwait(false);
+            
+            _logger.LogInformation("Admin: {AdminId} has changed roles of user: {UserId}", adminUserId, form.UserId);
 
             return RedirectToAction("UserView", new {userId = form.UserId});
         }
@@ -140,7 +148,10 @@ namespace Atheer.Controllers.User
                 });
             }
             
-            await _userService.Update(userId, userSettingsUpdate).ConfigureAwait(false);
+            await _userService.Update(userId, userSettingsUpdate).CAF();
+            
+            _logger.LogInformation("User: {UserId} has updated user settings", viewingUserId);
+            
             return RedirectToAction("UserView", "User", new {userId});
         }
 
@@ -151,6 +162,8 @@ namespace Atheer.Controllers.User
             string viewingUserId = this.GetViewerUserId();
             if (viewingUserId != userId) return Unauthorized();
             if (User.HasClaim(AuthenticationController.CookieOAuthUser, "true")) return Unauthorized();
+            
+            _logger.LogInformation("User: {UserId} is accessing change password page", viewingUserId);
 
             return View("ChangePassword");
         }
@@ -167,6 +180,9 @@ namespace Atheer.Controllers.User
             if (viewingUserId != userId) return Unauthorized();
 
             await _userService.UpdatePassword(userId, userChangePassword.OldPassword, userChangePassword.NewPassword).ConfigureAwait(false);
+            
+            _logger.LogInformation("User: {UserId} has changed their password", viewingUserId);
+            
             return RedirectToAction("UserView", new {userId});
         }
         
@@ -185,17 +201,23 @@ namespace Atheer.Controllers.User
         {
             if (!ModelState.IsValid) return View("Register", registerView);
             
+            _logger.LogInformation("Attempt to register new user");
+            
             if (User.Identity?.IsAuthenticated == true) return Redirect("/");
 
-            if (!(await ProceedAfterHandlingRecaptchaIfAppropriate(serviceScopeFactory, registerView.RecaptchaResponse).ConfigureAwait(false)))
+            if (!(await ProceedAfterHandlingRecaptchaIfAppropriate(serviceScopeFactory, registerView.RecaptchaResponse).CAF()))
             {
-                await Task.Delay(2000).ConfigureAwait(false);
+                await Task.Delay(2000).CAF();
+                _logger.LogInformation("Failed reCaptcha on user registeration");
+
                 return View("Register", registerView);
             }
 
             try
             {
-                string userId = await _userService.Add(registerView).ConfigureAwait(false);
+                string userId = await _userService.Add(registerView).CAF();
+                
+                _logger.LogInformation("Successfully registered new user: {UserId}", userId);
                 
                 TempData["Info"] = "Successfully registered, please login now";
                 return Redirect($"/login?EmailOrUsername={userId}");

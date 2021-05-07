@@ -8,18 +8,22 @@ using Atheer.Services.ArticlesService;
 using Atheer.Services.UsersService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Atheer.Controllers.Series
 {
+    // TODO recheck authorizations
     [Authorize(Roles = UserRoles.EditorRole)]
     [Route("Series")]
     public class SeriesController : Controller
     {
         private readonly IArticleService _articleService;
+        private readonly ILogger<SeriesController> _logger;
 
-        public SeriesController(IArticleService articleService)
+        public SeriesController(IArticleService articleService, ILogger<SeriesController> logger)
         {
             _articleService = articleService;
+            _logger = logger;
         }
         
         [HttpGet("")]
@@ -50,6 +54,9 @@ namespace Atheer.Controllers.Series
 
             string viewerUserId = this.GetViewerUserId();
             await _articleService.AddSeries(viewerUserId, request).CAF();
+            
+            _logger.LogInformation("User: {UserId} added a new series with title: {Title}",
+                viewerUserId, request.Title);
 
             return RedirectToAction("Index");
         }
@@ -59,6 +66,9 @@ namespace Atheer.Controllers.Series
         {
             string viewerUserId = this.GetViewerUserId();
             await _articleService.FinishArticleSeries(viewerUserId, id).CAF();
+            
+            _logger.LogInformation("User: {UserId} finished series with id: {SeriesId}",
+                viewerUserId, id.ToString());
 
             return RedirectToAction("Index");
         }
