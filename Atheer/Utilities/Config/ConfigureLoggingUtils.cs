@@ -21,7 +21,7 @@ namespace Atheer.Utilities.Config
 
             if (string.IsNullOrEmpty(awsLogGroupName)) return;
             
-            string logGroupName = $"Atheer-Server-App-{awsLogGroupName}";
+            string logGroupName = $"{awsLogGroupName}-Atheer-Server-App";
             using var cloudwatchLogsClient = new AmazonCloudWatchLogsClient();
                 
             bool logGroupExists = LogGroupExists(cloudwatchLogsClient, logGroupName);
