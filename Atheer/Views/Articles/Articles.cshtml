@@ -6,8 +6,6 @@
 @{
     ViewData["Title"] = "Articles";
     
-    bool authenticated = User.Identity?.IsAuthenticated == true;
-
     string oldestOrLatestArticlesString = Model.OldestArticles ? "Oldest" : "Latest";
     bool sortableByOldestNewest = !Model.Search;
     bool sortStringCheckboxValue = !Model.OldestArticles;
@@ -18,6 +16,7 @@
     int nextPage = Model.CurrentPage + 1;
 
     bool viewUser = !string.IsNullOrEmpty(Model.UserId) && !string.IsNullOrEmpty(Model.UserName);
+    bool viewTag = !string.IsNullOrEmpty(Model.TagTitle) && !Model.Search;
     bool viewTags = !viewUser && !Model.Search;
 }
 
@@ -38,7 +37,7 @@
             </a>
         </span>
     }
-    @if (viewTags)
+    @if (viewTag)
     {
         @Html.Raw("Tag: ")
         @Model.TagTitle
