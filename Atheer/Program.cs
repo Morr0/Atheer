@@ -1,3 +1,4 @@
+using Atheer.Utilities.Config;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -19,14 +20,19 @@ namespace Atheer
                         .UseKestrel(opts => opts.AddServerHeader = false)
                         .UseStartup<Startup>();
                 })
-                .ConfigureAppConfiguration((hostingContext, config)  =>
+                .ConfigureAppConfiguration((hostingContext, config) =>
                 {
                     var env = hostingContext.HostingEnvironment.EnvironmentName.ToLower();
                     if (env == "production")
                     {
                         config.AddSystemsManager("/Atheer");
                     }
-                    
+                })
+                .ConfigureLogging((context, builder) =>
+                {
+                    bool isProduction = context.HostingEnvironment.EnvironmentName.ToLower() == "production";
+                    string awsLogGroupName = context.Configuration.GetSection("AWSLogGroupName").Value;
+                    ConfigureLoggingUtils.Handle(isProduction, builder, awsLogGroupName);
                 });
     }
 }
