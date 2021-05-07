@@ -528,7 +528,10 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       VpcId: !Ref Network
-      GroupDescription: Only allow VPC in
+      GroupDescription: Lambda security, allow all egress
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
       Tags:
         - Key: !Ref ProjectTagKeyName
           Value: !Ref ProjectName
