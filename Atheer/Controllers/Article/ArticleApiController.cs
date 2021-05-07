@@ -1,11 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Atheer.Controllers.Article.Requests;
 using Atheer.Controllers.Utilities.Filters;
 using Atheer.Exceptions;
+using Atheer.Extensions;
 using Atheer.Services.ArticlesService;
 using Atheer.Services.FileService;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Atheer.Controllers.Article
 {
@@ -14,10 +15,12 @@ namespace Atheer.Controllers.Article
     public class ArticleApiController : ControllerBase
     {
         private readonly IArticleService _service;
+        private readonly ILogger<ArticleApiController> _logger;
 
-        public ArticleApiController(IArticleService service)
+        public ArticleApiController(IArticleService service, ILogger<ArticleApiController> logger)
         {
             _service = service;
+            _logger = logger;
         }
         
         [HttpPost("like")]
@@ -53,9 +56,15 @@ namespace Atheer.Controllers.Article
         public async Task<IActionResult> CompleteNarrationWebhook([FromBody] CompletedArticleNarrationRequest request, 
             [FromServices] IFileService fileService)
         {
+            _logger.LogInformation("Received narration complete for article key: {CreatedYear}-{TitleShrinked}",
+                request.CreatedYear.ToString(), request.TitleShrinked);
+            
             string cdnUrl = fileService.GetCdnUrlFromFileKey(request.S3BucketKey);
             var key = new ArticlePrimaryKey(request.CreatedYear, request.TitleShrinked);
-            await _service.CompletedNarration(key, cdnUrl).ConfigureAwait(false);
+            await _service.CompletedNarration(key, cdnUrl).CAF();
+            
+            _logger.LogInformation("Completed narration article key: {CreatedYear}-{TitleShrinked}",
+                request.CreatedYear.ToString(), request.TitleShrinked);
             
             return Ok();
         }

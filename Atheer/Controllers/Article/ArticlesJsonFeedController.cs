@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Atheer.Controllers.Article.Queries;
 using Atheer.Services.ArticlesService;
 using Atheer.Utilities.Config.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Atheer.Controllers.Article
@@ -14,6 +14,13 @@ namespace Atheer.Controllers.Article
     [Route("json.feed")]
     public class ArticlesJsonFeedController : ControllerBase
     {
+        private readonly ILogger<ArticlesJsonFeedController> _logger;
+
+        public ArticlesJsonFeedController(ILogger<ArticlesJsonFeedController> logger)
+        {
+            _logger = logger;
+        }
+        
         // TODO attach narration url if narratable
         // TODO ability to subscribe to hubs
         
@@ -41,6 +48,8 @@ namespace Atheer.Controllers.Article
                 Favicon = icon,
                 Icon = icon
             };
+            
+            _logger.LogInformation("Served JSON Feed on page {Page}", query.Page.ToString());
 
             return Ok(jsonFeed);
         }

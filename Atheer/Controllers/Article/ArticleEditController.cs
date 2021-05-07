@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Atheer.Controllers.Article.Models;
 using Atheer.Controllers.Article.Requests;
@@ -11,19 +10,23 @@ using Atheer.Services.UsersService;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Atheer.Controllers.Article
 {
     [Route("Article")]
     public class ArticleEditController : Controller
     {
-        private IArticleService _articleService;
+        private readonly IArticleService _articleService;
         private readonly IMapper _mapper;
+        private readonly ILogger<ArticleEditController> _logger;
 
-        public ArticleEditController(IArticleService articleService, IMapper mapper)
+        // TODO Handle failures and log them
+        public ArticleEditController(IArticleService articleService, IMapper mapper, ILogger<ArticleEditController> logger)
         {
             _articleService = articleService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         private async Task<bool> AuthorizedFor(ArticlePrimaryKey key, string viewerUserId)
@@ -50,7 +53,10 @@ namespace Atheer.Controllers.Article
 
             string userId = this.GetViewerUserId();
             var key = await _articleService.Add(userId, request).CAF();
-            await tagService.AddOrUpdateTagsPerArticle(key, request.TagsAsString).ConfigureAwait(false);
+            await tagService.AddOrUpdateTagsPerArticle(key, request.TagsAsString).CAF();
+            
+            _logger.LogInformation("Created a new article by user: {UserId} with article key: {CreatedYear}-{TitleShrinked}",
+                userId, key.CreatedYear.ToString(), key.TitleShrinked);
 
             return RedirectToAction("Index", "Article", key);
         }
@@ -113,11 +119,16 @@ namespace Atheer.Controllers.Article
             }
             catch (ArticleNotFoundException)
             {
+                _logger.LogInformation("User: {UserId} attempted to update a non-existing article with key: {CreatedYear}-{TitleShrinked}",
+                    userId, key.CreatedYear.ToString(), key.TitleShrinked);
                 return NotFound();
             }
             
             await _articleService.Update(userId, key, viewModel).CAF();
             await tagService.AddOrUpdateTagsPerArticle(key, viewModel.TagsAsString).CAF();
+            
+            _logger.LogInformation("Updated an article by user: {UserId} with article key: {CreatedYear}-{TitleShrinked}",
+                userId, key.CreatedYear.ToString(), key.TitleShrinked);
 
             return RedirectToAction("UpdateArticleView", key);
         }
@@ -129,8 +140,12 @@ namespace Atheer.Controllers.Article
         {
             if (!ModelState.IsValid) return View("UpdateArticleByAdminDifferentAuthor", vm);
 
+            string adminUserid = this.GetViewerUserId();
             await _articleService.UpdateForcefullUnlist(key, vm.ForceFullyUnlisted).CAF();
-
+            
+            _logger.LogInformation("Admin: {UserId} forcefully unlisted the article with key: {CreatedYear}-{TitleShrinked}",
+                adminUserid, key.CreatedYear.ToString(), key.TitleShrinked);
+        
             return Redirect("/");
         }
     }

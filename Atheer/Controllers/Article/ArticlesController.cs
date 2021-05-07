@@ -42,6 +42,7 @@ namespace Atheer.Controllers.Article
             }
             else
             {
+                _logger.LogInformation("Searching for {SearchQuery}", query.Q);
                 // To minimize spam of searches
                 await Task.Delay(1000).CAF();
                 
