@@ -27,7 +27,7 @@ namespace Atheer.Utilities.Config
             bool logGroupExists = LogGroupExists(cloudwatchLogsClient, logGroupName);
             if (!logGroupExists)
             {
-                int days = isProduction ? 31 : 1;
+                int days = isProduction ? 30 : 1;
                 CreateLogGroup(cloudwatchLogsClient, logGroupName, days);
             }
 
@@ -68,7 +68,6 @@ namespace Atheer.Utilities.Config
                     
             Thread.Sleep(1000);
 
-                    
             var putRetentionPolicyRequest = new PutRetentionPolicyRequest
             {
                 LogGroupName = logGroupName,
