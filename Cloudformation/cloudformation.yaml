@@ -293,7 +293,7 @@ Resources:
         Version: 2012-10-17
         Statement:
           - Effect: Allow
-            Principal: '*'
+            Principal: "*"
             Action: "*"
             Resource:
               Fn::Join:
@@ -302,6 +302,7 @@ Resources:
                   - "/*"
       RouteTableIds:
         - !Ref PublicRouteTable
+        - !Ref PrivateRouteTable
       ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"
       VpcId: !Ref Network
   BucketPolicy:
@@ -413,6 +414,11 @@ Resources:
       Tags:
         - Key: !Ref ProjectTagKeyName
           Value: !Ref ProjectName
+  ServerCloudWatchLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      LogGroupName: !GetAtt WebsiteServerLoggingCloudwatchLogGroupNameConfig.Value
+      RetentionInDays: 30
   Server:
     DependsOn: 
       - Database
@@ -516,10 +522,8 @@ Resources:
                 Resource: "*"
               - Effect: Allow
                 Action:
-                  - logs:CreateLogGroup
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Resource: "*"
+                  - logs:*
+                Resource: !GetAtt NarrationLambdaFunctionCloudWatchLogGroup.Arn
   NarrationLambdaSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -527,7 +531,15 @@ Resources:
       GroupDescription: Only allow VPC in
       Tags:
         - Key: !Ref ProjectTagKeyName
-          Value: !Ref ProjectName 
+          Value: !Ref ProjectName
+  NarrationLambdaFunctionCloudWatchLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      LogGroupName: !Join
+        - "-"
+        - - !Ref ProjectName
+          - "Atheer-Narration-Lambda"
+      RetentionInDays: 30
   NarrationLambdaFunction:
     Type: AWS::Lambda::Function
     Properties: 
@@ -640,7 +652,7 @@ Resources:
     
       Description: "The narration function that picks up from the queue"
       Timeout: 20
-      MemorySize: 128
+      MemorySize: 256
       VpcConfig:
         SecurityGroupIds:
           - !Ref NarrationLambdaSecurityGroup
@@ -856,7 +868,10 @@ Resources:
         #        - - "/"
         #          - !Ref ProjectName
         - - "/Atheer/AWSLogGroupName"
-      Value: !Ref ProjectName
+      Value: !Join
+        - "-"
+        - - !Ref ProjectName
+          - "Atheer-Server-App"
   
 
 Outputs:
