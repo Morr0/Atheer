@@ -46,6 +46,7 @@ namespace Atheer.Controllers.Authentication
         [ResponseCache(Duration = 0, NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<IActionResult> Login([FromForm] LoginViewModel loginView, [FromQuery] string returnUrl = "/")
         {
+            // To minimize spam of searches
             await Task.Delay(1000).CAF();
             
             if (!ModelState.IsValid) return View("Login", loginView);

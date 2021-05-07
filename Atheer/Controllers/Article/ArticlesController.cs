@@ -42,6 +42,9 @@ namespace Atheer.Controllers.Article
             }
             else
             {
+                // To minimize spam of searches
+                await Task.Delay(1000).CAF();
+                
                 blogResponse = await _articleService.Get(PageSize, query.Q).CAF();
             }
             
