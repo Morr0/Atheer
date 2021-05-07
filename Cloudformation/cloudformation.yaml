@@ -384,6 +384,10 @@ Resources:
                 Action:
                   - s3:PutObject
                 Resource: !GetAtt Bucket.Arn
+              - Effect: Allow
+                Action:
+                  - logs:*
+                Resource: "*"
       Tags:
         - Key: !Ref ProjectTagKeyName
           Value: !Ref ProjectName
@@ -843,6 +847,16 @@ Resources:
 #          - !Ref ProjectName
         - - "/Atheer/GithubOAuth/ClientSecret"
       Value: !Ref WebsiteGithubOAuthClientSecret
+  WebsiteServerLoggingCloudwatchLogGroupNameConfig:
+    Type: AWS::SSM::Parameter
+    Properties: 
+      Type: String
+      Name: !Join
+        - ""
+        #        - - "/"
+        #          - !Ref ProjectName
+        - - "/Atheer/AWSLogGroupName"
+      Value: !Ref ProjectName
   
 
 Outputs:
