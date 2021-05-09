@@ -1,3 +1,4 @@
+using System;
 using Atheer.Utilities.Config;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -25,7 +26,7 @@ namespace Atheer
                     var env = hostingContext.HostingEnvironment.EnvironmentName.ToLower();
                     if (env == "production")
                     {
-                        config.AddSystemsManager("/Atheer");
+                        config.AddSystemsManager("/Atheer", TimeSpan.FromMinutes(5));
                     }
                 })
                 .ConfigureLogging((context, builder) =>

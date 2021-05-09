@@ -1,14 +1,17 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Refresh config every 5 mins
 - Minify Html, Css and Javascript
 - Equalize Header elements in article view
-- Update popular tags view to not display any private (forcefully unlisted && unlisted && draft)
-- Commenting system
+- Add article version
+- For article scheduling, add currently in schedule
+- Update popular tags view to not display any private (forcefully unlisted && unlisted && draft && not currently scheduled)
+- Update article version for each update
 - Rate limiting system on authentication endpoints and locking (let client cache results)
 - Upload Markdown file to editor when creating new one
 - Ability to download article as Markdown by reader
+- Article Scheduling (rethink)
+- Pull analytics from Clicky by Lambda and add data to tables
 - 
 
 ### List of things if have time:
@@ -20,8 +23,8 @@
 
 ### List of longer term goals (not in order):
 
+#### Commenting system
 #### Analytics dashboard for admin
-#### Article scheduler (rethink system)
 #### Improved text editor includes:
     - live preview
     - add images on the fly and automatically taken care of to S3
