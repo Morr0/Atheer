@@ -3,7 +3,8 @@
 const like = (createdYear, titleShrinked) => {
     const likesLabelForButton = document.getElementById("likes");
 
-    fetch(`${site}/api/article/like?createdYear=${createdYear}&titleShrinked=${titleShrinked}`, {
+    const url = `${site}/api/article/like?createdYear=${createdYear}&titleShrinked=${encodeURIComponent(titleShrinked)}`;
+    fetch(url, {
         method: "POST"
     }).then((res) => {
         if (res.status === 200){
@@ -17,7 +18,8 @@ const like = (createdYear, titleShrinked) => {
 };
 
 const share = (createdYear, titleShrinked) => {
-    fetch(`${site}/api/article/share?createdYear=${createdYear}&titleShrinked=${titleShrinked}`, {
+    const url = `${site}/api/article/share?createdYear=${createdYear}&titleShrinked=${encodeURIComponent(titleShrinked)}`;
+    fetch(url, {
         method: "POST"
     }).then();
 
