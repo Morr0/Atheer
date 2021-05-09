@@ -1,0 +1,17 @@
+﻿.go-up-btn {
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+    width: 4rem;
+    height: 4rem;
+    overflow: hidden;
+    z-index: 999;
+}
+
+.card-body h1, .card-body h2, .card-body h3 {
+    font-size: 1.5em;
+    font-size-adjust: none;
+}
+.card-body h4, .card-body h5, .card-body h6 {
+    font-size: 1.2em;
+}

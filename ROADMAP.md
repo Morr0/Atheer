@@ -1,8 +1,7 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Equalize Header elements in article view
-- Add article version
+- Add article version and wasPublished
 - Update popular tags view to not display any private (forcefully unlisted && unlisted && draft && not currently scheduled)
 - Update article version for each update
 - Rate limiting system on authentication endpoints and locking (let client cache results)
