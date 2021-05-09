@@ -1,4 +1,5 @@
-﻿using Atheer.Utilities.Logging;
+﻿using Atheer.Extensions;
+using Atheer.Utilities.Logging;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,27 @@ namespace Atheer.Controllers.Error
             logger.LogError(exceptionHandlerPathFeature.Error, "Exception thrown from the following path: {Path}", exceptionHandlerPathFeature.Path);
 
             return View("Error");
+        }
+
+        // THIS IS A SPECIAL REDIRECT FROM DENIED, to not expose denied to public in URL
+        [HttpGet("/NotFound")]
+        public IActionResult DeniedHandler([FromQuery] string path)
+        {
+            if (string.IsNullOrEmpty(path)) return View("NotFound");
+
+            var logger = _loggerFactory.CreateLogger(LoggingConstants.ForbiddenPathCategory);
+            string userId = this.GetViewerUserId();
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                logger.LogWarning("Attempt to hit forbidden endpoint: {Path}", path);
+            }
+            else
+            {
+                logger.LogWarning("Attempt to hit forbidden endpoint: {Path} by user: {UserId}", path, userId);
+            }
+            
+            return View("NotFound");
         }
 
         [HttpGet("/HandleCode")]

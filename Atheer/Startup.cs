@@ -1,6 +1,8 @@
 using System;
 using System.Reflection;
 using System.Threading.Channels;
+using System.Threading.Tasks;
+using System.Web;
 using Amazon.S3;
 using Atheer.BackgroundServices;
 using Atheer.Middlewares;
@@ -91,8 +93,16 @@ namespace Atheer
                 {
                     opts.LoginPath = "/Login";
                     opts.LogoutPath = "/Logout";
-                    opts.AccessDeniedPath = "/Denied";
 
+                    // Custom denied/forbidden redirection
+                    opts.Events.OnRedirectToAccessDenied = (redirectContext) =>
+                    {
+                        string urlEncodedOriginalPath = HttpUtility.UrlEncode(redirectContext.Request.Path.ToString());
+                        redirectContext.Response.Redirect($"/NotFound?path={urlEncodedOriginalPath}");
+
+                        return Task.CompletedTask;
+                    };
+                    
                     opts.Cookie.HttpOnly = true;
                     opts.Cookie.IsEssential = true;
 

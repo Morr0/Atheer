@@ -1,7 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Hook up logging with Forbidden/Unauthorized endpoints
 - Refresh config every 5 mins
 - Minify Html, Css and Javascript
 - Equalize Header elements in article view
