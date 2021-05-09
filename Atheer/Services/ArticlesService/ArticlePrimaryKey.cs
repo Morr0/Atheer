@@ -4,10 +4,7 @@ namespace Atheer.Services.ArticlesService
 {
     public class ArticlePrimaryKey
     {
-        public ArticlePrimaryKey()
-        {
-            
-        }
+        public ArticlePrimaryKey() {}
 
         public ArticlePrimaryKey(int createdYear, string titleShrinked)
         {
@@ -15,9 +12,9 @@ namespace Atheer.Services.ArticlesService
             TitleShrinked = titleShrinked;
         }
         
-        [Required]
-        public int CreatedYear { get; set; }
-        [Required]
-        public string TitleShrinked { get; set; }
+        [Required] public int CreatedYear { get; set; }
+        [Required] public string TitleShrinked { get; set; }
+
+        public override string ToString() => $"{CreatedYear.ToString()}-{TitleShrinked}";
     }
 }

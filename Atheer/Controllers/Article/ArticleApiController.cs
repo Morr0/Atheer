@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Atheer.Controllers.Article.Requests;
 using Atheer.Controllers.Utilities.Filters;
-using Atheer.Exceptions;
 using Atheer.Extensions;
 using Atheer.Services.ArticlesService;
+using Atheer.Services.ArticlesService.Exceptions;
 using Atheer.Services.FileService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -28,11 +28,12 @@ namespace Atheer.Controllers.Article
         {
             try
             {
-                await _service.Like(key).ConfigureAwait(false);
+                await _service.Like(key).CAF();
                 return Ok();
             }
-            catch (IncorrectOperationException)
+            catch (ArticleNotFoundException)
             {
+                _logger.LogWarning("Attempt to like a non-existent article: {ArticleKey}", key.ToString());
                 return BadRequest();
             }
         }
@@ -42,11 +43,12 @@ namespace Atheer.Controllers.Article
         {
             try
             {
-                await _service.Share(key).ConfigureAwait(false);
+                await _service.Share(key).CAF();
                 return Ok();
             }
-            catch (IncorrectOperationException)
+            catch (ArticleNotFoundException)
             {
+                _logger.LogWarning("Attempt to share a non-existent article: {ArticleKey}", key.ToString());
                 return BadRequest();
             }
         }

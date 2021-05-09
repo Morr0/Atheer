@@ -244,27 +244,27 @@ namespace Atheer.Services.ArticlesService
         public async Task Like(ArticlePrimaryKey primaryKey)
         {
             var article = await _context.Article.FirstOrDefaultAsync(x =>
-                x.CreatedYear == primaryKey.CreatedYear && x.TitleShrinked == primaryKey.TitleShrinked).ConfigureAwait(false);
+                x.CreatedYear == primaryKey.CreatedYear && x.TitleShrinked == primaryKey.TitleShrinked).CAF();
 
-            if (article is null) throw new InvalidOperationException();
+            if (article is null) throw new ArticleNotFoundException();
             
             article.Likes++;
 
             _context.Entry(article).Property(x => x.Likes).IsModified = true;
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+            await _context.SaveChangesAsync().CAF();
         }
 
         public async Task Share(ArticlePrimaryKey primaryKey)
         {
             var article = await _context.Article.FirstOrDefaultAsync(x =>
-                x.CreatedYear == primaryKey.CreatedYear && x.TitleShrinked == primaryKey.TitleShrinked).ConfigureAwait(false);
+                x.CreatedYear == primaryKey.CreatedYear && x.TitleShrinked == primaryKey.TitleShrinked).CAF();
             
-            if (article is null) throw new InvalidOperationException();
+            if (article is null) throw new ArticleNotFoundException();
             
             article.Shares++;
 
             _context.Entry(article).Property(x => x.Shares).IsModified = true;
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+            await _context.SaveChangesAsync().CAF();
         }
 
         public async Task Delete(ArticlePrimaryKey key)
