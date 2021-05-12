@@ -61,8 +61,7 @@ namespace Atheer.Repositories
                 .HasGeneratedTsVectorColumn(x => x.SearchVector, "english", x => new
                 {
                     x.Title,
-                    x.Description,
-                    x.Content
+                    x.Description
                 })
                 .HasIndex(x => x.SearchVector)
                 .HasMethod("GIN");

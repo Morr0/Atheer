@@ -36,6 +36,9 @@ namespace Atheer.Models
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
+        public int Version { get; set; }
+        public bool EverPublished { get; set; }
+
         public string GetId() => $"{CreatedYear.ToString()}-{TitleShrinked}";
     }
 }
