@@ -60,6 +60,16 @@
         @if (canEdit)
         {
             <span class="text-info">Mine</span>
+            
+            @if (Model.Article.EverPublished)
+            {
+                <span class="text-info">Published before</span>
+            }
+            else
+            {
+                <span class="text-info">Unpublished yet</span>
+            }
+            
             <a asp-controller="ArticleEdit" asp-action="UpdateArticleView" asp-route-CreatedYear="@Model.Article.CreatedYear.ToString()" 
                asp-route-TitleShrinked="@Model.Article.TitleShrinked">Edit</a>
         }
@@ -71,7 +81,7 @@
                 </a>
             </span>
         }
-
+        <br/>
         @if (article.Draft)
         {
             <span class="text-info">Draft</span>
@@ -177,46 +187,4 @@
 @section Scripts
 {
     <script defer src="~/js/article/index.js"></script>
-    <script>
-// const halfHeight = window.innerHeight / 5;
-// const goUpBtn = document.getElementById("go-up-btn");
-// window.addEventListener("scroll", (event) => {
-//     goUpBtn.hidden = window.scrollY <= halfHeight;
-// });
-//
-// window.scrollBy({
-//    behavior: "smooth",
-//    top: 0,
-//    left: 250
-// });
-//
-// goUpBtn.addEventListener("click", () => {
-//     window.scrollTo({
-//         top: 0,
-//         left: window.screenX,
-//         behavior: "smooth"
-//     });
-// });
-//
-// const jumpableHeaders = document.querySelectorAll(".jumpableHeader");
-// if (jumpableHeaders.length > 0){
-//     let string = [`<ul class="list-group flex-grow-0">`];
-//     for (let header of jumpableHeaders) {
-//         const name = header.innerText.replace(":", "");
-//         string.push(`<li class="list-group-item"><a href="#${header.id}">${name}</a></li>`);
-//     }
-//     string.push("</ul>");
-//    
-//     const tableOfContentsDiv = document.getElementById("toc").innerHTML = string.join("");
-//     document.getElementById("tocOuter").hidden = false;
-// }
-//
-// (() => {
-//     const content = document.getElementById("articleContent").textContent;
-//    
-//     const wordsCount = content.replace(/[^w ]/, "").split(/\s+/).length;
-//     const minsToRead = Math.floor(wordsCount / 240) + 1;
-//     document.getElementById("wpm").innerHTML = `${minsToRead} minutes to read`;
-// })();
-</script>
 }
