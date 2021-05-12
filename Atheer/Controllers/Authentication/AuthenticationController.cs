@@ -2,10 +2,13 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Atheer.Controllers.Authentication.Models;
+using Atheer.Controllers.Authentication.Requests;
 using Atheer.Exceptions;
 using Atheer.Extensions;
 using Atheer.Services.OAuthService;
 using Atheer.Services.UsersService;
+using Atheer.Services.UsersService.Exceptions;
+using Atheer.Services.UsersService.Models;
 using Atheer.Utilities.Config.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -38,40 +41,80 @@ namespace Atheer.Controllers.Authentication
 
             return View("Login", new LoginViewModel
             {
-                EmailOrUsername =  emailOrUsername
+                EmailOrUsername =  emailOrUsername,
+                AttemptsLeft = UserService.AttemptsUntilFreeze
             });
         }
 
         [HttpPost("Login")]
         [ResponseCache(Duration = 0, NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<IActionResult> Login([FromForm] LoginViewModel loginView, [FromQuery] string returnUrl = "/")
+        public async Task<IActionResult> Login([FromForm] LoginRequest request, [FromQuery] string returnUrl = "/")
         {
-            // To minimize spam of searches
+            // To minimize spam
             await Task.Delay(1000).CAF();
             
-            if (!ModelState.IsValid) return View("Login", loginView);
-            
-            _logger.LogInformation("Trying to login for EmailOrUsername: {user}", loginView.EmailOrUsername);
-            
-            var user = await _userService.GetFromEmailOrUsernameForLogin(loginView.EmailOrUsername).CAF();
-            if (user is not null)
+            if (!ModelState.IsValid) return View("Login", new LoginViewModel
             {
-                await _userService.SetLogin(user.Id).CAF();
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
-                    , ClaimsPrincipal(user.Id, user.Roles)).CAF();
-
-                if (!Url.IsLocalUrl(returnUrl)) return Redirect("/");
-                
-                _logger.LogInformation("Successfully logged in for EmailOrUsername: {user}", loginView.EmailOrUsername);
-
-                return LocalRedirect(returnUrl);
-            }
+                EmailOrUsername = request.EmailOrUsername,
+                AttemptsLeft = UserService.AttemptsUntilFreeze
+            });
             
-            _logger.LogInformation("Denied login to EmailOrUsername: {user} due to incorrect credentials",
-                loginView.EmailOrUsername);
+            _logger.LogInformation("Trying to login for EmailOrUsername: {user}", request.EmailOrUsername);
 
-            TempData["Info"] = "Inputted email/password is not correct";
-            return RedirectToAction("LoginView");
+            UserLoginAttemptResponse userLoginAttempt;
+            try
+            {
+                userLoginAttempt = await _userService.TryLogin(request.EmailOrUsername, request.Password).CAF();
+            }
+            catch (OAuthUserCannotLoginUsingPasswordException)
+            {
+                _logger.LogInformation("Denied login to EmailOrUsername: {user} due to it being an OAuth user",
+                    request.EmailOrUsername);
+                
+                // Intentional 10 seconds, because only an attacker tries that
+                await Task.Delay(10000).CAF();
+                return RedirectToAction("Login");
+            }
+
+            switch (userLoginAttempt.AttemptStatus)
+            {
+                case UserLoginAttemptStatus.InvalidCredentials:
+                    _logger.LogInformation("Denied login to EmailOrUsername: {user} due to incorrect credentials",
+                        request.EmailOrUsername);
+                
+                    TempData["Info"] = "Inputted email/password is not correct";
+                    return View("Login", new LoginViewModel
+                    {
+                        EmailOrUsername = request.EmailOrUsername,
+                        AttemptsLeft = userLoginAttempt.LoginAttemptsLeft
+                    });
+                
+                case UserLoginAttemptStatus.ExceededAttempts:
+                    // i.e. now FROZEN
+                    _logger.LogInformation("Denied login to user id: {user} due to exceeding allowed attempts for this window", 
+                        userLoginAttempt.User.Id);
+
+                    await Task.Delay(1000).CAF();
+
+                    return View("LoginFreeze", new LoginFreezeViewModel(request.EmailOrUsername, 
+                        userLoginAttempt.NextLoginAttemptTime.Value));
+                
+                case UserLoginAttemptStatus.LoggedIn:
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
+                        , ClaimsPrincipal(userLoginAttempt.User.Id, userLoginAttempt.User.Roles)).CAF();
+
+                    if (!Url.IsLocalUrl(returnUrl)) return Redirect("/");
+                
+                    _logger.LogInformation("Successfully logged in for EmailOrUsername: {user}", request.EmailOrUsername);
+
+                    return LocalRedirect(returnUrl);
+                
+                default: return Redirect("/");
+            }
+
+            // TODO look at reseting login attempts after a successful login/logout within short timeframe maybe?
+            // TODO handle the case of alreaday frozen
+            // TODO add freeze cookie for frozen attempts and cache response
         }
 
         private ClaimsPrincipal ClaimsPrincipal(string userId, string roles, bool oAuthUser = false)

@@ -16,6 +16,7 @@ namespace Atheer.Repositories
         public DbSet<TagArticle> TagArticle { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<ArticleSeries> ArticleSeries { get; set; }
+        public DbSet<UserLoginAttempt> UserLoginAttempt { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,7 +25,9 @@ namespace Atheer.Repositories
             ConfigureTagsModels(modelBuilder);
             ConfigureNavItems(modelBuilder);
             ConfigureArticleSeries(modelBuilder);
-            
+
+            modelBuilder.ApplyConfiguration(new DataUserLoginAttemptConfig());
+
             ConfigureViews(modelBuilder);
         }
     }

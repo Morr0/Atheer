@@ -1,0 +1,7 @@
+﻿@using Atheer.Services.UsersService
+@using Atheer.Extensions
+@model Atheer.Controllers.Authentication.Models.LoginFreezeViewModel
+
+<h1>You have tried @UserService.AttemptsUntilFreeze.ToString() times and now you are frozen until 
+    @await Component.InvokeAsync("LocalDate", Model.Until.GetString())</h1>
+

@@ -2,6 +2,7 @@
 using Atheer.Controllers.User.Models;
 using Atheer.Models;
 using Atheer.Services.OAuthService;
+using Atheer.Services.UsersService.Models;
 
 namespace Atheer.Services.UsersService
 {
@@ -11,9 +12,8 @@ namespace Atheer.Services.UsersService
         Task<(string userId, string roles)> AddOrUpdateOAuthUser(OAuthUserInfo oAuthUserInfo);
         Task<bool> EmailRegistered(string email);
         Task<User> Get(string id);
-        Task<User> GetFromEmailOrUsernameForLogin(string emailOrUsername);
         Task SetLogin(string id);
-        Task<bool> Exists(string newAuthorId);
+        Task<UserLoginAttemptResponse> TryLogin(string id, string rawPassword);
         Task Update(string id, UserSettingsUpdate settingsViewModel);
         Task UpdatePassword(string id, string oldPassword, string newPassword);
 

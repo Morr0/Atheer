@@ -1,8 +1,8 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Fix local date
 - Rate limiting system on authentication endpoints and locking (let client cache results)
+- Show newly registered user their username
 - Implement TOTP authentication (by user choice)
 - Properly cache article/s, i.e. handle logged in and logged out cases in server
 - Properly cache CDN in Cloudformation

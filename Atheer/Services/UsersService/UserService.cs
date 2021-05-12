@@ -8,6 +8,7 @@ using Atheer.Models;
 using Atheer.Repositories;
 using Atheer.Services.OAuthService;
 using Atheer.Services.UsersService.Exceptions;
+using Atheer.Services.UsersService.Models;
 using Atheer.Services.Utilities.TimeService;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,16 @@ namespace Atheer.Services.UsersService
 {
     public class UserService : IUserService
     {
+        public static readonly int AttemptsUntilFreeze = 3;
+        /// <summary>
+        /// Window of time to freeze within if exceeded attempts
+        /// </summary>
+        public static readonly int FreezeWithinMins = 2;
+        /// <summary>
+        /// How long to freeze
+        /// </summary>
+        public static readonly int FreezeTimeMins = 3;
+        
         private readonly UserFactory _factory;
         private readonly Data _context;
         private readonly ILogger<UserService> _logger;
@@ -121,19 +132,19 @@ namespace Atheer.Services.UsersService
                 .FirstOrDefaultAsync();
         }
 
-        public Task<User> GetFromEmailOrUsernameForLogin(string emailOrUsername)
-        {
-            string lowerCasedEmailOrUsername = emailOrUsername.ToLowerInvariant();
-            return GetForLogin(IsEmail(lowerCasedEmailOrUsername) ? _factory.Id(lowerCasedEmailOrUsername) : lowerCasedEmailOrUsername);
-        }
+        // TODO eliminate email login
+        // private Task<User> GetFromEmailOrUsernameForLogin(string emailOrUsername)
+        // {
+        //     string lowerCasedEmailOrUsername = emailOrUsername.ToLowerInvariant();
+        //     return GetForLogin(IsEmail(lowerCasedEmailOrUsername) ? _factory.Id(lowerCasedEmailOrUsername) : lowerCasedEmailOrUsername);
+        // }
 
-        private Task<User> GetForLogin(string id)
-        {
-            return _context.User.AsNoTracking()
-                .Where(x => x.Id == id && !x.OAuthUser)
-                .FirstOrDefaultAsync();
-        }
+        // private Task<User> GetForLogin(string id)
+        // {
+        //     return _context.User.FirstOrDefaultAsync(x => x.Id == id);
+        // }
 
+        // TODO take care of OAuth login
         public async Task SetLogin(string id)
         {
             var user = await _context.User.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
@@ -141,6 +152,77 @@ namespace Atheer.Services.UsersService
             
             _context.Entry(user).Property(x => x.LastLoggedInAt).IsModified = true;
             await _context.SaveChangesAsync().ConfigureAwait(false);
+        }
+
+        public async Task<UserLoginAttemptResponse> TryLogin(string id, string rawPassword)
+        {
+            var user = await _context.User.FirstOrDefaultAsync(x => x.Id == id).CAF();
+
+            if (user.OAuthUser) throw new OAuthUserCannotLoginUsingPasswordException();
+            
+            (bool canLogin, int attemptsLeft, DateTime? nextLoginAttemptTime) = await CanLogin(user).CAF();
+
+            var time = _timeService.Get();
+            if (!canLogin)
+            {
+                await AddLoginAttempt(user, time, false).CAF();
+                return new UserLoginAttemptResponse(user, UserLoginAttemptStatus.ExceededAttempts, attemptsLeft,
+                    nextLoginAttemptTime);
+            }
+            
+            if (!_factory.EqualPasswords(rawPassword, user.PasswordHash))
+            {
+                await AddLoginAttempt(user, time, false).CAF();
+                return new UserLoginAttemptResponse(user, UserLoginAttemptStatus.InvalidCredentials, attemptsLeft, nextLoginAttemptTime);
+            }
+            
+            // Can login
+            await AddLoginAttempt(user, time, true).CAF();
+            user.LastLoggedInAt = time;
+            await _context.SaveChangesAsync().CAF();
+
+            return new UserLoginAttemptResponse(user, UserLoginAttemptStatus.LoggedIn, attemptsLeft, null);
+        }
+
+        private async Task AddLoginAttempt(User user, DateTime time, bool successfulLogin)
+        {
+            string referenceId = Guid.NewGuid().ToString();
+            var loginAttempt = new UserLoginAttempt
+            {
+                UserId = user.Id,
+                AttemptAt = time,
+                ReferenceId = referenceId,
+                SuccessfulLogin = successfulLogin
+            };
+
+            await _context.UserLoginAttempt.AddAsync(loginAttempt).CAF();
+        }
+
+        private async Task<(bool canLogin, int attemptsLeft, DateTime? nextLoginAttemptTime)> CanLogin(User user)
+        {
+            var lastNLoginAttempt = await _context.UserLoginAttempt.AsNoTracking()
+                .Where(x => x.UserId == user.Id)
+                .OrderByDescending(x => x.AttemptAt)
+                .Take(AttemptsUntilFreeze)
+                .ToListAsync().CAF();
+
+            if (lastNLoginAttempt.Count < AttemptsUntilFreeze)
+            {
+                int attemptsLeft = AttemptsUntilFreeze - lastNLoginAttempt.Count;
+                return (true, attemptsLeft, null);
+            }
+
+            var oldestAttempt = lastNLoginAttempt[0];
+            var mostRecentAttempt = lastNLoginAttempt[AttemptsUntilFreeze - 1];
+
+            var largestRange = oldestAttempt.AttemptAt - mostRecentAttempt.AttemptAt;
+            // Last ${AttemptsUntilFreeze} within the window of freezing login
+            if (largestRange.Minutes < FreezeWithinMins)
+            {
+                return (false, 0, _timeService.Get().AddMinutes(FreezeTimeMins));
+            }
+
+            return (true, 0, null);
         }
 
         public Task<bool> Exists(string userId)
