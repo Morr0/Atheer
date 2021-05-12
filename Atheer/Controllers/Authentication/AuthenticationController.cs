@@ -54,8 +54,6 @@ namespace Atheer.Controllers.Authentication
             // To minimize spam
             await Task.Delay(1000).CAF();
             
-            Console.WriteLine(request.Password);
-            
             if (!ModelState.IsValid) return View("Login", new LoginViewModel
             {
                 Username = request.Username,

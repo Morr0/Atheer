@@ -9,35 +9,26 @@
     ViewData["Title"] = "Login";
 }
 
-@if (TempData.ContainsKey("Info"))
-{
-    <span class="text-info">@TempData["Info"]</span>
-}
-
 <h4 class="text-dark">Login</h4>
 
-@if (Model.AttemptsLeft != UserService.AttemptsUntilFreeze)
+@if (Model.AttemptsLeft < UserService.AttemptsUntilFreeze)
 {
     <div class="text-danger">Inputted username/password is not correct</div>
     <div class="text-danger">You have @Model.AttemptsLeft.ToString() attempts left</div>
 }
+<div asp-validation-summary="All" class="text-danger"></div>
 
 <form asp-controller="Authentication" asp-action="Login" asp-route-returnUrl="@Context.Request.Query["returnUrl"]" method="post">
-    
-    <div asp-validation-summary="All"></div>
-    
     <div class="form-group">
         <label asp-for="Username"></label>
         <input asp-for="Username" class="form-control">
         <span asp-validation-for="Username" class="text-danger"></span>
     </div>
-    
     <div class="form-group">
         <label asp-for="Password"></label>
         <input asp-for="Password" type="password" class="form-control">
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
-
     <button class="btn btn-outline-primary">Login</button>
 </form>
 

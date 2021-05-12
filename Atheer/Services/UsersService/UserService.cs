@@ -197,14 +197,14 @@ namespace Atheer.Services.UsersService
 
             if (lastNLoginAttempt.Count < AttemptsUntilFreeze)
             {
-                int attemptsLeft = AttemptsUntilFreeze - lastNLoginAttempt.Count;
+                int attemptsLeft = AttemptsUntilFreeze - lastNLoginAttempt.Count - 1;
                 return (true, attemptsLeft);
             }
 
             var mostRecentAttempt = lastNLoginAttempt[0];
             var oldestAttempt = lastNLoginAttempt[AttemptsUntilFreeze - 1];
 
-            if (mostRecentAttempt.SuccessfulLogin) return (true, AttemptsUntilFreeze);
+            if (mostRecentAttempt.SuccessfulLogin) return (true, AttemptsUntilFreeze - 1);
 
             // AT THIS POINT no more attempts left
             var largestRange = mostRecentAttempt.AttemptAt - oldestAttempt.AttemptAt;
