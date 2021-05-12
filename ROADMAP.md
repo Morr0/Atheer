@@ -3,6 +3,7 @@
 ### List of things to work on:
 - Rate limiting system on authentication endpoints and locking (let client cache results)
 - Show newly registered user their username
+- Implement a better login freeze screen
 - Implement TOTP authentication (by user choice)
 - Properly cache article/s, i.e. handle logged in and logged out cases in server
 - Properly cache CDN in Cloudformation

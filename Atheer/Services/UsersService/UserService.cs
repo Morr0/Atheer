@@ -8,7 +8,7 @@ using Atheer.Models;
 using Atheer.Repositories;
 using Atheer.Services.OAuthService;
 using Atheer.Services.UsersService.Exceptions;
-using Atheer.Services.UsersService.Models;
+using Atheer.Services.UsersService.Models.LoginAttempts;
 using Atheer.Services.Utilities.TimeService;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -154,34 +154,37 @@ namespace Atheer.Services.UsersService
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        public async Task<UserLoginAttemptResponse> TryLogin(string id, string rawPassword)
+        public async Task<LoginAttemptResponse> TryLogin(string id, string rawPassword)
         {
             var user = await _context.User.FirstOrDefaultAsync(x => x.Id == id).CAF();
 
             if (user.OAuthUser) throw new OAuthUserCannotLoginUsingPasswordException();
             
-            (bool canLogin, int attemptsLeft, DateTime? nextLoginAttemptTime) = await CanLogin(user).CAF();
+            (bool canLogin, int attemptsLeft) = await CanLogin(user).CAF();
 
             var time = _timeService.Get();
             if (!canLogin)
             {
                 await AddLoginAttempt(user, time, false).CAF();
-                return new UserLoginAttemptResponse(user, UserLoginAttemptStatus.ExceededAttempts, attemptsLeft,
-                    nextLoginAttemptTime);
+                await _context.SaveChangesAsync().CAF();
+                
+                return new FreezeLoginAttemptResponseResponse(user, time.AddMinutes(FreezeTimeMins));
             }
-            
-            if (!_factory.EqualPasswords(rawPassword, user.PasswordHash))
-            {
-                await AddLoginAttempt(user, time, false).CAF();
-                return new UserLoginAttemptResponse(user, UserLoginAttemptStatus.InvalidCredentials, attemptsLeft, nextLoginAttemptTime);
-            }
-            
-            // Can login
-            await AddLoginAttempt(user, time, true).CAF();
-            user.LastLoggedInAt = time;
-            await _context.SaveChangesAsync().CAF();
 
-            return new UserLoginAttemptResponse(user, UserLoginAttemptStatus.LoggedIn, attemptsLeft, null);
+            bool equalPassword = _factory.EqualPasswords(rawPassword, user.PasswordHash);
+            if (equalPassword)
+            {
+                await AddLoginAttempt(user, time, true).CAF();
+                user.LastLoggedInAt = time;
+                await _context.SaveChangesAsync().CAF();
+
+                return new ProceedLoginAttemptResponse(user);
+            }
+
+            await AddLoginAttempt(user, time, false).CAF();
+            await _context.SaveChangesAsync().CAF();
+            
+            return new IncorrectCredentialsLoginAttemptResponse(user, attemptsLeft);
         }
 
         private async Task AddLoginAttempt(User user, DateTime time, bool successfulLogin)
@@ -198,7 +201,7 @@ namespace Atheer.Services.UsersService
             await _context.UserLoginAttempt.AddAsync(loginAttempt).CAF();
         }
 
-        private async Task<(bool canLogin, int attemptsLeft, DateTime? nextLoginAttemptTime)> CanLogin(User user)
+        private async Task<(bool canLogin, int attemptsLeft)> CanLogin(User user)
         {
             var lastNLoginAttempt = await _context.UserLoginAttempt.AsNoTracking()
                 .Where(x => x.UserId == user.Id)
@@ -209,20 +212,15 @@ namespace Atheer.Services.UsersService
             if (lastNLoginAttempt.Count < AttemptsUntilFreeze)
             {
                 int attemptsLeft = AttemptsUntilFreeze - lastNLoginAttempt.Count;
-                return (true, attemptsLeft, null);
+                return (true, attemptsLeft);
             }
 
-            var oldestAttempt = lastNLoginAttempt[0];
-            var mostRecentAttempt = lastNLoginAttempt[AttemptsUntilFreeze - 1];
+            // AT THIS POINT no more attempts left
+            var mostRecentAttempt = lastNLoginAttempt[0];
+            var oldestAttempt = lastNLoginAttempt[AttemptsUntilFreeze - 1];
 
-            var largestRange = oldestAttempt.AttemptAt - mostRecentAttempt.AttemptAt;
-            // Last ${AttemptsUntilFreeze} within the window of freezing login
-            if (largestRange.Minutes < FreezeWithinMins)
-            {
-                return (false, 0, _timeService.Get().AddMinutes(FreezeTimeMins));
-            }
-
-            return (true, 0, null);
+            var largestRange = mostRecentAttempt.AttemptAt - oldestAttempt.AttemptAt;
+            return largestRange.Minutes >= FreezeWithinMins ? (true, 0) : (false, 0);
         }
 
         public Task<bool> Exists(string userId)
