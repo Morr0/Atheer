@@ -14,6 +14,7 @@ using Atheer.Utilities.Config.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -24,6 +25,8 @@ namespace Atheer.Controllers.Authentication
     {
         public static string CookieUserId = "userId";
         public static readonly string CookieOAuthUser = "OAuth";
+
+        private static readonly string FreezeCookieName = "FreezeCookie";
         
         private readonly IUserService _userService;
         private readonly ILogger<AuthenticationController> _logger;
@@ -35,10 +38,15 @@ namespace Atheer.Controllers.Authentication
         }
         
         [HttpGet("Login")]
-        [ResponseCache(Duration = 0, NoStore = true, Location = ResponseCacheLocation.None)]
         public IActionResult LoginView([FromQuery] string username)
         {
             if (User.Identity?.IsAuthenticated == true) return Redirect("/");
+
+            bool freezeCookieExists = Request.Cookies.TryGetValue(FreezeCookieName, out string datetime);
+            if (freezeCookieExists)
+            {
+                return View("LoginFreeze", new LoginFreezeViewModel(DateTime.Parse(datetime)));
+            }
 
             return View("Login", new LoginViewModel
             {
@@ -94,10 +102,14 @@ namespace Atheer.Controllers.Authentication
                 // i.e. now FROZEN
                 _logger.LogInformation("Denied login to Username: {user} due to exceeding allowed attempts for this window", 
                     freezeResponse.User.Id);
+                
+                Response.Cookies.Append(FreezeCookieName, freezeResponse.Until.GetString(), new CookieOptions
+                {
+                    HttpOnly = true,
+                    MaxAge = TimeSpan.FromMinutes(UserService.FreezeTimeMins)
+                });
 
-                await Task.Delay(1000).CAF();
-
-                return View("LoginFreeze", new LoginFreezeViewModel(request.Username, freezeResponse.Until));
+                return View("LoginFreeze", new LoginFreezeViewModel(freezeResponse.Until));
             }
 
             var proceedResponse = loginResponse as ProceedLoginAttemptResponse;
@@ -109,8 +121,6 @@ namespace Atheer.Controllers.Authentication
             if (!Url.IsLocalUrl(returnUrl)) return Redirect("/");
             
             return LocalRedirect(returnUrl);
-            // TODO handle the case of alreaday frozen
-            // TODO add freeze cookie for frozen attempts and cache response
         }
 
         private ClaimsPrincipal ClaimsPrincipal(string userId, string roles, bool oAuthUser = false)

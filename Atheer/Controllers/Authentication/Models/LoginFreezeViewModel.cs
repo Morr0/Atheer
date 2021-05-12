@@ -2,5 +2,5 @@
 
 namespace Atheer.Controllers.Authentication.Models
 {
-    public record LoginFreezeViewModel(string EmailOrUsername, DateTime Until);
+    public record LoginFreezeViewModel(DateTime Until);
 }
