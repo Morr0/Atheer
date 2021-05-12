@@ -10,7 +10,6 @@ namespace Atheer.Services.ArticlesService
 {
     public interface IArticleService
     {
-        Task<bool> Exists(ArticlePrimaryKey key, string userId = null);
         Task<ArticleViewModel> Get(ArticlePrimaryKey primaryKey, string viewerUserId = null);
         Task<ArticlesResponse> Get(int amount, string searchQuery);
         Task<ArticlesResponse> Get(int amount, int page, int createdYear = 0, string tagId = null,

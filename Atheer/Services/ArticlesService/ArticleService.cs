@@ -176,20 +176,10 @@ namespace Atheer.Services.ArticlesService
             return list.Count == amount && await queryable.AnyAsync().CAF();
         }
 
-        // TODO take care of this
-        public async Task<bool> Exists(ArticlePrimaryKey key, string userId = null)
+        private async Task<bool> Exists(ArticlePrimaryKey key)
         {
-            var article = await _context.Article.AsNoTracking()
-                .Where(x => x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked)
-                .Select(x => new
-                {
-                    x.Draft,
-                    x.AuthorId
-                })
-                .FirstOrDefaultAsync().ConfigureAwait(false);
-
-            if (article is null) return false;
-            return !article.Draft || article.AuthorId == userId;
+            return await _context.Article.AsNoTracking()
+                .AnyAsync(x => x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked).CAF();
         }
 
         public async Task<ArticleViewModel> Get(ArticlePrimaryKey key, string viewerUserId = null)
