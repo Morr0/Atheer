@@ -36,13 +36,13 @@ namespace Atheer.Controllers.Authentication
         
         [HttpGet("Login")]
         [ResponseCache(Duration = 0, NoStore = true, Location = ResponseCacheLocation.None)]
-        public IActionResult LoginView([FromQuery] string emailOrUsername)
+        public IActionResult LoginView([FromQuery] string username)
         {
             if (User.Identity?.IsAuthenticated == true) return Redirect("/");
 
             return View("Login", new LoginViewModel
             {
-                EmailOrUsername =  emailOrUsername,
+                Username =  username,
                 AttemptsLeft = UserService.AttemptsUntilFreeze
             });
         }
@@ -58,21 +58,21 @@ namespace Atheer.Controllers.Authentication
             
             if (!ModelState.IsValid) return View("Login", new LoginViewModel
             {
-                EmailOrUsername = request.EmailOrUsername,
+                Username = request.Username,
                 AttemptsLeft = UserService.AttemptsUntilFreeze
             });
             
-            _logger.LogInformation("Trying to login for EmailOrUsername: {user}", request.EmailOrUsername);
+            _logger.LogInformation("Trying to login for Username: {user}", request.Username);
 
             LoginAttemptResponse loginResponse;
             try
             {
-                loginResponse = await _userService.TryLogin(request.EmailOrUsername, request.Password).CAF();
+                loginResponse = await _userService.TryLogin(request.Username, request.Password).CAF();
             }
             catch (OAuthUserCannotLoginUsingPasswordException)
             {
-                _logger.LogWarning("Denied login to EmailOrUsername: {user} due to it being an OAuth user",
-                    request.EmailOrUsername);
+                _logger.LogWarning("Denied login to Username: {user} due to it being an OAuth user",
+                    request.Username);
                 
                 // Intentional 10 seconds, because only an attacker tries that
                 await Task.Delay(10000).CAF();
@@ -81,12 +81,12 @@ namespace Atheer.Controllers.Authentication
             
             if (loginResponse is IncorrectCredentialsLoginAttemptResponse incorrectCredentialsResponse)
             {
-                _logger.LogInformation("Denied login to EmailOrUsername: {user} due to incorrect credentials",
-                    request.EmailOrUsername);
+                _logger.LogInformation("Denied login to Username: {user} due to incorrect credentials",
+                    request.Username);
                 
                 return View("Login", new LoginViewModel
                 {
-                    EmailOrUsername = request.EmailOrUsername,
+                    Username = request.Username,
                     AttemptsLeft = incorrectCredentialsResponse.AttemptsLeft
                 });
             }
@@ -94,19 +94,19 @@ namespace Atheer.Controllers.Authentication
             if (loginResponse is FreezeLoginAttemptResponseResponse freezeResponse)
             {
                 // i.e. now FROZEN
-                _logger.LogInformation("Denied login to user id: {user} due to exceeding allowed attempts for this window", 
+                _logger.LogInformation("Denied login to Username: {user} due to exceeding allowed attempts for this window", 
                     freezeResponse.User.Id);
 
                 await Task.Delay(1000).CAF();
 
-                return View("LoginFreeze", new LoginFreezeViewModel(request.EmailOrUsername, freezeResponse.Until));
+                return View("LoginFreeze", new LoginFreezeViewModel(request.Username, freezeResponse.Until));
             }
 
             var proceedResponse = loginResponse as ProceedLoginAttemptResponse;
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
                 , ClaimsPrincipal(proceedResponse.User.Id, proceedResponse.User.Roles)).CAF();
 
-            _logger.LogInformation("Successfully logged in for EmailOrUsername: {user}", request.EmailOrUsername);
+            _logger.LogInformation("Successfully logged in for Username: {user}", request.Username);
             
             if (!Url.IsLocalUrl(returnUrl)) return Redirect("/");
             
@@ -144,7 +144,7 @@ namespace Atheer.Controllers.Authentication
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).CAF();
             string loggedInUserId = this.GetViewerUserId();
-            _logger.LogInformation("User id: {userId} successfully logged out", loggedInUserId);
+            _logger.LogInformation("Username: {userId} successfully logged out", loggedInUserId);
 
             return Redirect("/");
         }

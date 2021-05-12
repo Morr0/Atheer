@@ -132,18 +132,6 @@ namespace Atheer.Services.UsersService
                 .FirstOrDefaultAsync();
         }
 
-        // TODO eliminate email login
-        // private Task<User> GetFromEmailOrUsernameForLogin(string emailOrUsername)
-        // {
-        //     string lowerCasedEmailOrUsername = emailOrUsername.ToLowerInvariant();
-        //     return GetForLogin(IsEmail(lowerCasedEmailOrUsername) ? _factory.Id(lowerCasedEmailOrUsername) : lowerCasedEmailOrUsername);
-        // }
-
-        // private Task<User> GetForLogin(string id)
-        // {
-        //     return _context.User.FirstOrDefaultAsync(x => x.Id == id);
-        // }
-
         public async Task TryLoginOAuth(string id)
         {
             var user = await _context.User.FirstOrDefaultAsync(x => x.Id == id).CAF();
