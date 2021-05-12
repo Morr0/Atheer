@@ -77,11 +77,11 @@ namespace Atheer.Services.ArticlesService
 
             queryable = string.IsNullOrEmpty(viewerUserId)
                 // Public viewing all articles
-                ? queryable.Where(x => !x.Unlisted && !x.Draft && !x.ForceFullyUnlisted)
+                ? queryable.Where(x => x.EverPublished && !x.Unlisted && !x.Draft && !x.ForceFullyUnlisted)
                 // Registered user viewing all articles
                 : queryable.Where(x =>
                     (x.AuthorId == viewerUserId) ||
-                    (x.AuthorId != viewerUserId && !x.Draft));
+                    (x.AuthorId != viewerUserId && x.EverPublished && !x.Draft && !x.Unlisted && !x.ForceFullyUnlisted));
 
             // Viewing specific user's articles
             if (!string.IsNullOrEmpty(specificUserId))
@@ -132,7 +132,7 @@ namespace Atheer.Services.ArticlesService
         {
             int skip = amount * page;
             var queryable = _context.Article.AsNoTracking()
-                .Where(x => !x.Unlisted && !x.Draft && !x.ForceFullyUnlisted)
+                .Where(x => x.EverPublished && !x.Unlisted && !x.Draft && !x.ForceFullyUnlisted)
                 .OrderByDescending(x => x.CreatedAt)
                 .Skip(skip)
                 .Take(amount);
@@ -176,6 +176,7 @@ namespace Atheer.Services.ArticlesService
             return list.Count == amount && await queryable.AnyAsync().CAF();
         }
 
+        // TODO take care of this
         public async Task<bool> Exists(ArticlePrimaryKey key, string userId = null)
         {
             var article = await _context.Article.AsNoTracking()
@@ -196,10 +197,11 @@ namespace Atheer.Services.ArticlesService
             var article = await _context.Article.AsNoTracking()
                 .Include(x => x.Series)
                 .FirstOrDefaultAsync(x => x.CreatedYear == key.CreatedYear && x.TitleShrinked == key.TitleShrinked)
-                .ConfigureAwait(false);
+                .CAF();
             
             if (article is null) return null;
-            if (article.Draft && article.AuthorId != viewerUserId) return null;
+            if ((!article.EverPublished || article.ForceFullyUnlisted || article.Draft) && article.AuthorId != viewerUserId) return null;
+            // if (article.Draft && article.AuthorId != viewerUserId) return null;
             
             // Get author full name
             var author = await _context.User.AsNoTracking()
