@@ -172,7 +172,7 @@ namespace Atheer.Controllers.Authentication
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
                 , ClaimsPrincipal(userId, roles, oAuthUser: true)).CAF();
-            await _userService.SetLogin(userId).CAF();
+            await _userService.TryLoginOAuth(userId).CAF();
             
             _logger.LogInformation("Successfully logged in for User id: {UserId} from OAuth Provider: {Provider}", 
                 userId, OAuthProvider.Github.ToString());

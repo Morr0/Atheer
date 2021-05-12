@@ -144,13 +144,11 @@ namespace Atheer.Services.UsersService
         //     return _context.User.FirstOrDefaultAsync(x => x.Id == id);
         // }
 
-        // TODO take care of OAuth login
-        public async Task SetLogin(string id)
+        public async Task TryLoginOAuth(string id)
         {
-            var user = await _context.User.FirstOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
+            var user = await _context.User.FirstOrDefaultAsync(x => x.Id == id).CAF();
             user.LastLoggedInAt = _timeService.Get();
             
-            _context.Entry(user).Property(x => x.LastLoggedInAt).IsModified = true;
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
@@ -238,11 +236,6 @@ namespace Atheer.Services.UsersService
             mapper.Map(settingsViewModel, user);
 
             await _context.SaveChangesAsync().ConfigureAwait(false);
-        }
-
-        private bool IsEmail(string emailOrUsername)
-        {
-            return emailOrUsername.Contains('@') && emailOrUsername.Contains('.');
         }
 
         public async Task UpdatePassword(string id, string oldPassword, string newPassword)

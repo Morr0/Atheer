@@ -12,8 +12,8 @@ namespace Atheer.Services.UsersService
         Task<(string userId, string roles)> AddOrUpdateOAuthUser(OAuthUserInfo oAuthUserInfo);
         Task<bool> EmailRegistered(string email);
         Task<User> Get(string id);
-        Task SetLogin(string id);
         Task<LoginAttemptResponse> TryLogin(string id, string rawPassword);
+        Task TryLoginOAuth(string id);
         Task Update(string id, UserSettingsUpdate settingsViewModel);
         Task UpdatePassword(string id, string oldPassword, string newPassword);
 
