@@ -1,7 +1,27 @@
-﻿@using Atheer.Services.UsersService
-@using Atheer.Extensions
+﻿@using Atheer.Services.Utilities.TimeService
 @model Atheer.Controllers.Authentication.Models.LoginFreezeViewModel
+@inject ITimeService TimeService
 
-<h1>You have tried @UserService.AttemptsUntilFreeze.ToString() times and now you are frozen until 
-    @await Component.InvokeAsync("LocalDate", Model.Until.GetString())</h1>
+@{
+    ViewData["Title"] = "Frozen Login";
+    int secondsTillUnfreeze = (int)(Model.Until - TimeService.Get()).TotalSeconds + 2;
+}
 
+<div class="text-danger text-center">
+    <h3>You have been frozen from logging in due to multiple failed attempts</h3>
+    <h3>Seconds left: <span id="secsLeft">@secondsTillUnfreeze.ToString()</span></h3>
+</div>
+
+@section Scripts
+{
+    <script>
+    let left = @secondsTillUnfreeze.ToString();
+    const secsLeftElm = document.getElementById("secsLeft");
+    setInterval(() => {
+        left--;
+        secsLeftElm.innerText = left;
+        
+        if (left === 0) location.reload();
+    }, 1000);
+    </script>
+}
