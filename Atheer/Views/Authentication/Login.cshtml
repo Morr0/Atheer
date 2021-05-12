@@ -16,6 +16,11 @@
     <div class="text-danger">Inputted username/password is not correct</div>
     <div class="text-danger">You have @Model.AttemptsLeft.ToString() attempts left</div>
 }
+else if (Model.EmphasizeUsername && !string.IsNullOrEmpty(Model.Username))
+{
+    <h5 class="text-info">Your username: @Model.Username</h5>
+}
+
 <div asp-validation-summary="All" class="text-danger"></div>
 
 <form asp-controller="Authentication" asp-action="Login" asp-route-returnUrl="@Context.Request.Query["returnUrl"]" method="post">

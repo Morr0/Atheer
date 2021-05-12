@@ -5,5 +5,6 @@
         public string Username { get; set; }
         public string Password { get; set; }
         public int AttemptsLeft { get; set; }
+        public bool EmphasizeUsername { get; set; }
     }
 }

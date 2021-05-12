@@ -219,8 +219,11 @@ namespace Atheer.Controllers.User
                 
                 _logger.LogInformation("Successfully registered new user: {UserId}", userId);
                 
-                TempData["Info"] = "Successfully registered, please login now";
-                return Redirect($"/login?EmailOrUsername={userId}");
+                return RedirectToAction("Login", "Authentication", new
+                {
+                    Username = userId,
+                    EmphasizeUsername = true
+                });
             }
             catch (FailedOperationException)
             {

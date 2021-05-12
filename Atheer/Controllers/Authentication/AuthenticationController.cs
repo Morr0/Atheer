@@ -38,7 +38,7 @@ namespace Atheer.Controllers.Authentication
         }
         
         [HttpGet("Login")]
-        public IActionResult LoginView([FromQuery] string username)
+        public IActionResult LoginView([FromQuery] string username, [FromQuery] bool emphasizeUsername)
         {
             if (User.Identity?.IsAuthenticated == true) return Redirect("/");
 
@@ -51,7 +51,8 @@ namespace Atheer.Controllers.Authentication
             return View("Login", new LoginViewModel
             {
                 Username =  username,
-                AttemptsLeft = UserService.AttemptsUntilFreeze
+                AttemptsLeft = UserService.AttemptsUntilFreeze,
+                EmphasizeUsername = emphasizeUsername
             });
         }
 

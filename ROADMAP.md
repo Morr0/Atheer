@@ -1,7 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Show newly registered user their username
 - Properly cache article/s, i.e. handle logged in and logged out cases in server
 - Implement TOTP authentication (by user choice)
 - Upload Markdown file to editor when creating new one
