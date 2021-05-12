@@ -32,12 +32,22 @@ namespace Atheer.Services.ArticlesService
             article.TitleShrinked = GetShrinkedTitle(request.Title);
             article.CreatedAt = currDate;
 
+            SetPublishedIfSuitable(article);
+
             return article;
+        }
+
+        internal void SetPublishedIfSuitable(Article article)
+        {
+            if (!article.EverPublished && !article.Draft && !article.Unlisted) article.EverPublished = true;
         }
 
         public void SetUpdated(Article article)
         {
             article.UpdatedAt = _timeService.Get();
+            article.Version++;
+
+            SetPublishedIfSuitable(article);
         }
 
         private string GetShrinkedTitle(string title)

@@ -49,6 +49,7 @@ namespace AtheerTests.UnitTests.Factories
             Assert.Equal(request.Title, article.Title);
             Assert.Equal(request.Description, article.Description);
             Assert.Equal(UserId, article.AuthorId);
+            Assert.True(article.EverPublished);
         }
 
         [Fact]

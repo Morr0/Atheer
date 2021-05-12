@@ -1,7 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Update article version for each update
 - Rate limiting system on authentication endpoints and locking (let client cache results)
 - Implement TOTP authentication (by user choice)
 - Properly cache article/s, i.e. handle logged in and logged out cases in server
