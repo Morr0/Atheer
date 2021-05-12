@@ -201,10 +201,12 @@ namespace Atheer.Services.UsersService
                 return (true, attemptsLeft);
             }
 
-            // AT THIS POINT no more attempts left
             var mostRecentAttempt = lastNLoginAttempt[0];
             var oldestAttempt = lastNLoginAttempt[AttemptsUntilFreeze - 1];
 
+            if (mostRecentAttempt.SuccessfulLogin) return (true, AttemptsUntilFreeze);
+
+            // AT THIS POINT no more attempts left
             var largestRange = mostRecentAttempt.AttemptAt - oldestAttempt.AttemptAt;
             return largestRange.Minutes >= FreezeWithinMins ? (true, 0) : (false, 0);
         }

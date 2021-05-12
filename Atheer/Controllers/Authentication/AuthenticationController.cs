@@ -111,7 +111,6 @@ namespace Atheer.Controllers.Authentication
             if (!Url.IsLocalUrl(returnUrl)) return Redirect("/");
             
             return LocalRedirect(returnUrl);
-            // TODO look at reseting login attempts after a successful login/logout within short timeframe maybe?
             // TODO handle the case of alreaday frozen
             // TODO add freeze cookie for frozen attempts and cache response
         }
