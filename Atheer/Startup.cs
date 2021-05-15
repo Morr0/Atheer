@@ -28,6 +28,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Net.Http.Headers;
 
 namespace Atheer
 {
@@ -137,7 +138,13 @@ namespace Atheer
 
             app.UseStatusCodePagesWithReExecute("/HandleCode", "?code={0}");
             
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                OnPrepareResponse = (context) =>
+                {
+                    context.Context.Response.Headers[HeaderNames.CacheControl] = "public,max-age=86400";
+                }
+            });
             
             app.UseMiddleware<UrlRewritingMiddleware>();
 
