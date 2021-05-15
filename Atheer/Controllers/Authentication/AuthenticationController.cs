@@ -149,6 +149,8 @@ namespace Atheer.Controllers.Authentication
         [ResponseCache(Duration = 0, NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<IActionResult> Logout()
         {
+            await Task.Delay(1000).CAF();
+            
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).CAF();
             string loggedInUserId = this.GetViewerUserId();
             _logger.LogInformation("Username: {userId} successfully logged out", loggedInUserId);

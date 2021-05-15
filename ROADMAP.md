@@ -2,6 +2,7 @@
 ## Roadmap:
 ### List of things to work on:
 - Properly cache article/s, i.e. handle logged in and logged out cases in server
+- Configure 'robots.txt'
 - Implement TOTP authentication (by user choice)
 - Upload Markdown file to editor when creating new one
 - Ability to download article as Markdown by reader
