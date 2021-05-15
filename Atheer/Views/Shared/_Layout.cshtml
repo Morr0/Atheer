@@ -21,23 +21,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta property="og:title" content="@fullTitle">
-    <meta property="og:site_name" content="@Site.Value.Title">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="@Context.Request.GetDisplayUrl()">
-    <meta charset="utf-8"/>
+    @if (!authenticated)
+    {
+        <meta property="og:title" content="@fullTitle">
+        <meta property="og:site_name" content="@Site.Value.Title">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="@Context.Request.GetDisplayUrl()">
+    }
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@fullTitle</title>
+    <meta charset="utf-8"/>
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css"/>
 
     <meta name="description" content="@Site.Value.Description"/>
     @await RenderSectionAsync("Head", false)
-    
-    <link rel="icon" href="~/favicon.ico" />
+
+    <link rel="icon" href="~/favicon.ico"/>
     <environment names="Production">
         <link rel="icon" type="image/svg" href="@Site.Value.IconUrl"/>
     </environment>
+    
+    <script src="~/lib/jquery/dist/jquery.min.js" defer></script>
+    <script src="~/lib/bootstrap/js/bootstrap.min.js" defer></script>
+    <script src="~/js/site.js" asp-append-version="true" defer></script>
 </head>
 <body>
     <header>
@@ -46,10 +54,6 @@
                 <a class="navbar-brand" style="font-size: 2em;" asp-controller="Articles" asp-action="Index" asp-route-page="">
                     @Site.Value.Title
                 </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <form class="d-flex" asp-controller="Articles" asp-action="Index" method="get">
                         <input class="form-control me-2" type="search" placeholder="Search" name="Q"
@@ -127,22 +131,13 @@
     </main>
 </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+@await RenderSectionAsync("Scripts", required: false)
 
-@if (SiteAnalytics.Value.EnableClicky)
+@* Clicky Analytics clicky.com *@
+@if (SiteAnalytics.Value.EnableClicky && !authenticated)
 {
-    // Clicky Analytics clicky.com
     <script>clicky_site_ids = Array(1).fill(@trackingNum);</script>
     <script async src="https://static.getclicky.com/js"></script>
 }
-
 </body>
 </html>
