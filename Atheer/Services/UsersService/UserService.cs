@@ -19,15 +19,15 @@ namespace Atheer.Services.UsersService
 {
     public class UserService : IUserService
     {
-        public static readonly int AttemptsUntilFreeze = 3;
+        private static readonly int AttemptsUntilFreeze = 3;
         /// <summary>
         /// Window of time to freeze within if exceeded attempts
         /// </summary>
-        public static readonly int FreezeWithinMins = 2;
+        private static readonly int FreezeWithinMins = 2;
         /// <summary>
         /// How long to freeze
         /// </summary>
-        public static readonly int FreezeTimeMins = 3;
+        private static readonly int FreezeTimeMins = 3;
         
         private readonly UserFactory _factory;
         private readonly Data _context;
@@ -197,14 +197,14 @@ namespace Atheer.Services.UsersService
 
             if (lastNLoginAttempt.Count < AttemptsUntilFreeze)
             {
-                int attemptsLeft = AttemptsUntilFreeze - lastNLoginAttempt.Count - 1;
+                int attemptsLeft = AttemptsUntilFreeze - lastNLoginAttempt.Count;
                 return (true, attemptsLeft);
             }
 
             var mostRecentAttempt = lastNLoginAttempt[0];
             var oldestAttempt = lastNLoginAttempt[AttemptsUntilFreeze - 1];
 
-            if (mostRecentAttempt.SuccessfulLogin) return (true, AttemptsUntilFreeze - 1);
+            if (mostRecentAttempt.SuccessfulLogin) return (true, AttemptsUntilFreeze);
 
             // AT THIS POINT no more attempts left
             var largestRange = mostRecentAttempt.AttemptAt - oldestAttempt.AttemptAt;

@@ -51,7 +51,6 @@ namespace Atheer.Controllers.Authentication
             return View("Login", new LoginViewModel
             {
                 Username =  username,
-                AttemptsLeft = UserService.AttemptsUntilFreeze,
                 EmphasizeUsername = emphasizeUsername
             });
         }
@@ -65,8 +64,7 @@ namespace Atheer.Controllers.Authentication
             
             if (!ModelState.IsValid) return View("Login", new LoginViewModel
             {
-                Username = request.Username,
-                AttemptsLeft = UserService.AttemptsUntilFreeze
+                Username = request.Username
             });
             
             _logger.LogInformation("Trying to login for Username: {user}", request.Username);
@@ -94,7 +92,8 @@ namespace Atheer.Controllers.Authentication
                 return View("Login", new LoginViewModel
                 {
                     Username = request.Username,
-                    AttemptsLeft = incorrectCredentialsResponse.AttemptsLeft
+                    AttemptsLeft = incorrectCredentialsResponse.AttemptsLeft,
+                    ShowAttemptsLeft = true
                 });
             }
             
@@ -107,7 +106,7 @@ namespace Atheer.Controllers.Authentication
                 Response.Cookies.Append(FreezeCookieName, freezeResponse.Until.GetString(), new CookieOptions
                 {
                     HttpOnly = true,
-                    MaxAge = TimeSpan.FromMinutes(UserService.FreezeTimeMins)
+                    MaxAge = freezeResponse.Until - DateTime.UtcNow
                 });
 
                 return View("LoginFreeze", new LoginFreezeViewModel(freezeResponse.Until));

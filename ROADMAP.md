@@ -18,6 +18,7 @@
 - Log external service abstractions
 - Minify Html, Css and Javascript
 - Hook up CDN in front of server in Cloudformation
+- Implement banning user by admin
 - 
 
 ### List of longer term goals (not in order):

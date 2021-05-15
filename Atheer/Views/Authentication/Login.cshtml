@@ -11,7 +11,7 @@
 
 <h4 class="text-dark">Login</h4>
 
-@if (Model.AttemptsLeft < UserService.AttemptsUntilFreeze)
+@if (Model.ShowAttemptsLeft)
 {
     <div class="text-danger">Inputted username/password is not correct</div>
     <div class="text-danger">You have @Model.AttemptsLeft.ToString() attempts left</div>
