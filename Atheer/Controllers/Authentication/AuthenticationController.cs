@@ -92,7 +92,7 @@ namespace Atheer.Controllers.Authentication
                 return View("Login", new LoginViewModel
                 {
                     Username = request.Username,
-                    AttemptsLeft = incorrectCredentialsResponse.AttemptsLeft,
+                    AttemptsLeft = incorrectCredentialsResponse.AttemptsLeft - 1,
                     ShowAttemptsLeft = true
                 });
             }

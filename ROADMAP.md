@@ -19,6 +19,7 @@
 - Minify Html, Css and Javascript
 - Hook up CDN in front of server in Cloudformation
 - Implement banning user by admin
+- Delay request for (n + 1) attempt by a lot
 - 
 
 ### List of longer term goals (not in order):

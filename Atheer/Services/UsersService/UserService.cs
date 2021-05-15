@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Atheer.Controllers.User.Models;
@@ -23,11 +24,11 @@ namespace Atheer.Services.UsersService
         /// <summary>
         /// Window of time to freeze within if exceeded attempts
         /// </summary>
-        private static readonly int FreezeWithinMins = 2;
+        private static readonly int FreezeWithinSecs = 120;
         /// <summary>
         /// How long to freeze
         /// </summary>
-        private static readonly int FreezeTimeMins = 3;
+        private static readonly int FreezeTimeSecs = 180;
         
         private readonly UserFactory _factory;
         private readonly Data _context;
@@ -154,7 +155,7 @@ namespace Atheer.Services.UsersService
                 await AddLoginAttempt(user, time, false).CAF();
                 await _context.SaveChangesAsync().CAF();
                 
-                return new FreezeLoginAttemptResponseResponse(user, time.AddMinutes(FreezeTimeMins));
+                return new FreezeLoginAttemptResponseResponse(user, time.AddSeconds(FreezeTimeSecs));
             }
 
             bool equalPassword = _factory.EqualPasswords(rawPassword, user.PasswordHash);
@@ -189,26 +190,19 @@ namespace Atheer.Services.UsersService
 
         private async Task<(bool canLogin, int attemptsLeft)> CanLogin(User user)
         {
-            var lastNLoginAttempt = await _context.UserLoginAttempt.AsNoTracking()
+            var lastNLoginAttempts = await _context.UserLoginAttempt.AsNoTracking()
                 .Where(x => x.UserId == user.Id)
+                .Where(x => !x.SuccessfulLogin)
                 .OrderByDescending(x => x.AttemptAt)
                 .Take(AttemptsUntilFreeze)
+                .Select(x => x.AttemptAt)
                 .ToListAsync().CAF();
 
-            if (lastNLoginAttempt.Count < AttemptsUntilFreeze)
-            {
-                int attemptsLeft = AttemptsUntilFreeze - lastNLoginAttempt.Count;
-                return (true, attemptsLeft);
-            }
-
-            var mostRecentAttempt = lastNLoginAttempt[0];
-            var oldestAttempt = lastNLoginAttempt[AttemptsUntilFreeze - 1];
-
-            if (mostRecentAttempt.SuccessfulLogin) return (true, AttemptsUntilFreeze);
-
-            // AT THIS POINT no more attempts left
-            var largestRange = mostRecentAttempt.AttemptAt - oldestAttempt.AttemptAt;
-            return largestRange.Minutes >= FreezeWithinMins ? (true, 0) : (false, 0);
+            var since = _timeService.Get().AddSeconds(-1 * FreezeWithinSecs);
+            int attemptedSince = lastNLoginAttempts.Count(attemptAt => attemptAt >= since);
+            int attemptsLeft = AttemptsUntilFreeze - attemptedSince;
+            
+            return attemptsLeft > 0 ? (true, attemptsLeft) : (false, 0);
         }
 
         public Task<bool> Exists(string userId)
