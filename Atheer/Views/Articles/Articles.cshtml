@@ -156,7 +156,8 @@ else
         @if (Model.AnyPrevious)
         {
             <li class="page-item"><a class="page-link" asp-controller="Articles" asp-action="Index" asp-route-Tag="@Model.TagId"
-                                     asp-route-UserId="@Model.UserId" asp-route-page="@prevPage.ToString()">
+                                     asp-route-UserId="@Model.UserId" asp-route-page="@prevPage.ToString()"
+                                     asp-route-oldest="@Model.OldestArticles.ToString()">
                 Previous
             </a></li>
         }
@@ -167,7 +168,8 @@ else
         @if (Model.AnyNext)
         {
             <li class="page-item"><a class="page-link" asp-controller="Articles" asp-action="Index" asp-route-Tag="@Model.TagId"
-                                     asp-route-UserId="@Model.UserId" asp-route-page="@nextPage.ToString()">
+                                     asp-route-UserId="@Model.UserId" asp-route-page="@nextPage.ToString()" 
+                                     asp-route-oldest="@Model.OldestArticles.ToString()">
                 Next
             </a></li>
         }
