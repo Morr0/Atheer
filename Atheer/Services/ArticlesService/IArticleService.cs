@@ -11,7 +11,7 @@ namespace Atheer.Services.ArticlesService
     public interface IArticleService
     {
         Task<ArticleViewModel> Get(ArticlePrimaryKey primaryKey, string viewerUserId = null);
-        Task<ArticlesResponse> Get(int amount, string searchQuery);
+        // Task<ArticlesResponse> Get(int amount, string searchQuery);
         Task<ArticlesResponse> Get(int amount, int page, int createdYear = 0, string tagId = null,
             string viewerUserId = null, string specificUserId = null, bool oldest = false);
         Task<JsonFeedArticleResponse> Get(int amount, int page);

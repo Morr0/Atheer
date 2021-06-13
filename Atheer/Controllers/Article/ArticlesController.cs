@@ -40,14 +40,14 @@ namespace Atheer.Controllers.Article
                 blogResponse = await _articleService.Get(PageSize, page, query.Year, query.Tag, specificUserId: query.UserId,
                         viewerUserId: viewerUserId, oldest: query.Oldest).CAF();
             }
-            else
-            {
-                _logger.LogInformation("Searching for {SearchQuery}", query.Q);
-                // To minimize spam of searches
-                await Task.Delay(1000).CAF();
-                
-                blogResponse = await _articleService.Get(PageSize, query.Q).CAF();
-            }
+            // else
+            // {
+            //     _logger.LogInformation("Searching for {SearchQuery}", query.Q);
+            //     // To minimize spam of searches
+            //     await Task.Delay(1000).CAF();
+            //     
+            //     blogResponse = await _articleService.Get(PageSize, query.Q).CAF();
+            // }
             
             if (blogResponse is null) return Redirect("/");
             if (blogResponse.Articles.Count == 0 && blogResponse.CurrentPage > 0) return Redirect("/");

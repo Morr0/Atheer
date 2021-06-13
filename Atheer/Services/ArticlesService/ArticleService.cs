@@ -39,22 +39,22 @@ namespace Atheer.Services.ArticlesService
             _serviceScopeFactory = serviceScopeFactory;
         }
 
-        public async Task<ArticlesResponse> Get(int amount, string searchQuery)
-        {
-            var articles = await _context.Article.AsNoTracking()
-                .Where(x => x.SearchVector.Matches(searchQuery) && !x.Draft && !x.Unlisted && !x.ForceFullyUnlisted)
-                .OrderByDescending(x => x.CreatedAt)
-                .Take(amount)
-                .ToStrippedArticles()
-                .ToListAsync().ConfigureAwait(false);
-
-            return new ArticlesResponse
-            {
-                Articles = articles,
-                Search = true,
-                SearchQuery = searchQuery
-            };
-        }
+        // public async Task<ArticlesResponse> Get(int amount, string searchQuery)
+        // {
+        //     var articles = await _context.Article.AsNoTracking()
+        //         .Where(x => x.SearchVector.Matches(searchQuery) && !x.Draft && !x.Unlisted && !x.ForceFullyUnlisted)
+        //         .OrderByDescending(x => x.CreatedAt)
+        //         .Take(amount)
+        //         .ToStrippedArticles()
+        //         .ToListAsync().ConfigureAwait(false);
+        //
+        //     return new ArticlesResponse
+        //     {
+        //         Articles = articles,
+        //         Search = true,
+        //         SearchQuery = searchQuery
+        //     };
+        // }
 
         public async Task<ArticlesResponse> Get(int amount, int page, int createdYear = 0, string tagId = null,
             string viewerUserId = null, string specificUserId = null, bool oldest = false)
