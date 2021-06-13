@@ -27,14 +27,14 @@ namespace Atheer.Models
         [JsonIgnore, BsonIgnore]
         public IList<TagArticle> Tags { get; set; }
 
-        public IList<string> TagsIds { get; set; }
+        public List<string> TagsIds { get; set; }
         
         // Postgresql specific
         [JsonIgnore, BsonIgnore]
         public NpgsqlTsVector SearchVector { get; set; }
 
         public int? SeriesId { get; set; }
-        public ArticleSeries Series { get; set; }
+        [BsonIgnore] public ArticleSeries Series { get; set; }
         public bool Narratable { get; set; }
         public string NarrationMp3Url { get; set; }
         public DateTime CreatedAt { get; set; }

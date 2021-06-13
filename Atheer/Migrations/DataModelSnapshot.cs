@@ -73,8 +73,8 @@ namespace Atheer.Migrations
                         .HasAnnotation("Npgsql:TsVectorConfig", "english")
                         .HasAnnotation("Npgsql:TsVectorProperties", new[] { "Title", "Description" });
 
-                    b.Property<int?>("SeriesId")
-                        .HasColumnType("integer");
+                    b.Property<string>("SeriesId")
+                        .HasColumnType("text");
 
                     b.Property<bool>("Shareable")
                         .ValueGeneratedOnAdd()
@@ -112,10 +112,8 @@ namespace Atheer.Migrations
 
             modelBuilder.Entity("Atheer.Models.ArticleSeries", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .UseIdentityByDefaultColumn();
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<string>("AuthorId")
                         .HasColumnType("text");

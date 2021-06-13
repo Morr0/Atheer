@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Atheer.Extensions;
 using Atheer.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,7 @@ namespace Atheer.Utilities.ETLs
                 logger.LogCritical("Begun postgresql to mongodb operation");
 
                 await MigrateArticles(originalDbContext, targetMongoClient, logger).CAF();
+                await MigrateArticleSeries(originalDbContext, targetMongoClient, logger).CAF();
                 await MigrateTags(originalDbContext, targetMongoClient, logger).CAF();
                 await MigrateUsers(originalDbContext, targetMongoClient, logger).CAF();
             }).Wait();
@@ -27,7 +29,9 @@ namespace Atheer.Utilities.ETLs
             logger.LogCritical("Starting the article collection");
             var articleCollection = targetMongoClient.Article();
 
-            await originalDbContext.Article.AsNoTracking().ForEachAsync(async (article) =>
+            await originalDbContext.Article.AsNoTracking()
+                .Include(x => x.Tags)
+                .ForEachAsync(async (article) =>
             {
                 string articleId = $"{article.CreatedYear.ToString()}-{article.TitleShrinked}";
                 var targetArticle = await (await articleCollection.FindAsync(x => x.Id == articleId).CAF()).FirstOrDefaultAsync()
@@ -36,6 +40,8 @@ namespace Atheer.Utilities.ETLs
                 if (targetArticle is null)
                 {
                     article.Id = articleId;
+                    article.TagsIds = article.Tags.Select(x => x.TagId).ToList();
+                    
                     await articleCollection.InsertOneAsync(article).CAF();
                     logger.LogCritical("Article with id: {id} was added to MongoDB", articleId);
                 }
@@ -46,6 +52,35 @@ namespace Atheer.Utilities.ETLs
             }).CAF();
             
             logger.LogCritical("Finished the article collection");
+        }
+        
+        private static async Task MigrateArticleSeries(Data originalDbContext, IMongoClient targetMongoClient,
+            ILogger logger)
+        {
+            logger.LogCritical("Starting the article series collection");
+            var articleSeriesCollection = targetMongoClient.ArticleSeries();
+
+            await originalDbContext.ArticleSeries.AsNoTracking()
+                .Include(x => x.Articles)
+                .ForEachAsync(async (articleSeries) =>
+                {
+                    var targetArticleSeries = await (await articleSeriesCollection.FindAsync(x => x.SeriesId == articleSeries.Id.ToString()).CAF()).FirstOrDefaultAsync()
+                        .CAF();
+
+                    if (targetArticleSeries is null)
+                    {
+                        articleSeries.SeriesId = articleSeries.Id.ToString();
+                        articleSeries.ArticlesIds = articleSeries.Articles.Select(x => $"{x.CreatedYear.ToString()}-{x.TitleShrinked}").ToList();
+                        await articleSeriesCollection.InsertOneAsync(articleSeries).CAF();
+                        logger.LogCritical("Article Series with id: {id} was added to MongoDB", articleSeries.Id);
+                    }
+                    else
+                    {
+                        logger.LogCritical("Article Series with id: {id} already exists in MongoDB", articleSeries.Id);
+                    }
+                }).CAF();
+            
+            logger.LogCritical("Finished the article series collection");
         }
 
         private static async Task MigrateTags(Data originalDbContext, IMongoClient targetMongoClient,

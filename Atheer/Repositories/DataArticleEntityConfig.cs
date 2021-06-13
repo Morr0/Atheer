@@ -12,7 +12,7 @@ namespace Atheer.Repositories
                 .Ignore(x => x.Id);
             modelBuilder.Entity<Article>()
                 .Ignore(x => x.TagsIds);
-            
+
             // Key
             modelBuilder.Entity<Article>()
                 .HasKey(x => new
@@ -85,8 +85,8 @@ namespace Atheer.Repositories
             modelBuilder.Entity<ArticleSeries>(o =>
             {
                 o.HasKey(x => x.Id);
-                o.Property(x => x.Id)
-                    .ValueGeneratedOnAdd();
+                o.Ignore(x => x.ArticlesIds);
+                o.Ignore(x => x.SeriesId);
 
                 o.HasIndex(x => x.Finished)
                     .HasFilter($"\"{nameof(Atheer.Models.ArticleSeries.Finished)}\" IS FALSE");

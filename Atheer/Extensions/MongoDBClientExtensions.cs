@@ -8,6 +8,7 @@ namespace Atheer.Extensions
         public const string DatabaseName = "DB";
         
         public const string ArticleCollection = "Article";
+        public const string ArticleSeriesCollection = "ArticleSeries";
         public const string TagCollection = "Tag";
         public const string UserCollection = "User";
         public const string UserLoginAttemptCollection = "UserLoginAttempt";
@@ -20,6 +21,11 @@ namespace Atheer.Extensions
         public static IMongoCollection<Article> Article(this IMongoClient client)
         {
             return client.GetDatabase(DatabaseName).GetCollection<Article>(ArticleCollection);
+        }
+        
+        public static IMongoCollection<ArticleSeries> ArticleSeries(this IMongoClient client)
+        {
+            return client.GetDatabase(DatabaseName).GetCollection<ArticleSeries>(ArticleSeriesCollection);
         }
         
         public static IMongoCollection<Atheer.Models.Tag> Tag(this IMongoClient client)
