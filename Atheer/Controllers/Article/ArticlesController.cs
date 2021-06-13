@@ -33,6 +33,9 @@ namespace Atheer.Controllers.Article
             page = Math.Max(0, page);
 
             string viewerUserId = this.GetViewerUserId();
+            
+            // Temporary for disabling tags feature
+            query.Tag = string.Empty;
 
             ArticlesResponse blogResponse = null;
             if (string.IsNullOrEmpty(query.Q))

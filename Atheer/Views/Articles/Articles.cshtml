@@ -37,18 +37,18 @@
             </a>
         </span>
     }
-    @if (viewTag)
-    {
-        @Html.Raw("Tag: ")
-        @Model.TagTitle
-        @if (User.IsInRole(UserRoles.AdminRole))
-        {
-            <a class="text-info" asp-controller="Tag" asp-action="UpdateTagView" asp-route-tagId="@Model.TagId">
-                Edit
-            </a>
-        }
-        <br/>
-    }
+    @* @if (viewTag) *@
+    @* { *@
+    @*     @Html.Raw("Tag: ") *@
+    @*     @Model.TagTitle *@
+    @*     @if (User.IsInRole(UserRoles.AdminRole)) *@
+    @*     { *@
+    @*         <a class="text-info" asp-controller="Tag" asp-action="UpdateTagView" asp-route-tagId="@Model.TagId"> *@
+    @*             Edit *@
+    @*         </a> *@
+    @*     } *@
+    @*     <br/> *@
+    @* } *@
     @if (Model.SpecificYear)
     {
         @Model.Year.ToString()
