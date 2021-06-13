@@ -8,6 +8,11 @@ namespace Atheer.Repositories
     {
         private void ConfigureArticleModel(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Article>()
+                .Ignore(x => x.Id);
+            modelBuilder.Entity<Article>()
+                .Ignore(x => x.TagsIds);
+            
             // Key
             modelBuilder.Entity<Article>()
                 .HasKey(x => new

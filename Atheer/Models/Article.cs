@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Atheer.Repositories.Junctions;
+using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 using NpgsqlTypes;
 
@@ -9,6 +10,7 @@ namespace Atheer.Models
     // WHENEVER YOU UPDATE HERE, UPDATE THE MAPPER AS WELL AS THE MAPPING METHODS
     public class Article
     {
+        [BsonId] public string Id { get; set; }
         public int CreatedYear { get; set; }
         public string TitleShrinked { get; set; }
         public string AuthorId { get; set; }
@@ -22,11 +24,13 @@ namespace Atheer.Models
         public bool Draft { get; set; }
         public bool Unlisted { get; set; }
         public bool ForceFullyUnlisted { get; set; }
-        [JsonIgnore]
+        [JsonIgnore, BsonIgnore]
         public IList<TagArticle> Tags { get; set; }
+
+        public IList<string> TagsIds { get; set; }
         
         // Postgresql specific
-        [JsonIgnore]
+        [JsonIgnore, BsonIgnore]
         public NpgsqlTsVector SearchVector { get; set; }
 
         public int? SeriesId { get; set; }

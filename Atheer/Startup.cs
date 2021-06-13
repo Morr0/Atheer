@@ -19,6 +19,8 @@ using Atheer.Services.UsersService;
 using Atheer.Services.Utilities.TimeService;
 using Atheer.Utilities;
 using Atheer.Utilities.Config.Models;
+using Atheer.Utilities.ETLs;
+using Atheer.Utilities.Logging;
 using AutoMapper;
 using Markdig;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -28,7 +30,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
+using MongoDB.Driver;
 
 namespace Atheer
 {
@@ -76,6 +80,7 @@ namespace Atheer
                     // dbOpts.EnableRetryOnFailure(3);
                 });
             });
+            services.AddSingleton<IMongoClient, MongoClient>(_ => new MongoClient(Configuration.GetConnectionString("MongoDB")));
             services.AddTransient<IAmazonS3, AmazonS3Client>();
 
             // Services
@@ -122,7 +127,8 @@ namespace Atheer
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceScopeFactory serviceScopeFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, 
+            IServiceScopeFactory serviceScopeFactory, Data postgresqlClient, IMongoClient mongoClient, ILoggerFactory loggerFactory)
         {
             Console.WriteLine(env.EnvironmentName);
             if (env.IsDevelopment())
@@ -157,6 +163,9 @@ namespace Atheer
             {
                 endpoints.MapControllers();
             });
+
+            ETLPostgresqlToMongoDB.MigrateToMongo(postgresqlClient, mongoClient, 
+                loggerFactory.CreateLogger(LoggingConstants.PostgresqlToMongoDBMigration));
         }
 
         private void UpdateDatabase(IServiceScopeFactory serviceScopeFactory)
