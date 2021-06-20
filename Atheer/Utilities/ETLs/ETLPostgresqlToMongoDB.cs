@@ -14,8 +14,6 @@ namespace Atheer.Utilities.ETLs
         {
             Task.Run(async () =>
             {
-                logger.LogCritical("Begun postgresql to mongodb operation");
-
                 await MigrateArticles(originalDbContext, targetMongoClient, logger).CAF();
                 await MigrateArticleSeries(originalDbContext, targetMongoClient, logger).CAF();
                 await MigrateTags(originalDbContext, targetMongoClient, logger).CAF();

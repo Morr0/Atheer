@@ -164,8 +164,14 @@ namespace Atheer
                 endpoints.MapControllers();
             });
 
-            ETLPostgresqlToMongoDB.MigrateToMongo(postgresqlClient, mongoClient, 
-                loggerFactory.CreateLogger(LoggingConstants.PostgresqlToMongoDBMigration));
+            if (!string.IsNullOrEmpty(Configuration.GetConnectionString("MainPostgres")))
+            {
+                var logger = loggerFactory.CreateLogger(LoggingConstants.PostgresqlToMongoDBMigration);
+                
+                logger.LogCritical("Begun postgresql to mongodb operation");
+                ETLPostgresqlToMongoDB.MigrateToMongo(postgresqlClient, mongoClient, logger);
+                logger.LogCritical("Finished migrating to MongoDB");
+            }
         }
 
         private void UpdateDatabase(IServiceScopeFactory serviceScopeFactory)

@@ -11,8 +11,8 @@ namespace Atheer.Models
     public class Article
     {
         [BsonId] public string Id { get; set; }
-        public int CreatedYear { get; set; }
-        public string TitleShrinked { get; set; }
+        [BsonIgnore] public int CreatedYear { get; set; }
+        [BsonIgnore] public string TitleShrinked { get; set; }
         public string AuthorId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }

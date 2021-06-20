@@ -11,6 +11,8 @@ namespace Atheer.Services.ArticlesService
             CreatedYear = createdYear;
             TitleShrinked = titleShrinked;
         }
+
+        public string Id { get; set; }
         
         [Required] public int CreatedYear { get; set; }
         [Required] public string TitleShrinked { get; set; }
