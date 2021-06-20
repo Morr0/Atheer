@@ -12,8 +12,22 @@ namespace Atheer.Services.ArticlesService
             TitleShrinked = titleShrinked;
         }
 
-        public string Id { get; set; }
-        
+        public string Id
+        {
+            get
+            {
+                return string.IsNullOrEmpty(id)
+                    ? $"{CreatedYear.ToString()}-{TitleShrinked}"
+                    : id;
+            }
+            set
+            {
+                id = value;
+            }
+        }
+
+        private string id = null;
+
         [Required] public int CreatedYear { get; set; }
         [Required] public string TitleShrinked { get; set; }
 

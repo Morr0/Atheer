@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Atheer.Controllers.Article.Models;
 using Atheer.Models;
 
@@ -9,6 +10,22 @@ namespace Atheer.Services.ArticlesService
         internal static IQueryable<StrippedArticleViewModel> ToStrippedArticles(this IQueryable<Article> queryable)
         {
             return queryable.Select<Article, StrippedArticleViewModel>(x => new StrippedArticleViewModel
+            {
+                CreatedYear = x.CreatedYear,
+                Description = x.Description,
+                Draft = x.Draft,
+                Title = x.Title,
+                Unlisted = x.Unlisted,
+                AuthorId = x.AuthorId,
+                CreatedAt = x.CreatedAt,
+                TitleShrinked = x.TitleShrinked,
+                ForceFullyUnlisted = x.ForceFullyUnlisted
+            });
+        }
+        
+        internal static IEnumerable<StrippedArticleViewModel> ToStrippedArticles(this IEnumerable<Article> enumerable)
+        {
+            return enumerable.Select<Article, StrippedArticleViewModel>(x => new StrippedArticleViewModel
             {
                 CreatedYear = x.CreatedYear,
                 Description = x.Description,

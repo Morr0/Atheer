@@ -1,6 +1,7 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
+- Optimize data pulled from MongoDB cloud
 - Properly cache article/s, i.e. handle logged in and logged out cases in server
 - Configure 'robots.txt'
 - Implement TOTP authentication (by user choice)
