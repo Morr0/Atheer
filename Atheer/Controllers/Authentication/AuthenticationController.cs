@@ -73,6 +73,17 @@ namespace Atheer.Controllers.Authentication
             try
             {
                 loginResponse = await _userService.TryLogin(request.Username, request.Password).CAF();
+
+                if (loginResponse is null) throw new NullReferenceException();
+            }
+            catch (NullReferenceException)
+            {
+                _logger.LogInformation("Denied login to a non-existent user: {user}", request.Username);
+                await Task.Delay(1000).CAF();
+                return View("Login", new LoginViewModel
+                {
+                    Username = request.Username,
+                });
             }
             catch (OAuthUserCannotLoginUsingPasswordException)
             {

@@ -118,6 +118,8 @@ namespace Atheer.Services.UsersService
         {
             var user = await (await _client.User().FindAsync(x => x.Id == id).CAF()).FirstOrDefaultAsync().CAF();
 
+            if (user is null) return null;
+            
             if (user.OAuthUser) throw new OAuthUserCannotLoginUsingPasswordException();
             
             (bool canLogin, int attemptsLeft) = await CanLogin(user).CAF();
@@ -146,12 +148,10 @@ namespace Atheer.Services.UsersService
         
         private async Task AddLoginAttempt(User user, DateTime time, bool successfulLogin)
         {
-            string referenceId = Guid.NewGuid().ToString();
             var loginAttempt = new UserLoginAttempt
             {
                 UserId = user.Id,
                 AttemptAt = time,
-                ReferenceId = referenceId,
                 SuccessfulLogin = successfulLogin
             };
 

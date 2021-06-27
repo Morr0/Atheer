@@ -176,12 +176,10 @@ namespace Atheer.Services.UsersService
 
         private async Task AddLoginAttempt(User user, DateTime time, bool successfulLogin)
         {
-            string referenceId = Guid.NewGuid().ToString();
             var loginAttempt = new UserLoginAttempt
             {
                 UserId = user.Id,
                 AttemptAt = time,
-                ReferenceId = referenceId,
                 SuccessfulLogin = successfulLogin
             };
 
