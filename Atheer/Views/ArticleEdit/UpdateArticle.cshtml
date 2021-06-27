@@ -18,8 +18,7 @@
     var currentSeries = ViewBag.CurrentSeries as ArticleSeries;
 }
 
-<a class="card-link" asp-controller="Article" asp-action="Index" asp-route-CreatedYear="@key.CreatedYear.ToString()" 
- asp-route-TitleShrinked="@key.TitleShrinked">Visit article page
+<a class="card-link" asp-controller="Article" asp-action="Index" asp-route-articleId="@key.Id">Visit article page
 </a>
 
 <div asp-validation-summary="All" class="text-danger"></div>
