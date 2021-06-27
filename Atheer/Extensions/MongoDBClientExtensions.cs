@@ -12,6 +12,7 @@ namespace Atheer.Extensions
         public const string TagCollection = "Tag";
         public const string UserCollection = "User";
         public const string UserLoginAttemptCollection = "UserLoginAttempt";
+        public const string NavItemCollection = "NavItems";
         
         public static IMongoDatabase DB(this IMongoClient client)
         {
@@ -41,6 +42,11 @@ namespace Atheer.Extensions
         public static IMongoCollection<UserLoginAttempt> UserLoginAttempt(this IMongoClient client)
         {
             return client.GetDatabase(DatabaseName).GetCollection<UserLoginAttempt>(UserLoginAttemptCollection);
+        }
+
+        public static IMongoCollection<NavItem> NavItem(this IMongoClient client)
+        {
+            return client.GetDatabase(DatabaseName).GetCollection<NavItem>(NavItemCollection);
         }
     }
 }
