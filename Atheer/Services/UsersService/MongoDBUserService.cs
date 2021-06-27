@@ -49,7 +49,7 @@ namespace Atheer.Services.UsersService
             var existingUser =
                 await (await _client.User().FindAsync(x => x.Email == lowerCaseEmail && !x.OAuthUser).CAF())
                     .FirstOrDefaultAsync().CAF();
-            if (existingUser.Email == lowerCaseEmail)
+            if (existingUser?.Email == lowerCaseEmail)
             {
                 throw new UserWithThisEmailAlreadyExistsException();
             }
