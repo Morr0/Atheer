@@ -129,6 +129,9 @@
   WebsiteHostedZoneId:
     Type: AWS::Route53::HostedZone::Id
     Description: "The hosted zone Id of where the website is hosted"
+  MongoDBConnectionString:
+    Type: String
+    Description: "The full connection string to MongoDB"
   
 
 # TODO find an efficient way to refactor the availability zone used
@@ -878,6 +881,16 @@ Resources:
         - "-"
         - - !Ref ProjectName
           - "Atheer-Server-App"
+  MongoDBConnectionStringValue:
+    Type: AWS::SSM::Parameter
+    Properties: 
+      Type: String
+      Name: !Join
+        - ""
+        #        - - "/"
+        #          - !Ref ProjectName
+        - - "/Atheer/ConnectionStrings/MongoDB"
+      Value: !Ref MongoDBConnectionString
   
 
 Outputs:
