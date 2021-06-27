@@ -72,25 +72,35 @@ namespace Atheer
                 provider => Singletons.MarkdownPipeline);
 
             // Repositories
-            services.AddDbContext<Data>(opts =>
+            if (!string.IsNullOrEmpty(Configuration.GetConnectionString("MainPostgres")))
             {
-                opts.UseNpgsql(Configuration.GetConnectionString("MainPostgres"), dbOpts =>
+                services.AddDbContext<Data>(opts =>
                 {
-                    // TODO does not support user-initiated transactions. Use the execution strategy returned by 'DbContext.Database.CreateExecutionStrategy()' to execute all the operations in the transaction as a retriable unit.
-                    // dbOpts.EnableRetryOnFailure(3);
+                    opts.UseNpgsql(Configuration.GetConnectionString("MainPostgres"), dbOpts =>
+                    {
+                        // TODO does not support user-initiated transactions. Use the execution strategy returned by 'DbContext.Database.CreateExecutionStrategy()' to execute all the operations in the transaction as a retriable unit.
+                        // dbOpts.EnableRetryOnFailure(3);
+                    });
                 });
-            });
-            services.AddSingleton<IMongoClient, MongoClient>(_ => new MongoClient(Configuration.GetConnectionString("MongoDB")));
+            }
+            if (!string.IsNullOrEmpty(Configuration.GetConnectionString("MongoDB")))
+            {
+                services.AddSingleton<IMongoClient, MongoClient>(_ => new MongoClient(Configuration.GetConnectionString("MongoDB")));
+            }
             services.AddTransient<IAmazonS3, AmazonS3Client>();
 
             // Services
-            services.AddScoped<IArticleService, ArticleService>();
-            services.AddScoped<IUserService, UserService>();
+            // services.AddScoped<IArticleService, ArticleService>();
+            services.AddScoped<IArticleService, MongoDBArticleService>();
+            // services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserService, MongoDBUserService>();
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<IRecaptchaService, RecaptchaService>();
-            services.AddTransient<ITagService, TagService>();
+            // services.AddTransient<ITagService, TagService>();
+            services.AddTransient<ITagService, MongoDBTagService>();
             services.AddScoped<IOAuthService, OAuthService>();
-            services.AddSingleton<INavItemsService, NavItemService>();
+            // services.AddSingleton<INavItemsService, NavItemService>();
+            services.AddSingleton<INavItemsService, MongoDBNavItemsService>();
             services.AddTransient<IQueueService, QueueService>();
             
 

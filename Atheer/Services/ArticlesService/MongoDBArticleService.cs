@@ -31,7 +31,19 @@ namespace Atheer.Services.ArticlesService
         
         public async Task<ArticleViewModel> Get(ArticlePrimaryKey primaryKey, string viewerUserId = null)
         {
-            throw new System.NotImplementedException();
+            var article = await (await _client.Article().FindAsync(x => x.Id == primaryKey.Id).CAF())
+                .FirstOrDefaultAsync().CAF();
+            
+            if (article is null) return null;
+            if ((!article.EverPublished || article.ForceFullyUnlisted || article.Draft) && article.AuthorId != viewerUserId) return null;
+
+            var author = await (await _client.User().FindAsync(x => x.Id == article.AuthorId).CAF())
+                .FirstOrDefaultAsync().CAF();
+            var tags = (await (await _client.Tag().FindAsync(x => article.TagsIds.Contains(x.Id)).CAF()).ToListAsync()
+                .CAF());
+            // TODO enable article series to bring articles in same series
+
+            return new ArticleViewModel(article, tags, author.Name, new ArticleSeriesArticles());
         }
 
         public async Task<ArticlesResponse> Get(int amount, int page, int createdYear = 0, string tagId = null, string viewerUserId = null,
@@ -196,7 +208,7 @@ namespace Atheer.Services.ArticlesService
             return article.AuthorId == userId;
         }
 
-        public async Task CompletedNarration(ArticlePrimaryKey key, string cdnUrl)
+        public Task CompletedNarration(ArticlePrimaryKey key, string cdnUrl)
         {
             throw new System.NotImplementedException();
         }

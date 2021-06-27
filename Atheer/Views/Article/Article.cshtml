@@ -15,7 +15,7 @@
 
     bool narrated = Model.Article.Narratable && !string.IsNullOrEmpty(Model.Article.NarrationMp3Url);
     
-    bool isPartOfSeries = Model.SeriesArticles?.SeriesId is not null;
+    bool isPartOfSeries = Model.SeriesArticles?.SeriesId is not null && Model.SeriesArticles.Articles.Count > 0;
     int? seriesPosInList = Model.SeriesArticles?.Articles?.FindIndex(x => x.CreatedYear == Model.Article.CreatedYear 
                                                                          && x.TitleShrinked == Model.Article.TitleShrinked);
     LightArticleView prevArticleInSeries = null, nextArticleInSeries = null;
