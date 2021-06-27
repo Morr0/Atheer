@@ -30,7 +30,7 @@ namespace Atheer.Services.ArticlesService
             var currDate = _timeService.Get();
             article.CreatedYear = currDate.Year;
             article.TitleShrinked = GetShrinkedTitle(request.Title);
-            article.Id = $"{article.CreatedAt.ToString()}-{article.TitleShrinked}";
+            article.Id = $"{article.CreatedYear.ToString()}-{article.TitleShrinked}";
             article.CreatedAt = currDate;
 
             SetPublishedIfSuitable(article);
