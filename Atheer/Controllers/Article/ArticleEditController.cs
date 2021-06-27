@@ -55,15 +55,16 @@ namespace Atheer.Controllers.Article
             var key = await _articleService.Add(userId, request).CAF();
             await tagService.AddOrUpdateTagsPerArticle(key, request.TagsAsString).CAF();
             
-            _logger.LogInformation("Created a new article by user: {UserId} with article key: {CreatedYear}-{TitleShrinked}",
-                userId, key.CreatedYear.ToString(), key.TitleShrinked);
+            _logger.LogInformation("Created a new article by user: {UserId} with article key: {articleId}",
+                userId, key.Id);
 
             return RedirectToAction("Index", "Article", key);
         }
 
-        [HttpGet("Update/{CreatedYear:int}/{TitleShrinked}")]
-        public async Task<IActionResult> UpdateArticleView([FromRoute] ArticlePrimaryKey key)
+        [HttpGet("Update/{articleId}")]
+        public async Task<IActionResult> UpdateArticleView([FromRoute] string articleId)
         {
+            var key = new ArticlePrimaryKey(articleId);
             string userId = this.GetViewerUserId();
             try
             {
@@ -105,10 +106,11 @@ namespace Atheer.Controllers.Article
             return View("UpdateArticle", vm);
         }
 
-        [HttpPost("Update/{CreatedYear:int}/{TitleShrinked}")]
-        public async ValueTask<IActionResult> UpdateArticlePost([FromRoute] ArticlePrimaryKey key,
+        [HttpPost("Update/{articleId}")]
+        public async ValueTask<IActionResult> UpdateArticlePost([FromRoute] string articleId,
             [FromForm] UpdateArticleViewModel viewModel, [FromServices] ITagService tagService)
         {
+            var key = new ArticlePrimaryKey(articleId);
             if (!ModelState.IsValid) return View("UpdateArticle", viewModel);
             
             string userId = this.GetViewerUserId();
@@ -119,32 +121,33 @@ namespace Atheer.Controllers.Article
             }
             catch (ArticleNotFoundException)
             {
-                _logger.LogInformation("User: {UserId} attempted to update a non-existing article with key: {CreatedYear}-{TitleShrinked}",
-                    userId, key.CreatedYear.ToString(), key.TitleShrinked);
+                _logger.LogInformation("User: {UserId} attempted to update a non-existing article with key: {articleId}",
+                    userId, key.Id);
                 return NotFound();
             }
             
             await _articleService.Update(userId, key, viewModel).CAF();
             await tagService.AddOrUpdateTagsPerArticle(key, viewModel.TagsAsString).CAF();
             
-            _logger.LogInformation("Updated an article by user: {UserId} with article key: {CreatedYear}-{TitleShrinked}",
-                userId, key.CreatedYear.ToString(), key.TitleShrinked);
+            _logger.LogInformation("Updated an article by user: {UserId} with article key: {articleId}",
+                userId, key.Id);
 
             return RedirectToAction("UpdateArticleView", key);
         }
 
         [Authorize(Roles = UserRoles.AdminRole)]
-        [HttpPost("Update/Admin/{CreatedYear:int}/{TitleShrinked}")]
-        public async ValueTask<IActionResult> UpdateArticleByAdminPost([FromRoute] ArticlePrimaryKey key,
+        [HttpPost("Update/Admin/{articleId}")]
+        public async ValueTask<IActionResult> UpdateArticleByAdminPost([FromRoute] string articleId,
             [FromForm] UpdateArticleByAdminDifferentAuthorViewModel vm)
         {
+            var key = new ArticlePrimaryKey(articleId);
             if (!ModelState.IsValid) return View("UpdateArticleByAdminDifferentAuthor", vm);
 
             string adminUserid = this.GetViewerUserId();
             await _articleService.UpdateForcefullUnlist(key, vm.ForceFullyUnlisted).CAF();
             
-            _logger.LogInformation("Admin: {UserId} forcefully unlisted the article with key: {CreatedYear}-{TitleShrinked}",
-                adminUserid, key.CreatedYear.ToString(), key.TitleShrinked);
+            _logger.LogInformation("Admin: {UserId} forcefully unlisted the article with key: {articleId}",
+                adminUserid, key.Id);
         
             return Redirect("/");
         }

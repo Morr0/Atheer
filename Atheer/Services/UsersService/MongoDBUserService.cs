@@ -189,7 +189,7 @@ namespace Atheer.Services.UsersService
             
             mapper.Map(settingsViewModel, user);
 
-            await _client.User().FindOneAndReplaceAsync(user.Id, user).CAF();
+            await _client.User().FindOneAndReplaceAsync(x => x.Id == user.Id, user).CAF();
         }
 
         public async Task UpdatePassword(string id, string oldPassword, string newPassword)
@@ -202,7 +202,7 @@ namespace Atheer.Services.UsersService
 
             user.PasswordHash = _userFactory.HashPassword(newPassword);
 
-            await _client.User().FindOneAndReplaceAsync(user.Id, user).CAF();
+            await _client.User().FindOneAndReplaceAsync(x => x.Id == user.Id, user).CAF();
         }
 
         public async Task SetImage(string id, string imageUrl)

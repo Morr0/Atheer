@@ -6,6 +6,11 @@ namespace Atheer.Services.ArticlesService
     {
         public ArticlePrimaryKey() {}
 
+        public ArticlePrimaryKey(string id)
+        {
+            Id = id;
+        }
+
         public ArticlePrimaryKey(int createdYear, string titleShrinked)
         {
             CreatedYear = createdYear;

@@ -4,8 +4,7 @@ namespace Atheer.Controllers.Article.Models
 {
     public class StrippedArticleViewModel
     {
-        public int CreatedYear { get; set; }
-        public string TitleShrinked { get; set; }
+        public string Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public bool Draft { get; set; }

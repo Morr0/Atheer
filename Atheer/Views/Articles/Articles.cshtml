@@ -112,14 +112,13 @@
             <div class="card-title">
                 <h5>
                     <a class="text-dark" style="font-size: 1.4em" asp-controller="Article" asp-action="Index"
-                       asp-route-CreatedYear="@article.CreatedYear.ToString()" asp-route-TitleShrinked="@article.TitleShrinked">
+                       asp-route-articleId="@article.Id">
                         @article.Title
                     </a>
                     
                     @if (userId == article.AuthorId || User.IsInRole(UserRoles.AdminRole))
                     {
-                        <a asp-controller="ArticleEdit" asp-action="UpdateArticleView" asp-route-CreatedYear="@article.CreatedYear.ToString()"
-                           asp-route-TitleShrinked="@article.TitleShrinked">Edit</a>
+                        <a asp-controller="ArticleEdit" asp-action="UpdateArticleView" asp-route-articleId="@article.Id">Edit</a>
                     }
                 </h5>
 

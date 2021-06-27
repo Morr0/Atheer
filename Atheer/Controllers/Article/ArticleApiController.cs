@@ -53,22 +53,22 @@ namespace Atheer.Controllers.Article
             }
         }
 
-        [RestrictToInternalNetwork]
-        [HttpPatch("narration/complete")]
-        public async Task<IActionResult> CompleteNarrationWebhook([FromBody] CompletedArticleNarrationRequest request, 
-            [FromServices] IFileService fileService)
-        {
-            _logger.LogInformation("Received narration complete for article key: {CreatedYear}-{TitleShrinked}",
-                request.CreatedYear.ToString(), request.TitleShrinked);
-            
-            string cdnUrl = fileService.GetCdnUrlFromFileKey(request.S3BucketKey);
-            var key = new ArticlePrimaryKey(request.CreatedYear, request.TitleShrinked);
-            await _service.CompletedNarration(key, cdnUrl).CAF();
-            
-            _logger.LogInformation("Completed narration article key: {CreatedYear}-{TitleShrinked}",
-                request.CreatedYear.ToString(), request.TitleShrinked);
-            
-            return Ok();
-        }
+        // [RestrictToInternalNetwork]
+        // [HttpPatch("narration/complete")]
+        // public async Task<IActionResult> CompleteNarrationWebhook([FromBody] CompletedArticleNarrationRequest request, 
+        //     [FromServices] IFileService fileService)
+        // {
+        //     _logger.LogInformation("Received narration complete for article key: {CreatedYear}-{TitleShrinked}",
+        //         request.CreatedYear.ToString(), request.TitleShrinked);
+        //     
+        //     string cdnUrl = fileService.GetCdnUrlFromFileKey(request.S3BucketKey);
+        //     var key = new ArticlePrimaryKey(request.CreatedYear, request.TitleShrinked);
+        //     await _service.CompletedNarration(key, cdnUrl).CAF();
+        //     
+        //     _logger.LogInformation("Completed narration article key: {CreatedYear}-{TitleShrinked}",
+        //         request.CreatedYear.ToString(), request.TitleShrinked);
+        //     
+        //     return Ok();
+        // }
     }
 }

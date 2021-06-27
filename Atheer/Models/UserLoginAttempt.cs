@@ -5,7 +5,7 @@ namespace Atheer.Models
 {
     public class UserLoginAttempt
     {
-        [BsonId] public string UserId { get; set; }
+        public string UserId { get; set; }
         public DateTime AttemptAt { get; set; }
         public string ReferenceId { get; set; }
         public bool SuccessfulLogin { get; set; }
