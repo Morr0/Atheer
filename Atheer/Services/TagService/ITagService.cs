@@ -15,7 +15,7 @@ namespace Atheer.Services.TagService
             return AddOrUpdateTagsPerArticle(key, individualTags);
         }
         
-        Task<List<BareTag>> GetTopTags(int amount, int page = 0);
+        // Task<List<BareTag>> GetTopTags(int amount, int page = 0);
 
         static string TagsToString(IEnumerable<Tag> tags)
         {
