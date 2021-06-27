@@ -52,78 +52,51 @@ namespace Atheer.Services.ArticlesService
             var articles = _client.Article();
             
             string tagTitle = string.IsNullOrEmpty(tagId) ? null : await GetTagTitle(tagId).CAF();
-            // IAsyncCursor<Article> queryable = null;
-            
-            // queryable = string.IsNullOrEmpty(viewerUserId)
-            //     // Public viewing all articles
-            //     ? await articles.FindAsync(x => x.EverPublished && !x.Unlisted && !x.Draft && !x.ForceFullyUnlisted).CAF()
-            //     // Registered user viewing all articles
-            //     : await articles.FindAsync().CAF()
 
             int skip = amount * page;
             List<StrippedArticleViewModel> articleViewModels = null;
-            
+
+            Expression<Func<Article, bool>> filter = null;
             // Public viewing all articles
             if (string.IsNullOrEmpty(viewerUserId))
             {
-                var list = await (await articles
-                    .FindAsync(x => x.EverPublished && !x.Unlisted && !x.Draft && !x.ForceFullyUnlisted, new FindOptions<Article>()
-                    {
-                        Limit = amount,
-                        Skip = skip,
-                        Sort = oldest 
-                            ? Builders<Article>.Sort.Ascending(x => x.CreatedAt)
-                            : Builders<Article>.Sort.Descending(x => x.CreatedAt),
-                        Projection = Builders<Article>.Projection.Combine(
-                            Builders<Article>.Projection.Include(x => x.Id),
-                            Builders<Article>.Projection.Include(x => x.Description),
-                            Builders<Article>.Projection.Include(x => x.Draft),
-                            Builders<Article>.Projection.Include(x => x.Title),
-                            Builders<Article>.Projection.Include(x => x.Unlisted),
-                            Builders<Article>.Projection.Include(x => x.AuthorId),
-                            Builders<Article>.Projection.Include(x => x.CreatedAt),
-                            Builders<Article>.Projection.Include(x => x.ForceFullyUnlisted)
-                            ),
-                    }).CAF()).ToListAsync().CAF();
-                articleViewModels = list.ToStrippedArticles().ToList();
+                filter = x => x.EverPublished && !x.Unlisted && !x.Draft && !x.ForceFullyUnlisted;
             }
-            // Registered user viewing all articles
+            // Registered user viewing his/her articles and public ones
             else
             {
-                var list = await (await articles.FindAsync(x =>
-                        (x.AuthorId == viewerUserId) ||
-                        (x.AuthorId != viewerUserId && x.EverPublished && !x.Draft && !x.Unlisted &&
-                         !x.ForceFullyUnlisted),
-                    new FindOptions<Article>()
-                    {
-                        Limit = amount,
-                        Skip = skip,
-                        Sort = oldest 
-                            ? Builders<Article>.Sort.Ascending(x => x.CreatedAt)
-                            : Builders<Article>.Sort.Descending(x => x.CreatedAt),
-                        Projection = Builders<Article>.Projection.Combine(
-                            Builders<Article>.Projection.Include(x => x.Id),
-                            Builders<Article>.Projection.Include(x => x.Description),
-                            Builders<Article>.Projection.Include(x => x.Draft),
-                            Builders<Article>.Projection.Include(x => x.Title),
-                            Builders<Article>.Projection.Include(x => x.Unlisted),
-                            Builders<Article>.Projection.Include(x => x.AuthorId),
-                            Builders<Article>.Projection.Include(x => x.CreatedAt),
-                            Builders<Article>.Projection.Include(x => x.ForceFullyUnlisted)
-                        ),
-                    }).CAF()).ToListAsync().CAF();
-                articleViewModels = list.ToStrippedArticles().ToList();
+                filter = x =>
+                    (x.AuthorId == viewerUserId) ||
+                    (x.AuthorId != viewerUserId && x.EverPublished && !x.Draft && !x.Unlisted && !x.ForceFullyUnlisted);
             }
+
+
+            var list = await (await articles
+                .FindAsync(filter, new FindOptions<Article>()
+                {
+                    Limit = amount,
+                    Skip = skip,
+                    Sort = oldest
+                        ? Builders<Article>.Sort.Ascending(x => x.CreatedAt)
+                        : Builders<Article>.Sort.Descending(x => x.CreatedAt),
+                }).CAF()).ToListAsync().CAF();
+            articleViewModels = list.ToStrippedArticles().ToList();
+
+            string userName = list.Count > 0
+                    ? (await (await _client.User().FindAsync(x => x.Id == specificUserId).CAF()).FirstOrDefaultAsync().CAF())?.Name 
+                    : null;
             
-            // TODO add pagination
-            // TODO add user name
-            string userName = null;
+            bool hasNext = await (await _client.Article().FindAsync(filter, new FindOptions<Article>
+            {
+                Skip = skip + amount
+            }).CAF()).AnyAsync().CAF();
+            bool hasPrevious = skip > 0;
 
             return new ArticlesResponse
             {
                 Articles = articleViewModels,
-                AnyNext = false,
-                AnyPrevious = false,
+                AnyNext = hasNext,
+                AnyPrevious = hasPrevious,
                 Year = createdYear,
                 CurrentPage = page,
                 TagId = tagId,
