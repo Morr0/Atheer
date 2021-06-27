@@ -123,15 +123,8 @@ namespace Atheer.Services.UsersService
             if (user.OAuthUser) throw new OAuthUserCannotLoginUsingPasswordException();
             
             (bool canLogin, int attemptsLeft) = await CanLogin(user).CAF();
-
             var time = _timeService.Get();
-            if (!canLogin)
-            {
-                await AddLoginAttempt(user, time, false).CAF();
-                
-                return new FreezeLoginAttemptResponseResponse(user, time.AddSeconds(FreezeTimeSecs));
-            }
-
+            
             bool equalPassword = _userFactory.EqualPasswords(rawPassword, user.PasswordHash);
             if (equalPassword)
             {
@@ -139,6 +132,13 @@ namespace Atheer.Services.UsersService
                 user.LastLoggedInAt = time;
 
                 return new ProceedLoginAttemptResponse(user);
+            }
+            
+            if (!canLogin)
+            {
+                await AddLoginAttempt(user, time, false).CAF();
+                
+                return new FreezeLoginAttemptResponseResponse(user, time.AddSeconds(FreezeTimeSecs));
             }
 
             await AddLoginAttempt(user, time, false).CAF();
