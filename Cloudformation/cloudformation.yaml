@@ -12,29 +12,6 @@
     MaxLength: 127
     AllowedPattern: "[ A-Za-z-_./=+]+"
     Default: Project
-  DBDatabaseName:
-    Type: String
-    Description: The name of the database hosting Atheer
-    MinLength: "1"
-    MaxLength: "63"
-  DBRootUser:
-    Type: String
-    Description: The root user name of the DB
-    MinLength: "4"
-    MaxLength: "63"
-  DBRootPassword:
-    Type: String
-    Description: The root password of the DB
-    MinLength: "8"
-    MaxLength: "63"
-  DBInstanceType:
-    Type: String
-    Description: The type of the underlying EC2 instance e.g. db.t3.micro
-    Default: "db.t3.micro"
-  DBBaseStorage:
-    Type: Number
-    Description: The minimum GiBs for the entire DB instance
-    Default: 12
   ServerInstanceType:
     Type: String
     Description: The type of the EC2 instance e.g. t3.nano
@@ -213,58 +190,6 @@ Resources:
     Properties: 
       RouteTableId: !Ref PublicRouteTable
       SubnetId: !Ref PublicSubnet
-
-#  Database
-  DatabaseSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      VpcId: !Ref Network
-      GroupDescription: Only allow VPC in
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 5432
-          ToPort: 5432
-          # from VPC only
-          CidrIp: 10.0.0.0/16
-      Tags:
-        - Key: !Ref ProjectTagKeyName
-          Value: !Ref ProjectName
-  DatabaseSubnetGroup:
-    DependsOn: 
-      - Network
-    Type: AWS::RDS::DBSubnetGroup
-    Properties:
-      DBSubnetGroupDescription: The subnet for the database
-      SubnetIds:
-        - !Ref PrivateSubnet
-        - !Ref SecondPrivateSubnet
-  Database:
-    Type: AWS::RDS::DBInstance
-    Properties:
-      AllocatedStorage: !Ref DBBaseStorage
-      AllowMajorVersionUpgrade: false
-      AutoMinorVersionUpgrade: false
-      AvailabilityZone: !Select [ 0, !GetAZs ""]
-      BackupRetentionPeriod: 7
-      DBInstanceClass: !Ref DBInstanceType
-      DeleteAutomatedBackups: false
-      DeletionProtection: true
-      Engine: postgres
-      EngineVersion: "12.5"
-      # TODO switch to gp3 when supported
-      StorageType: gp2
-      DBInstanceIdentifier: database
-      DBName: !Ref DBDatabaseName
-      MasterUsername: !Ref DBRootUser
-      MasterUserPassword: !Ref DBRootPassword
-      Port: "5432"
-      PubliclyAccessible: false
-      VPCSecurityGroups:
-        - Fn::GetAtt: [ DatabaseSecurityGroup, GroupId ]
-      DBSubnetGroupName: !Ref DatabaseSubnetGroup
-      Tags:
-        - Key: !Ref ProjectTagKeyName
-          Value: !Ref ProjectName
       
   # S3
   # - Public bucket for static files
@@ -426,8 +351,6 @@ Resources:
       LogGroupName: !GetAtt WebsiteServerLoggingCloudwatchLogGroupNameConfig.Value
       RetentionInDays: 30
   Server:
-    DependsOn: 
-      - Database
     Type: AWS::EC2::Instance
     Properties: 
       BlockDeviceMappings:
@@ -693,28 +616,6 @@ Resources:
 #        - - "/"
 #          - !Ref ProjectName
         - - "/Atheer/SQS/TranscriptionQueueUrl"
-  ServerPostgresqlConnectionStringConfig:
-    Type: AWS::SSM::Parameter
-    Properties: 
-      Type: String
-      Name: !Join
-        - ""
-#        - - "/"
-#          - !Ref ProjectName
-        - - "/Atheer/ConnectionStrings/MainPostgres"
-      Value: !Join
-        - ""
-        - - "Host="
-          - !GetAtt Database.Endpoint.Address
-          - ";Port="
-          - !GetAtt Database.Endpoint.Port
-          - ";Database="
-          - !Ref DBDatabaseName
-          - ";Username="
-          - !Ref DBRootUser
-          - ";Password="
-          - !Ref DBRootPassword
-          - ";"
   S3BucketConfig:
     Type: AWS::SSM::Parameter
     Properties: 
