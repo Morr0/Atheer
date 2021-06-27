@@ -25,7 +25,7 @@ namespace Atheer.Services.TagService
             var article = await (await _client.Article().FindAsync(x => x.Id == articlePrimaryKey.Id).CAF())
                 .FirstOrDefaultAsync().CAF();
 
-            if (article.TagsIds.Count > 0) await UpdateTags(article, titles).CAF();
+            if (article?.TagsIds?.Count > 0) await UpdateTags(article, titles).CAF();
             else await AddTags(article, titles).CAF();
 
             await _client.Article().FindOneAndReplaceAsync(x => x.Id == articlePrimaryKey.Id, article).CAF();
