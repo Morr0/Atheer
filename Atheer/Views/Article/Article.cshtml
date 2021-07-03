@@ -70,8 +70,7 @@
                 <span class="text-info">Unpublished yet</span>
             }
             
-            <a asp-controller="ArticleEdit" asp-action="UpdateArticleView" asp-route-CreatedYear="@Model.Article.CreatedYear.ToString()" 
-               asp-route-TitleShrinked="@Model.Article.TitleShrinked">Edit</a>
+            <a asp-controller="ArticleEdit" asp-action="UpdateArticleView" asp-route-articleId="@Model.Article.Id">Edit</a>
         }
         else
         {
