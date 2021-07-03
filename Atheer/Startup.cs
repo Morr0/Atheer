@@ -26,7 +26,6 @@ using Markdig;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -70,36 +69,17 @@ namespace Atheer
             
             services.AddSingleton<MarkdownPipeline>(
                 provider => Singletons.MarkdownPipeline);
-
-            // Repositories
-            if (!string.IsNullOrEmpty(Configuration.GetConnectionString("MainPostgres")))
-            {
-                services.AddDbContext<Data>(opts =>
-                {
-                    opts.UseNpgsql(Configuration.GetConnectionString("MainPostgres"), dbOpts =>
-                    {
-                        // TODO does not support user-initiated transactions. Use the execution strategy returned by 'DbContext.Database.CreateExecutionStrategy()' to execute all the operations in the transaction as a retriable unit.
-                        // dbOpts.EnableRetryOnFailure(3);
-                    });
-                });
-            }
-            if (!string.IsNullOrEmpty(Configuration.GetConnectionString("MongoDB")))
-            {
-                services.AddSingleton<IMongoClient, MongoClient>(_ => new MongoClient(Configuration.GetConnectionString("MongoDB")));
-            }
+            
+            services.AddSingleton<IMongoClient, MongoClient>(_ => new MongoClient(Configuration.GetConnectionString("MongoDB")));
             services.AddTransient<IAmazonS3, AmazonS3Client>();
 
             // Services
-            // services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IArticleService, MongoDBArticleService>();
-            // services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserService, MongoDBUserService>();
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<IRecaptchaService, RecaptchaService>();
-            // services.AddTransient<ITagService, TagService>();
             services.AddTransient<ITagService, MongoDBTagService>();
             services.AddScoped<IOAuthService, OAuthService>();
-            // services.AddSingleton<INavItemsService, NavItemService>();
             services.AddSingleton<INavItemsService, MongoDBNavItemsService>();
             services.AddTransient<IQueueService, QueueService>();
             
@@ -137,8 +117,7 @@ namespace Atheer
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, 
-            IServiceScopeFactory serviceScopeFactory, Data postgresqlClient, IMongoClient mongoClient, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             Console.WriteLine(env.EnvironmentName);
             if (env.IsDevelopment())
@@ -147,8 +126,6 @@ namespace Atheer
             }
 
             app.UseExceptionHandler("/Error");
-            
-            UpdateDatabase(serviceScopeFactory);
             
             // app.UseHttpsRedirection();
 
@@ -173,25 +150,6 @@ namespace Atheer
             {
                 endpoints.MapControllers();
             });
-
-            if (!string.IsNullOrEmpty(Configuration.GetConnectionString("MainPostgres")))
-            {
-                var logger = loggerFactory.CreateLogger(LoggingConstants.PostgresqlToMongoDBMigration);
-                
-                logger.LogCritical("Begun postgresql to mongodb operation");
-                ETLPostgresqlToMongoDB.MigrateToMongo(postgresqlClient, mongoClient, logger);
-                logger.LogCritical("Finished migrating to MongoDB");
-            }
-        }
-
-        private void UpdateDatabase(IServiceScopeFactory serviceScopeFactory)
-        {
-            using (var scope = serviceScopeFactory.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetService<Data>();
-                
-                context.Database.Migrate();
-            }
         }
     }
 }

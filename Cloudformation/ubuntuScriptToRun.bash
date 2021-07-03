@@ -3,7 +3,6 @@ apt-get update -y
 apt-get upgrade -y
 apt install git -y
 apt install tmux -y
-apt install postgresql-client -y
 # Install dotnet - BEGIN
 # https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#2004-
 wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
