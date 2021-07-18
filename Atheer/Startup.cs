@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Web;
+using Amazon.Polly;
 using Amazon.S3;
 using Atheer.BackgroundServices;
 using Atheer.Middlewares;
@@ -72,6 +73,7 @@ namespace Atheer
             
             services.AddSingleton<IMongoClient, MongoClient>(_ => new MongoClient(Configuration.GetConnectionString("MongoDB")));
             services.AddTransient<IAmazonS3, AmazonS3Client>();
+            services.AddTransient<IAmazonPolly, AmazonPollyClient>();
 
             // Services
             services.AddScoped<IArticleService, MongoDBArticleService>();

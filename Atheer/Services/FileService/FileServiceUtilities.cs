@@ -16,7 +16,7 @@ namespace Atheer.Services.FileService
                 case FileUse.UserImage:
                     return $"{UserImageDir}/{fileId}";
                 case FileUse.ArticleNarration:
-                    return ArticleNarrationDir;
+                    return $"{ArticleNarrationDir}/{fileId}";
                 default:
                     return $"{NoneDir}/{fileId}";
             }

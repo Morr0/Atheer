@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
+using System.Text.RegularExpressions;
 using Atheer.Controllers.Article.Requests;
 using Atheer.Models;
 using Atheer.Services.ArticlesService.Models;
@@ -82,14 +84,17 @@ namespace Atheer.Services.ArticlesService
             series.Finished = true;
         }
 
-        public ArticleNarrationRequest CreateNarrationRequest(Article article)
+        private static Regex CleanHTMLElementsRegex = new("<.*?>");
+        public ArticleNarrationRequest CreateNarrationRequest(Article article, Action<string, string> callback)
         {
             string htmlContent = article.Content is null ? "" : Markdown.ToHtml(article.Content, _markdownPipeline);
+            htmlContent = CleanHTMLElementsRegex.Replace(htmlContent, string.Empty);
+            
             return new ArticleNarrationRequest
             {
-                CreatedYear = article.CreatedYear,
-                TitleShrinked = article.TitleShrinked,
-                Content = htmlContent
+                Id = article.Id,
+                Content = htmlContent,
+                Callback = callback
             };
         }
     }

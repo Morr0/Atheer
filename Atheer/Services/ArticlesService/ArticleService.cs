@@ -368,7 +368,7 @@ namespace Atheer.Services.ArticlesService
             string contentChecksumPostUpdate = ChecksumAlgorithm.ComputeMD5Checksum(article.Content);
             if (contentChecksumPreUpdate == contentChecksumPostUpdate) return;
 
-            var narrationRequest = _articleFactory.CreateNarrationRequest(article);
+            var narrationRequest = _articleFactory.CreateNarrationRequest(article, null);
 
             using var scope = _serviceScopeFactory.CreateScope();
             var channel = scope.ServiceProvider.GetRequiredService<Channel<ArticleNarrationRequest>>();

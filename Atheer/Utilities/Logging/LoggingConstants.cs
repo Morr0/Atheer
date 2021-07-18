@@ -8,5 +8,6 @@
         public const string RestrictToInternalNetworkCategory = "Restrict To Internal Network";
         public const string ForbiddenPathCategory = "Forbidden Path";
         public const string PostgresqlToMongoDBMigration = "Pgsql to MongoDB migration";
+        public const string ArticleNarration = "Article narration";
     }
 }

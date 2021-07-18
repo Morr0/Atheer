@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Atheer.Controllers.Article.Models;
 using Atheer.Controllers.Article.Requests;
@@ -11,6 +12,7 @@ using Atheer.Models;
 using Atheer.Services.ArticlesService.Models;
 using Atheer.Utilities;
 using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using Tag = Atheer.Models.Tag;
 
@@ -21,12 +23,14 @@ namespace Atheer.Services.ArticlesService
         private readonly IMongoClient _client;
         private readonly ArticleFactory _articleFactory;
         private readonly IMapper _mapper;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public MongoDBArticleService(IMongoClient client, ArticleFactory articleFactory, IMapper mapper)
+        public MongoDBArticleService(IMongoClient client, ArticleFactory articleFactory, IMapper mapper, IServiceScopeFactory serviceScopeFactory)
         {
             _client = client;
             _articleFactory = articleFactory;
             _mapper = mapper;
+            _serviceScopeFactory = serviceScopeFactory;
         }
         
         public async Task<ArticleViewModel> Get(ArticlePrimaryKey primaryKey, string viewerUserId = null)
@@ -161,8 +165,33 @@ namespace Atheer.Services.ArticlesService
             _mapper.Map(request, article);
             _articleFactory.SetUpdated(article);
             
-            // TODO enable narration
+            await EnsureRequestOfNarrationIfNarratable(article, contentChecksumPreUpdate).CAF();
+            
             await _client.Article().FindOneAndReplaceAsync(x => x.Id == key.Id, article).CAF();
+        }
+        
+        private async ValueTask EnsureRequestOfNarrationIfNarratable(Article article, string contentChecksumPreUpdate)
+        {
+            if (!article.Narratable) return;
+            
+            string contentChecksumPostUpdate = ChecksumAlgorithm.ComputeMD5Checksum(article.Content);
+            if (contentChecksumPreUpdate == contentChecksumPostUpdate) return;
+
+            Action<string, string> callback = async (id, url) =>
+            {
+                await CompletedNarrationCallback(id, url).CAF();
+            };
+            var narrationRequest = _articleFactory.CreateNarrationRequest(article, callback);
+
+            using var scope = _serviceScopeFactory.CreateScope();
+            var channel = scope.ServiceProvider.GetRequiredService<Channel<ArticleNarrationRequest>>();
+            await channel.Writer.WriteAsync(narrationRequest).ConfigureAwait(false);
+        }
+
+        private async Task CompletedNarrationCallback(string id, string url)
+        {
+            await _client.Article().FindOneAndUpdateAsync(x => x.Id == id,
+                Builders<Article>.Update.Set(x => x.NarrationMp3Url, url)).CAF();
         }
 
         public async Task UpdateForcefullUnlist(ArticlePrimaryKey key, bool forcefullyUnlisted)

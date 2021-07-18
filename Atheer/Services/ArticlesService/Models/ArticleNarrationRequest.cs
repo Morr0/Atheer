@@ -1,11 +1,11 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
 
 namespace Atheer.Services.ArticlesService.Models
 {
     public class ArticleNarrationRequest
     {
-        [JsonPropertyName("createdYear")] public int CreatedYear { get; set; }
-        [JsonPropertyName("titleShrinked")] public string TitleShrinked { get; set; }
-        [JsonPropertyName("content")] public string Content { get; set; }
+        public string Id { get; set; }
+        public string Content { get; set; }
+        public Action<string, string> Callback { get; set; }
     }
 }
