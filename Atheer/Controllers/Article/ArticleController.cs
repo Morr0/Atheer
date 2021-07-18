@@ -17,6 +17,15 @@ namespace Atheer.Controllers.Article
             _service = service;
         }
 
+        [HttpGet("Article/{createdYear:int}/{titleShrinked}")]
+        public IActionResult IndexOld([FromRoute] int createdYear, [FromRoute] string titleShrinked)
+        {
+            return RedirectToActionPermanent("Index", "Article", new
+            {
+                articleId = $"{createdYear.ToString()}-{titleShrinked}"
+            });
+        }
+
         [HttpGet("Article/{articleId}")]
         public async Task<IActionResult> Index([FromRoute] string articleId)
         {
