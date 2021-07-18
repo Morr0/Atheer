@@ -1,7 +1,6 @@
 # Atheer
 ## Roadmap:
 ### List of things to work on:
-- Optimize data pulled from MongoDB cloud
 - Properly cache article/s, i.e. handle logged in and logged out cases in server
 - Configure 'robots.txt'
 - Implement TOTP authentication (by user choice)
@@ -37,7 +36,3 @@
     - remove images and automatically removed from S3
     - no need to type Markdown but still can
     - ability to add audio to play
-
-### Maybe???
-#### User friendship and chat
-#### Collaboration on articles

@@ -316,6 +316,10 @@ Resources:
                 Action:
                   - logs:*
                 Resource: "*"
+              - Effect: Allow
+                Action:
+                  - "polly:SynthesizeSpeech"
+                Resource: "*"
       Tags:
         - Key: !Ref ProjectTagKeyName
           Value: !Ref ProjectName
